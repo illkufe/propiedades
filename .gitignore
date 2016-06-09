@@ -112,5 +112,5 @@ media/
 venv/
 
 #Ignorar setting personales
-/lease/lease/settings.py
+lease/settings.py
 settings.py
