@@ -110,3 +110,7 @@ media/
 
 #Ignora carpeta de virtualenv
 venv/
+
+#Ignorar setting personales
+/lease/lease/settings.py
+settings.py
