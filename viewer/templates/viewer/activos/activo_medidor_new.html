@@ -1,0 +1,260 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<form id="form-medidor-new" role="form" action="" method="post">
+
+					{% csrf_token %}
+
+					<div class="ibox-title">
+						<h5>Medidores</h5>
+					</div>
+
+					<div class="ibox-content">
+						<br>
+						<div class="row">
+							<div class="col-sm-12">
+
+								{{ form_medidor.management_form }}
+								{% for form in form_medidor %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Medidor</button>
+								<table id="tabla-medidor" class="table">
+									<thead>
+										{% for form in form_medidor %}
+										{% if forloop.first %}
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+											{{ form.nombre.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero_rotulo.help_text }}" ></i>
+											{{ form.numero_rotulo.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia.help_text }}" ></i>
+											{{ form.potencia.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_presente.help_text }}" ></i>
+											{{ form.potencia_presente.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_fuera.help_text }}" ></i>
+											{{ form.potencia_fuera.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor_tipo.help_text }}" ></i>
+											{{ form.medidor_tipo.label_tag }}
+										</th>
+										<th></th>
+										{% endif %}
+										{% endfor %}
+									</thead>
+									<tbody>
+										{% for form in form_medidor %}
+										<tr>
+											<td>
+
+												<div class="form-group">
+													{{ form.nombre }}
+													<div class="container-error" style="height:20px">
+														{{ form.nombre.errors }}
+													</div>
+												</div>
+											</td>
+											<td>
+
+												<div class="form-group">
+													{{ form.numero_rotulo }}
+													<div class="container-error" style="height:20px">
+														{{ form.numero_rotulo.errors }}
+													</div>
+												</div>
+											</td>
+											<td>
+
+												<div class="form-group">
+
+													{{ form.potencia }}
+													<div class="container-error" style="height:20px">
+														{{ form.potencia.errors }}
+													</div>
+												</div>
+											</td>
+											<td>
+
+												<div class="form-group">
+
+													{{ form.potencia_presente }}
+													<div class="container-error" style="height:20px">
+														{{ form.potencia_presente.errors }}
+													</div>
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+
+													{{ form.potencia_fuera }}
+													<div class="container-error" style="height:20px">
+														{{ form.potencia_fuera.errors }}
+													</div>
+												</div>
+											</td>
+											<td class="text-center">
+
+												<div class="form-group">
+
+													{{ form.medidor_tipo }}
+													<div class="container-error" style="height:20px">
+														{{ form.medidor_tipo.errors }}
+													</div>
+												</div>
+											</td>
+											<td class="text-center delete">
+
+												<div class="form-group text-center">
+													{{ form.DELETE }}
+													<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Medidor')"><i class="fa fa-trash"></i></a>
+												</div>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<br>
+						<a href="/activos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+						<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+						<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+	var configuracion = {
+		'order': false,
+		'paginate': false,
+		'bLengthChange': false,
+		'bInfo': false,
+		'searching':false,
+		'buttons': [],
+	}
+
+
+	var columns = [
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'nombre',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'numero_rotulo',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'potencia',
+	},
+	{
+		'width': '20%',
+		'orderable': false,
+		'data': 'potencia_presente',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'potencia_fuera',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'medidor_tipo',
+	},
+	{
+		'width': '10%',
+		'orderable': false,
+		'data': 'eliminar',
+	}];
+
+	var table = load_table('#tabla-medidor', columns, configuracion)
+
+	$('td.delete input[type=checkbox]').hide()
+
+});
+
+function enviar_form(accion){
+	$.ajax({
+		type: 'post',
+		url: $('#form-medidor-new').attr('action'),
+		data: $('#form-medidor-new').serialize(),
+		success: function(response) {
+
+			if (accion == 'create') {
+				// clear_form('#form-medidor-new')
+			}
+			// clear_errors_form('#form-medidor-new')
+
+			notification_toast('success', 'ÉXITO', 'Guardado correctamente.')
+		},
+		error: function(data, textStatus, jqXHR) {
+
+			// clear_errors_form('#form-medidor-new')
+
+			var errors = $.parseJSON(data.responseText)
+			apply_errors_form(errors)
+		}
+	});
+	return false;	
+}
+
+
+function agregar_periodo_arriendo(){
+
+	var count 	= $('#tabla-medidor tbody').children().length;
+	var $tr 	= $('#tabla-medidor tbody tr:first');
+	var $clone 	= $tr.clone();
+	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count);
+	var $row 	= $(row)
+
+	$row.find('input').val('');
+	$row.find('select option:first-child').attr("selected", "selected");
+	$row.find('input:checkbox').prop('checked',false);
+
+	$('#tabla-medidor tbody').append('<tr></tr>')
+	$('#tabla-medidor tbody tr:last').append($row)
+
+
+	var cantidad = parseInt($('#id_medidor_set-TOTAL_FORMS').val())
+	cantidad += 1
+	$('#id_medidor_set-TOTAL_FORMS').val(cantidad)
+
+}
+
+
+function template_row_periodo_arriendo(count){
+	console.log(count)
+}
+
+</script>
+{% endblock scripts %}

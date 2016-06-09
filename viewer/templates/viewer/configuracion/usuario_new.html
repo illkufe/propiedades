@@ -1,0 +1,215 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Nuevo Usuario</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+						<div class="col-sm-12">
+
+							<form id="form-usuario-new" role="form" action="" method="post">
+								{% csrf_token %}
+
+								<div class="row">
+									{% for field in form %}
+									<div class="form-group col-sm-3">
+										{{ field.label_tag }}
+										{{ field }}
+										<div class="container-error" style="height:20px">
+											{{ field.errors }}
+										</div>
+									</div>
+									{% endfor %}
+
+									{{ userprofileform.management_form }}
+									{% for form in userprofileform %}
+									{% for hidden in form.hidden_fields %}
+									{{ hidden }}
+									{% endfor %}
+									{% endfor %}
+
+									{% for form in userprofileform %}
+									
+									<div class="form-group col-sm-3">
+										<label>{{ form.rut.label_tag }}</label>
+										{{ form.rut }}
+										<div class="container-error" style="height:20px">
+											{{ form.rut.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<label>{{ form.tipo.label_tag }}</label>
+										{{ form.tipo }}
+										<div class="container-error" style="height:20px">
+											{{ form.tipo.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<label>{{ form.cargo.label_tag }}</label>
+										{{ form.cargo }}
+										<div class="container-error" style="height:20px">
+											{{ form.cargo.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<label>{{ form.direccion.label_tag }}</label>
+										{{ form.direccion }}
+										<div class="container-error" style="height:20px">
+											{{ form.direccion.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<label>{{ form.ciudad.label_tag }}</label>
+										{{ form.ciudad }}
+										<div class="container-error" style="height:20px">
+											{{ form.ciudad.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<label>{{ form.comuna.label_tag }}</label>
+										{{ form.comuna }}
+										<div class="container-error" style="height:20px">
+											{{ form.comuna.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<label>{{ form.descripcion.label_tag }}</label>
+										{{ form.descripcion }}
+										<div class="container-error" style="height:20px">
+											{{ form.descripcion.errors }}
+										</div>
+									</div>
+								</div>
+								{% endfor %}
+
+								<br>
+								<br>
+
+								<a href="/usuarios/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+	guardar_usuario()
+});
+
+function guardar_usuario(){
+	$("#form-usuario-new").validate({
+		focusInvalid: false,
+		rules: {
+			'first_name': {
+				required: true,
+			},
+			'last_name': {
+				required: true,
+			},
+			'email': {
+				required: true,
+			},
+			'userprofile-0-rut': {
+				required: true,
+			},
+			'userprofile-0-tipo': {
+				required: true,
+			},
+			'userprofile-0-cargo': {
+				required: true,
+			},
+		},
+		messages: {
+			'first_name': {
+				required: "Campo requerido",
+			},
+			'last_name': {
+				required: "Campo requerido",
+			},
+			'email': {
+				required: "Campo requerido", email: 'email invalido',
+			},
+			'userprofile-0-rut': {
+				required: "Campo requerido",
+			},
+			'userprofile-0-tipo': {
+				required: "Campo requerido",
+			},
+			'userprofile-0-cargo': {
+				required: "Campo requerido",
+			}
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group").find('.container-error'));
+		},
+		submitHandler: function(form) {
+
+			$('#form-usuario-new').ajaxSubmit({
+				dataType: 'json',
+				success: function(data){
+
+					var template 	= ''
+					var title 		= 'Usuario <small>editado</small>'
+
+					if (data.tipo == 'create') {
+						title = 'Usuario <small>creado</small>'
+						template += '<p>'+data.nombre+' '+data.apellido+'</p>'
+						template += '<p>'+data.email+'</p>'
+						template += '<p>Contraseña: <strong>'+data.password+'</strong></p>'
+						template += '<p style="margin-top:10px">Se envio un correo al usuario creado</p>'
+					};
+
+					swal({
+						title: title,
+						text: template,
+						type: "success",
+						showCancelButton: true,
+						confirmButtonColor: "#8CD4F5",
+						confirmButtonText: data.tipo == 'create' ? "Nuevo Usuario" : "Seguir Editando",
+						cancelButtonText: "Ver Usuarios",
+						closeOnConfirm: true,
+						closeOnCancel: true ,
+						html: true,
+					}, function(isConfirm){
+						if (isConfirm) {
+							if (data.tipo == 'create') {
+								clear_form('#form-usuario-new')
+							}
+						} else {
+							window.location.href = "/usuarios/list";
+						}
+					});
+
+				},
+				error: function(data, textStatus, jqXHR) {
+					console.log(data)
+				}
+			});
+		}
+	}) 
+}
+
+</script>
+{% endblock scripts %}

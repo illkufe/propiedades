@@ -1,0 +1,100 @@
+{% load static %}
+{% load avatar_tags %}
+<nav class="navbar-default navbar-static-side" role="navigation">
+	<div class="sidebar-collapse">
+		<ul class="nav metismenu" id="side-menu">
+
+			<li class="nav-header">
+				<figure>
+					<img class="img-responsive" src="/static/assets/img/logo_blanco.png" alt="logo informat">
+				</figure>
+
+				<div class="dropdown profile-element">
+					<span>
+						<img src="{% avatar_url request.user %}" class="img-circle" alt="" width="60" height="60">
+					</span>
+					<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+						<span class="clear">
+							<span class="block m-t-xs">
+								<strong class="font-bold"> {{ request.user.first_name }} {{ request.user.last_name }}</strong>
+							</span>
+							<span class="text-muted text-xs block">{{ request.user.userprofile.cargo }}
+								<b class="caret"></b>
+							</span>
+						</span>
+					</a>
+					<ul class="dropdown-menu animated fadeInRight m-t-xs">
+						<li><a href="profile.html">Perfil</a></li>
+						<li><a href="{% url "accounts:logout" %}">Salir</a></li>
+					</ul>
+				</div>
+				<div class="logo-element">
+					IN+
+				</div>
+			</li>
+
+			<li>
+				<a href="/"><i class="fa fa-home"></i> <span class="nav-label">Dashboard</span></a>
+			</li>
+
+			<li>
+				<a href="@"><i class="fa fa-building-o"></i> <span class="nav-label">Activo</span> <span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li><a href="/activos/list">Activos</a></li>
+					<!-- <li><a href="/medidores/list">Medidores</a></li> -->
+					<!-- <li><a href="/polizas/list">Polizas</a></li> -->
+				</ul>
+			</li>
+
+			<li>
+				<a href="@"><i class="fa fa-bank"></i> <span class="nav-label">Local</span> <span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li><a href="/locales-tipo/list">Tipos</a></li>
+					<li><a href="/locales/list">Locales</a></li>
+					<li><a href="/ventas/list">Ventas</a></li>
+				</ul>
+			</li>
+
+			<li>
+				<a href="index.html"><i class="fa fa-legal"></i> <span class="nav-label">Contrato</span> <span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li><a href="/contratos-tipo/list">Tipos</a></li>
+					<li><a href="/contratos/list">Contratos</a></li>
+					<!-- <li><a href="/medidores-lectura/list">Lecturas Medidor</a></li> -->
+				</ul>
+			</li>
+
+			<li>
+				<a href="@"><i class="fa fa-refresh"></i> <span class="nav-label">Proceso</span> <span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li><a href="/procesos/list">Cáculo de Conceptos</a></li>
+					<!-- <li><a href="404.html">Cáculo de Interés</a></li> -->
+					<!-- <li><a href="404.html">Envia a Facturación</a></li> -->
+					<!-- <li><a href="404.html">Cierre del Período</a></li> -->
+				</ul>
+			</li>
+
+			<li>
+				<a href="@"><i class="fa fa-plug"></i> <span class="nav-label">Operaciones</span> <span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li><a href="/lectura-medidores/list">Lectura Medidores</a></li>
+					<!-- <li><a href="404.html">Cáculo de Interés</a></li> -->
+					<!-- <li><a href="404.html">Envia a Facturación</a></li> -->
+					<!-- <li><a href="404.html">Cierre del Período</a></li> -->
+				</ul>
+			</li>
+
+			<li>
+				<a href="@"><i class="fa fa-cog"></i> <span class="nav-label">Configuración</span> <span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li><a href="/conceptos/list">Conceptos</a></li>
+					<li><a href="/clientes/list">Clientes</a></li>
+					<li><a href="/usuarios/list">Usuarios</a></li>
+					<li><a href="/unidades-negocio/list">Unidades de Negocio</a></li>
+					<!-- <li><a href="/monedas/list">Monedas</a></li> -->
+				</ul>
+			</li>
+
+		</ul>
+	</div>
+</nav>

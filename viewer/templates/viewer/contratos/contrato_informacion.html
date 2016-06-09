@@ -1,0 +1,1090 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<form id="form-arriendo-new" role="form" action="" method="post">
+
+					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+						<div class="panel panel-default">
+							<div class="panel-heading" role="tab" id="heading-1">
+								<h4 class="panel-title">
+									<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+										Arriendo Mínimo
+									</a>
+								</h4>
+							</div>
+							<div id="collapse-1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading-1">
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-sm-12">
+
+											{% csrf_token %}
+
+											{{ formset_detalle.management_form }}
+											{% for form in formset_detalle %}
+											{% for hidden in form.hidden_fields %}
+											{{ hidden }}
+											{% endfor %}
+											{% endfor %}
+
+											<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+											<table id="tabla-arriendo" class="table">
+												<thead>
+													{% for form in formset_detalle %}
+													{% if forloop.first %}
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+														{{ form.mes_inicio.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+														{{ form.mes_termino.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+														{{ form.valor.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+														{{ form.moneda.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+														{{ form.metro_cuadrado.label_tag }}
+													</th>
+
+													<th></th>
+													{% endif %}
+													{% endfor %}
+												</thead>
+												<tbody>
+													{% for form in formset_detalle %}
+													<tr>
+														<td>
+
+															<div class="form-group">
+																{{ form.mes_inicio }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_inicio.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+
+															<div class="form-group">
+																{{ form.mes_termino }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_termino.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.valor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.valor.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.moneda }}
+																<div class="container-error" style="height:20px">
+																	{{ form.moneda.errors }}
+																</div>
+															</div>
+														</td>
+														<td class="text-center">
+
+															<div class="form-group">
+
+																{{ form.metro_cuadrado }}
+																<div class="container-error" style="height:20px">
+																	{{ form.metro_cuadrado.errors }}
+																</div>
+															</div>
+														</td>
+														<td class="text-center delete">
+
+															<div class="form-group text-center">
+																{{ form.DELETE }}
+																<a class="btn btn-delete btn-bitbucket" onclick="eliminar_periodo_arriendo(this)"><i class="fa fa-trash"></i></a>
+															</div>
+														</td>
+													</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+
+											<div class="row">
+
+												<input type="hidden" id="id_contrato" name="contrato" value="{{contrato_id}}">
+
+												<div class="form-group col-sm-2">
+													<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.reajuste.help_text }}" ></i>
+													{{ formset_arriendo.reajuste.label_tag }}
+													{{ formset_arriendo.reajuste }}
+													<div class="container-error" style="height:20px">
+														{{ formset_arriendo.reajuste.errors }}
+													</div>
+												</div>
+
+												<div class="form-group col-sm-2">
+													<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.meses.help_text }}" ></i>
+													{{ formset_arriendo.meses.label_tag }}
+													{{ formset_arriendo.meses }}
+													<div class="container-error" style="height:20px">
+														{{ formset_arriendo.meses.errors }}
+													</div>
+												</div>
+
+												<div class="form-group col-sm-2">
+													<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.valor.help_text }}" ></i>
+													{{ formset_arriendo.valor.label_tag }}
+													{{ formset_arriendo.valor }}
+													<div class="container-error" style="height:20px">
+														{{ formset_arriendo.valor.errors }}
+													</div>
+												</div>
+
+												<div class="form-group col-sm-3">
+													<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.moneda.help_text }}" ></i>
+													{{ formset_arriendo.moneda.label_tag }}
+													{{ formset_arriendo.moneda }}
+													<div class="container-error" style="height:20px">
+														{{ formset_arriendo.moneda.errors }}
+													</div>
+												</div>
+
+												<div class="form-group col-sm-3">
+													<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.fecha_inicio.help_text }}" ></i>
+													{{ formset_arriendo.fecha_inicio.label_tag }}
+													<div class="input-group date">
+														{{ formset_arriendo.fecha_inicio }}
+														<span class="input-group-addon">
+															<i class="fa fa-calendar"></i>
+														</span>
+													</div>
+
+													<div class="container-error" style="height:20px">
+														{{ formset_arriendo.fecha_inicio.errors }}
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+									<br>
+									<a href="/contratos/list">
+										<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
+									</a>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="panel panel-default">
+							<div class="panel-heading" role="tab" id="heading-2">
+								<h4 class="panel-title">
+									<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+										Arriendo Variable
+									</a>
+								</h4>
+							</div>
+							<div id="collapse-2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-2">
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-sm-12">
+
+											{{ form_arriendo_variable.management_form }}
+											{% for form in form_arriendo_variable %}
+											{% for hidden in form.hidden_fields %}
+											{{ hidden }}
+											{% endfor %}
+											{% endfor %}
+
+											<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+											<table id="tabla-arriendo-variable" class="table">
+												<thead>
+													{% for form in form_arriendo_variable %}
+													{% if forloop.first %}
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+														{{ form.mes_inicio.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+														{{ form.mes_termino.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+														{{ form.periodicidad.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+														{{ form.valor.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+														{{ form.moneda.label_tag }}
+													</th>
+													<th></th>
+													{% endif %}
+													{% endfor %}
+												</thead>
+												<tbody>
+													{% for form in form_arriendo_variable %}
+													<tr>
+														<td>
+
+															<div class="form-group">
+																{{ form.mes_inicio }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_inicio.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+
+															<div class="form-group">
+																{{ form.mes_termino }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_termino.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+
+															<div class="form-group">
+
+																{{ form.periodicidad }}
+																<div class="container-error" style="height:20px">
+																	{{ form.periodicidad.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+
+															<div class="form-group">
+
+																{{ form.valor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.valor.errors }}
+																</div>
+															</div>
+														</td>
+														<td class="text-center">
+
+															<div class="form-group">
+
+																{{ form.moneda }}
+																<div class="container-error" style="height:20px">
+																	{{ form.moneda.errors }}
+																</div>
+															</div>
+														</td>
+														<td class="text-center delete">
+
+															<div class="form-group text-center">
+																{{ form.DELETE }}
+																<a class="btn btn-delete btn-bitbucket" onclick="eliminar_periodo_arriendo(this)"><i class="fa fa-trash"></i></a>
+															</div>
+														</td>
+													</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+
+									<br>
+									<a href="/contratos/list">
+										<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
+									</a>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="panel panel-default">
+
+							<div class="panel-heading" role="tab" id="heading-3">
+								<h4 class="panel-title">
+									<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+										Gasto Común
+									</a>
+								</h4>
+							</div>
+
+							<div id="collapse-3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-3">
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-sm-12">
+
+											{{ form_gasto_comun.management_form }}
+											{% for form in form_gasto_comun %}
+											{% for hidden in form.hidden_fields %}
+											{{ hidden }}
+											{% endfor %}
+											{% endfor %}
+
+											<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+											<table id="tabla-arriendo-variable" class="table">
+												<thead>
+
+													{% for form in form_gasto_comun %}
+													{% if forloop.first %}
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.local.help_text }}" ></i>
+														{{ form.local.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+														{{ form.mes_inicio.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+														{{ form.mes_termino.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+														{{ form.valor.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.prorrateo.help_text }}" ></i>
+														{{ form.prorrateo.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_prorrateo.help_text }}" ></i>
+														{{ form.valor_prorrateo.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+														{{ form.moneda.label_tag }}
+													</th>
+													<th></th>
+													{% endif %}
+													{% endfor %}
+												</thead>
+												<tbody>
+													{% for form in form_gasto_comun %}
+													<tr>
+														<td>
+															<div class="form-group">
+																{{ form.local }}
+																<div class="container-error" style="height:20px">
+																	{{ form.local.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.mes_inicio }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_inicio.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+
+															<div class="form-group">
+																{{ form.mes_termino }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_termino.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+
+															<div class="form-group">
+
+																{{ form.valor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.valor.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.prorrateo }}
+																<div class="container-error" style="height:20px">
+																	{{ form.prorrateo.errors }}
+																</div>
+															</div>
+														</td>
+
+														<td>
+															<div class="form-group">
+																{{ form.valor_prorrateo }}
+																<div class="container-error" style="height:20px">
+																	{{ form.valor_prorrateo.errors }}
+																</div>
+															</div>
+														</td>
+
+														<td class="text-center">
+															<div class="form-group">
+																{{ form.moneda }}
+																<div class="container-error" style="height:20px">
+																	{{ form.moneda.errors }}
+																</div>
+															</div>
+														</td>
+														<td class="text-center delete">
+
+															<div class="form-group text-center">
+																{{ form.DELETE }}
+																<a class="btn btn-delete btn-bitbucket" onclick="eliminar_periodo_arriendo(this)"><i class="fa fa-trash"></i></a>
+															</div>
+														</td>
+													</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+
+									<br>
+									<a href="/contratos/list">
+										<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
+									</a>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="panel panel-default">
+
+							<div class="panel-heading" role="tab" id="heading-4">
+								<h4 class="panel-title">
+									<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
+										Servicios Básico
+									</a>
+								</h4>
+							</div>
+
+							<div id="collapse-4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-4">
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-sm-12">
+
+											{{ form_servicio_basico.management_form }}
+											{% for form in form_servicio_basico %}
+											{% for hidden in form.hidden_fields %}
+											{{ hidden }}
+											{% endfor %}
+											{% endfor %}
+
+											<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+											<table id="tabla-arriendo-variable" class="table">
+												<thead>
+													{% for form in form_servicio_basico %}
+													{% if forloop.first %}
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.local.help_text }}" ></i>
+														{{ form.local.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+														{{ form.tipo.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor.help_text }}" ></i>
+														{{ form.medidor.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+														{{ form.mes_inicio.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+														{{ form.mes_termino.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+														{{ form.valor.label_tag }}
+													</th>
+													<th></th>
+													{% endif %}
+													{% endfor %}
+												</thead>
+												<tbody>
+													{% for form in form_servicio_basico %}
+													<tr>
+														<td>
+															<div class="form-group">
+																{{ form.local }}
+																<div class="container-error" style="height:20px">
+																	{{ form.local.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.tipo }}
+																<div class="container-error" style="height:20px">
+																	{{ form.tipo.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.medidor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.medidor.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.mes_inicio }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_inicio.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.mes_termino }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_termino.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.valor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.valor.errors }}
+																</div>
+															</div>
+														</td>
+														<td class="text-center delete">
+															<div class="form-group text-center">
+																{{ form.DELETE }}
+																<a class="btn btn-delete btn-bitbucket" onclick="eliminar_periodo_arriendo(this)"><i class="fa fa-trash"></i></a>
+															</div>
+														</td>
+													</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+
+									<br>
+									<a href="/contratos/list">
+										<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
+									</a>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+								</div>
+							</div>
+						</div>
+
+
+
+
+
+
+
+						<div class="panel panel-default">
+
+							<div class="panel-heading" role="tab" id="heading-5">
+								<h4 class="panel-title">
+									<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
+										Servicios Básico
+									</a>
+								</h4>
+							</div>
+
+							<div id="collapse-5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-5">
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-sm-12">
+
+											{{ form_servicio_basico.management_form }}
+											{% for form in form_servicio_basico %}
+											{% for hidden in form.hidden_fields %}
+											{{ hidden }}
+											{% endfor %}
+											{% endfor %}
+
+											<div class="ibox-title">
+												<h5>Agua</h5>
+												<div class="ibox-tools">
+													<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+												</div>
+											</div>
+
+											
+											<table id="tabla-arriendo-variable" class="table">
+												<thead>
+													{% for form in form_servicio_basico %}
+													{% if forloop.first %}
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.local.help_text }}" ></i>
+														{{ form.local.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor.help_text }}" ></i>
+														{{ form.medidor.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+														{{ form.mes_inicio.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+														{{ form.mes_termino.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+														{{ form.valor.label_tag }}
+													</th>
+													<th></th>
+													{% endif %}
+													{% endfor %}
+												</thead>
+												<tbody>
+													{% for form in form_servicio_basico %}
+													<tr>
+														<td>
+															<div class="form-group">
+																{{ form.local }}
+																<div class="container-error" style="height:20px">
+																	{{ form.local.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.medidor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.medidor.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.mes_inicio }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_inicio.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.mes_termino }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_termino.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.valor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.valor.errors }}
+																</div>
+															</div>
+														</td>
+														<td class="text-center delete">
+															<div class="form-group text-center">
+																{{ form.DELETE }}
+																<a class="btn btn-delete btn-bitbucket" onclick="eliminar_periodo_arriendo(this)"><i class="fa fa-trash"></i></a>
+															</div>
+														</td>
+													</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+										<div class="col-sm-12">
+
+											<div class="ibox-title">
+												<h5>ELECTRICIDAD</h5>
+												<div class="ibox-tools">
+													<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+												</div>
+											</div>
+											<table id="tabla-arriendo-variable" class="table">
+												<thead>
+													{% for form in form_servicio_basico %}
+													{% if forloop.first %}
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.local.help_text }}" ></i>
+														{{ form.local.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor.help_text }}" ></i>
+														{{ form.medidor.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+														{{ form.mes_inicio.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+														{{ form.mes_termino.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+														{{ form.valor.label_tag }}
+													</th>
+													<th></th>
+													{% endif %}
+													{% endfor %}
+												</thead>
+												<tbody>
+													{% for form in form_servicio_basico %}
+													<tr>
+														<td>
+															<div class="form-group">
+																{{ form.local }}
+																<div class="container-error" style="height:20px">
+																	{{ form.local.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.medidor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.medidor.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.mes_inicio }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_inicio.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.mes_termino }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_termino.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.valor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.valor.errors }}
+																</div>
+															</div>
+														</td>
+														<td class="text-center delete">
+															<div class="form-group text-center">
+																{{ form.DELETE }}
+																<a class="btn btn-delete btn-bitbucket" onclick="eliminar_periodo_arriendo(this)"><i class="fa fa-trash"></i></a>
+															</div>
+														</td>
+													</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+										<div class="col-sm-12">
+
+											<div class="ibox-title">
+												<h5>GAS</h5>
+												<div class="ibox-tools">
+													<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+												</div>
+											</div>
+											<table id="tabla-arriendo-variable" class="table">
+												<thead>
+													{% for form in form_servicio_basico %}
+													{% if forloop.first %}
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.local.help_text }}" ></i>
+														{{ form.local.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor.help_text }}" ></i>
+														{{ form.medidor.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+														{{ form.mes_inicio.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+														{{ form.mes_termino.label_tag }}
+													</th>
+													<th>
+														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+														{{ form.valor.label_tag }}
+													</th>
+													<th></th>
+													{% endif %}
+													{% endfor %}
+												</thead>
+												<tbody>
+													{% for form in form_servicio_basico %}
+													<tr>
+														<td>
+															<div class="form-group">
+																{{ form.local }}
+																<div class="container-error" style="height:20px">
+																	{{ form.local.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.medidor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.medidor.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.mes_inicio }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_inicio.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.mes_termino }}
+																<div class="container-error" style="height:20px">
+																	{{ form.mes_termino.errors }}
+																</div>
+															</div>
+														</td>
+														<td>
+															<div class="form-group">
+																{{ form.valor }}
+																<div class="container-error" style="height:20px">
+																	{{ form.valor.errors }}
+																</div>
+															</div>
+														</td>
+														<td class="text-center delete">
+															<div class="form-group text-center">
+																{{ form.DELETE }}
+																<a class="btn btn-delete btn-bitbucket" onclick="eliminar_periodo_arriendo(this)"><i class="fa fa-trash"></i></a>
+															</div>
+														</td>
+													</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+
+									<br>
+									<a href="/contratos/list">
+										<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
+									</a>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+								</div>
+							</div>
+						</div>
+
+
+
+
+
+
+
+
+
+
+
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+var tabla_arriendo_minimo = []
+var tabla_arriendo_variable = []
+
+$(document).ready(function(){
+
+	$('.tipo-asd').on('change', function(){
+
+		text = $(this).closest('td').find('.tipo-asd option:selected').text()
+
+		$(this).closest('tr').find('.medidor-asd option').each(function() {
+
+			text2 = $(this).text()
+			if (text2.indexOf(text) == 0) {
+				console.log('ests')
+				$(this).attr('disabled', false)
+			}
+			else{
+				$(this).attr('disabled', true)
+			}
+		});
+
+	})
+
+	$('.prorrateo').on('click', function(){
+		console.log($(this).closest('tr').find('.valor_prorrateo').attr('disabled'))
+
+		if ($(this).closest('tr').find('.valor_prorrateo').attr('disabled')=='disabled') {
+			console.log('poner false')
+			$(this).closest('tr').find('.valor_prorrateo').attr('disabled', false)
+			$(this).closest('tr').find('.moneda').attr('disabled', false)
+
+		}else{
+			console.log('poner true')
+			$(this).closest('tr').find('.valor_prorrateo').attr('disabled', true)
+			$(this).closest('tr').find('.moneda').attr('disabled', true)
+		}
+	})
+
+
+
+
+
+	var configuracion = {
+		'order': false,
+		'paginate': false,
+		'bLengthChange': false,
+		'bInfo': false,
+		'searching':false,
+		'buttons': [],
+	}
+
+
+	var columns = [
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'mes_inicio',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'mes_termino',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'valor',
+	},
+	{
+		'width': '20%',
+		'orderable': false,
+		'data': 'moneda',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'metros',
+	},
+	{
+		'width': '10%',
+		'orderable': false,
+		'data': 'eliminar',
+	}];
+
+	// tabla_arriendo_minimo 	= load_table('#tabla-arriendo', columns, configuracion)
+	// tabla_arriendo_variable = load_table('#tabla-arriendo-variable', columns, configuracion)
+
+	$('td.delete input[type=checkbox]').hide()
+
+
+
+	// $('#collapse-2').collapse()
+
+	$('.input-group.date').datepicker({
+		todayBtn: 'linked',
+		keyboardNavigation: false,
+		forceParse: false,
+		calendarWeeks: true,
+		autoclose: true
+	});
+
+
+
+});
+
+
+
+function enviar_form(accion){
+	$.ajax({
+		type: 'post',
+		url: $('#form-arriendo-new').attr('action'),
+		data: $('#form-arriendo-new').serialize(),
+		success: function(response) {
+
+			if (accion == 'create') {
+				// clear_form('#form-arriendo-new')
+			}
+			// clear_errors_form('#form-arriendo-new')
+
+			notification_toast('success', 'ÉXITO', 'Guardado correctamente.')
+		},
+		error: function(data, textStatus, jqXHR) {
+
+			// clear_errors_form('#form-arriendo-new')
+
+			var errors = $.parseJSON(data.responseText)
+			apply_errors_form(errors)
+		}
+	});
+	return false;	
+}
+
+
+function agregar_periodo_arriendo(){
+
+	var count 	= $('#tabla-arriendo tbody').children().length;
+	var $tr 	= $('#tabla-arriendo tbody tr:first');
+	var $clone 	= $tr.clone();
+	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count);
+	var $row 	= $(row)
+
+	$row.find('input').val('');
+	$row.find('select option:first-child').attr("selected", "selected");
+	$row.find('input:checkbox').prop('checked',false);
+
+	$('#tabla-arriendo tbody').append('<tr></tr>')
+	$('#tabla-arriendo tbody tr:last').append($row)
+
+
+	var cantidad = parseInt($('#id_arriendo_detalle_set-TOTAL_FORMS').val())
+	cantidad += 1
+	$('#id_arriendo_detalle_set-TOTAL_FORMS').val(cantidad)
+
+}
+
+function eliminar_periodo_arriendo(obj){
+	$(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
+	$(obj).closest('tr').addClass('hide')
+}
+
+function template_row_periodo_arriendo(count){
+	console.log(count)
+}
+
+</script>
+{% endblock scripts %}

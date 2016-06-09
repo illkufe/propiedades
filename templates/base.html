@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="http://www.informat.cl/wp-content/uploads/2014/08/logico.png">
+
+	<title>Activos © INFORMAT</title>
+
+	<link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
+	<link href="{% static 'assets/font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+	<!-- Toastr style -->
+	<link href="{% static 'assets/css/plugins/toastr/toastr.min.css' %}" rel="stylesheet">
+
+	<!-- Gritter -->
+	<link href="{% static 'assets/js/plugins/gritter/jquery.gritter.css' %}" rel="stylesheet">
+
+	<!-- Sweet Alert -->
+	<link href="{% static 'assets/css/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+
+	<!-- Datatables -->
+	<link href="{% static 'assets/css/plugins/dataTables/datatables.min.css' %}" rel="stylesheet">
+
+	<!-- Toastr style -->
+	<link href="{% static 'assets/css/plugins/toastr/toastr.min.css' %}" rel="stylesheet">
+
+	<!-- Select2 -->
+	<link href="{% static 'assets/css/plugins/select2/select2.min.css' %}" rel="stylesheet">
+
+	<!-- Datapicker -->
+	<link href="{% static 'assets/css/plugins/datapicker/datepicker3.css' %}" rel="stylesheet">
+
+	<!-- Steps -->
+	<link href="{% static 'assets/css/plugins/steps/jquery.steps.css' %}" rel="stylesheet">
+
+	<link href="{% static 'assets/css/animate.css' %}" rel="stylesheet">
+	<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+	<link href="{% static 'assets/css/style_own.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+	{% block content %}
+	{% endblock %}
+
+	<script src="{% static 'assets/js/jquery-2.1.1.js' %}"></script>
+	<script src="{% static 'assets/js/bootstrap.js' %}"></script>
+	<script src="{% static 'assets/js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+	<script src="{% static 'assets/js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+	<!-- Flot -->
+	<script src="{% static 'assets/js/plugins/flot/jquery.flot.js' %}"></script>
+	<script src="{% static 'assets/js/plugins/flot/jquery.flot.tooltip.min.js' %}"></script>
+	<script src="{% static 'assets/js/plugins/flot/jquery.flot.spline.js' %}"></script>
+	<script src="{% static 'assets/js/plugins/flot/jquery.flot.resize.js' %}"></script>
+	<script src="{% static 'assets/js/plugins/flot/jquery.flot.pie.js' %}"></script>
+
+	<!-- Peity -->
+	<script src="{% static 'assets/js/plugins/peity/jquery.peity.min.js' %}"></script>
+	<script src="{% static 'assets/js/demo/peity-demo.js' %}"></script>
+
+	<!-- jQuery UI 
+	<script src="{% static 'assets/js/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+	-->
+
+	<!-- GITTER --> 
+	<script src="{% static 'assets/js/plugins/gritter/jquery.gritter.min.js' %}"></script>
+	
+	<!-- Toastr -->
+	<script src="{% static 'assets/js/plugins/toastr/toastr.min.js' %}"></script>
+	
+	<!-- Datatable -->
+	<script src="{% static 'assets/js/plugins/dataTables/datatables.min.js' %}"></script>
+
+	<!-- Sweet alert -->
+    <script src="{% static 'assets/js/plugins/sweetalert/sweetalert.min.js' %}"></script>
+
+    <!-- Toastr script -->
+    <script src="{% static 'assets/js/plugins/toastr/toastr.min.js' %}"></script>
+
+    <!-- Select2 -->
+    <script src="{% static 'assets/js/plugins/select2/select2.full.min.js' %}"></script>
+
+    <!-- Datapicker -->
+    <script src="{% static 'assets/js/plugins/datapicker/bootstrap-datepicker.js' %}"></script>
+
+    <!-- Steps -->
+    <script src="{% static 'assets/js/plugins/staps/jquery.steps.min.js' %}"></script>
+
+    <!-- Formset -->
+    <script src="{% static 'assets/js/plugins/formset/jquery.formset.min.js' %}"></script>
+
+    <!-- Jquery Validate -->
+    <script src="{% static 'assets/js/plugins/validate/jquery.validate.min.js' %}"></script>
+
+    <!-- Jquery jQuery Form -->
+    <script src="{% static 'assets/js/plugins/jquery-form/jquery-form.js' %}"></script>
+
+    <!-- Bootstrap Filestyle -->
+    <script src="{% static 'assets/js/plugins/bootstrap-filestyle/bootstrap-filestyle.js' %}"></script>
+
+    <!-- Bootstrap Filestyle -->
+    <script src="{% static 'assets/js/plugins/dataTables/datatables-range-filter.js' %}"></script>
+
+    <!-- Jasny Bootstrap -->
+    <script src="{% static 'assets/js/plugins/jquery-mask/jquery.mask.min.js' %}"></script>
+
+	<!-- Custom and plugin javascript -->
+	<script src="{% static 'assets/js/inspinia.js' %}"></script>
+	<script src="{% static 'assets/js/plugins/pace/pace.min.js' %}"></script>
+
+    <!-- Script Propio -->
+    <script src="{% static 'assets/js/script_own.js' %}"></script>
+
+	{% block scripts %}
+	{% endblock scripts %}
+
+</body>
+</html>

@@ -1,0 +1,633 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+
+				<form id="form-activo-new" role="form" action="" method="post">
+					{% csrf_token %}
+
+					<div class="ibox-title">
+						<h5>IDENTIFICACION ACTIVO</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="row">
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+										{{ form.nombre.label_tag }}
+										{{ form.nombre }}
+										<div class="container-error" style="height:20px">
+											{{ form.nombre.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.codigo.help_text }}" ></i>
+										{{ form.codigo.label_tag }}
+										{{ form.codigo }}
+										<div class="container-error" style="height:20px">
+											{{ form.codigo.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+										{{ form.tipo.label_tag }}
+										{{ form.tipo }}
+										<div class="container-error" style="height:20px">
+											{{ form.tipo.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.unidad_negocio.help_text }}" ></i>
+										{{ form.unidad_negocio.label_tag }}
+										{{ form.unidad_negocio }}
+										<div class="container-error" style="height:20px">
+											{{ form.unidad_negocio.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.direccion.help_text }}" ></i>
+										{{ form.direccion.label_tag }}
+										{{ form.direccion }}
+										<div class="container-error" style="height:20px">
+											{{ form.direccion.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.comuna.help_text }}" ></i>
+										{{ form.comuna.label_tag }}
+										{{ form.comuna }}
+										<div class="container-error" style="height:20px">
+											{{ form.comuna.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.ciudad.help_text }}" ></i>
+										{{ form.ciudad.label_tag }}
+										{{ form.ciudad }}
+										<div class="container-error" style="height:20px">
+											{{ form.ciudad.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cabidad_terreno.help_text }}" ></i>
+										{{ form.cabidad_terreno.label_tag }}
+										{{ form.cabidad_terreno }}
+										<div class="container-error" style="height:20px">
+											{{ form.cabidad_terreno.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cabidad_construccion.help_text }}" ></i>
+										{{ form.cabidad_construccion.label_tag }}
+										{{ form.cabidad_construccion }}
+										<div class="container-error" style="height:20px">
+											{{ form.cabidad_construccion.errors }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>INFORMACIÓN LEGAL</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="row">
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.propietario.help_text }}" ></i>
+										{{ form.propietario.label_tag }}
+										{{ form.propietario }}
+										<div class="container-error" style="height:20px">
+											{{ form.propietario.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.rut_propietario.help_text }}" ></i>
+										{{ form.rut_propietario.label_tag }}
+										{{ form.rut_propietario }}
+										<div class="container-error" style="height:20px">
+											{{ form.rut_propietario.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.rol_avaluo.help_text }}" ></i>
+										{{ form.rol_avaluo.label_tag }}
+										{{ form.rol_avaluo }}
+										<div class="container-error" style="height:20px">
+											{{ form.rol_avaluo.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.inscripcion.help_text }}" ></i>
+										{{ form.inscripcion.label_tag }}
+										{{ form.inscripcion }}
+										<div class="container-error" style="height:20px">
+											{{ form.inscripcion.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.vendedor.help_text }}" ></i>
+										{{ form.vendedor.label_tag }}
+										{{ form.vendedor }}
+										<div class="container-error" style="height:20px">
+											{{ form.vendedor.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.rut_vendedor.help_text }}" ></i>
+										{{ form.rut_vendedor.label_tag }}
+										{{ form.rut_vendedor }}
+										<div class="container-error" style="height:20px">
+											{{ form.rut_vendedor.errors }}
+										</div>
+									</div>
+
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.datos_escritura.help_text }}" ></i>
+										{{ form.datos_escritura.label_tag }}
+										{{ form.datos_escritura }}
+										<div class="container-error" style="height:20px">
+											{{ form.datos_escritura.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nomina_numero.help_text }}" ></i>
+										{{ form.nomina_numero.label_tag }}
+										{{ form.nomina_numero }}
+										<div class="container-error" style="height:20px">
+											{{ form.nomina_numero.errors }}
+										</div>
+									</div>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nomina_repertorio.help_text }}" ></i>
+										{{ form.nomina_repertorio.label_tag }}
+										{{ form.nomina_repertorio }}
+										<div class="container-error" style="height:20px">
+											{{ form.nomina_repertorio.errors }}
+										</div>
+									</div>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nomina_fojas.help_text }}" ></i>
+										{{ form.nomina_fojas.label_tag }}
+										{{ form.nomina_fojas }}
+										<div class="container-error" style="height:20px">
+											{{ form.nomina_fojas.errors }}
+										</div>
+									</div>
+
+																		<div class="form-group col-sm-3 date" id="data_2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_firma_nomina.help_text }}" ></i>
+										{{ form.fecha_firma_nomina.label_tag }}
+										<div class="input-group date">
+											{{ form.fecha_firma_nomina }}
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+										<div class="container-error" style="height:20px">
+											{{ form.fecha_firma_nomina.errors }}
+										</div>
+									</div>
+
+
+<!-- 
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_firma_nomina.help_text }}" ></i>
+										{{ form.fecha_firma_nomina.label_tag }}
+										{{ form.fecha_firma_nomina }}
+										<div class="container-error" style="height:20px">
+											{{ form.fecha_firma_nomina.errors }}
+										</div>
+									</div> -->
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.servicio_nomina.help_text }}" ></i>
+										{{ form.servicio_nomina.label_tag }}
+										{{ form.servicio_nomina }}
+										<div class="container-error" style="height:20px">
+											{{ form.servicio_nomina.errors }}
+										</div>
+									</div>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.servicio_repertorio.help_text }}" ></i>
+										{{ form.servicio_repertorio.label_tag }}
+										{{ form.servicio_repertorio }}
+										<div class="container-error" style="height:20px">
+											{{ form.servicio_repertorio.errors }}
+										</div>
+									</div>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.servicio_fojas.help_text }}" ></i>
+										{{ form.servicio_fojas.label_tag }}
+										{{ form.servicio_fojas }}
+										<div class="container-error" style="height:20px">
+											{{ form.servicio_fojas.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3 date" id="data_2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_servicio.help_text }}" ></i>
+										{{ form.fecha_servicio.label_tag }}
+										<div class="input-group date">
+											{{ form.fecha_servicio }}
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+										<div class="container-error" style="height:20px">
+											{{ form.fecha_servicio.errors }}
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>DATOS ECONÓMICOS</h5>
+					</div>
+
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="row">
+									<div class="form-group col-sm-3 date" id="data_2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_adquisicion.help_text }}" ></i>
+										{{ form.fecha_adquisicion.label_tag }}
+										<div class="input-group date">
+											{{ form.fecha_adquisicion }}
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+										<div class="container-error" style="height:20px">
+											{{ form.fecha_adquisicion.errors }}
+										</div>
+									</div>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tasacion_fiscal.help_text }}" ></i>
+										{{ form.tasacion_fiscal.label_tag }}
+										{{ form.tasacion_fiscal }}
+										<div class="container-error" style="height:20px">
+											{{ form.tasacion_fiscal.errors }}
+										</div>
+									</div>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.avaluo_comercial.help_text }}" ></i>
+										{{ form.avaluo_comercial.label_tag }}
+										{{ form.avaluo_comercial }}
+										<div class="container-error" style="height:20px">
+											{{ form.avaluo_comercial.errors }}
+										</div>
+									</div>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.contibuciones.help_text }}" ></i>
+										{{ form.contibuciones.label_tag }}
+										{{ form.contibuciones }}
+										<div class="container-error" style="height:20px">
+											{{ form.contibuciones.errors }}
+										</div>
+									</div>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.precio_compra.help_text }}" ></i>
+										{{ form.precio_compra.label_tag }}
+										{{ form.precio_compra }}
+										<div class="container-error" style="height:20px">
+											{{ form.precio_compra.errors }}
+										</div>
+									</div>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_tasacion.help_text }}" ></i>
+										{{ form.valor_tasacion.label_tag }}
+										{{ form.valor_tasacion }}
+										<div class="container-error" style="height:20px">
+											{{ form.valor_tasacion.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3 date" id="data_2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_tasacion.help_text }}" ></i>
+										{{ form.fecha_tasacion.label_tag }}
+										<div class="input-group date">
+											{{ form.fecha_tasacion }}
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+										<div class="container-error" style="height:20px">
+											{{ form.fecha_tasacion.errors }}
+										</div>
+									</div>
+
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tasacion_por.help_text }}" ></i>
+										{{ form.tasacion_por.label_tag }}
+										{{ form.tasacion_por }}
+										<div class="container-error" style="height:20px">
+											{{ form.tasacion_por.errors }}
+										</div>
+									</div>
+
+
+
+									<!-- <div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_plazo.help_text }}" ></i>
+										{{ form.fecha_plazo.label_tag }}
+										{{ form.fecha_plazo }}
+										<div class="container-error" style="height:20px">
+											{{ form.fecha_plazo.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_cuota.help_text }}" ></i>
+										{{ form.valor_cuota.label_tag }}
+										{{ form.valor_cuota }}
+										<div class="container-error" style="height:20px">
+											{{ form.valor_cuota.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cuotas_pagadas.help_text }}" ></i>
+										{{ form.cuotas_pagadas.label_tag }}
+										{{ form.cuotas_pagadas }}
+										<div class="container-error" style="height:20px">
+											{{ form.cuotas_pagadas.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_pago.help_text }}" ></i>
+										{{ form.fecha_pago.label_tag }}
+										{{ form.fecha_pago }}
+										<div class="container-error" style="height:20px">
+											{{ form.fecha_pago.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cuotas_pendientes.help_text }}" ></i>
+										{{ form.cuotas_pendientes.label_tag }}
+										{{ form.cuotas_pendientes }}
+										<div class="container-error" style="height:20px">
+											{{ form.cuotas_pendientes.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.precio_uf.help_text }}" ></i>
+										{{ form.precio_uf.label_tag }}
+										{{ form.precio_uf }}
+										<div class="container-error" style="height:20px">
+											{{ form.precio_uf.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.precio_pesos.help_text }}" ></i>
+										{{ form.precio_pesos.label_tag }}
+										{{ form.precio_pesos }}
+										<div class="container-error" style="height:20px">
+											{{ form.precio_pesos.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_contable.help_text }}" ></i>
+										{{ form.valor_contable.label_tag }}
+										{{ form.valor_contable }}
+										<div class="container-error" style="height:20px">
+											{{ form.valor_contable.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_tasacion.help_text }}" ></i>
+										{{ form.valor_tasacion.label_tag }}
+										{{ form.valor_tasacion }}
+										<div class="container-error" style="height:20px">
+											{{ form.valor_tasacion.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_tasacion.help_text }}" ></i>
+										{{ form.fecha_tasacion.label_tag }}
+										{{ form.fecha_tasacion }}
+										<div class="container-error" style="height:20px">
+											{{ form.fecha_tasacion.errors }}
+										</div>
+									</div> -->
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.leasing.help_text }}" ></i>
+										{{ form.leasing.label_tag }}
+										{{ form.leasing }}
+										<div class="container-error" style="height:20px">
+											{{ form.leasing.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.hipoteca.help_text }}" ></i>
+										{{ form.hipoteca.label_tag }}
+										{{ form.hipoteca }}
+										<div class="container-error" style="height:20px">
+											{{ form.hipoteca.errors }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>NIVELES Y SECTORES</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="col-xs-12 col-sm-6">
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_nivel()"><i class="fa fa-plus"></i> Nuevo Nivel</button>
+								
+								{{ nivelform.management_form }}
+
+								{% for form in nivelform %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+								<table id="tabla-niveles" class="table">
+									<thead>
+										<tr>
+											<th>CODIGO</th>
+											<th>NOMBRE</th>
+											<th></th>
+										</tr>
+
+									</thead>
+									<tbody>
+										{% for form in nivelform %}
+										<tr>
+											<td>{{ form.codigo }}</td>
+											<td>{{ form.nombre }}</td>
+											<td class="text-center delete">
+												{{ form.DELETE }}
+												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Nivel')">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
+										</tr>
+
+										{% endfor %}
+
+									</tbody>
+								</table>
+							</div>
+
+							<div class="col-xs-12 col-sm-6">
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_sector()"><i class="fa fa-plus"></i> Nuevo Sector</button>
+								{{ sectorform.management_form }}
+								{% for form in sectorform %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+								<table id="tabla-sectores" class="table">
+									<thead>
+										<tr>
+											<th>CODIGO</th>
+											<th>NOMBRE</th>
+											<th></th>
+										</tr>
+
+									</thead>
+									<tbody>
+										{% for form in sectorform %}
+										<tr>
+											<td>{{ form.codigo }}</td>
+											<td>{{ form.nombre }}</td>
+											<td class="text-center delete">
+												{{ form.DELETE }}
+												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Sector')">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
+										</tr>
+										{% endfor %}
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+						<br>
+						<br>
+
+						<div class="row">
+							<div class="col-sm-12">
+								<a href="/activos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-activo-new')">GUARDAR Y SEGUIR</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+	$('td.delete input[type=checkbox]').hide()
+
+	$('.input-group.date').datepicker({
+		todayBtn: 'linked',
+		keyboardNavigation: false,
+		forceParse: false,
+		calendarWeeks: true,
+		autoclose: true,
+		format: 'dd/mm/yyyy',
+	});
+})
+
+function agregar_sector(){
+
+	var count 	= $('#tabla-sectores tbody').children().length;
+	var $tr 	= $('#tabla-sectores tbody tr:first');
+	var $clone 	= $tr.clone();
+	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count);
+	var $row 	= $(row)
+
+	$row.find('input').val('');
+
+	$('#tabla-sectores tbody').append('<tr></tr>')
+	$('#tabla-sectores tbody tr:last').append($row)
+
+	var cantidad = parseInt($('#id_sector_set-TOTAL_FORMS').val())
+	cantidad += 1
+	$('#id_sector_set-TOTAL_FORMS').val(cantidad)
+}
+
+
+function agregar_nivel(){
+
+	var count 	= $('#tabla-niveles tbody').children().length;
+
+	var $tr 	= $('#tabla-niveles tbody tr:first');
+	var $clone 	= $tr.clone();
+	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count);
+	var $row 	= $(row)
+
+	$row.find('input').val('');
+
+	$('#tabla-niveles tbody').append('<tr></tr>')
+	$('#tabla-niveles tbody tr:last').append($row)
+
+	var cantidad = parseInt($('#id_nivel_set-TOTAL_FORMS').val())
+	cantidad += 1
+	$('#id_nivel_set-TOTAL_FORMS').val(cantidad)
+}
+
+
+</script>
+{% endblock scripts %}

@@ -1,0 +1,8 @@
+en esta carpeta se almacenanan todos los templates
+relacionados a cada contrato, el nombre de los archivos
+debe seguir el siguiente formato:
+
+contrato_{id_empresa}_{tipo_de_contrado}.html
+
+de manera que después sea facil cargar el template a 
+a cada contrato.

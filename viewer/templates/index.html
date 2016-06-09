@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div id="wrapper">
+
+	{% include 'partials/left-bar.html' %}
+
+	<div id="page-wrapper" class="gray-bg">
+
+		{% include 'partials/top-bar.html' %}
+
+		{% block section %}
+		{% endblock section %}
+
+		{% include 'partials/bottom-bar.html' %}
+
+	</div>
+</div>
+
+{% endblock content %}
+
+
+{% block scripts %}
+{% endblock scripts %}

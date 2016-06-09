@@ -1,0 +1,245 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<form id="form-cliente-new" role="form" action="" method="post">
+
+					{% csrf_token %}
+
+					<div class="ibox-title">
+						<h5>INFORMACIÓN GENERAL</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+
+								<div class="row">
+									<div class="form-group col-sm-12">
+										<input type="radio" id="persona-juridica" value="1" name="cliente_tipo" checked="" onclick="cambiar_tipo_persona(1)">
+										<label for="persona-juridica"> Persona Jurídica</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+										<input type="radio" id="persona-natural" value="2" name="cliente_tipo" onclick="cambiar_tipo_persona(2)">
+										<label for="persona-natural"> Persona Natural</label>
+									</div>
+
+									<br>
+									<br>
+									<br>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.rut.help_text }}" ></i>
+										{{ form.rut.label_tag }}
+										{{ form.rut }}
+										<div class="container-error" style="height:20px">
+											{{ form.rut.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+										{{ form.nombre.label_tag }}
+										{{ form.nombre }}
+										<div class="container-error" style="height:20px">
+											{{ form.nombre.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3 datos-persona-juridica">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+										{{ form.razon_social.label_tag }}
+										{{ form.razon_social }}
+										<div class="container-error" style="height:20px">
+											{{ form.razon_social.errors }}
+										</div>
+									</div>
+
+
+									<div class="form-group col-sm-3 datos-persona-juridica">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+										{{ form.giro.label_tag }}
+										{{ form.giro }}
+										<div class="container-error" style="height:20px">
+											{{ form.giro.errors }}
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>UBICACIÓN</h5>
+					</div>
+
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+
+								<div class="row">
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.region.help_text }}" ></i>
+										{{ form.region.label_tag }}
+										{{ form.region }}
+										<div class="container-error" style="height:20px">
+											{{ form.region.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.comuna.help_text }}" ></i>
+										{{ form.comuna.label_tag }}
+										{{ form.comuna }}
+										<div class="container-error" style="height:20px">
+											{{ form.comuna.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.direccion.help_text }}" ></i>
+										{{ form.direccion.label_tag }}
+										{{ form.direccion}}
+										<div class="container-error" style="height:20px">
+											{{ form.direccion.errors }}
+										</div>
+									</div>
+
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.telefono.help_text }}" ></i>
+										{{ form.telefono.label_tag }}
+										{{ form.telefono }}
+										<div class="container-error" style="height:20px">
+											{{ form.telefono.errors }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>REPRESENTANTES</h5>
+						<div class="ibox-tools">
+							<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_representante()"><i class="fa fa-plus"></i> Representante</button>
+						</div>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="col-xs-12">
+
+								{{ representante_form.management_form }}
+								{% for form in representante_form %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+								<table id="tabla-representantes" class="table">
+									<thead>
+										<tr>
+											<th>Dirección</th>
+											<th>Rut</th>
+											<th>Nacionalidad</th>
+											<th>Profesión</th>
+											<th>Estado Civil</th>
+											<th>Domicilio</th>
+											<th></th>
+										</tr>
+
+									</thead>
+									<tbody>
+										{% for form in representante_form %}
+										<tr>
+											<td>{{ form.nombre }}</td>
+											<td>{{ form.rut }}</td>
+											<td>{{ form.nacionalidad }}</td>
+											<td>{{ form.profesion }}</td>
+											<td>{{ form.estado_civil }}</td>
+											<td>{{ form.domicilio }}</td>
+
+											<td class="text-center delete">
+												{{ form.DELETE }}
+												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Representante')">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
+										</tr>
+
+										{% endfor %}
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+						<br>
+						<br>
+
+						<div class="row">
+							<div class="col-sm-12">
+								<a href="/clientes/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-cliente-new')">GUARDAR Y SEGUIR</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+
+	$('td.delete input[type=checkbox]').hide()
+
+});
+
+function cambiar_tipo_persona(perona_tipo){
+	if (perona_tipo == 1) {
+		$('.datos-persona-juridica').removeClass('hide')
+	}else{
+		$('.datos-persona-juridica').addClass('hide')
+	}
+}
+
+
+function agregar_representante(){
+
+	var count 	= $('#tabla-representantes tbody').children().length;
+
+	console.log(count)
+
+	var $tr 	= $('#tabla-representantes tbody tr:first');
+	var $clone 	= $tr.clone();
+	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count);
+	var $row 	= $(row)
+
+	$row.find('input').val('');
+
+	$('#tabla-representantes tbody').append('<tr></tr>')
+	$('#tabla-representantes tbody tr:last').append($row)
+
+
+	var cantidad = parseInt($('#id_representante_set-TOTAL_FORMS').val())
+	cantidad += 1
+	$('#id_representante_set-TOTAL_FORMS').val(cantidad)
+}
+
+</script>
+{% endblock scripts %}

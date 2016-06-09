@@ -1,0 +1,141 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Lista de Locales</h5>
+					<div class="ibox-tools">
+						<div class="text-left" style="display:inline-block;">
+							<select id="s-activo" name="activo" class="form-control" onchange="cambiar_url(this)"></select>
+						</div>
+
+						<a id="url-new-local">
+							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Nuevo Local</button>
+						</a>
+					</div>
+				</div>
+				<div class="ibox-content">
+
+					<br>
+					<br>
+
+					<div class="table-responsive">
+						<table id="tabla-locales" class="table table-striped table-bordered table-hover dataTables-example" >
+							<thead></thead>
+							<tbody>
+								{% for item in object_list %}
+								<tr>
+									<td>{{ item.id }}</td>
+									<td>{{ item.nombre }}</td>
+									<td>{{ item.activo }}</td>
+									<td>{{ item.local_tipo }}</td>
+									<td>{{ item.sector }}</td>
+									<td>{{ item.nivel }}</td>
+									<td class="text-center">
+										<!-- <a class="btn btn-edit btn-bitbucket" href='{% url "local_update" item.id %}'><i class="fa fa-edit"></i></a> -->
+										<a class="btn btn-edit btn-bitbucket" href='/activos/{{item.activo.id}}/locales/update/{{item.id}}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'locales', 'tabla-locales', 'Local')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+
+	var tabla_locales = []
+
+	var columns = [
+	{		
+		'data': 'id',
+		'title': 'ID',
+		'visible': false,
+	},
+	{
+		'width': '15%',
+		'data': 'nombre',
+		'title': 'Nombre',
+	},
+	{
+		'width': '15%',
+		'data': 'activo',
+		'title': 'Activo',
+	},
+	{
+		'width': '15%',
+		'data': 'tipo',
+		'title': 'Tipo',
+	},
+	{
+		'width': '15%',
+		'data': 'sector',
+		'title': 'Sector',
+	},
+	{
+		'width': '15%',
+		'data': 'nivel',
+		'title': 'Nivel',
+	},
+	{
+		'width': '15%',
+		'data': 'options',
+		'orderable': false,
+	}]
+
+	tabla_locales = load_table('#tabla-locales', columns, {})
+
+	load_select_activo()
+
+
+});
+
+function cambiar_url(obj){
+	$('#url-new-local').attr('href', '/activos/'+$(obj).val()+'/locales/new')
+}
+
+function load_select_activo(){
+	$.ajax({
+		url: '/empresa/1/activos',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			var select 	= []
+
+			for (var i = 0; i < data.length; i++) {
+				select.push({'id':data[i].id, 'text':data[i].nombre})
+			}
+
+			select_config 	= {
+				select 		: 's-activo',
+				placeholder : 'Seleccionar Activo',
+				data: select
+			}
+
+			format_select(select_config)
+		}
+	})
+}
+
+</script>
+
+{% endblock scripts %}
+
+

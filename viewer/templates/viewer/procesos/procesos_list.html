@@ -1,0 +1,655 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Procesar Contratos</h5>
+				</div>
+				<div class="ibox-content">
+					<form id="form-proceso" role="form" action="/procesos/contratos/propuesta" method="POST">
+						<input type="hidden" name="contratos">
+						<h4>Filtar Contratos :</h4>
+						<br>
+						<div class="row">
+
+							<div id="date_range">
+								<div class="input-daterange">
+									<div class="form-group col-sm-2">
+										<!-- <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i> -->
+										<label>Fecha Inicio</label>
+										<div class="input-group">
+											<input type="text" id="min" class="form-control" name="fecha_inicio" onchange="asd()">
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
+										<!-- <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i> -->
+										<label>Fecha Termino</label>
+										<div class="input-group">
+											<input type="text" id="max" class="form-control" name="fecha_termino" onchange="asd()">
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<!-- <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i> -->
+								<label>Activo</label>
+								<select name="activo" class="form-control">
+									{% for activo in activos %}
+									<option value="{{ activo.id }}">{{ activo.nombre }}</option>
+									{% endfor %}
+								</select>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<!-- <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i> -->
+								<label>Conceptos</label>
+								<select name="concepto" class="form-control">
+									{% for concepto in conceptos %}
+									<option value="{{ concepto.id }}">{{ concepto.nombre }}</option>
+									{% endfor %}
+								</select>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<!-- <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i> -->
+								<label>Tipo de Contrato</label>
+								<select name="contrato_tipo" class="form-control">
+									{% for contrato_tipo in contrato_tipos %}
+									<option value="{{ contrato_tipo.id }}">{{ contrato_tipo.nombre }}</option>
+									{% endfor %}
+								</select>
+							</div>
+
+							<!--
+							<div class="form-group col-sm-2">
+								<label>Filtrar</label>
+								<button type="submit" class="btn btn-primary btn-sm btn-w-m">ACEPTAR</button>
+							</div>
+						-->
+
+					</div>
+
+					<br>
+					<div class="table-responsive">
+						<table id="tabla-contratos" class="table table-striped table-hover"></table>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-12">
+							<button type="submit" class="btn btn-primary btn-sm btn-w-m pull-right">ACEPTAR</button>
+							<!-- <button type="button" class="btn btn-primary btn-sm btn-w-m pull-right" onclick="send_data_contratos()">PROCESAR</button> -->
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>Lista de Procesos</h5>
+			</div>
+			<div class="ibox-content">
+
+				<div class="table-responsive">
+					<table id="tabla-procesos" class="table table-striped table-hover"></table>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+ 
+
+
+
+
+
+
+// $.fn.dataTableExt.afnFiltering.push(
+// 	function(oSettings, aData, iDataIndex){
+// 		var dateStart = parseDateValue($("#min").val());
+// 		var dateEnd = parseDateValue($("#max").val());
+// 			// aData represents the table structure as an array of columns, so the script access the date value 
+// 			// in the first column of the table via aData[0]
+// 			var evalDate= parseDateValue2(aData[3]);
+
+// 			// console.log(dateStart)
+// 			console.log(dateEnd)
+			
+// 			if (evalDate >= dateStart && evalDate <= dateEnd) {
+// 				console.log('si')
+// 				return true;
+// 			}
+// 			else {
+// 				console.log('no')
+// 				return false;
+// 			}
+// 		});
+
+// function parseDateValue(rawDate) {
+// 	var dateArray= rawDate.split("/");
+// 	var parsedDate= dateArray[2] + dateArray[0] + dateArray[1];
+// 	return parsedDate;
+// }
+
+// function parseDateValue2(rawDate) {
+// 	var dateArray= rawDate.split("-");
+// 	var parsedDate= dateArray[0] + dateArray[1] + dateArray[2];
+
+// 	return parsedDate;
+
+// }
+
+
+
+
+$(document).ready(function(){
+
+	var tabla_contrato 	= []
+	var oTable 	= []
+	var tabla_procesos 	= []
+
+	$('#date_range .input-daterange').datepicker({
+		keyboardNavigation: false,
+		forceParse: false,
+		autoclose: true
+	});
+
+	
+	load_tabla_contratos()
+	load_tabla_procesos()
+	load_table_data_contratos()
+	load_table_data_procesos()
+
+	guardar_proceso()
+
+	// $.fn.dataTableExt.afnFiltering.push(
+	// 	function(oSettings, aData, iDataIndex){
+	// 		var dateStart = parseDateValue($("input[name='fecha_inicio']").val());
+	// 		var dateEnd = parseDateValue($("input[name='fecha_termino']").val());
+	// 		var evalDate= parseDateValue(aData[3]);
+	// 		if (evalDate >= dateStart && evalDate <= dateEnd) {
+	// 			return true;
+	// 		}
+	// 		else {
+	// 			return false;
+	// 		}
+	// 	});
+
+
+
+// var $dTable= $("#tabla-contratos").dataTable({
+// 	"iDisplayLength": 200,
+// 	"bStateSave": false,
+// 	"oLanguage": {
+// 		"sLengthMenu": 'Show <select><option value="25">25</option><option value="50">50</option><option value="100">100</option><option value="200">200</option></select> entries'
+// 	},
+// 	"aaSorting": [[0,'asc']],
+// 	"aoColumns": [
+// 	{		
+// 		'data': 'id',
+// 		'title': 'ID',
+// 		'visible': false,
+// 	},
+// 	{
+// 		'width': '5%',
+// 		'data': 'opciones',
+// 		'orderable': false,
+// 		'title': '<div class="text-center"><input type="checkbox" class="checkbox-all" onchange="select_all(this)"></div>'
+// 	},
+// 	{
+// 		'width': '15%',
+// 		'data': 'numero',
+// 		'title': 'Nº CONTRATO',
+// 	},
+// 	{
+// 		'width': '15%',
+// 		'data': 'fecha_inicio',
+// 		'title': 'FECHA INICIO',
+// 	},
+// 	{
+// 		'width': '15%',
+// 		'data': 'nombre',
+// 		'title': 'NOMBRE',
+// 	},
+// 	{
+// 		'width': '20%',
+// 		'data': 'activo',
+// 		'title': 'ACTIVO',
+// 	},
+// 	{
+// 		'width': '15%',
+// 		'data': 'local',
+// 		'title': 'LOCAL(ES)',
+// 	}]
+// })
+
+	// $("#min").keyup ( function() { $dTable.fnDraw(); } );
+	// $("#min").change( function() { $dTable.fnDraw(); } );
+	// $("#max").keyup ( function() { $dTable.fnDraw(); } );
+	// $("#max").change( function() { $dTable.fnDraw(); } );
+
+// $('#min').change( function() {
+// 	$dTable.fnDraw(); 
+// });
+// $('#max').change( function() { 
+// 	$dTable.fnDraw(); 
+// });
+
+
+
+
+
+});
+
+
+function select_all(obj){
+
+	var all 	= false
+	var tabla 	= $('#tabla-contratos').dataTable();
+
+	if($(obj).is(':checked'))
+		all = true
+
+	$('.checkbox-contrato', tabla.fnGetNodes()).each(function(i){
+		$(this).prop('checked', all)
+	})
+}
+
+
+
+function load_tabla_contratos(){
+
+	var configuracion = {
+		'paginate': false,
+		'bLengthChange': false,
+		'bInfo': false,
+		'searching': false,
+		'buttons': [],
+	} 
+
+	var columns = [
+	{		
+		'data': 'id',
+		'title': 'ID',
+		'visible': false,
+	},
+	{
+		'width': '5%',
+		'data': 'opciones',
+		'orderable': false,
+		'title': '<div class="text-center"><input type="checkbox" class="checkbox-all" onchange="select_all(this)"></div>'
+	},
+	{
+		'width': '15%',
+		'data': 'numero',
+		'title': 'Nº CONTRATO',
+	},
+	{
+		'width': '15%',
+		'data': 'fecha_inicio',
+		'title': 'FECHA INICIO',
+	},
+	{
+		'width': '15%',
+		'data': 'nombre',
+		'title': 'NOMBRE',
+	},
+	{
+		'width': '20%',
+		'data': 'activo',
+		'title': 'ACTIVO',
+	},
+	{
+		'width': '15%',
+		'data': 'local',
+		'title': 'LOCAL(ES)',
+	}];
+
+
+	// oTable = $('#tabla-contratos').dataTable({
+	// 	'language': {
+	// 		'emptyTable': 'Sin Datos',
+	// 		'info': 'mostranto _END_ de _TOTAL_ registros',
+	// 		'infoEmpty': '0-0 de 0',
+	// 		'infoFiltered': '',
+	// 		'infoPostFix': '',
+	// 		'thousands': ',',
+	// 		'lengthMenu': '_MENU_',
+	// 		'loadingRecords': 'Cargando...',
+	// 		'processing': 'Procesando...',
+	// 		'search': '',
+	// 		'searchPlaceholder': 'Buscar',
+	// 		'zeroRecords': 'No se encontraron registros',
+	// 		'paginate': {
+	// 			'first': 'Primero',
+	// 			'last': 'Último',
+	// 			'next': 'Próximo',
+	// 			'previous': 'Anterior'
+	// 		}
+	// 	},
+	// 	'pageLength': 10,
+	// 	'searching': true ,
+	// 	'columns': [
+	// 	{		
+	// 		'data': 'id',
+	// 		'title': 'ID',
+	// 		'visible': false,
+	// 	},
+	// 	{
+	// 		'width': '5%',
+	// 		'data': 'opciones',
+	// 		'orderable': false,
+	// 		'title': '<div class="text-center"><input type="checkbox" class="checkbox-all" onchange="select_all(this)"></div>'
+	// 	},
+	// 	{
+	// 		'width': '15%',
+	// 		'data': 'numero',
+	// 		'title': 'Nº CONTRATO',
+	// 	},
+	// 	{
+	// 		'width': '15%',
+	// 		'data': 'fecha_inicio',
+	// 		'title': 'FECHA INICIO',
+	// 	},
+	// 	{
+	// 		'width': '15%',
+	// 		'data': 'nombre',
+	// 		'title': 'NOMBRE',
+	// 	},
+	// 	{
+	// 		'width': '20%',
+	// 		'data': 'activo',
+	// 		'title': 'ACTIVO',
+	// 	},
+	// 	{
+	// 		'width': '15%',
+	// 		'data': 'local',
+	// 		'title': 'LOCAL(ES)',
+	// 	}],
+	// });
+
+	// $('#min').change( function() { oTable.fnDraw(); });
+	// $('#max').change( function() { oTable.fnDraw(); });
+
+	tabla_contrato = load_table('#tabla-contratos', columns, configuracion)
+
+	var table = $('#example').DataTable();
+ 
+      // Add event listeners to the two range filtering inputs
+      $('#min').keyup( function() { tabla_contrato.draw(); } );
+      $('#max').keyup( function() { tabla_contrato.draw(); } );
+
+}
+
+function load_tabla_procesos(){
+	var columns = [
+	{		
+		'data': 'id',
+		'title': 'ID',
+		'visible': false,
+	},
+	{
+		'width': '15%',
+		'data': 'fecha_inicio',
+		'title': 'FECHA INICIO',
+	},
+	{
+		'width': '15%',
+		'data': 'fecha_termino',
+		'title': 'FECHA TERMINO',
+	},
+	{
+		'width': '20%',
+		'data': 'concepto',
+		'title': 'CONCEPTO',
+	},
+	{
+		'width': '10%',
+		'data': 'total',
+		'title': 'MONTO',
+	},
+	{
+		'width': '20%',
+		'data': 'contratos',
+		'title': 'CONTRATOS',
+	},
+	{
+		'width': '10%',
+		'data': 'estado',
+		'title': 'ESTADO',
+	},
+	{
+		'width': '10%',
+		'data': 'opciones',
+		'orderable': false,
+		'title': ''
+	}];
+
+	tabla_procesos = load_table('#tabla-procesos', columns, {})
+}
+
+
+function load_table_data_contratos(){
+
+	$.ajax({
+		url: '/contratos/',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+			rows = [];
+
+			for (var i = 0; i < data.length; i++) {
+
+				row = {}
+
+				row.id				= data[i].id
+				row.opciones 		= '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'"></div>'
+				row.numero			= data[i].numero
+				row.fecha_inicio	= data[i].fecha_inicio
+				row.nombre			= data[i].nombre_local
+				row.activo			= data[i].activo
+				row.local			= data[i].id
+
+				rows.push(row)
+			}
+			var asd = $('#tabla-contratos').DataTable();
+			asd.rows.add(rows).draw();
+
+		}
+	})
+}
+
+
+function load_table_data_procesos(){
+
+	tabla_procesos.clear().draw();
+
+	$.ajax({
+		url: '/procesos/contratos/propuesta',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			// console.log(data)
+
+			rows = [];
+
+			for (var i = 0; i < data.length; i++) {
+
+				row = {}
+
+				row.id				= data[i].id
+				row.fecha_termino 	= data[i].fecha_termino
+				row.fecha_inicio	= data[i].fecha_inicio
+				row.concepto		= '---'
+				row.total 			= data[i].total
+				row.estado			= data[i].estado
+				row.contratos 		= 'Contrato 1'
+				row.opciones 		= '<div class="text-center"><a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a></div>'
+				// row.opciones 		= '<div class="text-center"><a href="/contrato/pdf/'+data[i].id+'" class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a></div>'
+				
+
+				rows.push(row)
+			}
+
+			tabla_procesos.rows.add(rows).draw();
+
+		}
+	})
+}
+
+
+
+
+function guardar_proceso(){
+	$("#form-proceso").validate({
+		rules: {
+			fecha_inicio: {
+				required: true,
+			},
+			fecha_termino: {
+				required: true,
+			},
+			concepto: {
+				required: true,
+			},
+		},
+		messages: {
+			fecha_inicio: {
+				required: "Campo requerido",
+			},
+			fecha_termino: {
+				required: "Campo requerido",
+			},
+			concepto: {
+				required: "Campo requerido",
+			}
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group"));
+		},
+		submitHandler: function(form) {
+
+			var contratos 		= []
+			var tabla_contrato 	= $('#tabla-contratos').dataTable();
+
+			$('.checkbox-contrato:checked', tabla_contrato.fnGetNodes()).each(function(i){
+				contratos.push($(this).val())
+			})
+
+			$('input[name="contratos"]').val(contratos)
+
+			$('#form-proceso').ajaxSubmit({
+				dataType: 'json',
+				success: function(data){
+					load_table_data_procesos()
+
+					swal({
+						title: "Proceso <small>creado correctamente</small>",
+						text: "<a href='/propuesta/pdf/"+data[0].id+"'><span style='color:#F8BB86'>descargar archivo<span>",
+						type: "success",
+						html: true
+					});
+					
+				}
+			});
+		}
+	}) 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function send_data_contratos(){
+
+	var data 			= {}
+	var contratos 		= []
+	var tabla_contrato 	= $('#tabla-contratos').dataTable();
+	
+	data.fecha_inicio 	= '01-01-2015' //{falta, agregar la fecha que correponda}
+	data.fecha_termino 	= '31-12-2015' //{falta, agregar la fecha que correponda}
+
+	$('.checkbox-contrato:checked', tabla_contrato.fnGetNodes()).each(function(i){
+
+		contrato 			= {}
+		contrato.id 		= $(this).val()
+		contrato.conceptos 	= [1] //{falta, agregar la fecha que correponda}
+
+		contratos.push(contrato)
+	})
+
+	data.contratos = JSON.stringify(contratos)
+
+	console.log(data)
+
+	$.ajax({
+		url: '/procesos/contratos/propuesta',
+		type: 'POST',
+		data: data,
+		success: function (response) {
+			console.log(response)
+		},
+		error: function(response){
+
+		}
+	})
+
+	// $.post('/procesos/contratos/propuesta',{
+	// 	'data': data,
+	// 	csrfmiddlewaretoken: getCookie('csrftoken')
+	// },
+	// function(response){
+	// 	console.log(response)
+	// })
+
+}
+
+
+
+
+
+</script>
+
+{% endblock scripts %}
+
+
