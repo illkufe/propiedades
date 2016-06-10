@@ -15,7 +15,7 @@ class Concepto_Tipo(models.Model):
 	visible 	= models.BooleanField(default=True)
 	creado_en 	= models.DateTimeField(auto_now=True)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 
@@ -36,5 +36,5 @@ class Concepto(models.Model):
 	moneda 			= models.ForeignKey(Moneda)
 	concepto_tipo 	= models.ForeignKey(Concepto_Tipo)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre

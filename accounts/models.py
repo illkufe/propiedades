@@ -30,5 +30,5 @@ class UserProfile(models.Model):
 	user 	= models.OneToOneField(User)
 	empresa = models.ForeignKey(Empresa)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.user.username

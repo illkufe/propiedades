@@ -56,7 +56,7 @@ class Activo(models.Model):
 	empresa 		= models.ForeignKey(Empresa)
 	unidad_negocio 	= models.ForeignKey(Unidad_Negocio)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 class Medidor_Tipo(models.Model):
@@ -70,7 +70,7 @@ class Medidor_Tipo(models.Model):
 	visible 	= models.BooleanField(default=True)
 	creado_en 	= models.DateTimeField(auto_now=True)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 class Medidor(models.Model):
@@ -91,7 +91,7 @@ class Medidor(models.Model):
 	activo 			= models.ForeignKey(Activo)
 	medidor_tipo 	= models.ForeignKey(Medidor_Tipo)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.medidor_tipo.nombre+'-'+self.nombre
 
 class Sector(models.Model):
@@ -108,7 +108,7 @@ class Sector(models.Model):
 	# relaciones
 	activo = models.ForeignKey(Activo)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 class Nivel(models.Model):
@@ -125,7 +125,7 @@ class Nivel(models.Model):
 	# relaciones
 	activo = models.ForeignKey(Activo)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 	
 

@@ -16,7 +16,7 @@ class Proceso_Estado(models.Model):
 	visible 	= models.BooleanField(default=True)
 	creado_en 	= models.DateTimeField(auto_now=True)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 class Proceso(models.Model):
@@ -35,7 +35,7 @@ class Proceso(models.Model):
 	proceso_estado 	= models.ForeignKey(Proceso_Estado)
 
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.proceso_estado.nombre
 
 class Proceso_Detalle(models.Model):
@@ -63,6 +63,6 @@ class Proceso_Detalle(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 	
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.contrato.nombre_local
 

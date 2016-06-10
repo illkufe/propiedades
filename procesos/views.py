@@ -555,7 +555,7 @@ def propuesta_pdf(proceso, pk=None):
 
 	html = template.render(context)  # Renders the template with the context data.
 	pdfkit.from_string(html, 'public/media/contratos/propuesta_facturacion.pdf', options=options, css=css)
-	pdf = open('public/media/contratos/propuesta_facturacion.pdf')
+	pdf = open('public/media/contratos/propuesta_facturacion.pdf', 'rb')
 	response = HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
 	response['Content-Disposition'] = 'attachment; filename=propuesta_facturacion.pdf'
 	pdf.close()

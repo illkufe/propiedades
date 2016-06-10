@@ -12,7 +12,7 @@
   },
   {
     "model": "administrador.moneda",
-    "pk": 2,
+    "pk": 3,
     "fields": {
       "nombre": "UNIDAD DE FOMENTO",
       "abrev": "UF",
@@ -23,7 +23,7 @@
   },
   {
     "model": "administrador.moneda",
-    "pk": 3,
+    "pk": 2,
     "fields": {
       "nombre": "EURO",
       "abrev": "EURO",
@@ -79,7 +79,7 @@
     "model": "administrador.moneda_historial",
     "pk": 2,
     "fields": {
-      "valor": 25962.93,
+      "valor": 776.24,
       "fecha": "2016-01-01 00:00:00",
       "moneda_id": 2,
       "creado_en": "2016-01-01 00:00:00"
@@ -89,7 +89,7 @@
     "model": "administrador.moneda_historial",
     "pk": 3,
     "fields": {
-      "valor": 776.24,
+      "valor": 25962.93,
       "fecha": "2016-01-01 00:00:00",
       "moneda_id": 3,
       "creado_en": "2016-01-01 00:00:00"

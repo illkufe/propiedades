@@ -21,7 +21,7 @@ class Contrato_Tipo(models.Model):
 	# relaciones
 	empresa = models.ForeignKey(Empresa)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 class Contrato_Estado(models.Model):
@@ -34,7 +34,7 @@ class Contrato_Estado(models.Model):
 	visible 	= models.BooleanField(default=True)
 	creado_en 	= models.DateTimeField(auto_now=True)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 
@@ -79,7 +79,7 @@ class Contrato(models.Model):
 	conceptos 		= models.ManyToManyField(Concepto)
 
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre_local
 
 
@@ -99,7 +99,7 @@ class Arriendo(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 	moneda 		= models.ForeignKey(Moneda)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.contrato.nombre_local
 		
 
@@ -134,7 +134,7 @@ class Arriendo_Detalle(models.Model):
 	arriendo 	= models.ForeignKey(Arriendo)
 	moneda 		= models.ForeignKey(Moneda)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.mes_inicio
 
 
@@ -179,7 +179,7 @@ class Arriendo_Variable(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 	moneda 		= models.ForeignKey(Moneda)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.contrato.nombre_local
 
 
@@ -222,7 +222,7 @@ class Servicio_Basico(models.Model):
 	local 		= models.ForeignKey(Local)
 	medidor 	= models.ForeignKey(Medidor)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.local.nombre
 
 
@@ -259,7 +259,7 @@ class Gasto_Comun(models.Model):
 	local 		= models.ForeignKey(Local)
 	moneda 		= models.ForeignKey(Moneda)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.local.nombre
 
 

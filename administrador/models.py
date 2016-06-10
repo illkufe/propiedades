@@ -13,7 +13,7 @@ class Region(models.Model):
 	visible     = models.BooleanField(default=True)
 	creado_en   = models.DateTimeField(auto_now=True)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 
@@ -29,7 +29,7 @@ class Provincia(models.Model):
 	# relaciones
 	region = models.ForeignKey(Region)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 
@@ -45,7 +45,7 @@ class Comuna(models.Model):
 	# relaciones
 	provincia = models.ForeignKey(Provincia)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 
@@ -60,7 +60,7 @@ class Estado_Civil(models.Model):
 	visible     = models.BooleanField(default=True)
 	creado_en   = models.DateTimeField(auto_now=True)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 
@@ -75,7 +75,7 @@ class Empresa(models.Model):
 	visible     = models.BooleanField(default=True)
 	creado_en   = models.DateTimeField(auto_now=True)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 
@@ -91,7 +91,7 @@ class Moneda(models.Model):
 	visible     = models.BooleanField(default=True)
 	creado_en   = models.DateTimeField(auto_now=True)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.abrev
 
 
@@ -101,14 +101,10 @@ class Moneda_Historial(models.Model):
 	valor   = models.FloatField()
 	fecha   = models.DateTimeField(auto_now=True)
 
-	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
-
 	# relaciones
 	moneda = models.ForeignKey(Moneda)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.moneda.nombre
 
 
@@ -132,7 +128,7 @@ class Cliente(models.Model):
 	# relaciones
 	empresa = models.ForeignKey(Empresa)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.razon_social
 
 
@@ -154,7 +150,7 @@ class Representante(models.Model):
 	estado_civil 	= models.ForeignKey(Estado_Civil)
 	
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 class Unidad_Negocio(models.Model):
@@ -171,5 +167,5 @@ class Unidad_Negocio(models.Model):
 	# relaciones
 	empresa = models.ForeignKey(Empresa)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre

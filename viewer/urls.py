@@ -8,4 +8,6 @@ from . import views
 urlpatterns = [
 	# dashboard
 	url(r'^$', views.dashboard, name='dashboard'),
+
+	url(r'^flag_currencies/$', views.flag_currencies, name='flag_currencies'),
 ]

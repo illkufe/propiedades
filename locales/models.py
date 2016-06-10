@@ -19,7 +19,7 @@ class Local_Tipo(models.Model):
 	# relaciones
 	empresa = models.ForeignKey(Empresa)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 
@@ -52,7 +52,7 @@ class Local(models.Model):
 	local_tipo 	= models.ForeignKey(Local_Tipo)
 	medidores 	= models.ManyToManyField(Medidor)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.nombre
 
 class Venta(models.Model):
@@ -80,5 +80,5 @@ class Venta(models.Model):
 	# relaciones
 	local 		= models.ForeignKey(Local)
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.local.nombre

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 from django.forms.models import inlineformset_factory
-from django.forms import formset_factory
-from .models import Contrato_Tipo, Contrato_Estado, Contrato, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
+
 from locales.models import Local
 from conceptos.models import Concepto
 from administrador.models import Moneda
 from activos.models import Medidor
+
+from .models import Contrato_Tipo, Contrato_Estado, Contrato, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
 
 class ContratoTipoForm(forms.ModelForm):
 	class Meta:
@@ -15,9 +15,9 @@ class ContratoTipoForm(forms.ModelForm):
 		fields 	= ['nombre', 'codigo', 'descripcion']
 
 		widgets = {
-			'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-			'codigo': forms.TextInput(attrs={'class': 'form-control'}),
-			'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
+			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'codigo'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'descripcion'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
 		}
 
 		error_messages = {
@@ -25,14 +25,14 @@ class ContratoTipoForm(forms.ModelForm):
 		}
 
 		labels = {
-			'codigo': (u'Código'),
-			'descripcion': (u'Descripción'),
+			'codigo'		: 'Código',
+			'descripcion'	: 'Descripción',
 		}
 
 		help_texts = {
-			'nombre': ('...'),
-			'codigo': ('...'),
-			'descripcion': ('...'),
+			'nombre'		: '...',
+			'codigo'		: '...',
+			'descripcion'	: '...',
 		}
 
 class ContratoForm(forms.ModelForm):
@@ -110,13 +110,13 @@ class ContratoForm(forms.ModelForm):
 		}
 
 		labels = {
-			'numero': _(u'Número'),
-			'nombre_local': _(u'Nombre Local'),
-			'fecha_renovacion': _(u'Fecha Renovacion'),
+			'numero'			: 'Número',
+			'nombre_local'		: 'Nombre Local',
+			'fecha_renovacion'	: 'Fecha Renovacion',
 		}
 
 		help_texts = {
-			'numero': _('numero'),
+			'numero': 'numero',
 		}
 
 class InformacionForm(forms.ModelForm):
@@ -153,16 +153,16 @@ class ArriendoForm(forms.ModelForm):
 		}
 
 		labels = {
-			'meses'			: (u'Meses'),
-			'fecha_inicio'	: (u'Fecha Inicio'),
+			'meses'			: 'Meses',
+			'fecha_inicio'	: 'Fecha Inicio',
 		}
 
 		help_texts = {
-			'reajuste' 		: (u'Reajuste'),
-			'meses' 		: (u'Cada Cuantos'),
-			'valor' 		: (u'Valor'),
-			'moneda' 		: (u'Moneda'),
-			'fecha_inicio' 	: (u'Fecha Inicio'),
+			'reajuste' 		: 'Reajuste',
+			'meses' 		: 'Cada Cuantos',
+			'valor' 		: 'Valor',
+			'moneda' 		: 'Moneda',
+			'fecha_inicio' 	: 'Fecha Inicio',
 		}
 
 
@@ -213,16 +213,16 @@ class ArriendoVariableForm(forms.ModelForm):
 		}
 
 		labels = {
-			'mes_inicio'	: (u'Meses Inicio'),
-			'mes_termino'	: (u'Mes Termino'),
+			'mes_inicio'	: 'Meses Inicio',
+			'mes_termino'	: 'Mes Termino',
 		}
 
 		help_texts = {
-			'mes_inicio' 	: (u'mes inicio'),
-			'mes_termino' 	: (u'mes termino'),
-			'periodicidad' 	: (u'periodicidad'),
-			'valor' 		: (u'valor'),
-			'moneda' 		: (u'moneda'),
+			'mes_inicio' 	: 'mes inicio',
+			'mes_termino' 	: 'mes termino',
+			'periodicidad' 	: 'periodicidad',
+			'valor' 		: 'valor',
+			'moneda' 		: 'moneda',
 		}
 
 
@@ -248,32 +248,32 @@ class GastoComunForm(forms.ModelForm):
 		exclude = ['visible', 'creado_en']
 
 		widgets = {
-			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
-			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
-			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			'prorrateo'		: forms.CheckboxInput(attrs={'class': 'form-control prorrateo'}),
-			'valor_prorrateo' : forms.NumberInput(attrs={'class': 'form-control valor_prorrateo','disabled':'disabled'}),
+			'mes_inicio'		: forms.Select(attrs={'class': 'form-control'}),
+			'mes_termino'		: forms.Select(attrs={'class': 'form-control'}),
+			'valor'				: forms.NumberInput(attrs={'class': 'form-control'}),
+			'prorrateo'			: forms.CheckboxInput(attrs={'class': 'form-control prorrateo'}),
+			'valor_prorrateo' 	: forms.NumberInput(attrs={'class': 'form-control valor_prorrateo','disabled':'disabled'}),
 		}
 
 		error_messages = {
-			'mes_inicio'	: {'required': 'campo requerido.'},
-			'mes_termino'	: {'required': 'campo requerido.'},
-			'valor'			: {'required': 'campo requerido.'},
-			'prorrateo'		: {'required': 'campo requerido.'},
-			'valor_prorrateo' : {'required': 'campo requerido.'},
+			'mes_inicio'		: {'required': 'campo requerido.'},
+			'mes_termino'		: {'required': 'campo requerido.'},
+			'valor'				: {'required': 'campo requerido.'},
+			'prorrateo'			: {'required': 'campo requerido.'},
+			'valor_prorrateo' 	: {'required': 'campo requerido.'},
 		}
 
 		labels = {
-			'mes_inicio'	: (u'Meses Inicio'),
-			'mes_termino'	: (u'Mes Termino'),
+			'mes_inicio'	: 'Meses Inicio',
+			'mes_termino'	: 'Mes Termino',
 		}
 
 		help_texts = {
-			'mes_inicio' 	: (u'mes inicio'),
-			'mes_termino' 	: (u'mes termino'),
-			'valor' 		: (u'valor'),
-			'prorrateo' 	: (u'prorrateo'),
-			'valor_prorrateo': (u'valor prorrateo'),
+			'mes_inicio' 		: 'mes inicio',
+			'mes_termino' 		: 'mes termino',
+			'valor' 			: 'valor',
+			'prorrateo' 		: 'prorrateo',
+			'valor_prorrateo'	: 'valor prorrateo',
 		}
 
 
@@ -312,16 +312,16 @@ class ServicioBasicoForm(forms.ModelForm):
 		}
 
 		labels = {
-			'tipo'			: (u'Tipo'),
-			'mes_inicio'	: (u'Meses Inicio'),
-			'mes_termino'	: (u'Mes Termino'),
+			'tipo'			: 'Tipo',
+			'mes_inicio'	: 'Meses Inicio',
+			'mes_termino'	: 'Mes Termino',
 		}
 
 		help_texts = {
-			'tipo' 			: (u'tipo'),
-			'mes_inicio' 	: (u'mes inicio'),
-			'mes_termino' 	: (u'mes termino'),
-			'valor' 		: (u'valor'),
+			'tipo' 			: 'tipo',
+			'mes_inicio' 	: 'mes inicio',
+			'mes_termino' 	: 'mes termino',
+			'valor' 		: 'valor',
 		}
 
 
