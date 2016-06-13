@@ -219,13 +219,13 @@ function guardar_formulario(accion, form){
 
 
 function guardar_formulario_file(accion, form){
-	console.log(form)
-	console.log(accion)
+	// console.log(form)
+	// console.log(accion)
 
 	$('#'+form).ajaxSubmit({
 		dataType: 'json',
 		beforeSubmit: function(){
-			console.log('enviando')
+			// console.log('enviando')
 		},
 		success: function(data){
 			if (accion == 'create') {
@@ -256,7 +256,7 @@ function format_select(config){
 
 
 function asd(){
-	console.log('asd')
+	// console.log('asd')
 // if ($('#min').val() != null && $('#max').val() != null && $('#min').val() != '' && $('#max').val() != ''){
 	// console.log('asd')
 	$.fn.dataTableExt.afnFiltering.push(
@@ -278,7 +278,7 @@ function asd(){
 
 			if ($('#min').val() != '' && $('#max').val() != '' && $('#min').val() != null && $('#max').val() != null) {	
 
-				console.log('mo caca')
+				// console.log('mo caca')
 				var iMin_temp = $('#min').val();
 				if (iMin_temp == '') {
 					iMin_temp = '01/01/1980';

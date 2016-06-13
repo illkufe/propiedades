@@ -795,7 +795,7 @@ class CONTRATO(View):
 		empresa = Empresa.objects.get(id=profile.empresa_id)
 
 		if id == None:
-			self.object_list = Contrato.objects.filter(empresa=empresa)
+			self.object_list = Contrato.objects.filter(empresa=empresa, visible=True)
 		else:
 			self.object_list = Contrato.objects.filter(pk=id)
 

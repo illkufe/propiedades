@@ -16,6 +16,7 @@ class LecturaMedidorForm(forms.ModelForm):
 
 		widgets = {
 			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'mes'			: forms.Select(attrs={'class': 'form-control'}),
 			'medidor'		: forms.Select(attrs={'class': 'form-control'}),
 			'imagen_file'	: forms.FileInput(attrs={'class': 'file-format'}),
 		}

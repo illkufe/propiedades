@@ -4,8 +4,11 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.template import Context, loader
 from django.template.loader import get_template 
+from django.contrib.auth.models import User
+
 
 from administrador.models import Empresa, Cliente, Moneda, Moneda_Historial
+from accounts.models import UserProfile
 from locales.models import Local, Venta
 from activos.models import Activo
 from conceptos.models import Concepto
@@ -67,13 +70,13 @@ class PROCESOS(View):
 		concepto 		= var_post.get('concepto')
 
 		if int(concepto) == 1:
-			data = calculo_arriendo_minimo(fecha_inicio, fecha_termino, contratos)
+			data = calculo_arriendo_minimo(request, fecha_inicio, fecha_termino, contratos)
 		elif int(concepto) == 2:
-			data = calculo_arriendo_variable(fecha_inicio, fecha_termino, contratos)
+			data = calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos)
 		elif int(concepto) == 3:
-			data = calculo_gasto_comun(fecha_inicio, fecha_termino, contratos)
+			data = calculo_gasto_comun(request, fecha_inicio, fecha_termino, contratos)
 		elif int(concepto) == 4:
-			data = calculo_servicios_basico(fecha_inicio, fecha_termino, contratos)
+			data = calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos)
 		else:
 			data = []
 
@@ -100,8 +103,9 @@ class PROCESOS(View):
 		return JsonResponse(data, safe=False)
 
 
-def calculo_arriendo_variable(fecha_inicio, fecha_termino, contratos):
+def calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos):
 
+	user 		= User.objects.get(pk=request.user.pk)
 	contratos 	= contratos
 	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
 	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%m/%d/%Y"))
@@ -113,7 +117,7 @@ def calculo_arriendo_variable(fecha_inicio, fecha_termino, contratos):
 	proceso = Proceso(
 		fecha_inicio		= f_inicio.strftime('%Y-%m-%d'),
 		fecha_termino		= f_termino.strftime('%Y-%m-%d'),
-		user_id				= 1,
+		user				= user,
 		concepto_id			= 2,
 		proceso_estado_id 	= 1,
 		)
@@ -166,28 +170,13 @@ def calculo_arriendo_variable(fecha_inicio, fecha_termino, contratos):
 
 			except Arriendo_Variable.DoesNotExist:
 				total 			= 0
-				valor 			= 0
-				reajuste_valor 	= 0
-				reajuste_moneda = 0
-				reajuste_factor = 0
-				metros_valor 	= 0
-
 
 			proceso_detalle = Proceso_Detalle(
-				valor 			= valor,
-				moneda 			= 6,
-				factor 			= 1,
-				reajuste 		= False,
-				reajuste_valor 	= reajuste_valor,
-				reajuste_moneda = reajuste_moneda,
-				reajuste_factor = reajuste_factor,
 				total 			= total,
-				metros 			= False,
-				metros_valor 	= metros_valor,
-				proceso 		= proceso,
-				contrato 		= contrato,
 				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
 				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+				proceso 		= proceso,
+				contrato 		= contrato,
 			)
 			proceso_detalle.save()
 			
@@ -205,8 +194,9 @@ def calculo_arriendo_variable(fecha_inicio, fecha_termino, contratos):
 
 	return data
 
-def calculo_arriendo_minimo(fecha_inicio, fecha_termino, contratos):
+def calculo_arriendo_minimo(request, fecha_inicio, fecha_termino, contratos):
 
+	user 		= User.objects.get(pk=request.user.pk)
 	contratos 	= contratos
 	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
 	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%m/%d/%Y"))
@@ -217,7 +207,7 @@ def calculo_arriendo_minimo(fecha_inicio, fecha_termino, contratos):
 	proceso = Proceso(
 		fecha_inicio		= f_inicio.strftime('%Y-%m-%d'),
 		fecha_termino		= f_termino.strftime('%Y-%m-%d'),
-		user_id				= 1,
+		user				= user,
 		concepto_id			= 1,
 		proceso_estado_id 	= 1,
 		)
@@ -266,29 +256,13 @@ def calculo_arriendo_minimo(fecha_inicio, fecha_termino, contratos):
 
 			except Arriendo.DoesNotExist:
 				total = 0
-				valor = 0
-				factor = 0
-				reajuste = False
-				reajuste_valor = 0
-				reajuste_factor = 0
-				metros = False
-				metros_valor = 0
 
 			proceso_detalle = Proceso_Detalle(
-				valor 			= valor,
-				moneda 			= moneda,
-				factor 			= factor,
-				reajuste 		= reajuste,
-				reajuste_valor 	= reajuste_valor,
-				reajuste_moneda = reajuste_moneda,
-				reajuste_factor = reajuste_factor,
 				total 			= total,
-				metros 			= metros,
-				metros_valor 	= metros_valor,
-				proceso 		= proceso,
-				contrato 		= contrato,
 				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
 				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+				proceso 		= proceso,
+				contrato 		= contrato,
 			)
 			proceso_detalle.save()
 			
@@ -306,8 +280,9 @@ def calculo_arriendo_minimo(fecha_inicio, fecha_termino, contratos):
 
 	return data
 
-def calculo_gasto_comun(fecha_inicio, fecha_termino, contratos):
+def calculo_gasto_comun(request, fecha_inicio, fecha_termino, contratos):
 
+	user 		= User.objects.get(pk=request.user.pk)
 	contratos 	= contratos
 	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
 	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%m/%d/%Y"))
@@ -319,7 +294,7 @@ def calculo_gasto_comun(fecha_inicio, fecha_termino, contratos):
 	proceso = Proceso(
 		fecha_inicio		= f_inicio.strftime('%Y-%m-%d'),
 		fecha_termino		= f_termino.strftime('%Y-%m-%d'),
-		user_id				= 1,
+		user				= user,
 		concepto_id			= 3,
 		proceso_estado_id 	= 1,
 		)
@@ -341,32 +316,17 @@ def calculo_gasto_comun(fecha_inicio, fecha_termino, contratos):
 
 						if detalle.prorrateo == True:
 							pass
-							# print 'prorrateo: {falta:definir que hacer}'
 
 			except Arriendo_Variable.DoesNotExist:
-				total 			= 0
-				valor 			= 0
-				reajuste_valor 	= 0
-				reajuste_moneda = 0
-				reajuste_factor = 0
-				metros_valor 	= 0
+				total = 0
 
 
 			proceso_detalle = Proceso_Detalle(
-				valor 			= valor,
-				moneda 			= 1,
-				factor 			= 1,
-				reajuste 		= False,
-				reajuste_valor 	= 0,
-				reajuste_moneda = 0,
-				reajuste_factor = 0,
 				total 			= total,
-				metros 			= False,
-				metros_valor 	= 0,
-				proceso 		= proceso,
-				contrato 		= contrato,
 				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
 				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+				proceso 		= proceso,
+				contrato 		= contrato,			
 			)
 			proceso_detalle.save()
 			
@@ -384,8 +344,9 @@ def calculo_gasto_comun(fecha_inicio, fecha_termino, contratos):
 
 	return data
 
-def calculo_servicios_basico(fecha_inicio, fecha_termino, contratos):
+def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos):
 
+	user 		= User.objects.get(pk=request.user.pk)
 	contratos 	= contratos
 	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
 	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%m/%d/%Y"))
@@ -396,14 +357,15 @@ def calculo_servicios_basico(fecha_inicio, fecha_termino, contratos):
 	proceso = Proceso(
 		fecha_inicio		= f_inicio.strftime('%Y-%m-%d'),
 		fecha_termino		= f_termino.strftime('%Y-%m-%d'),
-		user_id				= 1,
-		concepto_id			= 4,
+		user				= user,
+		concepto_id			= 4, # {falta: buscar de otra manera}
 		proceso_estado_id 	= 1,
 		)
 	proceso.save()
 	
 	for x in range(meses):
 		for item in contratos:
+
 			contrato 	= Contrato.objects.get(id=item)
 			total 		= 0
 
@@ -412,32 +374,18 @@ def calculo_servicios_basico(fecha_inicio, fecha_termino, contratos):
 
 				for detalle in detalles:
 					if fecha.month >= int(detalle.mes_inicio) and fecha.month <= int(detalle.mes_termino):
-						valor 	= detalle.valor
-						total 	= valor
+						valor = detalle.valor
+						total = valor # {falta: traer la diferencia entre este mes y el mes anterior} 
 
 			except Arriendo_Variable.DoesNotExist:
-				total 			= 0
-				valor 			= 0
-				reajuste_valor 	= 0
-				reajuste_moneda = 0
-				reajuste_factor = 0
-				metros_valor 	= 0
+				total = 0
 
 			proceso_detalle = Proceso_Detalle(
-				valor 			= valor,
-				moneda 			= 1,
-				factor 			= 1,
-				reajuste 		= False,
-				reajuste_valor 	= 0,
-				reajuste_moneda = 0,
-				reajuste_factor = 0,
 				total 			= total,
-				metros 			= False,
-				metros_valor 	= 0,
-				proceso 		= proceso,
-				contrato 		= contrato,
 				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
 				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+				contrato 		= contrato,
+				proceso 		= proceso,
 			)
 			proceso_detalle.save()
 			
@@ -518,7 +466,6 @@ def propuesta_pdf(proceso, pk=None):
 
 		contrato = detalle.contrato
 		locales = contrato.locales.all()
-		# print contrato.cliente.nombre
 
 		data.append({
 			'fecha_inicio'		: detalle.fecha_inicio,

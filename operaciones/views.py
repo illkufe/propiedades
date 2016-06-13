@@ -8,6 +8,7 @@ from .forms import LecturaMedidorForm
 from .models import Lectura_Medidor
 
 from accounts.models import UserProfile
+from activos.models import Activo, Medidor
 
 
 class LecturaMedidorMixin(object):
@@ -57,20 +58,29 @@ class LecturaMedidorList(ListView):
 	template_name = 'viewer/operaciones/lectura_medidor_list.html'
 
 	def get_context_data(self, **kwargs):
+
 		context = super(LecturaMedidorList, self).get_context_data(**kwargs)
 		context['title'] = 'Operaciones'
 		context['subtitle'] = 'Lectura Medidores'
 		context['name'] = 'Lista'
 		context['href'] = 'lectura-medidores'
-		
+
 		return context
 
-	# def get_queryset(self):
+	def get_queryset(self):
 
-	# 	user 		= User.objects.get(pk=self.request.user.pk)
-	# 	profile 	= UserProfile.objects.get(user=user)
-	# 	queryset 	= Lectura_Medidor.objects.filter(empresa_id=profile.empresa_id, visible=True)
-	# 	return queryset
+		meses = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE']
+
+		user 		= User.objects.get(pk=self.request.user.pk)
+		profile 	= UserProfile.objects.get(user=user)
+		activos 	= Activo.objects.values_list('id', flat=True).filter(empresa=profile.empresa, visible=True)
+		medidores 	= Medidor.objects.values_list('id', flat=True).filter(activo__in=activos, visible=True)
+		queryset 	= Lectura_Medidor.objects.filter(medidor_id__in=medidores)
+
+		for item in queryset:
+			item.mes = meses[int(item.mes)]
+
+		return queryset
 
 class LecturaMedidorDelete(DeleteView):
 	model = Lectura_Medidor

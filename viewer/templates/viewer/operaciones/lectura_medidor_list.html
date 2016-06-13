@@ -28,6 +28,7 @@
 									<td>{{ item.medidor.nombre }}</td>
 									<td>{{ item.medidor.numero_rotulo }}</td>
 									<td>{{ item.medidor.medidor_tipo }}</td>
+									<td>{{ item.mes }}</td>
 									<td>{{ item.fecha }}</td>
 									<td>{{ item.valor }}</td>
 									<td class="text-center">
@@ -80,11 +81,17 @@ function load_tablas(){
 		'width': '15%',
 		'data': 'numero_rotulo',
 		'title': 'Número Rótulo',
+		'visible': false,
 	},
 	{
 		'width': '15%',
 		'data': 'tipo',
 		'title': 'Tipo',
+	},
+	{
+		'width': '10%',
+		'data': 'mes',
+		'title': 'Mes',
 	},
 	{
 		'width': '10%',

@@ -39,18 +39,8 @@ class Proceso(models.Model):
 		return self.proceso_estado.nombre
 
 class Proceso_Detalle(models.Model):
-
-	# atributos (generales)
-	valor 			= models.FloatField()
-	moneda 			= models.FloatField()
-	factor 			= models.FloatField()
-	reajuste 		= models.BooleanField()
-	reajuste_valor 	= models.FloatField()
-	reajuste_moneda = models.FloatField()
-	reajuste_factor = models.FloatField()
+	
 	total 			= models.FloatField()
-	metros 			= models.BooleanField()
-	metros_valor 	= models.FloatField()
 	fecha_inicio 	= models.DateField()
 	fecha_termino 	= models.DateField()
 

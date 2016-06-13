@@ -5,7 +5,11 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
+from accounts.models import UserProfile
 from administrador.models import Moneda, Moneda_Historial
+from activos.models import Activo
+from locales.models import Local
+
 
 # Create your views here.
 @login_required
@@ -35,7 +39,27 @@ def flag_currencies(request):
 			'id'		: moneda.id,
 			'nombre'	: moneda.nombre,
 			'abrev'		: moneda.abrev,
+			'simbolo'	: moneda.simbolo,
 			'value'		: historial.valor,
 			})
+
+	return JsonResponse(data, safe=False)
+
+
+def flag_commercial(request):
+
+	data 		= []
+	profile 	= UserProfile.objects.get(user=request.user)
+	activos 	= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
+	locales 	= Local.objects.filter(activo_id__in=activos, visible=True)
+
+	for local in locales:
+
+		data.append({
+			'id'		: local.id,
+			'nombre'	: local.nombre,
+			'activo'	: local.activo.nombre,
+			})
+
 
 	return JsonResponse(data, safe=False)

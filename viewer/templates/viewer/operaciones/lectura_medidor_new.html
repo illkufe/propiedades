@@ -28,7 +28,16 @@
 										</div>
 									</div>
 
-									<div class="form-group col-sm-3">
+									<div class="form-group col-sm-2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes.help_text }}" ></i>
+										{{ form.mes.label_tag }}
+										{{ form.mes }}
+										<div class="container-error" style="height:20px">
+											{{ form.mes.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha.help_text }}" ></i>
 										{{ form.fecha.label_tag }}
 										<div class="input-group">
@@ -52,7 +61,7 @@
 										</div>
 									</div>
 
-									<div class="form-group col-sm-4">
+									<div class="form-group col-sm-3">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.imagen_file.help_text }}" ></i>
 										{{ form.imagen_file.label_tag }}
 										{{ form.imagen_file }}
