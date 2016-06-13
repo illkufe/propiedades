@@ -71,7 +71,7 @@
     "fields": {
       "valor": 691.32,
       "fecha": "2016-01-01 00:00:00",
-      "moneda_id": 1,
+      "moneda_id": 1
     }
   },
   {
@@ -80,7 +80,7 @@
     "fields": {
       "valor": 776.24,
       "fecha": "2016-01-01 00:00:00",
-      "moneda_id": 2,
+      "moneda_id": 2
     }
   },
   {
@@ -89,7 +89,7 @@
     "fields": {
       "valor": 25962.93,
       "fecha": "2016-01-01 00:00:00",
-      "moneda_id": 3,
+      "moneda_id": 3
     }
   },
   {
@@ -98,7 +98,7 @@
     "fields": {
       "valor": 45497,
       "fecha": "2016-01-01 00:00:00",
-      "moneda_id": 4,
+      "moneda_id": 4
     }
   },
   {
@@ -107,7 +107,7 @@
     "fields": {
       "valor": 1,
       "fecha": "2016-01-01 00:00:00",
-      "moneda_id": 5,
+      "moneda_id": 5
     }
   },
   {
@@ -116,7 +116,7 @@
     "fields": {
       "valor": 1,
       "fecha": "2016-01-01 00:00:00",
-      "moneda_id": 6,
+      "moneda_id": 6
     }
   },
   {
