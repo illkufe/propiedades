@@ -129,7 +129,7 @@ class Cliente(models.Model):
 	empresa = models.ForeignKey(Empresa)
 
 	def __str__(self):
-		return self.razon_social
+		return self.nombre
 
 
 class Representante(models.Model):
