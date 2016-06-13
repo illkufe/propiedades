@@ -374,6 +374,7 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos):
 
 				for detalle in detalles:
 					if fecha.month >= int(detalle.mes_inicio) and fecha.month <= int(detalle.mes_termino):
+						
 						valor = detalle.valor
 						total = valor # {falta: traer la diferencia entre este mes y el mes anterior} 
 
