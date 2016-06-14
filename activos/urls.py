@@ -12,12 +12,8 @@ urlpatterns = [
 	url(r'^activos/delete/(?P<pk>\d+)$', views.ActivoDelete.as_view(), name='activo_delete'),
 	url(r'^activos/update/(?P<pk>\d+)$', views.ActivoUpdate.as_view(), name='activo_update'),
 
-	url(r'^medidores/list$', views.MedidorList.as_view(), name='medidor_list'),
-	url(r'^medidores/new$', views.MedidorNew.as_view(), name='medidor_new'),
-	url(r'^medidores/delete/(?P<pk>\d+)$', views.MedidorDelete.as_view(), name='medidor_delete'),
-	url(r'^medidores/update/(?P<pk>\d+)$', views.MedidorUpdate.as_view(), name='medidor_update'),
-
 	url(r'^activos/(?P<activo_id>\d+)/medidores/new$', views.ActivoMedidorNew.as_view(), name='activo_medidor_new'),
+
 	url(r'^activos/(?P<activo_id>\d+)/locales/new$', views.ActivoLocalNew.as_view(), name='activo_local_new'),
 	url(r'^activos/(?P<activo_id>\d+)/locales/update/(?P<pk>\d+)$', views.ActivoLocalUpdate.as_view(), name='activo_local_update'),
 

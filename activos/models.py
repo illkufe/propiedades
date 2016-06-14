@@ -4,7 +4,7 @@ from django.db import models
 from administrador.models import Empresa, Unidad_Negocio
 from datetime import date, datetime
 
-# Create your models here.
+# Modelos
 class Activo(models.Model):
 
 	# atributos (identificacion Activo)
@@ -94,6 +94,83 @@ class Medidor(models.Model):
 	def __str__(self):
 		return self.medidor_tipo.nombre+'-'+self.nombre
 
+class Tarifa_Electricidad(models.Model):
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+	codigo 		= models.CharField(max_length=250)
+	valor		= models.FloatField()
+	descripcion = models.TextField(blank=True)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.codigo
+
+class Medidor_Electricidad(models.Model):
+
+	# atributos (generales)
+	nombre 				= models.CharField(max_length=250)
+	numero_rotulo 		= models.CharField(max_length=250)
+	potencia			= models.FloatField(default=0, null=True, blank=True)
+	potencia_presente	= models.FloatField(default=0, null=True, blank=True)
+	potencia_fuera		= models.FloatField(default=0, null=True, blank=True)
+	estado 				= models.BooleanField(default=False)
+
+	# atributos (por defecto)
+	visible 			= models.BooleanField(default=True)
+	creado_en 			= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	activo 				= models.ForeignKey(Activo)
+	tarifa_electricidad	= models.ForeignKey(Tarifa_Electricidad)
+	
+
+	def __str__(self):
+		return self.nombre
+
+class Medidor_Agua(models.Model):
+
+	# atributos (generales)
+	nombre 				= models.CharField(max_length=250)
+	numero_rotulo 		= models.CharField(max_length=250)
+	potencia			= models.FloatField(default=0, null=True, blank=True)
+	potencia_presente	= models.FloatField(default=0, null=True, blank=True)
+	potencia_fuera		= models.FloatField(default=0, null=True, blank=True)
+	estado 				= models.BooleanField(default=False)
+
+	# atributos (por defecto)
+	visible 			= models.BooleanField(default=True)
+	creado_en 			= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	activo 			= models.ForeignKey(Activo)
+
+	def __str__(self):
+		return self.nombre
+
+class Medidor_Gas(models.Model):
+
+	# atributos (generales)
+	nombre 				= models.CharField(max_length=250)
+	numero_rotulo 		= models.CharField(max_length=250)
+	potencia			= models.FloatField(default=0, null=True, blank=True)
+	potencia_presente	= models.FloatField(default=0, null=True, blank=True)
+	potencia_fuera		= models.FloatField(default=0, null=True, blank=True)
+	estado 				= models.BooleanField(default=False)
+
+	# atributos (por defecto)
+	visible 			= models.BooleanField(default=True)
+	creado_en 			= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	activo 			= models.ForeignKey(Activo)
+
+	def __str__(self):
+		return self.nombre
+
 class Sector(models.Model):
 
 	# atributos (generales)
@@ -127,8 +204,4 @@ class Nivel(models.Model):
 
 	def __str__(self):
 		return self.nombre
-	
-
-
-
 

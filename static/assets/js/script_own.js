@@ -1,4 +1,14 @@
-$('.date-format').datepicker({
+$('td.delete input[type=checkbox]').hide()
+
+$('.format-rut').mask('A00.000.000-B',{
+	'reverse': true,
+	'translation': {
+		A: {pattern: /[0-9]/},
+		B: {pattern: /[k-k0-9]/},
+	}
+});
+
+$('.format-date').datepicker({
 	todayBtn: 'linked',
 	keyboardNavigation: false,
 	forceParse: false,
@@ -6,6 +16,14 @@ $('.date-format').datepicker({
 	autoclose: true,
 	format: 'dd/mm/yyyy',
 });
+
+$('#date_range .input-daterange').datepicker({
+	keyboardNavigation: false,
+	forceParse: false,
+	autoclose: true,
+	format: 'dd/mm/yyyy',
+});
+
 
 $(".file-format").filestyle({
 	placeholder: "Seleccionar Archivo",
@@ -15,14 +33,12 @@ $(".file-format").filestyle({
 
 var language = {
 	'emptyTable': 'Sin Datos',
-	// 'info': '_START_-_END_ de _TOTAL_ ',
 	'info': 'mostranto _END_ de _TOTAL_ registros',
 	'infoEmpty': '0-0 de 0',
 	'infoFiltered': '',
 	'infoPostFix': '',
 	'thousands': ',',
 	'lengthMenu': '_MENU_',
-	// 'lengthMenu': 'Mostrar _MENU_ items',
 	'loadingRecords': 'Cargando...',
 	'processing': 'Procesando...',
 	'search': '',
@@ -219,13 +235,10 @@ function guardar_formulario(accion, form){
 
 
 function guardar_formulario_file(accion, form){
-	// console.log(form)
-	// console.log(accion)
 
 	$('#'+form).ajaxSubmit({
 		dataType: 'json',
 		beforeSubmit: function(){
-			// console.log('enviando')
 		},
 		success: function(data){
 			if (accion == 'create') {
@@ -250,6 +263,28 @@ function format_select(config){
 			placeholder: config.placeholder == null ? 'Seleccionar' : config.placeholder,
 		});
 	} 
+}
+
+
+function agregar_fila(tabla, entidad){
+
+	var count 	= $('#'+tabla+' tbody').children().length;
+	var $tr 	= $('#'+tabla+' tbody tr:first');
+	var $clone 	= $tr.clone();
+	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count);
+	var $row 	= $(row)
+
+	$row.find('input').val('');
+	$row.find('select option:first-child').attr("selected", "selected");
+	$row.find('input:checkbox').prop('checked',false);
+
+	$('#'+tabla+' tbody').append('<tr></tr>')
+	$('#'+tabla+' tbody tr:last').append($row)
+
+	var cantidad = parseInt($('#id_'+entidad+'_set-TOTAL_FORMS').val())
+	cantidad += 1
+	$('#id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
+
 }
 
 

@@ -6,17 +6,17 @@ from django.template import Context, loader
 from django.template.loader import get_template 
 from django.contrib.auth.models import User
 
-
 from administrador.models import Empresa, Cliente, Moneda, Moneda_Historial
 from accounts.models import UserProfile
 from locales.models import Local, Venta
-from activos.models import Activo
+from activos.models import Activo, Medidor
 from conceptos.models import Concepto
 from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
 from procesos.models import Proceso, Proceso_Detalle
+from operaciones.models import Lectura_Medidor
+
 from django.db.models import Sum
 from reportlab.pdfgen import canvas
-
 from datetime import datetime, timedelta
 import calendar
 import os
@@ -369,14 +369,47 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos):
 			contrato 	= Contrato.objects.get(id=item)
 			total 		= 0
 
+			locales 	= contrato.locales.values_list('id', flat=True).all()
+			medidores  	= Medidor.objects.filter(local__in=locales)
+			print ("contrato")
+			print (item)
+			print ("medidor")
+			print (medidores)
+
+			# asd = Servicio_Basico.objects.filter(contrato=contrato)
+			
+
 			try:
 				detalles = Servicio_Basico.objects.filter(contrato=contrato)
 
+				print (detalles)
+
 				for detalle in detalles:
+					print (detalle)
 					if fecha.month >= int(detalle.mes_inicio) and fecha.month <= int(detalle.mes_termino):
-						
+
+						for medidor in medidores:
+							# print ("-----------")
+							# print (medidor)
+							# print (medidor.id)
+							# lectura = Lectura_Medidor.objects.get(medidor=medidor)
+							lecturas = Lectura_Medidor.objects.filter(medidor=medidor).order_by('-id')[:2]
+							index =  0
+							for lectura in lecturas:
+								print (lectura.valor)
+								if index == 0:
+									val = lectura.valor
+								else:
+									val = val - lectura.valor
+
+								index += 1	
+							print ("VALOR")
+							print (val)
+								# {falta: lectura del mes anterior}
+
 						valor = detalle.valor
-						total = valor # {falta: traer la diferencia entre este mes y el mes anterior} 
+						# total = valor # {falta: traer la diferencia entre este mes y el mes anterior} 
+						total = val
 
 			except Arriendo_Variable.DoesNotExist:
 				total = 0

@@ -6,7 +6,7 @@ from .models import Lectura_Medidor
 
 class LecturaMedidorForm(forms.ModelForm):
 
-	fecha = forms.DateField(input_formats=['%d/%m/%Y'], widget=forms.TextInput(attrs={'class': 'form-control date-format'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
+	fecha = forms.DateField(input_formats=['%d/%m/%Y'], widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 
 	class Meta:
 

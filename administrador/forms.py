@@ -37,7 +37,7 @@ class ClienteForm(forms.ModelForm):
 		fields 	= ['rut', 'nombre', 'razon_social', 'giro', 'region', 'comuna', 'direccion', 'telefono', 'cliente_tipo']
 
 		widgets = {
-			'rut'			: forms.TextInput(attrs={'class': 'form-control', 'data-mask': '000.000.000-0',  'data-mask-reverse': 'true'}),
+			'rut'			: forms.TextInput(attrs={'class': 'form-control format-rut'}),
 			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'razon_social'	: forms.TextInput(attrs={'class': 'form-control'}),
 			'giro'			: forms.TextInput(attrs={'class': 'form-control'}),
@@ -74,7 +74,7 @@ class RepresentanteForm(forms.ModelForm):
 
 		widgets = {
 			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'rut'			: forms.TextInput(attrs={'class': 'form-control', 'data-mask': '000.000.000-0',  'data-mask-reverse': 'true'}),
+			'rut'			: forms.TextInput(attrs={'class': 'form-control format-rut'}),
 			'nacionalidad'	: forms.TextInput(attrs={'class': 'form-control'}),
 			'profesion'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'estado_civil'	: forms.Select(attrs={'class': 'form-control'}),

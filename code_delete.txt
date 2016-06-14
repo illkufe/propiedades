@@ -1,0 +1,273 @@
+# activos/urls.py
+
+url(r'^medidores/list$', views.MedidorList.as_view(), name='medidor_list'),
+url(r'^medidores/new$', views.MedidorNew.as_view(), name='medidor_new'),
+url(r'^medidores/delete/(?P<pk>\d+)$', views.MedidorDelete.as_view(), name='medidor_delete'),
+url(r'^medidores/update/(?P<pk>\d+)$', views.MedidorUpdate.as_view(), name='medidor_update'),
+
+# activos/views.py
+
+from datetime import datetime, timedelta
+import calendar
+
+class AjaxableResponseMixinMedidor(object):
+
+	template_name = 'viewer/activos/medidor_new.html'
+	form_class = MedidorForm
+	success_url = '/medidores/list'
+
+	def form_invalid(self, form):
+		response = super(AjaxableResponseMixinMedidor, self).form_invalid(form)
+		if self.request.is_ajax():
+			return JsonResponse(form.errors, status=400)
+		else:
+			return response
+
+	def form_valid(self, form):
+
+		obj = form.save(commit=False)
+		obj.activo_id = self.kwargs['activo_id']
+		obj.save()
+
+		response = super(AjaxableResponseMixinMedidor, self).form_valid(form)
+		if self.request.is_ajax():
+			data = {
+				'pk': 'self.object.pk',
+			}
+			return JsonResponse(data)
+		else:
+			return response
+
+class MedidorNew(AjaxableResponseMixinMedidor, FormView):
+
+	def get_context_data(self, **kwargs):
+		
+		context = super(MedidorNew, self).get_context_data(**kwargs)
+		context['title'] = 'Activos'
+		context['subtitle'] = 'Medidor'
+		context['name'] = 'Nuevo'
+		context['href'] = 'medidores'
+		context['accion'] = 'create'
+		context['activo_id']	= self.kwargs['activo_id']
+
+		return context
+	
+class MedidorList(ListView):
+	model = Medidor
+	template_name = 'viewer/activos/medidor_list.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(MedidorList, self).get_context_data(**kwargs)
+		context['title'] = 'Activos'
+		context['subtitle'] = 'Medidor'
+		context['name'] = 'Lista'
+		context['href'] = 'medidores'
+
+		return context
+
+	def get_queryset(self):
+
+		user 		= User.objects.get(pk=self.request.user.pk)
+		profile 	= UserProfile.objects.get(user=user)
+		activos 	= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
+
+		queryset 	= Medidor.objects.filter(activo_id__in=activos, visible=True)
+
+		return queryset
+
+class MedidorDelete(DeleteView):
+	model = Medidor
+	success_url = reverse_lazy('/locales/list')
+
+	def delete(self, request, *args, **kwargs):
+		self.object = self.get_object()
+		self.object.visible = False
+		self.object.save()
+		payload = {'delete': 'ok'}
+		return JsonResponse(payload, safe=False)
+
+class MedidorUpdate(UpdateView):
+
+	model = Medidor
+	form_class = MedidorForm
+	template_name = 'viewer/activos/medidor_new.html'
+	success_url = '/medidores/list'
+
+	def get_context_data(self, **kwargs):
+		
+		context = super(MedidorUpdate, self).get_context_data(**kwargs)
+		context['title'] = 'Activos'
+		context['subtitle'] = 'Medidor'
+		context['name'] = 'Editar'
+		context['href'] = 'medidores'
+		context['accion'] = 'update'
+		return context
+
+# viewer/templates/activos/activo_medidor_new.html
+
+<div class="ibox-title">
+	<h5>Medidores</h5>
+</div>
+
+<div class="ibox-content">
+	<br>
+	<div class="row">
+		<div class="col-sm-12">
+
+			{{ form_medidor.management_form }}
+			{% for form in form_medidor %}
+			{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+			{% endfor %}
+			{% endfor %}
+
+			<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Medidor</button>
+			<table id="tabla-medidor" class="table">
+				<thead>
+					{% for form in form_medidor %}
+					{% if forloop.first %}
+					<th>
+						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+						{{ form.nombre.label_tag }}
+					</th>
+					<th>
+						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero_rotulo.help_text }}" ></i>
+						{{ form.numero_rotulo.label_tag }}
+					</th>
+					<th>
+						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia.help_text }}" ></i>
+						{{ form.potencia.label_tag }}
+					</th>
+					<th>
+						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_presente.help_text }}" ></i>
+						{{ form.potencia_presente.label_tag }}
+					</th>
+					<th>
+						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_fuera.help_text }}" ></i>
+						{{ form.potencia_fuera.label_tag }}
+					</th>
+					<th>
+						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor_tipo.help_text }}" ></i>
+						{{ form.medidor_tipo.label_tag }}
+					</th>
+					<th></th>
+					{% endif %}
+					{% endfor %}
+				</thead>
+				<tbody>
+					{% for form in form_medidor %}
+					<tr>
+						<td>
+
+							<div class="form-group">
+								{{ form.nombre }}
+								<div class="container-error" style="height:20px">
+									{{ form.nombre.errors }}
+								</div>
+							</div>
+						</td>
+						<td>
+
+							<div class="form-group">
+								{{ form.numero_rotulo }}
+								<div class="container-error" style="height:20px">
+									{{ form.numero_rotulo.errors }}
+								</div>
+							</div>
+						</td>
+						<td>
+
+							<div class="form-group">
+
+								{{ form.potencia }}
+								<div class="container-error" style="height:20px">
+									{{ form.potencia.errors }}
+								</div>
+							</div>
+						</td>
+						<td>
+
+							<div class="form-group">
+
+								{{ form.potencia_presente }}
+								<div class="container-error" style="height:20px">
+									{{ form.potencia_presente.errors }}
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="form-group">
+
+								{{ form.potencia_fuera }}
+								<div class="container-error" style="height:20px">
+									{{ form.potencia_fuera.errors }}
+								</div>
+							</div>
+						</td>
+						<td class="text-center">
+
+							<div class="form-group">
+
+								{{ form.medidor_tipo }}
+								<div class="container-error" style="height:20px">
+									{{ form.medidor_tipo.errors }}
+								</div>
+							</div>
+						</td>
+						<td class="text-center delete">
+
+							<div class="form-group text-center">
+								{{ form.DELETE }}
+								<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Medidor')"><i class="fa fa-trash"></i></a>
+							</div>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<br>
+	<a href="/activos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+	<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+	<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+</div>
+
+# activos/forms.py
+
+class MedidorForm(forms.ModelForm):
+
+	class Meta:
+		model 	= Medidor
+		fields 	= ['nombre','numero_rotulo','potencia','potencia_presente','potencia_fuera','medidor_tipo']
+
+		widgets = {
+			'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
+			'numero_rotulo'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'potencia'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'potencia_presente'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'potencia_fuera'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'medidor_tipo'		: forms.Select(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'nombre' 		: {'required': 'Esta campo es requerido.'},
+			'numero_rotulo' : {'required': 'Esta campo es requerido.'},
+			'medidor_tipo' 	: {'required': 'Esta campo es requerido.'},
+		}
+
+		help_texts = {
+            'nombre'			: '...',
+            'numero_rotulo'		: '...',
+            'potencia'			: '...',
+            'potencia_presente'	: '...',
+            'potencia_fuera'	: '...',
+            'medidor_tipo'		: '...',
+        }
+
+		labels = {
+			'numero_rotulo'	: 'Número Rótulo',
+			'medidor_tipo'	: 'Tipo de Medidor',
+		}
+
+MedidorFormSet 	= inlineformset_factory(Activo, Medidor, form=MedidorForm, extra=1, can_delete=True)
