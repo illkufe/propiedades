@@ -262,7 +262,7 @@ class LocalForm(forms.ModelForm):
 
 	class Meta:
 		model 	= Local
-		fields 	= ['nombre','codigo','metros_cuadrados','metros_lineales','metros_compartidos','metros_bodega','local_tipo_volumen', 'descripcion','sector','nivel','local_tipo', 'medidores']
+		fields 	= ['nombre','codigo','metros_cuadrados','metros_lineales','metros_compartidos','metros_bodega', 'descripcion','sector','nivel','local_tipo']
 
 		widgets = {
 			'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
@@ -271,12 +271,12 @@ class LocalForm(forms.ModelForm):
 			'metros_lineales'	: forms.NumberInput(attrs={'class': 'form-control'}),
 			'metros_compartidos': forms.NumberInput(attrs={'class': 'form-control'}),
 			'metros_bodega'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'local_tipo_volumen': forms.Select(attrs={'class': 'select2 form-control'}),
+			# 'local_tipo_volumen': forms.Select(attrs={'class': 'select2 form-control'}),
 			'descripcion'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'sector'			: forms.Select(attrs={'class': 'select2 form-control'}),
 			'nivel'				: forms.Select(attrs={'class': 'select2 form-control'}),
 			'local_tipo'		: forms.Select(attrs={'class': 'select2 form-control'}),
-			'medidores'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			# 'medidores'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 		}
 
 		error_messages = {
@@ -285,7 +285,7 @@ class LocalForm(forms.ModelForm):
 			'sector' 				: {'required': 'Esta campo es requerido.'},
 			'nivel' 				: {'required': 'Esta campo es requerido.'},
 			'local_tipo' 			: {'required': 'Esta campo es requerido.'},
-			'local_tipo_volumen' 	: {'required': 'Esta campo es requerido.'},
+			# 'local_tipo_volumen' 	: {'required': 'Esta campo es requerido.'},
 		}
 
 		help_texts = {
@@ -299,7 +299,7 @@ class LocalForm(forms.ModelForm):
 			'sector'			: '...',
 			'nivel'				: '...',
 			'local_tipo'		: '...',
-			'medidores'			: '...',
+			# 'medidores'			: '...',
 		}
 
 		labels = {

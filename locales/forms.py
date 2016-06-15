@@ -31,12 +31,12 @@ class LocalTipoForm(forms.ModelForm):
 
 class LocalForm(forms.ModelForm):
 
-	medidores = forms.ModelMultipleChoiceField(
-		queryset=Medidor.objects.filter(estado=False),
-		# queryset=Medidor.objects.filter(Q(estado=False) | Q(id__in=()))),
-		required=False,
-		widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'})
-		)
+	# medidores = forms.ModelMultipleChoiceField(
+	# 	queryset=Medidor.objects.filter(estado=False),
+	# 	# queryset=Medidor.objects.filter(Q(estado=False) | Q(id__in=()))),
+	# 	required=False,
+	# 	widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'})
+	# 	)
 
 	def __init__(self, *args, **kwargs):
 		self.request = kwargs.pop('request')
@@ -54,7 +54,7 @@ class LocalForm(forms.ModelForm):
 
 	class Meta:
 		model 	= Local
-		fields 	= ['nombre','codigo','metros_cuadrados','metros_lineales','metros_compartidos','metros_bodega','descripcion','activo','sector','nivel','local_tipo', 'medidores']
+		fields 	= ['nombre','codigo','metros_cuadrados','metros_lineales','metros_compartidos','metros_bodega','descripcion','activo','sector','nivel','local_tipo']
 
 		widgets = {
 			'nombre'				: forms.TextInput(attrs={'class': 'form-control'}),
@@ -68,7 +68,7 @@ class LocalForm(forms.ModelForm):
 			'sector'				: forms.Select(attrs={'class': 'select2 form-control'}),
 			'nivel'					: forms.Select(attrs={'class': 'select2 form-control'}),
 			'local_tipo'			: forms.Select(attrs={'class': 'select2 form-control'}),
-			'medidores'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			# 'medidores'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 		}
 
 		error_messages = {
@@ -92,7 +92,7 @@ class LocalForm(forms.ModelForm):
 			'sector'				: '...',
 			'nivel'					: '...',
 			'local_tipo'			: '...',
-			'medidores'				: '...',
+			# 'medidores'				: '...',
 		}
 
 		labels = {

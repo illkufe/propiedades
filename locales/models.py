@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from administrador.models import Empresa
-from activos.models import Activo, Medidor, Sector, Nivel
+from activos.models import Activo, Medidor, Sector, Nivel, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 
 # Create your models here.
 class Local_Tipo(models.Model):
@@ -25,11 +25,11 @@ class Local_Tipo(models.Model):
 
 class Local(models.Model):
 
-	VOLUMEN = (
-		('0', 'ANCLA'),
-		('1', 'TAMAÑO INTERMEDIO'),
-		('2', 'TAMAÑO MENOR'),
-	)
+	# VOLUMEN = (
+	# 	('0', 'ANCLA'),
+	# 	('1', 'TAMAÑO INTERMEDIO'),
+	# 	('2', 'TAMAÑO MENOR'),
+	# )
 
 	# atributos (generales)
 	nombre  			= models.CharField(max_length=250)
@@ -38,7 +38,7 @@ class Local(models.Model):
 	metros_lineales 	= models.FloatField(null=True, blank=True)
 	metros_compartidos 	= models.FloatField(null=True, blank=True)
 	metros_bodega 		= models.FloatField(null=True, blank=True)
-	local_tipo_volumen 	= models.CharField(max_length=1, choices=VOLUMEN)
+	# local_tipo_volumen 	= models.CharField(max_length=1, choices=VOLUMEN)
 	descripcion 		= models.TextField(blank=True)
 
 	# atributos (por defecto)
@@ -46,11 +46,14 @@ class Local(models.Model):
 	creado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	activo 		= models.ForeignKey(Activo)
-	sector 		= models.ForeignKey(Sector)
-	nivel 		= models.ForeignKey(Nivel)
-	local_tipo 	= models.ForeignKey(Local_Tipo)
-	medidores 	= models.ManyToManyField(Medidor)
+	activo 					= models.ForeignKey(Activo)
+	sector 					= models.ForeignKey(Sector)
+	nivel 					= models.ForeignKey(Nivel)
+	local_tipo 				= models.ForeignKey(Local_Tipo)
+	# medidores 				= models.ManyToManyField(Medidor)
+	medidores_electricidad 	= models.ManyToManyField(Medidor_Electricidad)
+	medidores_agua 			= models.ManyToManyField(Medidor_Agua)
+	medidores_gas 			= models.ManyToManyField(Medidor_Gas)
 
 	def __str__(self):
 		return self.nombre
