@@ -38,23 +38,37 @@ class LocalForm(forms.ModelForm):
 	# 	widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'})
 	# 	)
 
+	
 	def __init__(self, *args, **kwargs):
-		self.request = kwargs.pop('request')
+		# contrato = kwargs.pop('activo', None)
 		super(LocalForm, self).__init__(*args, **kwargs)
+		asd = kwargs.pop('activo')
+		print (asd)
+		# user 		= User.objects.get(pk=self.request.user.pk)
+		# profile 	= UserProfile.objects.get(user=user)
+		# if contrato is not None:
+		# 	self.fields['local'].queryset = contrato.locales.all()
 
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profile 	= UserProfile.objects.get(user=user)
-		activos 	= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
 
-		self.fields['activo'].queryset 		= Activo.objects.filter(empresa_id=profile.empresa_id)
-		self.fields['local_tipo'].queryset 	= Local_Tipo.objects.filter(empresa_id=profile.empresa_id)
-		self.fields['sector'].queryset 		= Sector.objects.filter(activo_id__in=activos)
-		self.fields['nivel'].queryset		= Nivel.objects.filter(activo_id__in=activos)
+
+	# def __init__(self, *args, **kwargs):
+	# 	self.request = kwargs.pop('request')
+	# 	super(LocalForm, self).__init__(*args, **kwargs)
+
+	# 	user 		= User.objects.get(pk=self.request.user.pk)
+	# 	profile 	= UserProfile.objects.get(user=user)
+	# 	activos 	= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
+
+	# 	self.fields['activo'].queryset 		= Activo.objects.filter(empresa_id=profile.empresa_id)
+	# 	self.fields['local_tipo'].queryset 	= Local_Tipo.objects.filter(empresa_id=profile.empresa_id)
+	# 	self.fields['sector'].queryset 		= Sector.objects.filter(activo_id__in=activos)
+	# 	self.fields['nivel'].queryset		= Nivel.objects.filter(activo_id__in=activos)
 
 
 	class Meta:
 		model 	= Local
-		fields 	= ['nombre','codigo','metros_cuadrados','metros_lineales','metros_compartidos','metros_bodega','descripcion','activo','sector','nivel','local_tipo']
+		fields 	= '__all__'
+		exclude = ['creado_en', 'visible']
 
 		widgets = {
 			'nombre'				: forms.TextInput(attrs={'class': 'form-control'}),
@@ -67,6 +81,7 @@ class LocalForm(forms.ModelForm):
 			'activo'				: forms.Select(attrs={'class': 'select2 form-control'}),
 			'sector'				: forms.Select(attrs={'class': 'select2 form-control'}),
 			'nivel'					: forms.Select(attrs={'class': 'select2 form-control'}),
+			'local_tipo'			: forms.Select(attrs={'class': 'select2 form-control'}),
 			'local_tipo'			: forms.Select(attrs={'class': 'select2 form-control'}),
 			# 'medidores'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 		}

@@ -26,7 +26,6 @@ class ActivoForm(forms.ModelForm):
 			'nombre'				: forms.TextInput(attrs={'class': 'form-control'}),
 			'codigo'				: forms.TextInput(attrs={'class': 'form-control'}),
 			'tipo'					: forms.TextInput(attrs={'class': 'form-control'}),
-			'unidad_negocio'		: forms.Select(attrs={'class': 'form-control'}),
 			'direccion'				: forms.TextInput(attrs={'class': 'form-control'}),
 			'comuna'				: forms.TextInput(attrs={'class': 'form-control'}),
 			'ciudad'				: forms.TextInput(attrs={'class': 'form-control'}),
@@ -62,7 +61,6 @@ class ActivoForm(forms.ModelForm):
 		error_messages = {
 			'nombre' 		: {'required': 'Esta campo es requerido.'},
 			'codigo' 		: {'required': 'Esta campo es requerido.'},
-			'unidad_negocio': {'required': 'Esta campo es requerido.'},
 		}
 
 		labels = {
@@ -75,7 +73,6 @@ class ActivoForm(forms.ModelForm):
 			'nombre'				: '...',
 			'codigo' 				: '...',
 			'tipo' 					: '...',
-			'unidad_negocio' 		: '...',
 			'direccion' 			: '...',
 			'comuna' 				: '...',
 			'ciudad' 				: '...',
@@ -240,52 +237,53 @@ class GasForm(forms.ModelForm):
 
 class LocalForm(forms.ModelForm):
 
-	# medidores = forms.ModelMultipleChoiceField(
-	# 	queryset=Medidor.objects.filter(estado=False),
-	# 	# queryset=Medidor.objects.filter(Q(estado=False) | Q(id__in=()))),
-	# 	required=False,
-	# 	widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'})
-	# 	)
-
 	def __init__(self, *args, **kwargs):
-		self.request = kwargs.pop('request')
+
+		self.request 	= kwargs.pop('request')
+		activo 			= kwargs.pop('activo', None)
+		user 			= User.objects.get(pk=self.request.user.pk)
+		profile 		= UserProfile.objects.get(user=user)
+
 		super(LocalForm, self).__init__(*args, **kwargs)
 
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profile 	= UserProfile.objects.get(user=user)
-		activos 	= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
-
-		self.fields['local_tipo'].queryset = Local_Tipo.objects.filter(empresa_id=profile.empresa_id)
-		self.fields['sector'].queryset = Sector.objects.filter(activo_id__in=activos)
-		self.fields['nivel'].queryset = Nivel.objects.filter(activo_id__in=activos)
-
+		self.fields['local_tipo'].queryset 				= Local_Tipo.objects.filter(empresa_id=profile.empresa_id)
+		self.fields['sector'].queryset 					= Sector.objects.filter(activo_id=activo)
+		self.fields['nivel'].queryset 					= Nivel.objects.filter(activo_id=activo)
+		self.fields['medidores_electricidad'].queryset 	= Medidor_Electricidad.objects.filter(activo_id=activo)
+		self.fields['medidores_agua'].queryset 			= Medidor_Agua.objects.filter(activo_id=activo)
+		self.fields['medidores_gas'].queryset 			= Medidor_Gas.objects.filter(activo_id=activo)
+		self.fields['medidores_electricidad'].required 	= False
+		self.fields['medidores_agua'].required 			= False
+		self.fields['medidores_gas'].required 			= False
 
 	class Meta:
 		model 	= Local
-		fields 	= ['nombre','codigo','metros_cuadrados','metros_lineales','metros_compartidos','metros_bodega', 'descripcion','sector','nivel','local_tipo']
+		fields 	= '__all__'
+		exclude = ['creado_en', 'visible', 'activo']
 
 		widgets = {
-			'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
-			'codigo'			: forms.TextInput(attrs={'class': 'form-control'}),
-			'metros_cuadrados'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'metros_lineales'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'metros_compartidos': forms.NumberInput(attrs={'class': 'form-control'}),
-			'metros_bodega'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			# 'local_tipo_volumen': forms.Select(attrs={'class': 'select2 form-control'}),
-			'descripcion'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'sector'			: forms.Select(attrs={'class': 'select2 form-control'}),
-			'nivel'				: forms.Select(attrs={'class': 'select2 form-control'}),
-			'local_tipo'		: forms.Select(attrs={'class': 'select2 form-control'}),
-			# 'medidores'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			'nombre'					: forms.TextInput(attrs={'class': 'form-control'}),
+			'codigo'					: forms.TextInput(attrs={'class': 'form-control'}),
+			'metros_cuadrados'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'metros_lineales'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'metros_compartidos'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'metros_bodega'				: forms.NumberInput(attrs={'class': 'form-control'}),
+			'descripcion'				: forms.TextInput(attrs={'class': 'form-control'}),
+			'sector'					: forms.Select(attrs={'class': 'form-control'}),
+			'nivel'						: forms.Select(attrs={'class': 'form-control'}),
+			'local_tipo'				: forms.Select(attrs={'class': 'form-control'}),
+			'medidores_electricidad'	: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			'medidores_agua'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			'medidores_gas'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 		}
 
 		error_messages = {
-			'nombre' 				: {'required': 'Esta campo es requerido.'},
-			'codigo' 				: {'required': 'Esta campo es requerido.'},
-			'sector' 				: {'required': 'Esta campo es requerido.'},
-			'nivel' 				: {'required': 'Esta campo es requerido.'},
-			'local_tipo' 			: {'required': 'Esta campo es requerido.'},
-			# 'local_tipo_volumen' 	: {'required': 'Esta campo es requerido.'},
+			'nombre' 			: {'required': 'Esta campo es requerido.'},
+			'codigo' 			: {'required': 'Esta campo es requerido.'},
+			'sector' 			: {'required': 'Esta campo es requerido.'},
+			'nivel' 			: {'required': 'Esta campo es requerido.'},
+			'local_tipo' 		: {'required': 'Esta campo es requerido.'},
+			'metros_cuadrados' 	: {'required': 'Esta campo es requerido.'},
 		}
 
 		help_texts = {
@@ -299,7 +297,6 @@ class LocalForm(forms.ModelForm):
 			'sector'			: '...',
 			'nivel'				: '...',
 			'local_tipo'		: '...',
-			# 'medidores'			: '...',
 		}
 
 		labels = {

@@ -1,0 +1,534 @@
+[
+{
+	"model": "administrador.empresa",
+	"pk": 1,
+	"fields": {
+		"nombre": "Inversiones S.A.",
+		"rut": "24.186.766-8",
+		"descripcion": "Descripción Inversiones S.A.",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true
+	}
+},
+{
+	"model": "administrador.cliente",
+	"pk": 1,
+	"fields": {
+		"nombre": "Cliente 01",
+		"rut": "13.759.887-6",
+		"telefono": "87653329",
+		"cliente_tipo": 1,
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"empresa": 1
+	}
+},
+{
+	"model": "administrador.cliente",
+	"pk": 2,
+	"fields": {
+		"nombre": "Cliente 02",
+		"rut": "8.331.209-2",
+		"telefono": "98776112",
+		"cliente_tipo": 1,
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"empresa": 1
+	}
+},
+{
+	"model": "administrador.representante",
+	"pk": 1,
+	"fields": {
+		"nombre": "Roberto Gonzales",
+		"rut": "10.881.600-7",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"cliente": 1,
+		"estado_civil_id": 3
+	}
+},
+{
+	"model": "administrador.representante",
+	"pk": 2,
+	"fields": {
+		"nombre": "Esteban Santibañez",
+		"rut": "11.686.254-9",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"cliente": 1,
+		"estado_civil_id": 4
+	}
+},
+{
+	"model": "administrador.representante",
+	"pk": 3,
+	"fields": {
+		"nombre": "Juan Pérez",
+		"rut": "21.680.508-9",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"cliente": 2,
+		"estado_civil_id": 5
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 1,
+	"fields": {
+		"nombre": "Arriendo Mínimo",
+		"codigo": "ARR-MIN",
+		"orden": 1,
+		"descripcion": "Descripción Arriendo Mínimo",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 3
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 2,
+	"fields": {
+		"nombre": "Arriendo Variable",
+		"codigo": "ARR-VAR",
+		"orden": 2,
+		"descripcion": "Descripción Arriendo Variable",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 2
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 3,
+	"fields": {
+		"nombre": "Gasto Común",
+		"codigo": "GAS-COM",
+		"orden": 3,
+		"descripcion": "Descripción Gasto Común",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 2
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 4,
+	"fields": {
+		"nombre": "Servicios Básicos",
+		"codigo": "SER-BAS",
+		"orden": 4,
+		"descripcion": "Descripción Servicios Básicos",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 3
+	}
+},
+{
+	"model": "activos.activo",
+	"pk": 1,
+	"fields": {
+		"nombre": "Mall Plaza Norte",
+		"codigo": "MALL-PLA-NOR",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"empresa_id": 1
+	}
+},
+{
+	"model": "activos.activo",
+	"pk": 2,
+	"fields": {
+		"nombre": "Centro Comercial Leones",
+		"codigo": "CEN-COM-LEO",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"empresa_id": 1
+	}
+},
+{
+	"model": "activos.sector",
+	"pk": 1,
+	"fields": {
+		"nombre": "Sector 1",
+		"codigo": "S-1",
+		"descripcion": "Descripción Sector 1",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 1
+	}
+},
+{
+	"model": "activos.sector",
+	"pk": 2,
+	"fields": {
+		"nombre": "Sector 2",
+		"codigo": "S-1",
+		"descripcion": "Descripción Sector 2",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 1
+	}
+},
+{
+	"model": "activos.sector",
+	"pk": 3,
+	"fields": {
+		"nombre": "Sector 1",
+		"codigo": "S-1",
+		"descripcion": "Descripción Sector 1",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 2
+	}
+},
+{
+	"model": "activos.sector",
+	"pk": 4,
+	"fields": {
+		"nombre": "Sector 2",
+		"codigo": "S-2",
+		"descripcion": "Descripción Sector 2",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 2
+	}
+},
+{
+	"model": "activos.nivel",
+	"pk": 1,
+	"fields": {
+		"nombre": "Nivel 1",
+		"codigo": "N-1",
+		"descripcion": "Descripción Nivel 1",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 1
+	}
+},
+{
+	"model": "activos.nivel",
+	"pk": 2,
+	"fields": {
+		"nombre": "Nivel 2",
+		"codigo": "N-2",
+		"descripcion": "Descripción Nivel 2",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 1
+	}
+},
+{
+	"model": "activos.nivel",
+	"pk": 3,
+	"fields": {
+		"nombre": "Nivel 1",
+		"codigo": "N-1",
+		"descripcion": "Descripción Nivel 1",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 2
+	}
+},
+{
+	"model": "activos.nivel",
+	"pk": 4,
+	"fields": {
+		"nombre": "Nivel 2",
+		"codigo": "N-2",
+		"descripcion": "Descripción Nivel 2",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 2
+	}
+},
+{
+	"model": "activos.medidor_electricidad",
+	"pk": 1,
+	"fields": {
+		"nombre": "Medidor Electricidad 01",
+		"numero_rotulo": 90662,
+		"potencia": 622.934,
+		"potencia_presente": 1381.708,
+		"potencia_fuera": 865.653,
+		"estado": false,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 1,
+		"tarifa_electricidad": 1
+	}
+},
+{
+	"model": "activos.medidor_agua",
+	"pk": 1,
+	"fields": {
+		"nombre": "Medidor Agua 01",
+		"numero_rotulo": 21315,
+		"potencia": 492.299,
+		"potencia_presente": 1128.837,
+		"potencia_fuera": 608.394,
+		"estado": false,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 1
+	}
+},
+{
+	"model": "activos.medidor_gas",
+	"pk": 1,
+	"fields": {
+		"nombre": "Medidor Gas 01",
+		"numero_rotulo": 22937,
+		"potencia": 584.822,
+		"potencia_presente": 1895.791,
+		"potencia_fuera": 716.851,
+		"estado": false,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 1
+	}
+},
+{
+	"model": "activos.medidor_electricidad",
+	"pk": 2,
+	"fields": {
+		"nombre": "Medidor Electricidad 01",
+		"numero_rotulo": 30839,
+		"potencia": 436.61,
+		"potencia_presente": 830.174,
+		"potencia_fuera": 521.157,
+		"estado": false,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 2,
+		"tarifa_electricidad": 1
+	}
+},
+{
+	"model": "activos.medidor_agua",
+	"pk": 2,
+	"fields": {
+		"nombre": "Medidor Agua 01",
+		"numero_rotulo": 14873,
+		"potencia": 655.905,
+		"potencia_presente": 1645.657,
+		"potencia_fuera": 103.027,
+		"estado": false,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 2
+	}
+},
+{
+	"model": "activos.medidor_gas",
+	"pk": 2,
+	"fields": {
+		"nombre": "Medidor Gas 01",
+		"numero_rotulo": 51981,
+		"potencia": 306.438,
+		"potencia_presente": 1348.551,
+		"potencia_fuera": 129.689,
+		"estado": false,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 2
+	}
+},
+{
+	"model": "locales.local_tipo",
+	"pk": 1,
+	"fields": {
+		"nombre": "Tamaño Menor",
+		"descripcion": "Descripción Tamaño Menor",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"empresa_id": 1
+	}
+},
+{
+	"model": "locales.local_tipo",
+	"pk": 2,
+	"fields": {
+		"nombre": "Tamaño Intermedio",
+		"descripcion": "Descripción Tamaño Intermedio",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"empresa_id": 1
+	}
+},
+{
+	"model": "locales.local_tipo",
+	"pk": 3,
+	"fields": {
+		"nombre": "Ancla",
+		"descripcion": "Descripción Ancla",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"empresa_id": 1
+	}
+},
+{
+	"model": "locales.local",
+	"pk": 1,
+	"fields": {
+		"nombre": "Local 01 - MALL",
+		"codigo": "L-01",
+		"metros_cuadrados": 10,
+		"descripcion": "Descripción Local 01",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"activo_id": 1,
+		"local_tipo_id": 1,
+		"sector_id": 1,
+		"nivel_id": 1
+	}
+},
+{
+	"model": "locales.local",
+	"pk": 2,
+	"fields": {
+		"nombre": "Local 02 - MALL",
+		"codigo": "L-02",
+		"metros_cuadrados": 20,
+		"descripcion": "Descripción Local 02",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"activo_id": 1,
+		"local_tipo_id": 2,
+		"sector_id": 2,
+		"nivel_id": 2
+	}
+},
+{
+	"model": "locales.local",
+	"pk": 3,
+	"fields": {
+		"nombre": "Local 01 - CEN",
+		"codigo": "L-01",
+		"metros_cuadrados": 10,
+		"descripcion": "Descripción Local 01",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true,
+		"activo_id": 2,
+		"local_tipo_id": 3,
+		"sector_id": 3,
+		"nivel_id": 4
+	}
+},
+{
+	"model": "locales.local_medidores_agua",
+	"pk": 1,
+	"fields": {
+		"local_id": 1,
+		"medidor_agua_id": 1
+	}
+},
+{
+	"model": "locales.local_medidores_agua",
+	"pk": 2,
+	"fields": {
+		"local_id": 2,
+		"medidor_agua_id": 1
+	}
+},
+{
+	"model": "locales.local_medidores_agua",
+	"pk": 3,
+	"fields": {
+		"local_id": 3,
+		"medidor_agua_id": 2
+	}
+},
+{
+	"model": "locales.local_medidores_electricidad",
+	"pk": 1,
+	"fields": {
+		"local_id": 1,
+		"medidor_electricidad_id": 1
+	}
+},
+{
+	"model": "locales.local_medidores_electricidad",
+	"pk": 2,
+	"fields": {
+		"local_id": 2,
+		"medidor_electricidad_id": 1
+	}
+},
+{
+	"model": "locales.local_medidores_electricidad",
+	"pk": 3,
+	"fields": {
+		"local_id": 3,
+		"medidor_electricidad_id": 2
+	}
+},
+{
+	"model": "locales.local_medidores_gas",
+	"pk": 1,
+	"fields": {
+		"local_id": 1,
+		"medidor_gas_id": 1
+	}
+},
+{
+	"model": "locales.local_medidores_gas",
+	"pk": 2,
+	"fields": {
+		"local_id": 2,
+		"medidor_gas_id": 1
+	}
+},
+{
+	"model": "locales.local_medidores_gas",
+	"pk": 3,
+	"fields": {
+		"local_id": 3,
+		"medidor_gas_id": 2
+	}
+},
+{
+	"model": "contrato.contrato_tipo",
+	"pk": 1,
+	"fields": {
+		"nombre": "Por Faena o Trabajos",
+		"codigo": "CONT-POR-TRA",
+		"descripcion": "Descripción Por Faena o Trabajos",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1
+	}
+},
+{
+	"model": "contrato.contrato_tipo",
+	"pk": 2,
+	"fields": {
+		"nombre": "Plazo Indefinido",
+		"codigo": "CONT-PLAZ-IND",
+		"descripcion": "Descripción Plazo Indefinido",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1
+	}
+},
+{
+	"model": "contrato.contrato_tipo",
+	"pk": 3,
+	"fields": {
+		"nombre": "Plazo Fijo",
+		"codigo": "CONT-PLAZ-FIJ",
+		"descripcion": "Descripción Plazo Fijo",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1
+	}
+}
+]

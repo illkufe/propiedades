@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from administrador.models import Empresa, Unidad_Negocio
+from administrador.models import Empresa
 from datetime import date, datetime
 
 # Modelos
@@ -54,7 +54,6 @@ class Activo(models.Model):
 
 	# relaciones
 	empresa 		= models.ForeignKey(Empresa)
-	unidad_negocio 	= models.ForeignKey(Unidad_Negocio)
 
 	def __str__(self):
 		return self.nombre

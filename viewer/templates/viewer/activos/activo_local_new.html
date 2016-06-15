@@ -112,7 +112,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<h5>UBICACIÓN Y MEDIDORES</h5>
+						<h5>UBICACIÓN</h5>
 					</div>
 
 					<div class="ibox-content">
@@ -136,16 +136,45 @@
 											{{ form.nivel.errors }}
 										</div>
 									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 
+					<div class="ibox-title">
+						<h5>MEDIDORES</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="row">
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cuotas_pagadas.help_text }}" ></i>
-										{{ form.medidores.label_tag }}
-										{{ form.medidores }}
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidores_electricidad.help_text }}" ></i>
+										{{ form.medidores_electricidad.label_tag }}
+										{{ form.medidores_electricidad }}
 										<div class="container-error" style="height:20px">
-											{{ form.medidores.errors }}
+											{{ form.medidores_electricidad.errors }}
 										</div>
 									</div>
 
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidores_agua.help_text }}" ></i>
+										{{ form.medidores_agua.label_tag }}
+										{{ form.medidores_agua }}
+										<div class="container-error" style="height:20px">
+											{{ form.medidores_agua.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidores_gas.help_text }}" ></i>
+										{{ form.medidores_gas.label_tag }}
+										{{ form.medidores_gas }}
+										<div class="container-error" style="height:20px">
+											{{ form.medidores_gas.errors }}
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -157,7 +186,7 @@
 							<div class="col-sm-12">
 								<a href="/locales/list"><button class="btn btn-w-m btn-sm btn-default" type="button" style="margin-right: 15px;">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-local-new')">GUARDAR Y SEGUIR</button>
 							</div>
 						</div>
 					</div>
@@ -175,29 +204,6 @@
 
 $(document).ready(function(){
 })
-
-
-function enviar_form(accion){
-	$.ajax({
-		type: 'post',
-		url: $('#form-local-new').attr('action'),
-		data: $('#form-local-new').serialize(),
-		success: function(response) {
-			if (accion == 'create') {
-				clear_form('#form-local-new')
-			}
-			clear_errors_form('#form-local-new')
-
-			notification_toast('success', 'ÉXITO', 'Guardado correctamente.')
-		},
-		error: function(data, textStatus, jqXHR) {
-			clear_errors_form('#form-local-new')
-			var errors = $.parseJSON(data.responseText)
-			apply_errors_form(errors)
-		}
-	});
-	return false;
-}
 
 </script>
 {% endblock scripts %}

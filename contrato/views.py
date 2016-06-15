@@ -205,7 +205,7 @@ class ContratoDelete(DeleteView):
 
 		return JsonResponse(payload, safe=False)
 
-class ContratoUpdate(UpdateView):
+class ContratoUpdate(ContratoMixin, UpdateView):
 
 	model = Contrato
 	form_class = ContratoForm

@@ -80,7 +80,8 @@ function apply_errors_form(errors){
 			var input = $("#id_" + index),
 			container = $("#div_id_" + index),
 			error_msg = $("<li /> ").addClass("errorlist").text(value[0]);
-			$("#id_" + index).parent().find('.container-error').append(error_msg)
+			$("#id_" + index).closest('.form-group').find('.container-error').append(error_msg)
+			
 		}
 	});
 }
@@ -90,9 +91,12 @@ function clear_errors_form(form){
 }
 
 function clear_form(form){
+	// inputs y selects normales
 	$(form +' '+ '.form-group input').val('')
 	$(form +' '+ '.form-group textarea').val('')
 	$(form +' '+ 'select option:first-child').prop('selected', true);
+	// select 2
+	$('.select2').val(null).trigger("change")
 }
 
 function search_column_table(obj, table_entidad){
@@ -162,8 +166,8 @@ function load_table(tabla_id, columnas, configuracion){
 
 function open_modal_delete(obj, id, model, tabla, text){
 
-
 	var col = $(obj).closest('tr')
+
 	swal({
 		title: '¿ Eliminar '+text+' ?',
 		text: '',
@@ -174,7 +178,6 @@ function open_modal_delete(obj, id, model, tabla, text){
 		cancelButtonText: 'Cancelar',
 		closeOnConfirm: true 
 	}, function(){
-
 		$.ajax({
 			url: '/'+model+'/delete/'+id,
 			type: 'POST',

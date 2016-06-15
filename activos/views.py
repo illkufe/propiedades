@@ -270,8 +270,12 @@ class ActivoLocaleMixin(object):
 	success_url = '/locales/list'
 
 	def get_form_kwargs(self):
+
 		kwargs = super(ActivoLocaleMixin, self).get_form_kwargs()
-		kwargs['request'] = self.request
+
+		kwargs['request'] 	= self.request
+		kwargs['activo'] 	= self.kwargs['activo_id']
+
 		return kwargs
 
 	def form_invalid(self, form):
@@ -288,10 +292,10 @@ class ActivoLocaleMixin(object):
 		obj.activo_id = self.kwargs['activo_id']
 		obj.save()
 		
-		form.save_m2m()
-		for medidor in form.cleaned_data['medidores']:
-			medidor.estado = True
-			medidor.save()
+		# form.save_m2m()
+		# for medidor in form.cleaned_data['medidores']:
+		# 	medidor.estado = True
+		# 	medidor.save()
 
 		response = super(ActivoLocaleMixin, self).form_valid(form)
 
@@ -316,17 +320,18 @@ class ActivoLocalNew(ActivoLocaleMixin, FormView):
 
 		return context
 
-class ActivoLocalUpdate(UpdateView):
+class ActivoLocalUpdate(ActivoLocaleMixin, UpdateView):
 
 	model = Local
 	form_class = LocalForm
 	template_name = 'viewer/activos/activo_local_new.html'
 	success_url = '/locales/list'
 
-	def get_form_kwargs(self):
-		kwargs = super(ActivoLocalUpdate, self).get_form_kwargs()
-		kwargs['request'] = self.request
-		return kwargs
+	# def get_form_kwargs(self):
+	# 	kwargs = super(ActivoLocalUpdate, self).get_form_kwargs()
+	# 	kwargs['request'] = self.request
+	# 	kwargs['activo'] 	= self.kwargs['activo_id']
+	# 	return kwargs
 
 	def get_context_data(self, **kwargs):
 		
