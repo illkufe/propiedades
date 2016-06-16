@@ -5,6 +5,7 @@ url(r'^medidores/new$', views.MedidorNew.as_view(), name='medidor_new'),
 url(r'^medidores/delete/(?P<pk>\d+)$', views.MedidorDelete.as_view(), name='medidor_delete'),
 url(r'^medidores/update/(?P<pk>\d+)$', views.MedidorUpdate.as_view(), name='medidor_update'),
 
+
 # activos/views.py
 
 from datetime import datetime, timedelta
@@ -102,6 +103,7 @@ class MedidorUpdate(UpdateView):
 		context['href'] = 'medidores'
 		context['accion'] = 'update'
 		return context
+
 
 # viewer/templates/activos/activo_medidor_new.html
 
@@ -233,6 +235,7 @@ class MedidorUpdate(UpdateView):
 	<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
 </div>
 
+
 # activos/forms.py
 
 class MedidorForm(forms.ModelForm):
@@ -271,3 +274,543 @@ class MedidorForm(forms.ModelForm):
 		}
 
 MedidorFormSet 	= inlineformset_factory(Activo, Medidor, form=MedidorForm, extra=1, can_delete=True)
+
+
+# viewer/templates/viewer/contratos/contrato_new.html
+
+<div class="ibox-title">
+	<h5>Nuevo Tipo de Contrato</h5>
+</div>
+
+<div class="ibox-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<div>
+
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#page-1" aria-controls="page-1" role="tab" data-toggle="tab">Información General</a></li>
+					<li role="presentation"><a href="#page-2" aria-controls="page-2" role="tab" data-toggle="tab">Conceptos</a></li>
+					<li role="presentation"><a href="#page-3" aria-controls="page-3" role="tab" data-toggle="tab">Prorroga</a></li>
+					<li role="presentation"><a href="#page-4" aria-controls="page-4" role="tab" data-toggle="tab">Clausulas Conceptos</a></li>
+					<li role="presentation"><a href="#page-5" aria-controls="page-5" role="tab" data-toggle="tab">Poliza</a></li>
+				</ul>
+
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="page-1">
+						<br>
+						<br>
+
+						<form id="form-contrato-new" role="form" action="" method="post">
+							{% csrf_token %}
+							<div class="row">
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_local.help_text }}" ></i>
+									{{ form.metros_local.label_tag }}
+									{{ form.metros_local }}
+									<div class="container-error" style="height:20px">
+										{{ form.metros_local.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_otros.help_text }}" ></i>
+									{{ form.metros_otros.label_tag }}
+									{{ form.metros_otros }}
+									<div class="container-error" style="height:20px">
+										{{ form.metros_otros.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_local.help_text }}" ></i>
+									{{ form.arriendo_local.label_tag }}
+									{{ form.arriendo_local }}
+									<div class="container-error" style="height:20px">
+										{{ form.arriendo_local.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_otros.help_text }}" ></i>
+									{{ form.arriendo_otros.label_tag }}
+									{{ form.arriendo_otros }}
+									<div class="container-error" style="height:20px">
+										{{ form.arriendo_otros.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_porcentual.help_text }}" ></i>
+									{{ form.arriendo_porcentual.label_tag }}
+									{{ form.arriendo_porcentual }}
+									<div class="container-error" style="height:20px">
+										{{ form.arriendo_porcentual.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.reajuste_porcentaje.help_text }}" ></i>
+									{{ form.reajuste_porcentaje.label_tag }}
+									{{ form.reajuste_porcentaje }}
+									<div class="container-error" style="height:20px">
+										{{ form.reajuste_porcentaje.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.reajuste_meses.help_text }}" ></i>
+									{{ form.reajuste_meses.label_tag }}
+									{{ form.reajuste_meses }}
+									<div class="container-error" style="height:20px">
+										{{ form.reajuste_meses.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fondo_promocion.help_text }}" ></i>
+									{{ form.fondo_promocion.label_tag }}
+									{{ form.fondo_promocion }}
+									<div class="container-error" style="height:20px">
+										{{ form.fondo_promocion.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cuota_promocion.help_text }}" ></i>
+									{{ form.cuota_promocion.label_tag }}
+									{{ form.cuota_promocion }}
+									<div class="container-error" style="height:20px">
+										{{ form.cuota_promocion.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.gasto_comun_local.help_text }}" ></i>
+									{{ form.gasto_comun_local.label_tag }}
+									{{ form.gasto_comun_local }}
+									<div class="container-error" style="height:20px">
+										{{ form.gasto_comun_local.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.gasto_comun_otros.help_text }}" ></i>
+									{{ form.gasto_comun_otros.label_tag }}
+									{{ form.gasto_comun_otros }}
+									<div class="container-error" style="height:20px">
+										{{ form.gasto_comun_otros.errors }}
+									</div>
+								</div>
+							</div>
+							<br>
+
+							<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+							<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+							<a href="/contratos-tipo/list"><button class="btn btn-w-m btn-sm btn-success pull-right" type="button" style="margin-right: 15px;">CANCELAR</button></a>
+						</form>
+					</div>
+
+					<div role="tabpanel" class="tab-pane" id="page-2"></div>
+
+					<div role="tabpanel" class="tab-pane" id="page-3">
+						<br>
+						<br>
+						<table id="tabla-formulas" class="table table-striped">
+							<thead> 
+								<tr> 
+									<th>Nº Secuencia</th>
+									<th>F.Inicio</th>
+									<th>F.Termino</th>
+									<th>Nº Meses</th>
+									<th>F. Apertura</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+								</tr>
+							</tbody> 
+						</table>
+						<br>
+						<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button">GUARDAR</button>
+					</div>
+
+					<div role="tabpanel" class="tab-pane" id="page-4">
+						<br>
+						<br>
+						<table id="tabla-formulas" class="table table-striped">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Tipo</th>
+									<th>Aplica en</th>
+									<th>Concepto</th>
+									<th>Factor</th>
+									<th>Moneda</th>
+									<th>F.Inicio</th>
+									<th>F.Termino</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+								</tr>
+							</tbody>
+						</table>
+						<br>
+						<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button">GUARDAR</button>
+					</div>
+
+					<div role="tabpanel" class="tab-pane" id="page-5">
+						<br>
+						<br>
+						<table id="tabla-formulas" class="table table-striped">
+							<thead>
+								<tr>
+									<th>Nº Poliza</th>
+									<th>Compañia</th>
+									<th>Moneda</th>
+									<th>Monto Asegurado</th>
+									<th>Valor Prima</th>
+									<th>F.Vigencia</th>
+									<th>F.Vencimiento</th>
+									<th>Nº Cuotas</th>
+									<th>Nº Endoso</th>
+									<th>F.Inicio</th>
+									<th>Nº Cuotas</th>
+									<th>Estado</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+									<td><input type="text"></td>
+								</tr>
+							</tbody>
+						</table>
+						<br>
+						<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button">GUARDAR</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+# administrador/models.py
+
+class Unidad_Negocio(models.Model):
+
+	# atributos (generales)
+	nombre      = models.CharField(max_length=250)
+	codigo      = models.CharField(max_length=250, blank=True)
+	descripcion = models.TextField(blank=True)
+	
+	# atributos (por defecto)
+	visible     = models.BooleanField(default=True)
+	creado_en   = models.DateTimeField(auto_now=True)
+
+	# relaciones
+	empresa = models.ForeignKey(Empresa)
+
+	def __str__(self):
+		return self.nombre
+
+
+# administrador/urls.py
+
+url(r'^unidades-negocio/list$', views.UnidadNegocioList.as_view(), name='unidad_negocio_list'),
+url(r'^unidades-negocio/new$', views.UnidadNegocioNew.as_view(), name='unidad_negocio_new'),
+url(r'^unidades-negocio/delete/(?P<pk>\d+)$', views.UnidadNegocioDelete.as_view(), name='unidad_negocio_delete'),
+url(r'^unidades-negocio/update/(?P<pk>\d+)$', views.UnidadNegocioUpdate.as_view(), name='unidad_negocio_update'),
+
+# administrador/views.py
+
+class UnidadNegocioMixin(object):
+
+	template_name = 'viewer/configuracion/unidad_negocio_new.html'
+	form_class = UnidadNegocioForm
+	success_url = '/unidades-negocio/list'
+
+	def form_invalid(self, form):
+		response = super(UnidadNegocioMixin, self).form_invalid(form)
+		if self.request.is_ajax():
+			return JsonResponse(form.errors, status=400)
+		else:
+			return response
+
+	def form_valid(self, form):
+
+		user 	= User.objects.get(pk=self.request.user.pk)
+		profile = UserProfile.objects.get(user=user)
+
+		obj = form.save(commit=False)
+		obj.empresa_id = profile.empresa_id
+		obj.save()
+
+		response = super(UnidadNegocioMixin, self).form_valid(form)
+		if self.request.is_ajax():
+			data = {
+				'pk': 'self.object.pk',
+			}
+			return JsonResponse(data)
+		else:
+			return response
+
+class UnidadNegocioNew(UnidadNegocioMixin, FormView):
+
+	def get_context_data(self, **kwargs):
+		
+		context = super(UnidadNegocioNew, self).get_context_data(**kwargs)
+		context['title'] = 'Unidades de Negocio'
+		context['subtitle'] = 'Unidad de Negocio'
+		context['name'] = 'Nueva'
+		context['href'] = 'unidades-negocio'
+		context['accion'] = 'create'
+
+		return context
+
+class UnidadNegocioList(ListView):
+	model = Unidad_Negocio
+	template_name = 'viewer/configuracion/unidad_negocio_list.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(UnidadNegocioList, self).get_context_data(**kwargs)
+		context['title'] = 'Unidades de Negocio'
+		context['subtitle'] = 'Unidad de Negocio'
+		context['name'] = 'Lista'
+		context['href'] = 'unidades-negocio'
+
+		return context
+
+	def get_queryset(self):
+
+		user 		= User.objects.get(pk=self.request.user.pk)
+		profile 	= UserProfile.objects.get(user=user)
+		queryset 	= Unidad_Negocio.objects.filter(empresa=profile.empresa, visible=True)
+
+		return queryset
+
+class UnidadNegocioDelete(DeleteView):
+	model = Unidad_Negocio
+	success_url = reverse_lazy('/unidades-negocio/list')
+
+	def delete(self, request, *args, **kwargs):
+		self.object = self.get_object()
+		self.object.visible = False
+		self.object.save()
+		payload = {'delete': 'ok'}
+		return JsonResponse(payload, safe=False)
+
+class UnidadNegocioUpdate(UpdateView):
+
+	model = Unidad_Negocio
+	form_class = UnidadNegocioForm
+	template_name = 'viewer/configuracion/unidad_negocio_new.html'
+	success_url = '/unidades-negocio/list'
+
+	def get_context_data(self, **kwargs):
+		
+		context = super(UnidadNegocioUpdate, self).get_context_data(**kwargs)
+		context['title'] = 'Unidades de Negocio'
+		context['subtitle'] = 'Unidad de Negocio'
+		context['name'] = 'Editar'
+		context['href'] = 'unidades-negocio'
+		context['accion'] = 'update'
+		return context
+
+
+# administrador/forms.py
+
+class UnidadNegocioForm(forms.ModelForm):
+
+	class Meta:
+		model 	= Unidad_Negocio
+		fields 	= ['nombre', 'codigo', 'descripcion']
+
+		widgets = {
+			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'codigo'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'descripcion'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
+		}
+
+		error_messages = {
+			'nombre' : {'required': 'Esta campo es requerido.'},
+			'codigo' : {'required': 'Esta campo es requerido.'},
+		}
+
+
+# viewer/templates/viewer/configuracion/unidad_negocio_list.html
+
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Lista de Unidades de Negocio</h5>
+					<div class="ibox-tools">
+						<a href="/unidades-negocio/new">
+							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nueva unidad de negocio</button>
+						</a>
+					</div>
+				</div>
+				<div class="ibox-content">
+					<br>
+					<div class="table-responsive">
+						<table id="tabla-unidades-negocio" class="table table-striped table-bordered table-hover dataTables-example" >
+							<thead></thead>
+							<tbody>
+								{% for item in object_list %}
+								<tr>
+									<td>{{ item.id }}</td>
+									<td>{{ item.codigo }}</td>
+									<td>{{ item.nombre }}</td>
+									<td>{{ item.descripcion }}</td>
+
+									<td class="text-center">
+										<a class="btn btn-edit btn-bitbucket" href='{% url "unidad_negocio_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'unidades-negocio', 'tabla-unidades-negocio', 'Unidad de Negocio')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+
+	var tabla_unidades_negocio = []
+
+	var columns = [
+	{		
+		'data': 'id',
+		'title': 'ID',
+		'visible': false,
+	},
+	{
+		'width': '15%',
+		'data': 'codigo',
+		'title': 'Código',
+	},
+	{
+		'width': '15%',
+		'data': 'nombre',
+		'title': 'Nombre',
+	},
+	{
+		'width': '55%',
+		'data': 'descripcion',
+		'title': 'Descripción',
+	},
+	{
+		'width': '15%',
+		'data': 'options',
+		'orderable': false,
+	}]
+
+	tabla_unidades_negocio = load_table('#tabla-unidades-negocio', columns, {})
+
+});
+
+</script>
+
+{% endblock scripts %}
+
+
+# viewer/templates/viewer/configuracion/unidad_negocio_new.html
+
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Nueva Unidad de Negocio</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+						<div class="col-sm-12">
+
+							<form id="form-medidor-new" role="form" action="" method="post">
+								{% csrf_token %}
+
+								<div class="row">
+									{% for field in form %}
+									<div class="form-group col-sm-4">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ field.help_text }}" ></i>
+										{{ field.label_tag }}
+										{{ field }}
+										<div class="container-error" style="height:20px">
+											{{ field.errors }}
+										</div>
+									</div>
+									{% endfor %}
+								</div>
+								<br>
+
+								<a href="/unidades-negocio/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-medidor-new')">GUARDAR Y SEGUIR</button>
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+})
+
+</script>
+{% endblock scripts %}

@@ -274,7 +274,12 @@ class ActivoLocaleMixin(object):
 		kwargs = super(ActivoLocaleMixin, self).get_form_kwargs()
 
 		kwargs['request'] 	= self.request
-		kwargs['activo'] 	= self.kwargs['activo_id']
+		kwargs['activo_id'] = self.kwargs['activo_id']
+
+		try:
+			kwargs['local_id'] = self.kwargs['pk']
+		except KeyError:
+			pass
 
 		return kwargs
 
@@ -327,11 +332,6 @@ class ActivoLocalUpdate(ActivoLocaleMixin, UpdateView):
 	template_name = 'viewer/activos/activo_local_new.html'
 	success_url = '/locales/list'
 
-	# def get_form_kwargs(self):
-	# 	kwargs = super(ActivoLocalUpdate, self).get_form_kwargs()
-	# 	kwargs['request'] = self.request
-	# 	kwargs['activo'] 	= self.kwargs['activo_id']
-	# 	return kwargs
 
 	def get_context_data(self, **kwargs):
 		

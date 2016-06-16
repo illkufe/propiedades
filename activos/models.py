@@ -18,8 +18,8 @@ class Activo(models.Model):
 	cabidad_construccion = models.FloatField(null=True, blank=True)
 
 	# atributos (informacion legal)
-	propietario 	= models.CharField(max_length=250, blank=True)
-	rut_propietario = models.CharField(max_length=250, blank=True)
+	propietario 	= models.CharField(max_length=250)
+	rut_propietario = models.CharField(max_length=250)
 	rol_avaluo 		= models.CharField(max_length=250, blank=True)
 	inscripcion 	= models.CharField(max_length=250, blank=True)
 	vendedor 		= models.CharField(max_length=250, blank=True)
@@ -38,7 +38,7 @@ class Activo(models.Model):
 	# atributos (datos economicos)	
 
 	fecha_adquisicion 	= models.DateField(null=True, blank=True)
-	tasacion_fiscal 	= models.FloatField(null=True, blank=True)
+	tasacion_fiscal 	= models.FloatField()
 	avaluo_comercial 	= models.FloatField(null=True, blank=True)
 	contibuciones 		= models.FloatField(null=True, blank=True)
 	precio_compra 		= models.FloatField(null=True, blank=True)

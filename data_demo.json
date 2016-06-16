@@ -16,6 +16,7 @@
 	"fields": {
 		"nombre": "Cliente 01",
 		"rut": "13.759.887-6",
+		"direccion": "Gran Bretaña #302, Providencia",
 		"telefono": "87653329",
 		"cliente_tipo": 1,
 		"creado_en": "2016-01-01 00:00:00",
@@ -29,6 +30,7 @@
 	"fields": {
 		"nombre": "Cliente 02",
 		"rut": "8.331.209-2",
+		"direccion": "Av. El Cerro #1045, Providencia",
 		"telefono": "98776112",
 		"cliente_tipo": 1,
 		"creado_en": "2016-01-01 00:00:00",
@@ -138,6 +140,9 @@
 	"fields": {
 		"nombre": "Mall Plaza Norte",
 		"codigo": "MALL-PLA-NOR",
+		"propietario" : "Inversiones S.A.",
+		"rut_propietario" : "8.377.265-4",
+		"tasacion_fiscal" : "86660008",
 		"creado_en": "2016-01-01 00:00:00",
 		"visible": true,
 		"empresa_id": 1
@@ -149,6 +154,9 @@
 	"fields": {
 		"nombre": "Centro Comercial Leones",
 		"codigo": "CEN-COM-LEO",
+		"propietario" : "Inversiones S.A.",
+		"rut_propietario" : "5.541.563-3",
+		"tasacion_fiscal" : "90348409",
 		"creado_en": "2016-01-01 00:00:00",
 		"visible": true,
 		"empresa_id": 1
@@ -254,7 +262,7 @@
 	"model": "activos.medidor_electricidad",
 	"pk": 1,
 	"fields": {
-		"nombre": "Medidor Electricidad 01",
+		"nombre": "Medidor Mall - Elec 01",
 		"numero_rotulo": 90662,
 		"potencia": 622.934,
 		"potencia_presente": 1381.708,
@@ -267,10 +275,26 @@
 	}
 },
 {
+	"model": "activos.medidor_electricidad",
+	"pk": 2,
+	"fields": {
+		"nombre": "Medidor Mall - Elec 02",
+		"numero_rotulo": 88737,
+		"potencia": 8916.83,
+		"potencia_presente": 3066.19,
+		"potencia_fuera": 5574.58,
+		"estado": false,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 1,
+		"tarifa_electricidad": 2
+	}
+},
+{
 	"model": "activos.medidor_agua",
 	"pk": 1,
 	"fields": {
-		"nombre": "Medidor Agua 01",
+		"nombre": "Medidor Mall - Agua 01",
 		"numero_rotulo": 21315,
 		"potencia": 492.299,
 		"potencia_presente": 1128.837,
@@ -282,10 +306,25 @@
 	}
 },
 {
+	"model": "activos.medidor_agua",
+	"pk": 2,
+	"fields": {
+		"nombre": "Medidor Mall - Agua 02",
+		"numero_rotulo": 52312,
+		"potencia": 6323.07,
+		"potencia_presente": 7273.31,
+		"potencia_fuera": 9157.14,
+		"estado": false,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 1
+	}
+},
+{
 	"model": "activos.medidor_gas",
 	"pk": 1,
 	"fields": {
-		"nombre": "Medidor Gas 01",
+		"nombre": "Medidor Mall - Gas 01",
 		"numero_rotulo": 22937,
 		"potencia": 584.822,
 		"potencia_presente": 1895.791,
@@ -297,10 +336,25 @@
 	}
 },
 {
-	"model": "activos.medidor_electricidad",
+	"model": "activos.medidor_gas",
 	"pk": 2,
 	"fields": {
-		"nombre": "Medidor Electricidad 01",
+		"nombre": "Medidor Mall - Gas 02",
+		"numero_rotulo": 32134,
+		"potencia": 43372.3,
+		"potencia_presente": 10851.3,
+		"potencia_fuera": 26978.4,
+		"estado": false,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"activo_id": 1
+	}
+},
+{
+	"model": "activos.medidor_electricidad",
+	"pk": 3,
+	"fields": {
+		"nombre": "Medidor Cent - Elec 01",
 		"numero_rotulo": 30839,
 		"potencia": 436.61,
 		"potencia_presente": 830.174,
@@ -314,9 +368,9 @@
 },
 {
 	"model": "activos.medidor_agua",
-	"pk": 2,
+	"pk": 3,
 	"fields": {
-		"nombre": "Medidor Agua 01",
+		"nombre": "Medidor Cent - Agua 01",
 		"numero_rotulo": 14873,
 		"potencia": 655.905,
 		"potencia_presente": 1645.657,
@@ -329,9 +383,9 @@
 },
 {
 	"model": "activos.medidor_gas",
-	"pk": 2,
+	"pk": 3,
 	"fields": {
-		"nombre": "Medidor Gas 01",
+		"nombre": "Medidor Cent - Gas 01",
 		"numero_rotulo": 51981,
 		"potencia": 306.438,
 		"potencia_presente": 1348.551,
@@ -436,7 +490,7 @@
 	"pk": 2,
 	"fields": {
 		"local_id": 2,
-		"medidor_agua_id": 1
+		"medidor_agua_id": 2
 	}
 },
 {
@@ -444,7 +498,7 @@
 	"pk": 3,
 	"fields": {
 		"local_id": 3,
-		"medidor_agua_id": 2
+		"medidor_agua_id": 3
 	}
 },
 {
@@ -460,18 +514,18 @@
 	"pk": 2,
 	"fields": {
 		"local_id": 2,
-		"medidor_electricidad_id": 1
-	}
-},
-{
-	"model": "locales.local_medidores_electricidad",
-	"pk": 3,
-	"fields": {
-		"local_id": 3,
 		"medidor_electricidad_id": 2
 	}
 },
 {
+	"model": "locales.local_medidores_electricidad",
+	"pk": 3,
+	"fields": {
+		"local_id": 3,
+		"medidor_electricidad_id": 3
+	}
+},
+{
 	"model": "locales.local_medidores_gas",
 	"pk": 1,
 	"fields": {
@@ -484,7 +538,7 @@
 	"pk": 2,
 	"fields": {
 		"local_id": 2,
-		"medidor_gas_id": 1
+		"medidor_gas_id": 2
 	}
 },
 {
@@ -492,7 +546,7 @@
 	"pk": 3,
 	"fields": {
 		"local_id": 3,
-		"medidor_gas_id": 2
+		"medidor_gas_id": 3
 	}
 },
 {

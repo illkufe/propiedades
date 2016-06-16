@@ -17,9 +17,4 @@ urlpatterns = [
 	url(r'^clientes/delete/(?P<pk>\d+)$', views.ClienteDelete.as_view(), name='cliente_delete'),
 	url(r'^clientes/update/(?P<pk>\d+)$', views.ClienteUpdate.as_view(), name='cliente_update'),
 
-	url(r'^unidades-negocio/list$', views.UnidadNegocioList.as_view(), name='unidad_negocio_list'),
-	url(r'^unidades-negocio/new$', views.UnidadNegocioNew.as_view(), name='unidad_negocio_new'),
-	url(r'^unidades-negocio/delete/(?P<pk>\d+)$', views.UnidadNegocioDelete.as_view(), name='unidad_negocio_delete'),
-	url(r'^unidades-negocio/update/(?P<pk>\d+)$', views.UnidadNegocioUpdate.as_view(), name='unidad_negocio_update'),
-
 ]

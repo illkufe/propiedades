@@ -59,8 +59,11 @@ class ActivoForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 		: {'required': 'Esta campo es requerido.'},
-			'codigo' 		: {'required': 'Esta campo es requerido.'},
+			'nombre' 			: {'required': 'Esta campo es requerido.'},
+			'codigo' 			: {'required': 'Esta campo es requerido.'},
+			'propietario' 		: {'required': 'Esta campo es requerido.'},
+			'rut_propietario' 	: {'required': 'Esta campo es requerido.'},
+			'tasacion_fiscal' 	: {'required': 'Esta campo es requerido.'},
 		}
 
 		labels = {
@@ -240,21 +243,35 @@ class LocalForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 
 		self.request 	= kwargs.pop('request')
-		activo 			= kwargs.pop('activo', None)
+		activo_id 		= kwargs.pop('activo_id', None)
+		local_id 		= kwargs.pop('local_id', None)
 		user 			= User.objects.get(pk=self.request.user.pk)
 		profile 		= UserProfile.objects.get(user=user)
 
 		super(LocalForm, self).__init__(*args, **kwargs)
 
-		self.fields['local_tipo'].queryset 				= Local_Tipo.objects.filter(empresa_id=profile.empresa_id)
-		self.fields['sector'].queryset 					= Sector.objects.filter(activo_id=activo)
-		self.fields['nivel'].queryset 					= Nivel.objects.filter(activo_id=activo)
-		self.fields['medidores_electricidad'].queryset 	= Medidor_Electricidad.objects.filter(activo_id=activo)
-		self.fields['medidores_agua'].queryset 			= Medidor_Agua.objects.filter(activo_id=activo)
-		self.fields['medidores_gas'].queryset 			= Medidor_Gas.objects.filter(activo_id=activo)
+		activo = Activo.objects.get(id=activo_id)
+
+		if local_id is not None:
+			locales = activo.local_set.all().values_list('id', flat=True).exclude(id__in=local_id)
+		else:
+			locales = activo.local_set.all().values_list('id', flat=True)
+
+		medidores_locales_electricidad 					= Medidor_Electricidad.objects.filter(local__in=locales)
+		medidores_locales_agua 							= Medidor_Agua.objects.filter(local__in=locales)
+		medidores_locales_gas 							= Medidor_Gas.objects.filter(local__in=locales)
+
+		self.fields['medidores_electricidad'].queryset 	= Medidor_Electricidad.objects.filter(activo_id=activo).exclude(id__in=medidores_locales_electricidad)
+		self.fields['medidores_agua'].queryset 			= Medidor_Agua.objects.filter(activo_id=activo).exclude(id__in=medidores_locales_agua)
+		self.fields['medidores_gas'].queryset 			= Medidor_Gas.objects.filter(activo_id=activo).exclude(id__in=medidores_locales_gas)
+
+		self.fields['local_tipo'].queryset 				= Local_Tipo.objects.filter(empresa=profile.empresa)
+		self.fields['sector'].queryset 					= Sector.objects.filter(activo=activo)
+		self.fields['nivel'].queryset 					= Nivel.objects.filter(activo=activo)
 		self.fields['medidores_electricidad'].required 	= False
 		self.fields['medidores_agua'].required 			= False
 		self.fields['medidores_gas'].required 			= False
+
 
 	class Meta:
 		model 	= Local

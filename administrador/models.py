@@ -16,7 +16,6 @@ class Region(models.Model):
 	def __str__(self):
 		return self.nombre
 
-
 class Provincia(models.Model):
 
 	# atributos (generales)
@@ -31,7 +30,6 @@ class Provincia(models.Model):
 
 	def __str__(self):
 		return self.nombre
-
 
 class Comuna(models.Model):
 
@@ -48,7 +46,6 @@ class Comuna(models.Model):
 	def __str__(self):
 		return self.nombre
 
-
 class Estado_Civil(models.Model):
 
 	# atributos (generales)
@@ -63,7 +60,6 @@ class Estado_Civil(models.Model):
 	def __str__(self):
 		return self.nombre
 
-
 class Empresa(models.Model):
 
 	# atributos (generales)
@@ -77,7 +73,6 @@ class Empresa(models.Model):
 
 	def __str__(self):
 		return self.nombre
-
 
 class Moneda(models.Model):
 
@@ -94,7 +89,6 @@ class Moneda(models.Model):
 	def __str__(self):
 		return self.abrev
 
-
 class Moneda_Historial(models.Model):
 
 	# atributos (generales)
@@ -107,7 +101,6 @@ class Moneda_Historial(models.Model):
 	def __str__(self):
 		return self.moneda.nombre
 
-
 class Cliente(models.Model):
 
 	# atributos (generales)
@@ -117,8 +110,8 @@ class Cliente(models.Model):
 	giro 			= models.CharField(max_length=250, blank=True)
 	region        	= models.CharField(max_length=250, blank=True)
 	comuna        	= models.CharField(max_length=250, blank=True)
-	direccion       = models.CharField(max_length=250, blank=True)
-	telefono        = models.CharField(max_length=250, blank=True)
+	direccion       = models.CharField(max_length=250)
+	telefono        = models.CharField(max_length=250)
 	cliente_tipo    = models.IntegerField()
 
 	# atributos (por defecto)
@@ -130,7 +123,6 @@ class Cliente(models.Model):
 
 	def __str__(self):
 		return self.nombre
-
 
 class Representante(models.Model):
 
@@ -153,19 +145,3 @@ class Representante(models.Model):
 	def __str__(self):
 		return self.nombre
 
-class Unidad_Negocio(models.Model):
-
-	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
-	codigo      = models.CharField(max_length=250, blank=True)
-	descripcion = models.TextField(blank=True)
-	
-	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
-
-	# relaciones
-	empresa = models.ForeignKey(Empresa)
-
-	def __str__(self):
-		return self.nombre

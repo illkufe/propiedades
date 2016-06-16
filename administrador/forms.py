@@ -3,7 +3,7 @@ from django import forms
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User, Group
 
-from .models import Moneda, Empresa, Cliente, Representante, Unidad_Negocio
+from .models import Moneda, Empresa, Cliente, Representante
 
 class MonedaForm(forms.ModelForm):
 
@@ -29,12 +29,12 @@ class MonedaForm(forms.ModelForm):
 			'descripcion'	: '...',
 		}
 
-
 class ClienteForm(forms.ModelForm):
 
 	class Meta:
 		model 	= Cliente
-		fields 	= ['rut', 'nombre', 'razon_social', 'giro', 'region', 'comuna', 'direccion', 'telefono', 'cliente_tipo']
+		fields	= '__all__'
+		exclude = ['creado_en', 'visible', 'empresa']
 
 		widgets = {
 			'rut'			: forms.TextInput(attrs={'class': 'form-control format-rut'}),
@@ -50,6 +50,8 @@ class ClienteForm(forms.ModelForm):
 		error_messages = {
 			'nombre' 	: {'required': 'Esta campo es requerido.'},
 			'rut' 		: {'required': 'Esta campo es requerido.'},
+			'direccion' : {'required': 'Esta campo es requerido.'},
+			'telefono' 	: {'required': 'Esta campo es requerido.'},
 		}
 
 		labels = {
@@ -60,17 +62,22 @@ class ClienteForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'razon_social'	: 'razon_social',
-			'giro'			: 'giro',
 			'rut'			: 'rut',
+			'nombre'		: 'nombre',
+			'razon_social'	: 'razon social',
+			'giro'			: 'giro',
+			'region'		: 'region',
+			'comuna'		: 'comuna',
+			'direccion'		: 'direccion',
+			'telefono'		: 'telefono',
 		}
-
 
 class RepresentanteForm(forms.ModelForm):
 
 	class Meta:
 		model 	= Representante
-		fields 	= ['nombre','rut','nacionalidad','profesion','domicilio', 'estado_civil']
+		fields	= '__all__'
+		exclude = ['creado_en', 'visible', 'cliente']
 
 		widgets = {
 			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
@@ -101,25 +108,6 @@ class RepresentanteForm(forms.ModelForm):
 			'profesion'		: 'Profesión u Oficio',
 			'estado_civil'	: 'Estado Civil',
 		}
-
-
-class UnidadNegocioForm(forms.ModelForm):
-
-	class Meta:
-		model 	= Unidad_Negocio
-		fields 	= ['nombre', 'codigo', 'descripcion']
-
-		widgets = {
-			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'codigo'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'descripcion'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
-		}
-
-		error_messages = {
-			'nombre' : {'required': 'Esta campo es requerido.'},
-			'codigo' : {'required': 'Esta campo es requerido.'},
-		}
-
 
 
 ClienteFormSet = inlineformset_factory(Cliente, Representante, form=RepresentanteForm, extra=1, can_delete=True)

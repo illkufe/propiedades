@@ -27,9 +27,9 @@
 									<td>{{ item.id }}</td>
 									<td>{{ item.codigo }}</td>
 									<td>{{ item.nombre }}</td>
-									<td>{{ item.tipo }}</td>
 									<td>{{ item.propietario }}</td>
-									<td>{{ item.precio_uf }}</td>
+									<td>{{ item.rut_propietario }}</td>
+									<td>{{ item.tasacion_fiscal }}</td>
 									<td class="text-center">
 										<a class="btn btn-config btn-bitbucket" href="/activos/{{ item.id }}/medidores/new"><i class="fa fa-cog"></i></a>
 										<a class="btn btn-edit btn-bitbucket" href='{% url "activo_update" item.id %}'><i class="fa fa-edit"></i></a>
@@ -63,30 +63,29 @@ $(document).ready(function(){
 		'visible':false,
 	},
 	{
-		'width': '15%',
+		'width': '10%',
 		'data': 'codigo',
 		'title': 'Código',
 	},
 	{
-		'width': '20%',
+		'width': '15%',
 		'data': 'nombre',
 		'title': 'Nombre',
 	},
 	{
-		'width': '10%',
-		'data': 'tipo',
-		'title': 'Tipo',
-		'visible':false,
-	},
-	{
-		'width': '10%',
+		'width': '15%',
 		'data': 'propietario',
 		'title': 'Propietario',
 	},
 	{
-		'width': '13%',
-		'data': 'precio_uf',
-		'title': 'Precio en UF',
+		'width': '10%',
+		'data': 'rut_propietario',
+		'title': 'Rut Propietario',
+	},
+	{
+		'width': '10%',
+		'data': 'tasacion_fiscal',
+		'title': 'Tasación Fiscal',
 	},
 	{
 		'width': '15%',
