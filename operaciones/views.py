@@ -74,8 +74,8 @@ class LecturaMedidorList(ListView):
 		user 		= User.objects.get(pk=self.request.user.pk)
 		profile 	= UserProfile.objects.get(user=user)
 		activos 	= Activo.objects.values_list('id', flat=True).filter(empresa=profile.empresa, visible=True)
-		medidores 	= Medidor.objects.values_list('id', flat=True).filter(activo__in=activos, visible=True)
-		queryset 	= Lectura_Medidor.objects.filter(medidor_id__in=medidores)
+		# medidores 	= Medidor.objects.values_list('id', flat=True).filter(activo__in=activos, visible=True)
+		queryset 	= Lectura_Medidor.objects.all()
 
 		for item in queryset:
 			item.mes = meses[int(item.mes)]

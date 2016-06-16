@@ -340,7 +340,10 @@
 									<div class="form-group col-sm-3">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.leasing.help_text }}" ></i>
 										{{ form.leasing.label_tag }}
-										{{ form.leasing }}
+										<div class="checkbox checkbox-primary">
+											{{ form.leasing }}
+											<label for="checkbox2"></label>
+										</div>
 										<div class="container-error" style="height:20px">
 											{{ form.leasing.errors }}
 										</div>
@@ -349,7 +352,10 @@
 									<div class="form-group col-sm-3">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.hipoteca.help_text }}" ></i>
 										{{ form.hipoteca.label_tag }}
-										{{ form.hipoteca }}
+										<div class="checkbox checkbox-primary">
+											{{ form.hipoteca }}
+											<label for="checkbox2"></label>
+										</div>
 										<div class="container-error" style="height:20px">
 											{{ form.hipoteca.errors }}
 										</div>

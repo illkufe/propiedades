@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
-# from activos.models import Medidor
 
 # Create your models here.
 class Lectura_Medidor(models.Model):
@@ -34,9 +33,7 @@ class Lectura_Medidor(models.Model):
 	creado_en 		= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	# medidor = models.ForeignKey(Medidor)
 	user 	= models.ForeignKey(User)
-	
 
 	def __str__(self):
 		return self.user
@@ -45,4 +42,3 @@ class Lectura_Medidor(models.Model):
 
 
 
-	

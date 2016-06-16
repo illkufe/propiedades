@@ -63,6 +63,8 @@ class PROCESOS(View):
 	
 	def post(self, request):
 
+		print ('crear proceso')
+
 		var_post 		= request.POST.copy()
 		contratos 		= var_post.get('contratos').split(",")
 		fecha_inicio 	= var_post.get('fecha_inicio')

@@ -382,6 +382,9 @@ class ArriendoPruebaNew(ArriendoPruebMixin, FormView):
 
 
 
+
+
+
 def generar_contrato_pdf(contrato, contrato_id=None):
 
 	if contrato_id != None:

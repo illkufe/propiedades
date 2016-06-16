@@ -249,9 +249,9 @@ class ServicioBasicoForm(forms.ModelForm):
 
 		if contrato is not None:
 
-			locales_list = contrato.locales.all().values_list('id', flat=True)
+			# locales_list = contrato.locales.all().values_list('id', flat=True)
 			self.fields['local'].queryset = contrato.locales.all()
-			self.fields['medidor'].queryset = Medidor.objects.filter(local__in=locales_list)
+			# self.fields['medidor'].queryset = Medidor.objects.filter(local__in=locales_list)
 
 	class Meta:
 		model 	= Servicio_Basico
@@ -261,7 +261,6 @@ class ServicioBasicoForm(forms.ModelForm):
 		widgets = {
 			'tipo'			: forms.Select(attrs={'class': 'form-control tipo-asd'}),
 			'local'			: forms.Select(attrs={'class': 'form-control'}),
-			'medidor'		: forms.Select(attrs={'class': 'form-control medidor-asd'}),
 			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
 			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
 			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),

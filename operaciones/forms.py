@@ -17,13 +17,13 @@ class LecturaMedidorForm(forms.ModelForm):
 		widgets = {
 			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
 			'mes'			: forms.Select(attrs={'class': 'form-control'}),
-			'medidor'		: forms.Select(attrs={'class': 'form-control'}),
+			# 'medidor'		: forms.Select(attrs={'class': 'form-control'}),
 			'imagen_file'	: forms.FileInput(attrs={'class': 'file-format'}),
 		}
 
 		error_messages = {
 			'valor' 	: {'required': 'campo requerido.'},
-			'medidor'	: {'required': 'campo requerido.'},
+			# 'medidor'	: {'required': 'campo requerido.'},
 		}
 
 		labels = {
@@ -33,6 +33,6 @@ class LecturaMedidorForm(forms.ModelForm):
 
 		help_texts = {
 			'valor'			: '...',
-			'medidor'		: '...',
+			# 'medidor'		: '...',
 			'imagen_file'	: '...',
 		}
