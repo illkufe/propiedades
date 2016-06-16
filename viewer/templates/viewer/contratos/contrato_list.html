@@ -10,7 +10,7 @@
 				<div class="ibox-title">
 					<h5>Lista de Contratos</h5>
 					<div class="ibox-tools">
-						<a href="/contratos/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> NUEVO CONTRATO</button></a>
+						<a href="/contratos/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> CONTRATO</button></a>
 					</div>
 				</div>
 				<div class="ibox-content">
@@ -23,15 +23,14 @@
 								<tr>
 									<td>{{ item.id }}</td>
 									<td>{{ item.numero }}</td>
-									<td>{{ item.cliente }}</td>
-									<td>poner locales</td>
+									<td>{{ item.nombre_local }}</td>
 									<td>{{ item.contrato_tipo }}</td>
-									<td>{{ item.arriendo_local }}</td>
+									<td>{{ item.fecha_inicio }}</td>
+									<td>{{ item.fecha_termino }}</td>
+									<td>poner locaes</td> <!-- {falta: poner locales asociados al contrato} -->
 									<td>{{ item.contrato_estado }}</td>
-
 									<td class="text-center">
 										<a class="btn btn-config btn-bitbucket" href="/contratos/{{ item.id }}/conceptos"><i class="fa fa-cog"></i></a>
-
 										<a class="btn btn-edit btn-bitbucket" href='{% url "contrato_update" item.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'contratos', 'tabla-contratos', 'Contrato')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
@@ -52,14 +51,16 @@
 {% block scripts %}
 <script>
 
+var tabla_contratos = []
+
 $(document).ready(function(){
 
-	var tabla_contratos = []
-	load_tablas()
+	load_tabla_contratos()
 
 });
 
-function load_tablas(){
+function load_tabla_contratos(){
+
 	var columns = [
 	{		
 		'data': 'id',
@@ -73,41 +74,42 @@ function load_tablas(){
 	},
 	{
 		'width': '10%',
-		'data': 'cliente',
-		'title': 'CLIENTE',
-	},
-	{
-		'width': '10%',
-		'data': 'locales',
-		'title': 'LOCAL(es)',
-	},
-	{
-		'width': '10%',
-		'data': 'arriendo',
-		'title': 'ARRIENDO',
+		'data': 'nombre',
+		'title': 'Nombre',
 	},
 	{
 		'width': '10%',
 		'data': 'tipo',
-		'title': 'TIPO',
+		'title': 'Tipo',
+	},
+	{
+		'width': '10%',
+		'data': 'fecha_inicio',
+		'title': 'F. INICIO',
+	},
+	{
+		'width': '10%',
+		'data': 'fecha_termino',
+		'title': 'F. TERMINO',
+	},
+	{
+		'width': '10%',
+		'data': 'locales',
+		'title': 'LOCAL(s)',
+		'visible': false,
 	},
 	{
 		'width': '10%',
 		'data': 'estado',
 		'title': 'ESTADO',
 	},
-	// {
-	// 	'width': '10%',
-	// 	'data': 'informacion',
-	// 	'orderable': false,
-	// },
 	{
 		'width': '15%',
 		'data': 'options',
 		'orderable': false,
 	}];
 
-	var tabla_contratos = load_table('#tabla-contratos', columns, {})
+	tabla_contratos = load_table('#tabla-contratos', columns, {})
 }
 
 </script>

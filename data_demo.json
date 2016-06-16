@@ -267,7 +267,6 @@
 		"potencia": 622.934,
 		"potencia_presente": 1381.708,
 		"potencia_fuera": 865.653,
-		"estado": false,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"activo_id": 1,
@@ -283,7 +282,6 @@
 		"potencia": 8916.83,
 		"potencia_presente": 3066.19,
 		"potencia_fuera": 5574.58,
-		"estado": false,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"activo_id": 1,
@@ -299,7 +297,6 @@
 		"potencia": 492.299,
 		"potencia_presente": 1128.837,
 		"potencia_fuera": 608.394,
-		"estado": false,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"activo_id": 1
@@ -314,7 +311,6 @@
 		"potencia": 6323.07,
 		"potencia_presente": 7273.31,
 		"potencia_fuera": 9157.14,
-		"estado": false,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"activo_id": 1
@@ -329,7 +325,6 @@
 		"potencia": 584.822,
 		"potencia_presente": 1895.791,
 		"potencia_fuera": 716.851,
-		"estado": false,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"activo_id": 1
@@ -344,7 +339,6 @@
 		"potencia": 43372.3,
 		"potencia_presente": 10851.3,
 		"potencia_fuera": 26978.4,
-		"estado": false,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"activo_id": 1
@@ -359,7 +353,6 @@
 		"potencia": 436.61,
 		"potencia_presente": 830.174,
 		"potencia_fuera": 521.157,
-		"estado": false,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"activo_id": 2,
@@ -375,7 +368,6 @@
 		"potencia": 655.905,
 		"potencia_presente": 1645.657,
 		"potencia_fuera": 103.027,
-		"estado": false,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"activo_id": 2
@@ -390,7 +382,6 @@
 		"potencia": 306.438,
 		"potencia_presente": 1348.551,
 		"potencia_fuera": 129.689,
-		"estado": false,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"activo_id": 2

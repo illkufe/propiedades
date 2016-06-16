@@ -814,3 +814,205 @@ $(document).ready(function(){
 
 </script>
 {% endblock scripts %}
+
+# activos/models.py
+
+class Medidor_Tipo(models.Model):
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+	codigo 		= models.CharField(max_length=250, blank=True)	
+	descripcion = models.TextField(blank=True)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.nombre
+
+class Medidor(models.Model):
+
+# atributos (generales)
+nombre 				= models.CharField(max_length=250)
+numero_rotulo 		= models.CharField(max_length=250)
+potencia			= models.FloatField(default=0, null=True, blank=True)
+potencia_presente	= models.FloatField(default=0, null=True, blank=True)
+potencia_fuera		= models.FloatField(default=0, null=True, blank=True)
+estado 				= models.BooleanField(default=False)
+
+# atributos (por defecto)
+visible 			= models.BooleanField(default=True)
+creado_en 			= models.DateTimeField(auto_now=True)
+
+# relaciones
+activo 			= models.ForeignKey(Activo)
+medidor_tipo 	= models.ForeignKey(Medidor_Tipo)
+
+def __str__(self):
+	return self.medidor_tipo.nombre+'-'+self.nombre
+
+# contrato/models.py {modelo Contrato}
+
+aviso 				= models.IntegerField()
+metros_local		= models.FloatField(null=True, blank=True)
+metros_otros		= models.FloatField(null=True, blank=True)
+arriendo_local		= models.FloatField(null=True, blank=True)
+arriendo_otros		= models.FloatField(null=True, blank=True)
+arriendo_porcentual	= models.FloatField(null=True, blank=True)
+reajuste_porcentaje	= models.FloatField(null=True, blank=True)
+reajuste_meses		= models.FloatField(null=True, blank=True)
+fondo_promocion		= models.FloatField(null=True, blank=True)
+cuota_promocion 	= models.FloatField(null=True, blank=True)
+arriendo_diciembre 	= models.CharField(max_length=250)
+inicio_renta 		= models.CharField(max_length=250)
+gasto_comun_local 	= models.FloatField(null=True, blank=True)
+gasto_comun_otros 	= models.FloatField(null=True, blank=True)
+
+# contrato/urls.py
+
+url(r'^contrato/pdf/(?P<pk>\d+)$', views.contratoPdf, name='contrato_pdf'),
+
+# contrato/views.py
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.enums import TA_RIGHT, TA_CENTER, TA_JUSTIFY, TA_LEFT
+from reportlab.lib.pagesizes import LEGAL, A4, cm
+from reportlab.lib.pagesizes import landscape
+from reportlab.pdfgen import canvas
+from reportlab.platypus import *
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+
+def makeReportData(detalle):
+
+	contrato_list = list()
+	cabecera_list = list()
+	for j in detalle['contrato']:
+		detalle_contrato = list()
+		detalle_contrato.append(j['nombre_contrato'])
+		detalle_contrato.append(j['monto'])
+		contrato_list.append(detalle_contrato)
+
+
+	styles = getSampleStyleSheet()
+	styleBH = styles["Title"]
+	styleBH.alignment = TA_LEFT
+	styleBH.fontSize = 8
+	styleBH.leading = 15
+	styleBH.underline = 1
+
+	cabecera_list.append('Contrato')
+	cabecera_list.append('Monto')
+
+	for a in cabecera_list:
+		Paragraph(a, styleBH)
+
+	libroreporte = []
+
+
+	lines_cabecera = tuple(cabecera_list)
+	libroreporte += lines_cabecera,
+
+	for a in contrato_list:
+		lines = tuple(a)
+		libroreporte += lines,
+
+
+	return libroreporte
+
+def contratoPdf(request, pk):
+	array_elementos = list()
+	contrato_list 	= list()
+	total 	= 0
+	proceso = Proceso.objects.get(pk=pk)
+
+	for detalle in proceso.proceso_detalle_set.all():
+
+		contrato_list.append({
+			'id':detalle.id,
+			'nombre_contrato':detalle.contrato_id,
+			'monto':detalle.total,
+			})
+
+	array_elementos.append({
+		'id': 1,
+		'concepto': 'arriendos',
+		'contrato': contrato_list
+	})
+
+
+	response = HttpResponse(content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+	
+	# Create the PDF object, using the response object as its "file."
+	c = canvas.Canvas(response)
+
+
+	# c = canvas.Canvas(pagesize=landscape(A4))
+	c.setLineWidth(.3)
+
+	# contrato_list= list()
+	# contrato_list.append({
+	# 	'id' : 1,
+	# 	'nombre_contrato': "contrato 1",
+	# 	'monto' : 5000
+	# })
+
+	# contrato_list.append({
+	# 	'id': 1,
+	# 	'nombre_contrato': "contrato 2",
+	# 	'monto': 10000
+	# })
+
+	# array_elementos = list()
+	# array_elementos.append({
+	# 	'id': 1,
+	# 	'concepto': 'arriendos',
+	# 	'contrato': contrato_list
+	# })
+	wd, hg = A4
+	##GENERACION DOCUMENTO
+	for a in array_elementos:
+
+		##GENERACION TABLA DEL DOCUMENTO
+		hight = 600
+
+		table = Table(makeReportData(a),
+					  colWidths=[2.1 * cm, 4.1 * cm, 3.1 * cm, 2.9 * cm, 2.9 * cm, 2.9 * cm, 2.9 * cm,
+								 2.9 * cm, 2.5 * cm, 2 * cm])
+
+		table.setStyle(TableStyle([
+			('FONTSIZE', (0, 1), (-1, -1), 8),
+		]))
+
+		table.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 1), 0.25, colors.black)]))
+
+		table.wrapOn(c, wd, hg)
+		# table.drawOn(c, 30, hight - (a.__len__() * 36) - 30)
+		table.drawOn(c, 30, hight)
+
+		c.showPage()
+
+	c.save()
+
+	return response
+
+def arriendo(request, id=None):
+	# if this is a POST request we need to process the form data
+	if request.method == 'POST':
+		# create a form instance and populate it with data from the request:
+		form = NameForm(request.POST)
+		# check whether it's valid:
+		if form.is_valid():
+			# process the data in form.cleaned_data as required
+			# ...
+			# redirect to a new URL:
+			return HttpResponseRedirect('/thanks/')
+
+	# if a GET (or any other method) we'll create a blank form
+	else:
+		form = NameForm()
+
+	return render(request, 'viewer/contratos/contrato_arriendo.html', {'form': form})
+

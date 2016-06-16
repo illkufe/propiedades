@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from accounts.models import UserProfile
 from administrador.models import Empresa
-from activos.models import Activo, Nivel, Sector, Medidor
+from activos.models import Activo, Nivel, Sector
 
 from .models import Local, Local_Tipo
 

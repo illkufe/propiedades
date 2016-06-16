@@ -292,15 +292,10 @@ class ActivoLocaleMixin(object):
 
 	def form_valid(self, form):
 
-
 		obj = form.save(commit=False)
 		obj.activo_id = self.kwargs['activo_id']
 		obj.save()
-		
-		# form.save_m2m()
-		# for medidor in form.cleaned_data['medidores']:
-		# 	medidor.estado = True
-		# 	medidor.save()
+		# form.save_m2m()	
 
 		response = super(ActivoLocaleMixin, self).form_valid(form)
 
@@ -343,7 +338,6 @@ class ActivoLocalUpdate(ActivoLocaleMixin, UpdateView):
 		context['accion'] = 'update'
 
 		return context
-
 
 
 

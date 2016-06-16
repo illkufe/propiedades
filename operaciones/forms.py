@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from activos.models import Medidor
+# from activos.models import Medidor
 from .models import Lectura_Medidor
 
 

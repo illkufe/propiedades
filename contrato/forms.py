@@ -4,15 +4,15 @@ from django.forms.models import inlineformset_factory
 
 from locales.models import Local
 from conceptos.models import Concepto
-from administrador.models import Moneda
-from activos.models import Medidor
+from administrador.models import Cliente, Moneda
 
 from .models import Contrato_Tipo, Contrato_Estado, Contrato, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
 
 class ContratoTipoForm(forms.ModelForm):
 	class Meta:
 		model 	= Contrato_Tipo
-		fields 	= ['nombre', 'codigo', 'descripcion']
+		fields 	= '__all__'
+		exclude = ['creado_en', 'visible', 'empresa']
 
 		widgets = {
 			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
@@ -22,6 +22,7 @@ class ContratoTipoForm(forms.ModelForm):
 
 		error_messages = {
 			'nombre' : {'required': 'campo requerido.'},
+			'codigo' : {'required': 'campo requerido.'},
 		}
 
 		labels = {
@@ -37,86 +38,48 @@ class ContratoTipoForm(forms.ModelForm):
 
 class ContratoForm(forms.ModelForm):
 
-	locales 			= forms.ModelMultipleChoiceField(queryset=Local.objects.all(),widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}))
-	conceptos 			= forms.ModelMultipleChoiceField(queryset=Concepto.objects.all(),required=False,widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}))
-	contrato_estado 	= forms.ModelChoiceField(queryset=Contrato_Estado.objects.all(),initial="Borrador",widget=forms.Select(attrs={'class': 'select2 form-control'}))
-
 	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_activacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
-	
+
+	locales 			= forms.ModelMultipleChoiceField(queryset=Local.objects.all(),widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}))
+	conceptos 			= forms.ModelMultipleChoiceField(queryset=Concepto.objects.all(),required=False,widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}))
+
+	contrato_estado 	= forms.ModelChoiceField(queryset=Contrato_Estado.objects.all(),initial="Borrador",widget=forms.Select(attrs={'class': 'form-control'}))
+	cliente 			= forms.ModelChoiceField(queryset=Cliente.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'})
+	contrato_tipo 		= forms.ModelChoiceField(queryset=Contrato_Tipo.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'})
+
 
 	class Meta:
 		model 	= Contrato
 		fields 	= '__all__'
-		exclude = ['empresa', 'creado_en', 'visible']
+		exclude = ['creado_en', 'visible', 'empresa']
 
 		widgets = {
-			'numero': forms.NumberInput(attrs={'class': 'form-control'}),
-			'nombre_local': forms.TextInput(attrs={'class': 'form-control'}),
-			'plazo': forms.NumberInput(attrs={'class': 'form-control'}),
-			'aviso': forms.NumberInput(attrs={'class': 'form-control'}),
-			'metros_local': forms.TextInput(attrs={'class': 'form-control'}),
-			'metros_otros': forms.TextInput(attrs={'class': 'form-control'}),
-			'arriendo_local': forms.TextInput(attrs={'class': 'form-control'}),
-			'arriendo_otros': forms.TextInput(attrs={'class': 'form-control'}),
-			'arriendo_porcentual': forms.TextInput(attrs={'class': 'form-control'}),
-			'reajuste_porcentaje': forms.TextInput(attrs={'class': 'form-control'}),
-			'reajuste_meses': forms.TextInput(attrs={'class': 'form-control'}),
-			'fondo_promocion': forms.TextInput(attrs={'class': 'form-control'}),
-			'cuota_promocion': forms.TextInput(attrs={'class': 'form-control'}),
-			'arriendo_diciembre': forms.TextInput(attrs={'class': 'form-control'}),
-			'inicio_renta': forms.TextInput(attrs={'class': 'form-control'}),
-			'comentario': forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
-			'gasto_comun_local': forms.TextInput(attrs={'class': 'form-control'}),
-			'gasto_comun_otros': forms.TextInput(attrs={'class': 'form-control'}),
-			'cliente': forms.Select(attrs={'class': 'select2 form-control'}),
-			'contrato_tipo': forms.Select(attrs={'class': 'select2 form-control'}),
+			'numero'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'nombre_local'	: forms.TextInput(attrs={'class': 'form-control'}),
+			'comentario'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
 		}
 
 		error_messages = {
-			'numero': {'required': 'campo requerido.', 'invalid': 'campo invalido'},
-			'nombre_local': {'required': 'campo requerido.'},
-			'fecha_contrato': {'required': 'campo requerido.', 'invalid': 'campo invalido'},
-			'fecha_inicio': {'required': 'campo requerido.', 'invalid': 'campo invalido'},
-			'fecha_termino': {'required': 'campo requerido.', 'invalid': 'campo invalido'},
-			'fecha_habilitacion': {'required': 'campo requerido.', 'invalid': 'campo invalido'},
-			'fecha_activacion': {'required': 'campo requerido.', 'invalid': 'campo invalido'},
-			'plazo': {'required': 'campo requerido.'},
-			'fecha_renovacion': {'required': 'campo requerido.'},
-			'aviso': {'required': 'campo requerido.'},
-			'metros_local': {'required': 'campo requerido.'},
-			'metros_otros': {'required': 'campo requerido.'},
-			'arriendo_local': {'required': 'campo requerido.'},
-			'arriendo_otros': {'required': 'campo requerido.'},
-			'arriendo_porcentual': {'required': 'campo requerido.'},
-			'reajuste_porcentaje': {'required': 'campo requerido.'},
-			'reajuste_meses': {'required': 'campo requerido.'},
-			'fondo_promocion': {'required': 'campo requerido.'},
-			'cuota_promocion': {'required': 'campo requerido.'},
-			'arriendo_diciembre': {'required': 'campo requerido.'},
-			'inicio_renta': {'required': 'campo requerido.'},
-			'comentario': {'required': 'campo requerido.'},
-			'gasto_comun_local': {'required': 'campo requerido.'},
-			'gasto_comun_otros': {'required': 'campo requerido.'},
-			'cliente': {'required': 'campo requerido.'},
-			'contrato_tipo': {'required': 'campo requerido.'},
-			'contrato_estado': {'required': 'campo requerido.'},
-			'locales': {'required': 'campo requerido.'},
-			'conceptos': {'required': 'campo requerido.'},
+			'numero'		: {'required': 'campo requerido.', 'invalid': 'campo invalido'},
+			'nombre_local'	: {'required': 'campo requerido.'},
+			'comentario'	: {'required': 'campo requerido.'},
 		}
 
 		labels = {
 			'numero'			: 'Número',
 			'nombre_local'		: 'Nombre Local',
-			'fecha_renovacion'	: 'Fecha Renovacion',
+			'fecha_renovacion'	: 'Fecha Renovación',
 		}
 
 		help_texts = {
-			'numero': 'numero',
+			'numero'		: 'numero',			
+			'nombre_local' 	: 'nombre local',
+			'comentario' 	: 'comentario',
 		}
 
 class InformacionForm(forms.ModelForm):

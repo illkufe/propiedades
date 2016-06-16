@@ -8,7 +8,7 @@ from .forms import LecturaMedidorForm
 from .models import Lectura_Medidor
 
 from accounts.models import UserProfile
-from activos.models import Activo, Medidor
+from activos.models import Activo
 
 
 class LecturaMedidorMixin(object):

@@ -26,8 +26,6 @@ urlpatterns = [
 	# url(r'^contratos/(?P<contrato_id>\d+)/informacion$', views.ArriendoPruebaNew.as_view(), name='arriendo_prueba_new'),
 
 	url(r'^contratos/(?P<contrato_id>\d+)/conceptos$', views.ArriendoPruebaNew.as_view(), name='arriendo_prueba_new'),
-
-	url(r'^contrato/pdf/(?P<pk>\d+)$', views.contratoPdf, name='contrato_pdf'),
 	url(r'^generar_contrato_pdf/(?P<contrato_id>\d+)$', views.generar_contrato_pdf, name='generar_contrato_pdf'),
 
 ]

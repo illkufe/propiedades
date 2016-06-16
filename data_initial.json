@@ -305,33 +305,6 @@
 	}
 },
 {
-	"model": "activos.medidor_tipo",
-	"pk": 1,
-	"fields": {
-		"nombre": "Agua",
-		"descripcion": "Este medidor es de Agua",
-		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
-	"model": "activos.medidor_tipo",
-	"pk": 2,
-	"fields": {
-		"nombre": "Electricidad",
-		"descripcion": "Este medidor es de electricidad",
-		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
-	"model": "activos.medidor_tipo",
-	"pk": 3,
-	"fields": {
-		"nombre": "Gas",
-		"descripcion": "Este medidor es de gas",
-		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
 	"model": "conceptos.concepto_tipo",
 	"pk": 1,
 	"fields": {

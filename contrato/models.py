@@ -2,11 +2,10 @@ from __future__ import unicode_literals
 
 from django.db import models
 from administrador.models import Empresa, Cliente, Moneda
-from activos.models import Medidor
 from locales.models import Local
 from conceptos.models import Concepto
 
-# Create your models here.
+# Modelos
 class Contrato_Tipo(models.Model):
 
 	# atributos (generales)
@@ -37,7 +36,6 @@ class Contrato_Estado(models.Model):
 	def __str__(self):
 		return self.nombre
 
-
 class Contrato(models.Model):
 
 	# atributos (generales)
@@ -48,23 +46,8 @@ class Contrato(models.Model):
 	fecha_termino 		= models.DateField()
 	fecha_habilitacion 	= models.DateField()
 	fecha_activacion 	= models.DateField()
-	plazo 				= models.IntegerField()
 	fecha_renovacion 	= models.DateField()
-	aviso 				= models.IntegerField()
-	metros_local		= models.FloatField(null=True, blank=True) #{falta: definir si van estos campos}
-	metros_otros		= models.FloatField(null=True, blank=True) #{falta: definir si van estos campos}
-	arriendo_local		= models.FloatField(null=True, blank=True) #{falta: definir si van estos campos}
-	arriendo_otros		= models.FloatField(null=True, blank=True) #{falta: definir si van estos campos}
-	arriendo_porcentual	= models.FloatField(null=True, blank=True) #{falta: definir si van estos campos}
-	reajuste_porcentaje	= models.FloatField(null=True, blank=True) #{falta: definir si van estos campos}
-	reajuste_meses		= models.FloatField(null=True, blank=True) #{falta: definir si van estos campos}
-	fondo_promocion		= models.FloatField(null=True, blank=True) #{falta: definir si van estos campos}
-	cuota_promocion 	= models.FloatField(null=True, blank=True) #{falta: definir si van estos campos}
-	arriendo_diciembre 	= models.CharField(max_length=250)
-	inicio_renta 		= models.CharField(max_length=250)
 	comentario 			= models.TextField(blank=True)
-	gasto_comun_local 	= models.FloatField(null=True, blank=True) # {review_comment: sacar del modelo y dejar automatico con los conceptos asociados}
-	gasto_comun_otros 	= models.FloatField(null=True, blank=True) # {review_comment: sacar del modelo y dejar automatico con los conceptos asociados}
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -78,10 +61,8 @@ class Contrato(models.Model):
 	locales 		= models.ManyToManyField(Local)
 	conceptos 		= models.ManyToManyField(Concepto)
 
-
 	def __str__(self):
 		return self.nombre_local
-
 
 class Arriendo(models.Model):
 
@@ -101,7 +82,6 @@ class Arriendo(models.Model):
 
 	def __str__(self):
 		return self.contrato.nombre_local
-		
 
 class Arriendo_Detalle(models.Model):
 
@@ -136,7 +116,6 @@ class Arriendo_Detalle(models.Model):
 
 	def __str__(self):
 		return self.mes_inicio
-
 
 class Arriendo_Variable(models.Model):
 
@@ -182,8 +161,6 @@ class Arriendo_Variable(models.Model):
 	def __str__(self):
 		return self.contrato.nombre_local
 
-
-
 class Servicio_Basico(models.Model):
 
 	TIPO = (
@@ -220,11 +197,9 @@ class Servicio_Basico(models.Model):
 	# relaciones
 	contrato 	= models.ForeignKey(Contrato)
 	local 		= models.ForeignKey(Local)
-	medidor 	= models.ForeignKey(Medidor)
 
 	def __str__(self):
 		return self.local.nombre
-
 
 class Gasto_Comun(models.Model):
 

@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from administrador.models import Empresa, Cliente, Moneda, Moneda_Historial
 from accounts.models import UserProfile
 from locales.models import Local, Venta
-from activos.models import Activo, Medidor
+from activos.models import Activo
 from conceptos.models import Concepto
 from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
 from procesos.models import Proceso, Proceso_Detalle
