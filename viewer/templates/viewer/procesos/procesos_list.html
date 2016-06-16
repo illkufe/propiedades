@@ -7,6 +7,154 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
+
+<!-- 				<div class="ibox-title">
+					<h5>Procesar Contratos</h5>
+				</div>
+				<div class="ibox-content">
+					<form id="form-proceso" role="form" action="/procesos/contratos/propuesta" method="POST">
+						<input type="hidden" name="contratos">
+						<h4>Filtar Contratos :</h4>
+						<br>
+						<div class="row">
+
+							<div class="form-group col-sm-3">
+								<div>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
+									<label>Periodo Inicio:</label>
+								</div>
+								<div style="float:left; width:60%">
+									<select class="form-control" id="id_arriendo_detalle_set-0-mes_inicio" name="arriendo_detalle_set-0-mes_inicio">
+										<option value="">---------</option>
+										<option value="1">ENERO</option>
+										<option value="2">FEBRERO</option>
+										<option value="3">MARZO</option>
+										<option value="4">ABRIL</option>
+										<option value="5">MAYO</option>
+										<option value="6">JUNIO</option>
+										<option value="7">JULIO</option>
+										<option value="8">AGOSTO</option>
+										<option value="9">SEPTIEMBRE</option>
+										<option value="10">OCTUBRE</option>
+										<option value="11">NOVIEMBRE</option>
+										<option value="12">DICIEMBRE</option>
+									</select>
+								</div>
+								<div style="float:left; width:35%; margin-left:4%;">
+									<input class="form-control" id="id_valor" name="valor" step="any" type="number">
+								</div>
+							</div>
+
+							<div class="form-group col-sm-3">
+								<div>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
+									<label>Periodo Termino:</label>
+								</div>
+								<div style="float:left; width:60%">
+									<select class="form-control" id="id_arriendo_detalle_set-0-mes_inicio" name="arriendo_detalle_set-0-mes_inicio">
+										<option value="">---------</option>
+										<option value="1">ENERO</option>
+										<option value="2">FEBRERO</option>
+										<option value="3">MARZO</option>
+										<option value="4">ABRIL</option>
+										<option value="5">MAYO</option>
+										<option value="6">JUNIO</option>
+										<option value="7">JULIO</option>
+										<option value="8">AGOSTO</option>
+										<option value="9">SEPTIEMBRE</option>
+										<option value="10">OCTUBRE</option>
+										<option value="11">NOVIEMBRE</option>
+										<option value="12">DICIEMBRE</option>
+									</select>
+								</div>
+								<div style="float:left; width:35%; margin-left:4%;">
+									<input class="form-control" id="id_valor" name="valor" step="any" type="number">
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
+								<label>Activo:</label>
+								<select name="activo" class="form-control">
+									{% for activo in activos %}
+									<option value="{{ activo.id }}">{{ activo.nombre }}</option>
+									{% endfor %}
+								</select>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
+								<label>Conceptos:</label>
+								<select name="concepto" class="form-control">
+									{% for concepto in conceptos %}
+									<option value="{{ concepto.id }}">{{ concepto.nombre }}</option>
+									{% endfor %}
+								</select>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<label>Filtrar</label>
+								<button type="submit" class="btn btn-primary btn-sm btn-w-m">ACEPTAR</button>
+							</div>
+						</div>
+
+						<br>
+						<div class="table-responsive">
+							<table id="tabla-contratos" class="table table-striped table-hover"></table>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12">
+								<button type="submit" class="btn btn-primary btn-sm btn-w-m pull-right">ACEPTAR</button>
+							</div>
+						</div>
+					</form>
+				</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 				<div class="ibox-title">
 					<h5>Procesar Contratos</h5>
 				</div>
@@ -20,7 +168,7 @@
 							<div id="date_range">
 								<div class="input-daterange">
 									<div class="form-group col-sm-2">
-										<!-- <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i> -->
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
 										<label>Fecha Inicio</label>
 										<div class="input-group">
 											<input type="text" id="min" class="form-control" name="fecha_inicio" onchange="asd()">
@@ -31,7 +179,7 @@
 									</div>
 
 									<div class="form-group col-sm-2">
-										<!-- <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i> -->
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
 										<label>Fecha Termino</label>
 										<div class="input-group">
 											<input type="text" id="max" class="form-control" name="fecha_termino" onchange="asd()">
@@ -44,7 +192,7 @@
 							</div>
 
 							<div class="form-group col-sm-2">
-								<!-- <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i> -->
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
 								<label>Activo</label>
 								<select name="activo" class="form-control">
 									{% for activo in activos %}
@@ -54,7 +202,7 @@
 							</div>
 
 							<div class="form-group col-sm-2">
-								<!-- <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i> -->
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
 								<label>Conceptos</label>
 								<select name="concepto" class="form-control">
 									{% for concepto in conceptos %}
@@ -64,7 +212,7 @@
 							</div>
 
 							<div class="form-group col-sm-2">
-								<!-- <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i> -->
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
 								<label>Tipo de Contrato</label>
 								<select name="contrato_tipo" class="form-control">
 									{% for contrato_tipo in contrato_tipos %}
@@ -77,44 +225,42 @@
 							<div class="form-group col-sm-2">
 								<label>Filtrar</label>
 								<button type="submit" class="btn btn-primary btn-sm btn-w-m">ACEPTAR</button>
-							</div>
-						-->
-
-					</div>
-
-					<br>
-					<div class="table-responsive">
-						<table id="tabla-contratos" class="table table-striped table-hover"></table>
-					</div>
-
-					<div class="row">
-						<div class="col-xs-12">
-							<button type="submit" class="btn btn-primary btn-sm btn-w-m pull-right">ACEPTAR</button>
-							<!-- <button type="button" class="btn btn-primary btn-sm btn-w-m pull-right" onclick="send_data_contratos()">PROCESAR</button> -->
+							</div>-->
 						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
 
-<div class="row">
-	<div class="col-lg-12">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title">
-				<h5>Lista de Procesos</h5>
-			</div>
-			<div class="ibox-content">
+						<br>
+						<div class="table-responsive">
+							<table id="tabla-contratos" class="table table-striped table-hover"></table>
+						</div>
 
-				<div class="table-responsive">
-					<table id="tabla-procesos" class="table table-striped table-hover"></table>
+						<div class="row">
+							<div class="col-xs-12">
+								<button type="submit" class="btn btn-primary btn-sm btn-w-m pull-right">ACEPTAR</button>
+								<!-- <button type="button" class="btn btn-primary btn-sm btn-w-m pull-right" onclick="send_data_contratos()">PROCESAR</button> -->
+							</div>
+						</div>
+					</form>
 				</div>
-
 			</div>
 		</div>
 	</div>
-</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Lista de Procesos</h5>
+				</div>
+				<div class="ibox-content">
+
+					<div class="table-responsive">
+						<table id="tabla-procesos" class="table table-striped table-hover"></table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 {% endblock section %}
@@ -122,7 +268,7 @@
 {% block scripts %}
 <script>
 
- 
+
 
 
 
@@ -139,7 +285,7 @@
 
 // 			// console.log(dateStart)
 // 			console.log(dateEnd)
-			
+
 // 			if (evalDate >= dateStart && evalDate <= dateEnd) {
 // 				console.log('si')
 // 				return true;
@@ -399,101 +545,101 @@ function load_tabla_contratos(){
 	tabla_contrato = load_table('#tabla-contratos', columns, configuracion)
 
 	var table = $('#example').DataTable();
- 
+
       // Add event listeners to the two range filtering inputs
       $('#min').keyup( function() { tabla_contrato.draw(); } );
       $('#max').keyup( function() { tabla_contrato.draw(); } );
 
-}
+  }
 
-function load_tabla_procesos(){
-	var columns = [
-	{		
-		'data': 'id',
-		'title': 'ID',
-		'visible': false,
-	},
-	{
-		'width': '15%',
-		'data': 'fecha_inicio',
-		'title': 'FECHA INICIO',
-	},
-	{
-		'width': '15%',
-		'data': 'fecha_termino',
-		'title': 'FECHA TERMINO',
-	},
-	{
-		'width': '20%',
-		'data': 'concepto',
-		'title': 'CONCEPTO',
-	},
-	{
-		'width': '10%',
-		'data': 'total',
-		'title': 'MONTO',
-	},
-	{
-		'width': '20%',
-		'data': 'contratos',
-		'title': 'CONTRATOS',
-	},
-	{
-		'width': '10%',
-		'data': 'estado',
-		'title': 'ESTADO',
-	},
-	{
-		'width': '10%',
-		'data': 'opciones',
-		'orderable': false,
-		'title': ''
-	}];
+  function load_tabla_procesos(){
+  	var columns = [
+  	{		
+  		'data': 'id',
+  		'title': 'ID',
+  		'visible': false,
+  	},
+  	{
+  		'width': '15%',
+  		'data': 'fecha_inicio',
+  		'title': 'FECHA INICIO',
+  	},
+  	{
+  		'width': '15%',
+  		'data': 'fecha_termino',
+  		'title': 'FECHA TERMINO',
+  	},
+  	{
+  		'width': '20%',
+  		'data': 'concepto',
+  		'title': 'CONCEPTO',
+  	},
+  	{
+  		'width': '10%',
+  		'data': 'total',
+  		'title': 'MONTO',
+  	},
+  	{
+  		'width': '20%',
+  		'data': 'contratos',
+  		'title': 'CONTRATOS',
+  	},
+  	{
+  		'width': '10%',
+  		'data': 'estado',
+  		'title': 'ESTADO',
+  	},
+  	{
+  		'width': '10%',
+  		'data': 'opciones',
+  		'orderable': false,
+  		'title': ''
+  	}];
 
-	tabla_procesos = load_table('#tabla-procesos', columns, {})
-}
-
-
-function load_table_data_contratos(){
-
-	$.ajax({
-		url: '/contratos/',
-		type: 'get',
-		dataType: 'json',
-		success: function(data){
-			rows = [];
-
-			for (var i = 0; i < data.length; i++) {
-
-				row = {}
-
-				row.id				= data[i].id
-				row.opciones 		= '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'"></div>'
-				row.numero			= data[i].numero
-				row.fecha_inicio	= data[i].fecha_inicio
-				row.nombre			= data[i].nombre_local
-				row.activo			= data[i].activo
-				row.local			= data[i].id
-
-				rows.push(row)
-			}
-			var asd = $('#tabla-contratos').DataTable();
-			asd.rows.add(rows).draw();
-
-		}
-	})
-}
+  	tabla_procesos = load_table('#tabla-procesos', columns, {})
+  }
 
 
-function load_table_data_procesos(){
+  function load_table_data_contratos(){
 
-	tabla_procesos.clear().draw();
+  	$.ajax({
+  		url: '/contratos/',
+  		type: 'get',
+  		dataType: 'json',
+  		success: function(data){
+  			rows = [];
 
-	$.ajax({
-		url: '/procesos/contratos/propuesta',
-		type: 'get',
-		dataType: 'json',
-		success: function(data){
+  			for (var i = 0; i < data.length; i++) {
+
+  				row = {}
+
+  				row.id				= data[i].id
+  				row.opciones 		= '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'"></div>'
+  				row.numero			= data[i].numero
+  				row.fecha_inicio	= data[i].fecha_inicio
+  				row.nombre			= data[i].nombre_local
+  				row.activo			= data[i].activo
+  				row.local			= data[i].id
+
+  				rows.push(row)
+  			}
+  			var asd = $('#tabla-contratos').DataTable();
+  			asd.rows.add(rows).draw();
+
+  		}
+  	})
+  }
+
+
+  function load_table_data_procesos(){
+
+  	tabla_procesos.clear().draw();
+
+  	$.ajax({
+  		url: '/procesos/contratos/propuesta',
+  		type: 'get',
+  		dataType: 'json',
+  		success: function(data){
 
 			// console.log(data)
 
@@ -521,65 +667,65 @@ function load_table_data_procesos(){
 
 		}
 	})
-}
+  }
 
 
 
 
-function guardar_proceso(){
-	$("#form-proceso").validate({
-		rules: {
-			fecha_inicio: {
-				required: true,
-			},
-			fecha_termino: {
-				required: true,
-			},
-			concepto: {
-				required: true,
-			},
-		},
-		messages: {
-			fecha_inicio: {
-				required: "Campo requerido",
-			},
-			fecha_termino: {
-				required: "Campo requerido",
-			},
-			concepto: {
-				required: "Campo requerido",
-			}
-		},
-		errorPlacement: function(error, element) {
-			error.appendTo(element.closest(".form-group"));
-		},
-		submitHandler: function(form) {
+  function guardar_proceso(){
+  	$("#form-proceso").validate({
+  		rules: {
+  			fecha_inicio: {
+  				required: true,
+  			},
+  			fecha_termino: {
+  				required: true,
+  			},
+  			concepto: {
+  				required: true,
+  			},
+  		},
+  		messages: {
+  			fecha_inicio: {
+  				required: "Campo requerido",
+  			},
+  			fecha_termino: {
+  				required: "Campo requerido",
+  			},
+  			concepto: {
+  				required: "Campo requerido",
+  			}
+  		},
+  		errorPlacement: function(error, element) {
+  			error.appendTo(element.closest(".form-group"));
+  		},
+  		submitHandler: function(form) {
 
-			var contratos 		= []
-			var tabla_contrato 	= $('#tabla-contratos').dataTable();
+  			var contratos 		= []
+  			var tabla_contrato 	= $('#tabla-contratos').dataTable();
 
-			$('.checkbox-contrato:checked', tabla_contrato.fnGetNodes()).each(function(i){
-				contratos.push($(this).val())
-			})
+  			$('.checkbox-contrato:checked', tabla_contrato.fnGetNodes()).each(function(i){
+  				contratos.push($(this).val())
+  			})
 
-			$('input[name="contratos"]').val(contratos)
+  			$('input[name="contratos"]').val(contratos)
 
-			$('#form-proceso').ajaxSubmit({
-				dataType: 'json',
-				success: function(data){
-					load_table_data_procesos()
+  			$('#form-proceso').ajaxSubmit({
+  				dataType: 'json',
+  				success: function(data){
+  					load_table_data_procesos()
 
-					swal({
-						title: "Proceso <small>creado correctamente</small>",
-						text: "<a href='/propuesta/pdf/"+data[0].id+"'><span style='color:#F8BB86'>descargar archivo<span>",
-						type: "success",
-						html: true
-					});
-					
-				}
-			});
-		}
-	}) 
+  					swal({
+  						title: "Proceso <small>creado correctamente</small>",
+  						text: "<a href='/propuesta/pdf/"+data[0].id+"'><span style='color:#F8BB86'>descargar archivo<span>",
+  						type: "success",
+  						html: true
+  					});
+
+  				}
+  			});
+  		}
+  	}) 
 }
 
 

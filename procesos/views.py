@@ -109,9 +109,9 @@ def calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos):
 
 	user 		= User.objects.get(pk=request.user.pk)
 	contratos 	= contratos
-	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
-	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%m/%d/%Y"))
-	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
+	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
+	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%d/%m/%Y"))
+	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
 	meses		= meses_entre_fechas(f_inicio, f_termino)
 	data 		= []
 
@@ -198,11 +198,12 @@ def calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos):
 
 def calculo_arriendo_minimo(request, fecha_inicio, fecha_termino, contratos):
 
+	print ('arriendo minimo')
 	user 		= User.objects.get(pk=request.user.pk)
 	contratos 	= contratos
-	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
-	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%m/%d/%Y"))
-	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
+	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
+	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%d/%m/%Y"))
+	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
 	meses		= meses_entre_fechas(f_inicio, f_termino)
 	data 		= []
 
@@ -286,9 +287,9 @@ def calculo_gasto_comun(request, fecha_inicio, fecha_termino, contratos):
 
 	user 		= User.objects.get(pk=request.user.pk)
 	contratos 	= contratos
-	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
-	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%m/%d/%Y"))
-	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
+	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
+	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%d/%m/%Y"))
+	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
 	meses		= meses_entre_fechas(f_inicio, f_termino)
 	data 		= []
 
@@ -350,9 +351,9 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos):
 
 	user 		= User.objects.get(pk=request.user.pk)
 	contratos 	= contratos
-	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
-	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%m/%d/%Y"))
-	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%m/%d/%Y"))
+	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
+	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%d/%m/%Y"))
+	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
 	meses		= meses_entre_fechas(f_inicio, f_termino)
 	data 		= []
 

@@ -132,7 +132,7 @@ class ContratoMixin(object):
 
 		obj.save()
 
-		generar_contrato_pdf(obj)
+		# generar_contrato_pdf(obj)
 
 		response = super(ContratoMixin, self).form_valid(form)
 		if self.request.is_ajax():

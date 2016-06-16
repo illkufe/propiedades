@@ -92,7 +92,7 @@ class InformacionForm(forms.ModelForm):
 class ArriendoForm(forms.ModelForm):
 
 	moneda = forms.ModelChoiceField(
-		queryset = Moneda.objects.filter(id__in=[2,4,6]),
+		queryset = Moneda.objects.filter(id__in=[2,3,4,6]),
 		widget 	= forms.Select(attrs={'class': 'form-control'})
 		)
 
@@ -132,7 +132,7 @@ class ArriendoForm(forms.ModelForm):
 class ArriendoDetalleForm(forms.ModelForm):
 
 	moneda = forms.ModelChoiceField(
-		queryset = Moneda.objects.filter(id__in=[2,4,5]),
+		queryset = Moneda.objects.filter(id__in=[2,3,4,5]),
 		widget 	= forms.Select(attrs={'class': 'form-control'})
 		)
 
@@ -248,10 +248,7 @@ class ServicioBasicoForm(forms.ModelForm):
 		super(ServicioBasicoForm, self).__init__(*args, **kwargs)
 
 		if contrato is not None:
-
-			# locales_list = contrato.locales.all().values_list('id', flat=True)
 			self.fields['local'].queryset = contrato.locales.all()
-			# self.fields['medidor'].queryset = Medidor.objects.filter(local__in=locales_list)
 
 	class Meta:
 		model 	= Servicio_Basico

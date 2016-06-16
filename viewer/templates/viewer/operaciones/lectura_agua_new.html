@@ -1,0 +1,104 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Nueva Lectura</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+						<div class="col-sm-12">
+
+							<form id="form-lectura-medidor" role="form" action="" method="post" enctype="multipart/form-data">
+								{% csrf_token %}
+
+								<div class="row">
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor.help_text }}" ></i>
+										{{ form.medidor.label_tag }}
+										{{ form.medidor }}
+										<div class="container-error" style="height:20px">
+											{{ form.medidor.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes.help_text }}" ></i>
+										{{ form.mes.label_tag }}
+										{{ form.mes }}
+										<div class="container-error" style="height:20px">
+											{{ form.mes.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha.help_text }}" ></i>
+										{{ form.fecha.label_tag }}
+										<div class="input-group">
+											{{ form.fecha }}
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+
+										<div class="container-error" style="height:20px">
+											{{ form.fecha.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+										{{ form.valor.label_tag }}
+										{{ form.valor }}
+										<div class="container-error" style="height:20px">
+											{{ form.valor.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.imagen_file.help_text }}" ></i>
+										{{ form.imagen_file.label_tag }}
+										{{ form.imagen_file }}
+										<div class="container-error" style="height:20px">
+											{{ form.imagen_file.errors }}
+										</div>
+									</div>
+
+								</div>
+								<br>
+								<div class="row buttons-form">
+									<div class="col-xs-12">
+										<!-- <a href="/lectura-medidores/list">
+											<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
+										</a> -->
+										<button class="btn btn-w-m btn-sm btn-default" type="button" onclick="location.href='/lectura-medidores/list'">CANCELAR</button>
+										<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+										<button class="btn btn-w-m btn-sm btn-primary pull-right margin" type="button" onclick="guardar_formulario_file('{{accion}}', 'form-lectura-medidor')">GUARDAR Y SEGUIR</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+});
+
+
+</script>
+{% endblock scripts %}

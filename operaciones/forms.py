@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
-# from activos.models import Medidor
-from .models import Lectura_Medidor
-
+from .models import Lectura_Medidor, Lectura_Electricidad, Lectura_Agua, Lectura_Gas
 
 class LecturaMedidorForm(forms.ModelForm):
 
@@ -17,13 +15,11 @@ class LecturaMedidorForm(forms.ModelForm):
 		widgets = {
 			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
 			'mes'			: forms.Select(attrs={'class': 'form-control'}),
-			# 'medidor'		: forms.Select(attrs={'class': 'form-control'}),
 			'imagen_file'	: forms.FileInput(attrs={'class': 'file-format'}),
 		}
 
 		error_messages = {
-			'valor' 	: {'required': 'campo requerido.'},
-			# 'medidor'	: {'required': 'campo requerido.'},
+			'valor' 		: {'required': 'campo requerido.'},
 		}
 
 		labels = {
@@ -33,6 +29,89 @@ class LecturaMedidorForm(forms.ModelForm):
 
 		help_texts = {
 			'valor'			: '...',
-			# 'medidor'		: '...',
+			'imagen_file'	: '...',
+		}
+
+class LecturaElectricidadForm(forms.ModelForm):
+
+	class Meta:
+
+		model 	= Lectura_Electricidad
+		fields 	= '__all__'
+		exclude = [ 'visible', 'creado_en', 'user', 'imagen_type', 'imagen_size']
+
+		widgets = {
+			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'mes'			: forms.Select(attrs={'class': 'form-control'}),
+			'imagen_file'	: forms.FileInput(attrs={'class': 'file-format'}),
+		}
+
+		error_messages = {
+			'valor' 		: {'required': 'campo requerido.'},
+		}
+
+		labels = {
+			'valor'			: 'Lectura',
+			'imagen_file'	: 'Cargar Imagen',
+		}
+
+		help_texts = {
+			'valor'			: '...',
+			'imagen_file'	: '...',
+		}
+
+class LecturaAguaForm(forms.ModelForm):
+
+	class Meta:
+
+		model 	= Lectura_Agua
+		fields 	= '__all__'
+		exclude = [ 'visible', 'creado_en', 'user', 'imagen_type', 'imagen_size']
+
+		widgets = {
+			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'mes'			: forms.Select(attrs={'class': 'form-control'}),
+			'imagen_file'	: forms.FileInput(attrs={'class': 'file-format'}),
+		}
+
+		error_messages = {
+			'valor' 		: {'required': 'campo requerido.'},
+		}
+
+		labels = {
+			'valor'			: 'Lectura',
+			'imagen_file'	: 'Cargar Imagen',
+		}
+
+		help_texts = {
+			'valor'			: '...',
+			'imagen_file'	: '...',
+		}
+
+class LecturaGasForm(forms.ModelForm):
+
+	class Meta:
+
+		model 	= Lectura_Gas
+		fields 	= '__all__'
+		exclude = [ 'visible', 'creado_en', 'user', 'imagen_type', 'imagen_size']
+
+		widgets = {
+			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'mes'			: forms.Select(attrs={'class': 'form-control'}),
+			'imagen_file'	: forms.FileInput(attrs={'class': 'file-format'}),
+		}
+
+		error_messages = {
+			'valor' 		: {'required': 'campo requerido.'},
+		}
+
+		labels = {
+			'valor'			: 'Lectura',
+			'imagen_file'	: 'Cargar Imagen',
+		}
+
+		help_texts = {
+			'valor'			: '...',
 			'imagen_file'	: '...',
 		}
