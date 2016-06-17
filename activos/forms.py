@@ -237,7 +237,6 @@ class GasForm(forms.ModelForm):
 			'numero_rotulo'	: 'Número Rótulo',
 		}
 
-
 class LocalForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):

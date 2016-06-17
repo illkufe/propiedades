@@ -8,6 +8,14 @@ $('.format-rut').mask('A00.000.000-B',{
 	}
 });
 
+
+// $('.format-rut').Rut({
+// 	on_error: function(){
+// 		console.log($(this))
+// 	},
+// 	format_on: 'keyup'
+// })
+
 $('.format-date').datepicker({
 	todayBtn: 'linked',
 	keyboardNavigation: false,

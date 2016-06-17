@@ -213,6 +213,12 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 			queryset.fecha_activacion = queryset.fecha_activacion.strftime('%d/%m/%Y')
 		if queryset.fecha_renovacion:
 			queryset.fecha_renovacion = queryset.fecha_renovacion.strftime('%d/%m/%Y')
+		if queryset.fecha_remodelacion:
+			queryset.fecha_remodelacion = queryset.fecha_remodelacion.strftime('%d/%m/%Y')
+		if queryset.fecha_aviso:
+			queryset.fecha_aviso = queryset.fecha_aviso.strftime('%d/%m/%Y')
+		if queryset.fecha_plazo:
+			queryset.fecha_plazo = queryset.fecha_plazo.strftime('%d/%m/%Y')
 
 		return queryset
 

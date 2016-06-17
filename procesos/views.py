@@ -16,7 +16,6 @@ from procesos.models import Proceso, Proceso_Detalle
 from operaciones.models import Lectura_Medidor
 
 from django.db.models import Sum
-from reportlab.pdfgen import canvas
 from datetime import datetime, timedelta
 import calendar
 import os
@@ -26,14 +25,8 @@ import pdfkit
 
 def procesos_list(request):
 
-	data = [
-	{'nombre':'Procesos', 'path':'@'},
-	{'nombre':'Calculo de Concepto', 'path':'@'},
-	]
-
 	conceptos 		= Concepto.objects.all()
 	activos 		= Activo.objects.all()
-	contrato_tipos 	= Contrato_Tipo.objects.all()
 
 	return render(request, 'viewer/procesos/procesos_list.html',{
 		'title': 'Cálculo de Conceptos',
@@ -42,7 +35,6 @@ def procesos_list(request):
 		'href': 'contratos-tipo',
 		'conceptos': conceptos,
 		'activos': activos,
-		'contrato_tipos': contrato_tipos, 
 		})
 
 class PROCESOS(View):

@@ -44,13 +44,16 @@ class ContratoForm(forms.ModelForm):
 	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_activacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
+	fecha_remodelacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
+	fecha_plazo			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
+	fecha_aviso			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'}, label='Fecha aviso comercial')
 
 	locales 			= forms.ModelMultipleChoiceField(queryset=Local.objects.all(),widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}))
 	conceptos 			= forms.ModelMultipleChoiceField(queryset=Concepto.objects.all(),required=False,widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}))
 
 	contrato_estado 	= forms.ModelChoiceField(queryset=Contrato_Estado.objects.all(),initial="Borrador",widget=forms.Select(attrs={'class': 'form-control'}))
 	cliente 			= forms.ModelChoiceField(queryset=Cliente.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'})
-	contrato_tipo 		= forms.ModelChoiceField(queryset=Contrato_Tipo.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'})
+	contrato_tipo 		= forms.ModelChoiceField(queryset=Contrato_Tipo.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'}, label='Tipo de Contrato')
 
 
 	class Meta:
@@ -71,8 +74,8 @@ class ContratoForm(forms.ModelForm):
 		}
 
 		labels = {
-			'numero'			: 'Número',
-			'nombre_local'		: 'Nombre Fantasía',
+			'numero'			: 'Nº Contrato',
+			'nombre_local'		: 'Nombre de Fantasía',
 			'fecha_renovacion'	: 'Fecha Renovación',
 		}
 
@@ -194,8 +197,10 @@ class GastoComunForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
 		super(GastoComunForm, self).__init__(*args, **kwargs)
+
 		# user 		= User.objects.get(pk=self.request.user.pk)
 		# profile 	= UserProfile.objects.get(user=user)
+
 		if contrato is not None:
 			self.fields['local'].queryset = contrato.locales.all()
 
@@ -203,6 +208,7 @@ class GastoComunForm(forms.ModelForm):
 	moneda = forms.ModelChoiceField(
 		queryset = Moneda.objects.filter(id__in=[2,4,5]),
 		widget 	= forms.Select(attrs={'class': 'form-control moneda','disabled':'disabled'})
+
 		)
 
 	class Meta:

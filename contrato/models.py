@@ -47,6 +47,10 @@ class Contrato(models.Model):
 	fecha_habilitacion 	= models.DateField()
 	fecha_activacion 	= models.DateField()
 	fecha_renovacion 	= models.DateField()
+	fecha_remodelacion 	= models.DateField()
+	fecha_aviso 		= models.DateField()
+	fecha_plazo 		= models.DateField()
+
 	comentario 			= models.TextField(blank=True)
 
 	# atributos (por defecto)
