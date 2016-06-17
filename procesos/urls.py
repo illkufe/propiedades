@@ -12,6 +12,8 @@ urlpatterns = [
 	url(r'^procesos/list/$', views.procesos_list, name='procesos_list'),
 	url(r'^propuesta/pdf/(?P<pk>\d+)$', views.propuesta_pdf, name='propuesta_pdf'),
 
+	url(r'^proceso/filtar-contratos$', views.filtrar_contratos, name='filtrar_contratos'),
+
 ]
 
 

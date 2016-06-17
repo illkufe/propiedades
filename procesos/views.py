@@ -63,8 +63,6 @@ class PROCESOS(View):
 	
 	def post(self, request):
 
-		print ('crear proceso')
-
 		var_post 		= request.POST.copy()
 		contratos 		= var_post.get('contratos').split(",")
 		fecha_inicio 	= var_post.get('fecha_inicio')
@@ -103,6 +101,41 @@ class PROCESOS(View):
 				})
 
 		return JsonResponse(data, safe=False)
+
+
+
+
+def filtrar_contratos(request):
+
+	data 		= list()
+	var_post 	= request.POST.copy()
+
+	mes_inicio	= var_post['mes_inicio']
+	ano_inicio	= var_post['ano_inicio']
+	mes_termino	= var_post['mes_termino']
+	ano_termino	= var_post['ano_termino']
+	activo_id	= var_post['activo']
+	concepto 	= var_post['concepto']
+
+	fecha_inicio 	= primer_dia(datetime.strptime('01/'+mes_inicio+'/'+ano_inicio+'', "%d/%m/%Y"))
+	fecha_termino 	= ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+ano_termino+'', "%d/%m/%Y"))
+	activo 			= Activo.objects.get(id=activo_id)
+	locales 		= activo.local_set.all().values_list('id', flat=True)
+	contratos 		= Contrato.objects.filter(locales__in=locales, fecha_habilitacion__lt=fecha_inicio, fecha_termino__gt=fecha_termino, visible=True).distinct()
+
+	for contrato in contratos:
+		data.append({
+			'id'					: contrato.id,
+			'numero'				: contrato.numero,
+			'fecha_inicio'			: contrato.fecha_inicio,
+			'fecha_termino'			: contrato.fecha_termino,
+			'fecha_habilitacion'	: contrato.fecha_habilitacion,
+			'cliente'				: contrato.cliente.nombre,
+			'locales'				: 'locales', # {falta: poner locales}
+		})	
+
+	return JsonResponse(data, safe=False)
+
 
 
 def calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos):
@@ -440,7 +473,6 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos):
 
 	return data
 
-
 def primer_dia(fecha):
 
 	dia 	= '01'
@@ -451,7 +483,6 @@ def primer_dia(fecha):
 
 	return fecha
 
-
 def ultimo_dia(fecha):
 
 	dia 	= str(calendar.monthrange(fecha.year, fecha.month)[1])
@@ -461,7 +492,6 @@ def ultimo_dia(fecha):
 	fecha 	= datetime.strptime(fecha, "%d/%m/%Y")
 
 	return fecha
-
 
 def meses_entre_fechas(f_inicio, f_termino):
 	delta = 0
@@ -476,8 +506,6 @@ def meses_entre_fechas(f_inicio, f_termino):
 
 	return delta + 1
 
-
-
 def sumar_meses(fecha, meses):
 	month 	= fecha.month - 1 + meses
 	year 	= int(fecha.year + month / 12 )
@@ -486,8 +514,6 @@ def sumar_meses(fecha, meses):
 	fecha 	= str(day)+'/'+str(month)+'/'+str(year)
 
 	return datetime.strptime(fecha, "%d/%m/%Y")
-
-
 
 def propuesta_pdf(proceso, pk=None):
 

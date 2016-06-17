@@ -1016,3 +1016,48 @@ def arriendo(request, id=None):
 
 	return render(request, 'viewer/contratos/contrato_arriendo.html', {'form': form})
 
+# viewer/templates/procesos/procesos_list.html
+
+function send_data_contratos(){
+
+	var data 			= {}
+	var contratos 		= []
+	var tabla_contrato 	= $('#tabla-contratos').dataTable();
+	
+	data.fecha_inicio 	= '01-01-2015' //{falta, agregar la fecha que correponda}
+	data.fecha_termino 	= '31-12-2015' //{falta, agregar la fecha que correponda}
+
+	$('.checkbox-contrato:checked', tabla_contrato.fnGetNodes()).each(function(i){
+
+		contrato 			= {}
+		contrato.id 		= $(this).val()
+		contrato.conceptos 	= [1] //{falta, agregar la fecha que correponda}
+
+		contratos.push(contrato)
+	})
+
+	data.contratos = JSON.stringify(contratos)
+
+	console.log(data)
+
+	$.ajax({
+		url: '/procesos/contratos/propuesta',
+		type: 'POST',
+		data: data,
+		success: function (response) {
+			console.log(response)
+		},
+		error: function(response){
+
+		}
+	})
+
+	// $.post('/procesos/contratos/propuesta',{
+	// 	'data': data,
+	// 	csrfmiddlewaretoken: getCookie('csrftoken')
+	// },
+	// function(response){
+	// 	console.log(response)
+	// })
+
+}

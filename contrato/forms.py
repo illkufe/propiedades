@@ -72,7 +72,7 @@ class ContratoForm(forms.ModelForm):
 
 		labels = {
 			'numero'			: 'Número',
-			'nombre_local'		: 'Nombre Local',
+			'nombre_local'		: 'Nombre Fantasía',
 			'fecha_renovacion'	: 'Fecha Renovación',
 		}
 
