@@ -24,215 +24,215 @@ class AjaxableResponseMixinMedidor(object):
 		else:
 			return response
 
-	def form_valid(self, form):
+			def form_valid(self, form):
 
-		obj = form.save(commit=False)
-		obj.activo_id = self.kwargs['activo_id']
-		obj.save()
+				obj = form.save(commit=False)
+				obj.activo_id = self.kwargs['activo_id']
+				obj.save()
 
-		response = super(AjaxableResponseMixinMedidor, self).form_valid(form)
-		if self.request.is_ajax():
-			data = {
-				'pk': 'self.object.pk',
-			}
-			return JsonResponse(data)
-		else:
-			return response
+				response = super(AjaxableResponseMixinMedidor, self).form_valid(form)
+				if self.request.is_ajax():
+					data = {
+					'pk': 'self.object.pk',
+					}
+					return JsonResponse(data)
+				else:
+					return response
 
-class MedidorNew(AjaxableResponseMixinMedidor, FormView):
+					class MedidorNew(AjaxableResponseMixinMedidor, FormView):
 
-	def get_context_data(self, **kwargs):
-		
-		context = super(MedidorNew, self).get_context_data(**kwargs)
-		context['title'] = 'Activos'
-		context['subtitle'] = 'Medidor'
-		context['name'] = 'Nuevo'
-		context['href'] = 'medidores'
-		context['accion'] = 'create'
-		context['activo_id']	= self.kwargs['activo_id']
+						def get_context_data(self, **kwargs):
+							
+							context = super(MedidorNew, self).get_context_data(**kwargs)
+							context['title'] = 'Activos'
+							context['subtitle'] = 'Medidor'
+							context['name'] = 'Nuevo'
+							context['href'] = 'medidores'
+							context['accion'] = 'create'
+							context['activo_id']	= self.kwargs['activo_id']
 
-		return context
-	
-class MedidorList(ListView):
-	model = Medidor
-	template_name = 'viewer/activos/medidor_list.html'
+							return context
+							
+							class MedidorList(ListView):
+								model = Medidor
+								template_name = 'viewer/activos/medidor_list.html'
 
-	def get_context_data(self, **kwargs):
-		context = super(MedidorList, self).get_context_data(**kwargs)
-		context['title'] = 'Activos'
-		context['subtitle'] = 'Medidor'
-		context['name'] = 'Lista'
-		context['href'] = 'medidores'
+								def get_context_data(self, **kwargs):
+									context = super(MedidorList, self).get_context_data(**kwargs)
+									context['title'] = 'Activos'
+									context['subtitle'] = 'Medidor'
+									context['name'] = 'Lista'
+									context['href'] = 'medidores'
 
-		return context
+									return context
 
-	def get_queryset(self):
+									def get_queryset(self):
 
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profile 	= UserProfile.objects.get(user=user)
-		activos 	= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
+										user 		= User.objects.get(pk=self.request.user.pk)
+										profile 	= UserProfile.objects.get(user=user)
+										activos 	= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
 
-		queryset 	= Medidor.objects.filter(activo_id__in=activos, visible=True)
+										queryset 	= Medidor.objects.filter(activo_id__in=activos, visible=True)
 
-		return queryset
+										return queryset
 
-class MedidorDelete(DeleteView):
-	model = Medidor
-	success_url = reverse_lazy('/locales/list')
+										class MedidorDelete(DeleteView):
+											model = Medidor
+											success_url = reverse_lazy('/locales/list')
 
-	def delete(self, request, *args, **kwargs):
-		self.object = self.get_object()
-		self.object.visible = False
-		self.object.save()
-		payload = {'delete': 'ok'}
-		return JsonResponse(payload, safe=False)
+											def delete(self, request, *args, **kwargs):
+												self.object = self.get_object()
+												self.object.visible = False
+												self.object.save()
+												payload = {'delete': 'ok'}
+												return JsonResponse(payload, safe=False)
 
-class MedidorUpdate(UpdateView):
+												class MedidorUpdate(UpdateView):
 
-	model = Medidor
-	form_class = MedidorForm
-	template_name = 'viewer/activos/medidor_new.html'
-	success_url = '/medidores/list'
+													model = Medidor
+													form_class = MedidorForm
+													template_name = 'viewer/activos/medidor_new.html'
+													success_url = '/medidores/list'
 
-	def get_context_data(self, **kwargs):
-		
-		context = super(MedidorUpdate, self).get_context_data(**kwargs)
-		context['title'] = 'Activos'
-		context['subtitle'] = 'Medidor'
-		context['name'] = 'Editar'
-		context['href'] = 'medidores'
-		context['accion'] = 'update'
-		return context
+													def get_context_data(self, **kwargs):
+														
+														context = super(MedidorUpdate, self).get_context_data(**kwargs)
+														context['title'] = 'Activos'
+														context['subtitle'] = 'Medidor'
+														context['name'] = 'Editar'
+														context['href'] = 'medidores'
+														context['accion'] = 'update'
+														return context
 
 
 # viewer/templates/activos/activo_medidor_new.html
 
 <div class="ibox-title">
-	<h5>Medidores</h5>
+<h5>Medidores</h5>
 </div>
 
 <div class="ibox-content">
-	<br>
-	<div class="row">
-		<div class="col-sm-12">
+<br>
+<div class="row">
+<div class="col-sm-12">
 
-			{{ form_medidor.management_form }}
-			{% for form in form_medidor %}
-			{% for hidden in form.hidden_fields %}
-			{{ hidden }}
-			{% endfor %}
-			{% endfor %}
+{{ form_medidor.management_form }}
+{% for form in form_medidor %}
+{% for hidden in form.hidden_fields %}
+{{ hidden }}
+{% endfor %}
+{% endfor %}
 
-			<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Medidor</button>
-			<table id="tabla-medidor" class="table">
-				<thead>
-					{% for form in form_medidor %}
-					{% if forloop.first %}
-					<th>
-						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
-						{{ form.nombre.label_tag }}
-					</th>
-					<th>
-						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero_rotulo.help_text }}" ></i>
-						{{ form.numero_rotulo.label_tag }}
-					</th>
-					<th>
-						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia.help_text }}" ></i>
-						{{ form.potencia.label_tag }}
-					</th>
-					<th>
-						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_presente.help_text }}" ></i>
-						{{ form.potencia_presente.label_tag }}
-					</th>
-					<th>
-						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_fuera.help_text }}" ></i>
-						{{ form.potencia_fuera.label_tag }}
-					</th>
-					<th>
-						<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor_tipo.help_text }}" ></i>
-						{{ form.medidor_tipo.label_tag }}
-					</th>
-					<th></th>
-					{% endif %}
-					{% endfor %}
-				</thead>
-				<tbody>
-					{% for form in form_medidor %}
-					<tr>
-						<td>
+<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Medidor</button>
+<table id="tabla-medidor" class="table">
+<thead>
+{% for form in form_medidor %}
+{% if forloop.first %}
+<th>
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+{{ form.nombre.label_tag }}
+</th>
+<th>
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero_rotulo.help_text }}" ></i>
+{{ form.numero_rotulo.label_tag }}
+</th>
+<th>
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia.help_text }}" ></i>
+{{ form.potencia.label_tag }}
+</th>
+<th>
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_presente.help_text }}" ></i>
+{{ form.potencia_presente.label_tag }}
+</th>
+<th>
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_fuera.help_text }}" ></i>
+{{ form.potencia_fuera.label_tag }}
+</th>
+<th>
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor_tipo.help_text }}" ></i>
+{{ form.medidor_tipo.label_tag }}
+</th>
+<th></th>
+{% endif %}
+{% endfor %}
+</thead>
+<tbody>
+{% for form in form_medidor %}
+<tr>
+<td>
 
-							<div class="form-group">
-								{{ form.nombre }}
-								<div class="container-error" style="height:20px">
-									{{ form.nombre.errors }}
-								</div>
-							</div>
-						</td>
-						<td>
+<div class="form-group">
+{{ form.nombre }}
+<div class="container-error" style="height:20px">
+{{ form.nombre.errors }}
+</div>
+</div>
+</td>
+<td>
 
-							<div class="form-group">
-								{{ form.numero_rotulo }}
-								<div class="container-error" style="height:20px">
-									{{ form.numero_rotulo.errors }}
-								</div>
-							</div>
-						</td>
-						<td>
+<div class="form-group">
+{{ form.numero_rotulo }}
+<div class="container-error" style="height:20px">
+{{ form.numero_rotulo.errors }}
+</div>
+</div>
+</td>
+<td>
 
-							<div class="form-group">
+<div class="form-group">
 
-								{{ form.potencia }}
-								<div class="container-error" style="height:20px">
-									{{ form.potencia.errors }}
-								</div>
-							</div>
-						</td>
-						<td>
+{{ form.potencia }}
+<div class="container-error" style="height:20px">
+{{ form.potencia.errors }}
+</div>
+</div>
+</td>
+<td>
 
-							<div class="form-group">
+<div class="form-group">
 
-								{{ form.potencia_presente }}
-								<div class="container-error" style="height:20px">
-									{{ form.potencia_presente.errors }}
-								</div>
-							</div>
-						</td>
-						<td>
-							<div class="form-group">
+{{ form.potencia_presente }}
+<div class="container-error" style="height:20px">
+{{ form.potencia_presente.errors }}
+</div>
+</div>
+</td>
+<td>
+<div class="form-group">
 
-								{{ form.potencia_fuera }}
-								<div class="container-error" style="height:20px">
-									{{ form.potencia_fuera.errors }}
-								</div>
-							</div>
-						</td>
-						<td class="text-center">
+{{ form.potencia_fuera }}
+<div class="container-error" style="height:20px">
+{{ form.potencia_fuera.errors }}
+</div>
+</div>
+</td>
+<td class="text-center">
 
-							<div class="form-group">
+<div class="form-group">
 
-								{{ form.medidor_tipo }}
-								<div class="container-error" style="height:20px">
-									{{ form.medidor_tipo.errors }}
-								</div>
-							</div>
-						</td>
-						<td class="text-center delete">
+{{ form.medidor_tipo }}
+<div class="container-error" style="height:20px">
+{{ form.medidor_tipo.errors }}
+</div>
+</div>
+</td>
+<td class="text-center delete">
 
-							<div class="form-group text-center">
-								{{ form.DELETE }}
-								<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Medidor')"><i class="fa fa-trash"></i></a>
-							</div>
-						</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
-	<br>
-	<a href="/activos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
-	<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-	<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+<div class="form-group text-center">
+{{ form.DELETE }}
+<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Medidor')"><i class="fa fa-trash"></i></a>
+</div>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+<br>
+<a href="/activos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
 </div>
 
 
@@ -245,207 +245,207 @@ class MedidorForm(forms.ModelForm):
 		fields 	= ['nombre','numero_rotulo','potencia','potencia_presente','potencia_fuera','medidor_tipo']
 
 		widgets = {
-			'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
-			'numero_rotulo'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'potencia'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			'potencia_presente'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'potencia_fuera'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'medidor_tipo'		: forms.Select(attrs={'class': 'form-control'}),
+		'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
+		'numero_rotulo'		: forms.TextInput(attrs={'class': 'form-control'}),
+		'potencia'			: forms.NumberInput(attrs={'class': 'form-control'}),
+		'potencia_presente'	: forms.NumberInput(attrs={'class': 'form-control'}),
+		'potencia_fuera'	: forms.NumberInput(attrs={'class': 'form-control'}),
+		'medidor_tipo'		: forms.Select(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
-			'nombre' 		: {'required': 'Esta campo es requerido.'},
-			'numero_rotulo' : {'required': 'Esta campo es requerido.'},
-			'medidor_tipo' 	: {'required': 'Esta campo es requerido.'},
+		'nombre' 		: {'required': 'Esta campo es requerido.'},
+		'numero_rotulo' : {'required': 'Esta campo es requerido.'},
+		'medidor_tipo' 	: {'required': 'Esta campo es requerido.'},
 		}
 
 		help_texts = {
-            'nombre'			: '...',
-            'numero_rotulo'		: '...',
-            'potencia'			: '...',
-            'potencia_presente'	: '...',
-            'potencia_fuera'	: '...',
-            'medidor_tipo'		: '...',
-        }
-
-		labels = {
-			'numero_rotulo'	: 'Número Rótulo',
-			'medidor_tipo'	: 'Tipo de Medidor',
+		'nombre'			: '...',
+		'numero_rotulo'		: '...',
+		'potencia'			: '...',
+		'potencia_presente'	: '...',
+		'potencia_fuera'	: '...',
+		'medidor_tipo'		: '...',
 		}
 
-MedidorFormSet 	= inlineformset_factory(Activo, Medidor, form=MedidorForm, extra=1, can_delete=True)
+		labels = {
+		'numero_rotulo'	: 'Número Rótulo',
+		'medidor_tipo'	: 'Tipo de Medidor',
+		}
+
+		MedidorFormSet 	= inlineformset_factory(Activo, Medidor, form=MedidorForm, extra=1, can_delete=True)
 
 
 # viewer/templates/viewer/contratos/contrato_new.html
 
 <div class="ibox-title">
-	<h5>Nuevo Tipo de Contrato</h5>
+<h5>Nuevo Tipo de Contrato</h5>
 </div>
 
 <div class="ibox-content">
-	<div class="row">
-		<div class="col-xs-12">
-			<div>
+<div class="row">
+<div class="col-xs-12">
+<div>
 
-				<ul class="nav nav-tabs" role="tablist">
-					<li role="presentation" class="active"><a href="#page-1" aria-controls="page-1" role="tab" data-toggle="tab">Información General</a></li>
-					<li role="presentation"><a href="#page-2" aria-controls="page-2" role="tab" data-toggle="tab">Conceptos</a></li>
-					<li role="presentation"><a href="#page-3" aria-controls="page-3" role="tab" data-toggle="tab">Prorroga</a></li>
-					<li role="presentation"><a href="#page-4" aria-controls="page-4" role="tab" data-toggle="tab">Clausulas Conceptos</a></li>
-					<li role="presentation"><a href="#page-5" aria-controls="page-5" role="tab" data-toggle="tab">Poliza</a></li>
-				</ul>
+<ul class="nav nav-tabs" role="tablist">
+<li role="presentation" class="active"><a href="#page-1" aria-controls="page-1" role="tab" data-toggle="tab">Información General</a></li>
+<li role="presentation"><a href="#page-2" aria-controls="page-2" role="tab" data-toggle="tab">Conceptos</a></li>
+<li role="presentation"><a href="#page-3" aria-controls="page-3" role="tab" data-toggle="tab">Prorroga</a></li>
+<li role="presentation"><a href="#page-4" aria-controls="page-4" role="tab" data-toggle="tab">Clausulas Conceptos</a></li>
+<li role="presentation"><a href="#page-5" aria-controls="page-5" role="tab" data-toggle="tab">Poliza</a></li>
+</ul>
 
-				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="page-1">
-						<br>
-						<br>
+<div class="tab-content">
+<div role="tabpanel" class="tab-pane active" id="page-1">
+<br>
+<br>
 
-						<form id="form-contrato-new" role="form" action="" method="post">
-							{% csrf_token %}
-							<div class="row">
+<form id="form-contrato-new" role="form" action="" method="post">
+{% csrf_token %}
+<div class="row">
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_local.help_text }}" ></i>
-									{{ form.metros_local.label_tag }}
-									{{ form.metros_local }}
-									<div class="container-error" style="height:20px">
-										{{ form.metros_local.errors }}
-									</div>
-								</div>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_local.help_text }}" ></i>
+{{ form.metros_local.label_tag }}
+{{ form.metros_local }}
+<div class="container-error" style="height:20px">
+{{ form.metros_local.errors }}
+</div>
+</div>
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_otros.help_text }}" ></i>
-									{{ form.metros_otros.label_tag }}
-									{{ form.metros_otros }}
-									<div class="container-error" style="height:20px">
-										{{ form.metros_otros.errors }}
-									</div>
-								</div>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_otros.help_text }}" ></i>
+{{ form.metros_otros.label_tag }}
+{{ form.metros_otros }}
+<div class="container-error" style="height:20px">
+{{ form.metros_otros.errors }}
+</div>
+</div>
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_local.help_text }}" ></i>
-									{{ form.arriendo_local.label_tag }}
-									{{ form.arriendo_local }}
-									<div class="container-error" style="height:20px">
-										{{ form.arriendo_local.errors }}
-									</div>
-								</div>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_local.help_text }}" ></i>
+{{ form.arriendo_local.label_tag }}
+{{ form.arriendo_local }}
+<div class="container-error" style="height:20px">
+{{ form.arriendo_local.errors }}
+</div>
+</div>
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_otros.help_text }}" ></i>
-									{{ form.arriendo_otros.label_tag }}
-									{{ form.arriendo_otros }}
-									<div class="container-error" style="height:20px">
-										{{ form.arriendo_otros.errors }}
-									</div>
-								</div>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_otros.help_text }}" ></i>
+{{ form.arriendo_otros.label_tag }}
+{{ form.arriendo_otros }}
+<div class="container-error" style="height:20px">
+{{ form.arriendo_otros.errors }}
+</div>
+</div>
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_porcentual.help_text }}" ></i>
-									{{ form.arriendo_porcentual.label_tag }}
-									{{ form.arriendo_porcentual }}
-									<div class="container-error" style="height:20px">
-										{{ form.arriendo_porcentual.errors }}
-									</div>
-								</div>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_porcentual.help_text }}" ></i>
+{{ form.arriendo_porcentual.label_tag }}
+{{ form.arriendo_porcentual }}
+<div class="container-error" style="height:20px">
+{{ form.arriendo_porcentual.errors }}
+</div>
+</div>
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.reajuste_porcentaje.help_text }}" ></i>
-									{{ form.reajuste_porcentaje.label_tag }}
-									{{ form.reajuste_porcentaje }}
-									<div class="container-error" style="height:20px">
-										{{ form.reajuste_porcentaje.errors }}
-									</div>
-								</div>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.reajuste_porcentaje.help_text }}" ></i>
+{{ form.reajuste_porcentaje.label_tag }}
+{{ form.reajuste_porcentaje }}
+<div class="container-error" style="height:20px">
+{{ form.reajuste_porcentaje.errors }}
+</div>
+</div>
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.reajuste_meses.help_text }}" ></i>
-									{{ form.reajuste_meses.label_tag }}
-									{{ form.reajuste_meses }}
-									<div class="container-error" style="height:20px">
-										{{ form.reajuste_meses.errors }}
-									</div>
-								</div>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.reajuste_meses.help_text }}" ></i>
+{{ form.reajuste_meses.label_tag }}
+{{ form.reajuste_meses }}
+<div class="container-error" style="height:20px">
+{{ form.reajuste_meses.errors }}
+</div>
+</div>
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fondo_promocion.help_text }}" ></i>
-									{{ form.fondo_promocion.label_tag }}
-									{{ form.fondo_promocion }}
-									<div class="container-error" style="height:20px">
-										{{ form.fondo_promocion.errors }}
-									</div>
-								</div>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fondo_promocion.help_text }}" ></i>
+{{ form.fondo_promocion.label_tag }}
+{{ form.fondo_promocion }}
+<div class="container-error" style="height:20px">
+{{ form.fondo_promocion.errors }}
+</div>
+</div>
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cuota_promocion.help_text }}" ></i>
-									{{ form.cuota_promocion.label_tag }}
-									{{ form.cuota_promocion }}
-									<div class="container-error" style="height:20px">
-										{{ form.cuota_promocion.errors }}
-									</div>
-								</div>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cuota_promocion.help_text }}" ></i>
+{{ form.cuota_promocion.label_tag }}
+{{ form.cuota_promocion }}
+<div class="container-error" style="height:20px">
+{{ form.cuota_promocion.errors }}
+</div>
+</div>
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.gasto_comun_local.help_text }}" ></i>
-									{{ form.gasto_comun_local.label_tag }}
-									{{ form.gasto_comun_local }}
-									<div class="container-error" style="height:20px">
-										{{ form.gasto_comun_local.errors }}
-									</div>
-								</div>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.gasto_comun_local.help_text }}" ></i>
+{{ form.gasto_comun_local.label_tag }}
+{{ form.gasto_comun_local }}
+<div class="container-error" style="height:20px">
+{{ form.gasto_comun_local.errors }}
+</div>
+</div>
 
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.gasto_comun_otros.help_text }}" ></i>
-									{{ form.gasto_comun_otros.label_tag }}
-									{{ form.gasto_comun_otros }}
-									<div class="container-error" style="height:20px">
-										{{ form.gasto_comun_otros.errors }}
-									</div>
-								</div>
-							</div>
-							<br>
+<div class="form-group col-sm-3">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.gasto_comun_otros.help_text }}" ></i>
+{{ form.gasto_comun_otros.label_tag }}
+{{ form.gasto_comun_otros }}
+<div class="container-error" style="height:20px">
+{{ form.gasto_comun_otros.errors }}
+</div>
+</div>
+</div>
+<br>
 
-							<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-							<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
-							<a href="/contratos-tipo/list"><button class="btn btn-w-m btn-sm btn-success pull-right" type="button" style="margin-right: 15px;">CANCELAR</button></a>
-						</form>
-					</div>
+<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+<a href="/contratos-tipo/list"><button class="btn btn-w-m btn-sm btn-success pull-right" type="button" style="margin-right: 15px;">CANCELAR</button></a>
+</form>
+</div>
 
-					<div role="tabpanel" class="tab-pane" id="page-2"></div>
+<div role="tabpanel" class="tab-pane" id="page-2"></div>
 
-					<div role="tabpanel" class="tab-pane" id="page-3">
-						<br>
-						<br>
-						<table id="tabla-formulas" class="table table-striped">
-							<thead> 
-								<tr> 
-									<th>Nº Secuencia</th>
-									<th>F.Inicio</th>
-									<th>F.Termino</th>
-									<th>Nº Meses</th>
-									<th>F. Apertura</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><input type="text"></td>
-									<td><input type="text"></td>
-									<td><input type="text"></td>
-									<td><input type="text"></td>
-									<td><input type="text"></td>
-								</tr>
-							</tbody> 
-						</table>
-						<br>
-						<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button">GUARDAR</button>
-					</div>
+<div role="tabpanel" class="tab-pane" id="page-3">
+<br>
+<br>
+<table id="tabla-formulas" class="table table-striped">
+<thead> 
+<tr> 
+<th>Nº Secuencia</th>
+<th>F.Inicio</th>
+<th>F.Termino</th>
+<th>Nº Meses</th>
+<th>F. Apertura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><input type="text"></td>
+<td><input type="text"></td>
+<td><input type="text"></td>
+<td><input type="text"></td>
+<td><input type="text"></td>
+</tr>
+</tbody> 
+</table>
+<br>
+<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button">GUARDAR</button>
+</div>
 
-					<div role="tabpanel" class="tab-pane" id="page-4">
-						<br>
-						<br>
-						<table id="tabla-formulas" class="table table-striped">
-							<thead>
-								<tr>
+<div role="tabpanel" class="tab-pane" id="page-4">
+<br>
+<br>
+<table id="tabla-formulas" class="table table-striped">
+<thead>
+<tr>
 									<th>#</th>
 									<th>Tipo</th>
 									<th>Aplica en</th>
@@ -454,10 +454,10 @@ MedidorFormSet 	= inlineformset_factory(Activo, Medidor, form=MedidorForm, extra
 									<th>Moneda</th>
 									<th>F.Inicio</th>
 									<th>F.Termino</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
 									<td><input type="text"></td>
 									<td><input type="text"></td>
 									<td><input type="text"></td>
@@ -466,19 +466,19 @@ MedidorFormSet 	= inlineformset_factory(Activo, Medidor, form=MedidorForm, extra
 									<td><input type="text"></td>
 									<td><input type="text"></td>
 									<td><input type="text"></td>
-								</tr>
-							</tbody>
-						</table>
-						<br>
-						<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button">GUARDAR</button>
-					</div>
+									</tr>
+									</tbody>
+									</table>
+									<br>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button">GUARDAR</button>
+									</div>
 
-					<div role="tabpanel" class="tab-pane" id="page-5">
-						<br>
-						<br>
-						<table id="tabla-formulas" class="table table-striped">
-							<thead>
-								<tr>
+									<div role="tabpanel" class="tab-pane" id="page-5">
+									<br>
+									<br>
+									<table id="tabla-formulas" class="table table-striped">
+									<thead>
+									<tr>
 									<th>Nº Poliza</th>
 									<th>Compañia</th>
 									<th>Moneda</th>
@@ -491,10 +491,10 @@ MedidorFormSet 	= inlineformset_factory(Activo, Medidor, form=MedidorForm, extra
 									<th>F.Inicio</th>
 									<th>Nº Cuotas</th>
 									<th>Estado</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
 									<td><input type="text"></td>
 									<td><input type="text"></td>
 									<td><input type="text"></td>
@@ -507,17 +507,17 @@ MedidorFormSet 	= inlineformset_factory(Activo, Medidor, form=MedidorForm, extra
 									<td><input type="text"></td>
 									<td><input type="text"></td>
 									<td><input type="text"></td>
-								</tr>
-							</tbody>
-						</table>
-						<br>
-						<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button">GUARDAR</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+									</tr>
+									</tbody>
+									</table>
+									<br>
+									<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button">GUARDAR</button>
+									</div>
+									</div>
+									</div>
+									</div>
+									</div>
+									</div>
 
 
 # administrador/models.py
@@ -562,85 +562,85 @@ class UnidadNegocioMixin(object):
 		else:
 			return response
 
-	def form_valid(self, form):
+			def form_valid(self, form):
 
-		user 	= User.objects.get(pk=self.request.user.pk)
-		profile = UserProfile.objects.get(user=user)
+				user 	= User.objects.get(pk=self.request.user.pk)
+				profile = UserProfile.objects.get(user=user)
 
-		obj = form.save(commit=False)
-		obj.empresa_id = profile.empresa_id
-		obj.save()
+				obj = form.save(commit=False)
+				obj.empresa_id = profile.empresa_id
+				obj.save()
 
-		response = super(UnidadNegocioMixin, self).form_valid(form)
-		if self.request.is_ajax():
-			data = {
-				'pk': 'self.object.pk',
-			}
-			return JsonResponse(data)
-		else:
-			return response
+				response = super(UnidadNegocioMixin, self).form_valid(form)
+				if self.request.is_ajax():
+					data = {
+					'pk': 'self.object.pk',
+					}
+					return JsonResponse(data)
+				else:
+					return response
 
-class UnidadNegocioNew(UnidadNegocioMixin, FormView):
+					class UnidadNegocioNew(UnidadNegocioMixin, FormView):
 
-	def get_context_data(self, **kwargs):
-		
-		context = super(UnidadNegocioNew, self).get_context_data(**kwargs)
-		context['title'] = 'Unidades de Negocio'
-		context['subtitle'] = 'Unidad de Negocio'
-		context['name'] = 'Nueva'
-		context['href'] = 'unidades-negocio'
-		context['accion'] = 'create'
+						def get_context_data(self, **kwargs):
+							
+							context = super(UnidadNegocioNew, self).get_context_data(**kwargs)
+							context['title'] = 'Unidades de Negocio'
+							context['subtitle'] = 'Unidad de Negocio'
+							context['name'] = 'Nueva'
+							context['href'] = 'unidades-negocio'
+							context['accion'] = 'create'
 
-		return context
+							return context
 
-class UnidadNegocioList(ListView):
-	model = Unidad_Negocio
-	template_name = 'viewer/configuracion/unidad_negocio_list.html'
+							class UnidadNegocioList(ListView):
+								model = Unidad_Negocio
+								template_name = 'viewer/configuracion/unidad_negocio_list.html'
 
-	def get_context_data(self, **kwargs):
-		context = super(UnidadNegocioList, self).get_context_data(**kwargs)
-		context['title'] = 'Unidades de Negocio'
-		context['subtitle'] = 'Unidad de Negocio'
-		context['name'] = 'Lista'
-		context['href'] = 'unidades-negocio'
+								def get_context_data(self, **kwargs):
+									context = super(UnidadNegocioList, self).get_context_data(**kwargs)
+									context['title'] = 'Unidades de Negocio'
+									context['subtitle'] = 'Unidad de Negocio'
+									context['name'] = 'Lista'
+									context['href'] = 'unidades-negocio'
 
-		return context
+									return context
 
-	def get_queryset(self):
+									def get_queryset(self):
 
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profile 	= UserProfile.objects.get(user=user)
-		queryset 	= Unidad_Negocio.objects.filter(empresa=profile.empresa, visible=True)
+										user 		= User.objects.get(pk=self.request.user.pk)
+										profile 	= UserProfile.objects.get(user=user)
+										queryset 	= Unidad_Negocio.objects.filter(empresa=profile.empresa, visible=True)
 
-		return queryset
+										return queryset
 
-class UnidadNegocioDelete(DeleteView):
-	model = Unidad_Negocio
-	success_url = reverse_lazy('/unidades-negocio/list')
+										class UnidadNegocioDelete(DeleteView):
+											model = Unidad_Negocio
+											success_url = reverse_lazy('/unidades-negocio/list')
 
-	def delete(self, request, *args, **kwargs):
-		self.object = self.get_object()
-		self.object.visible = False
-		self.object.save()
-		payload = {'delete': 'ok'}
-		return JsonResponse(payload, safe=False)
+											def delete(self, request, *args, **kwargs):
+												self.object = self.get_object()
+												self.object.visible = False
+												self.object.save()
+												payload = {'delete': 'ok'}
+												return JsonResponse(payload, safe=False)
 
-class UnidadNegocioUpdate(UpdateView):
+												class UnidadNegocioUpdate(UpdateView):
 
-	model = Unidad_Negocio
-	form_class = UnidadNegocioForm
-	template_name = 'viewer/configuracion/unidad_negocio_new.html'
-	success_url = '/unidades-negocio/list'
+													model = Unidad_Negocio
+													form_class = UnidadNegocioForm
+													template_name = 'viewer/configuracion/unidad_negocio_new.html'
+													success_url = '/unidades-negocio/list'
 
-	def get_context_data(self, **kwargs):
-		
-		context = super(UnidadNegocioUpdate, self).get_context_data(**kwargs)
-		context['title'] = 'Unidades de Negocio'
-		context['subtitle'] = 'Unidad de Negocio'
-		context['name'] = 'Editar'
-		context['href'] = 'unidades-negocio'
-		context['accion'] = 'update'
-		return context
+													def get_context_data(self, **kwargs):
+														
+														context = super(UnidadNegocioUpdate, self).get_context_data(**kwargs)
+														context['title'] = 'Unidades de Negocio'
+														context['subtitle'] = 'Unidad de Negocio'
+														context['name'] = 'Editar'
+														context['href'] = 'unidades-negocio'
+														context['accion'] = 'update'
+														return context
 
 
 # administrador/forms.py
@@ -652,14 +652,14 @@ class UnidadNegocioForm(forms.ModelForm):
 		fields 	= ['nombre', 'codigo', 'descripcion']
 
 		widgets = {
-			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'codigo'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'descripcion'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
+		'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
+		'codigo'		: forms.TextInput(attrs={'class': 'form-control'}),
+		'descripcion'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
 		}
 
 		error_messages = {
-			'nombre' : {'required': 'Esta campo es requerido.'},
-			'codigo' : {'required': 'Esta campo es requerido.'},
+		'nombre' : {'required': 'Esta campo es requerido.'},
+		'codigo' : {'required': 'Esta campo es requerido.'},
 		}
 
 
@@ -671,44 +671,44 @@ class UnidadNegocioForm(forms.ModelForm):
 {% include 'partials/breadcrumbs-bar.html' %}
 
 <div class="wrapper wrapper-content">
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Lista de Unidades de Negocio</h5>
-					<div class="ibox-tools">
-						<a href="/unidades-negocio/new">
-							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nueva unidad de negocio</button>
-						</a>
-					</div>
-				</div>
-				<div class="ibox-content">
-					<br>
-					<div class="table-responsive">
-						<table id="tabla-unidades-negocio" class="table table-striped table-bordered table-hover dataTables-example" >
-							<thead></thead>
-							<tbody>
-								{% for item in object_list %}
-								<tr>
-									<td>{{ item.id }}</td>
-									<td>{{ item.codigo }}</td>
-									<td>{{ item.nombre }}</td>
-									<td>{{ item.descripcion }}</td>
+<div class="row">
+<div class="col-lg-12">
+<div class="ibox float-e-margins">
+<div class="ibox-title">
+<h5>Lista de Unidades de Negocio</h5>
+<div class="ibox-tools">
+<a href="/unidades-negocio/new">
+<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nueva unidad de negocio</button>
+</a>
+</div>
+</div>
+<div class="ibox-content">
+<br>
+<div class="table-responsive">
+<table id="tabla-unidades-negocio" class="table table-striped table-bordered table-hover dataTables-example" >
+<thead></thead>
+<tbody>
+{% for item in object_list %}
+<tr>
+<td>{{ item.id }}</td>
+<td>{{ item.codigo }}</td>
+<td>{{ item.nombre }}</td>
+<td>{{ item.descripcion }}</td>
 
-									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='{% url "unidad_negocio_update" item.id %}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'unidades-negocio', 'tabla-unidades-negocio', 'Unidad de Negocio')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
-									</td>
-								</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<td class="text-center">
+<a class="btn btn-edit btn-bitbucket" href='{% url "unidad_negocio_update" item.id %}'><i class="fa fa-edit"></i></a>
+<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'unidades-negocio', 'tabla-unidades-negocio', 'Unidad de Negocio')"><i class="fa fa-trash"></i></a>
+<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 {% endblock section %}
@@ -722,34 +722,34 @@ $(document).ready(function(){
 
 	var columns = [
 	{		
-		'data': 'id',
-		'title': 'ID',
-		'visible': false,
+	'data': 'id',
+	'title': 'ID',
+	'visible': false,
 	},
 	{
-		'width': '15%',
-		'data': 'codigo',
-		'title': 'Código',
+	'width': '15%',
+	'data': 'codigo',
+	'title': 'Código',
 	},
 	{
-		'width': '15%',
-		'data': 'nombre',
-		'title': 'Nombre',
+	'width': '15%',
+	'data': 'nombre',
+	'title': 'Nombre',
 	},
 	{
-		'width': '55%',
-		'data': 'descripcion',
-		'title': 'Descripción',
+	'width': '55%',
+	'data': 'descripcion',
+	'title': 'Descripción',
 	},
 	{
-		'width': '15%',
-		'data': 'options',
-		'orderable': false,
+	'width': '15%',
+	'data': 'options',
+	'orderable': false,
 	}]
 
 	tabla_unidades_negocio = load_table('#tabla-unidades-negocio', columns, {})
 
-});
+	});
 
 </script>
 
@@ -764,44 +764,44 @@ $(document).ready(function(){
 {% include 'partials/breadcrumbs-bar.html' %}
 
 <div class="wrapper wrapper-content">
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Nueva Unidad de Negocio</h5>
-				</div>
-				<div class="ibox-content">
-					<div class="row">
-						<div class="col-sm-12">
+<div class="row">
+<div class="col-lg-12">
+<div class="ibox float-e-margins">
+<div class="ibox-title">
+<h5>Nueva Unidad de Negocio</h5>
+</div>
+<div class="ibox-content">
+<div class="row">
+<div class="col-sm-12">
 
-							<form id="form-medidor-new" role="form" action="" method="post">
-								{% csrf_token %}
+<form id="form-medidor-new" role="form" action="" method="post">
+{% csrf_token %}
 
-								<div class="row">
-									{% for field in form %}
-									<div class="form-group col-sm-4">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ field.help_text }}" ></i>
-										{{ field.label_tag }}
-										{{ field }}
-										<div class="container-error" style="height:20px">
-											{{ field.errors }}
-										</div>
-									</div>
-									{% endfor %}
-								</div>
-								<br>
+<div class="row">
+{% for field in form %}
+<div class="form-group col-sm-4">
+<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ field.help_text }}" ></i>
+{{ field.label_tag }}
+{{ field }}
+<div class="container-error" style="height:20px">
+{{ field.errors }}
+</div>
+</div>
+{% endfor %}
+</div>
+<br>
 
-								<a href="/unidades-negocio/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-medidor-new')">GUARDAR Y SEGUIR</button>
+<a href="/unidades-negocio/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-medidor-new')">GUARDAR Y SEGUIR</button>
 
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 {% endblock section %}
@@ -810,7 +810,7 @@ $(document).ready(function(){
 <script>
 
 $(document).ready(function(){
-})
+	})
 
 </script>
 {% endblock scripts %}
@@ -831,7 +831,7 @@ class Medidor_Tipo(models.Model):
 	def __str__(self):
 		return self.nombre
 
-class Medidor(models.Model):
+		class Medidor(models.Model):
 
 # atributos (generales)
 nombre 				= models.CharField(max_length=250)
@@ -895,56 +895,56 @@ def makeReportData(detalle):
 		contrato_list.append(detalle_contrato)
 
 
-	styles = getSampleStyleSheet()
-	styleBH = styles["Title"]
-	styleBH.alignment = TA_LEFT
-	styleBH.fontSize = 8
-	styleBH.leading = 15
-	styleBH.underline = 1
+		styles = getSampleStyleSheet()
+		styleBH = styles["Title"]
+		styleBH.alignment = TA_LEFT
+		styleBH.fontSize = 8
+		styleBH.leading = 15
+		styleBH.underline = 1
 
-	cabecera_list.append('Contrato')
-	cabecera_list.append('Monto')
+		cabecera_list.append('Contrato')
+		cabecera_list.append('Monto')
 
-	for a in cabecera_list:
-		Paragraph(a, styleBH)
+		for a in cabecera_list:
+			Paragraph(a, styleBH)
 
-	libroreporte = []
-
-
-	lines_cabecera = tuple(cabecera_list)
-	libroreporte += lines_cabecera,
-
-	for a in contrato_list:
-		lines = tuple(a)
-		libroreporte += lines,
+			libroreporte = []
 
 
-	return libroreporte
+			lines_cabecera = tuple(cabecera_list)
+			libroreporte += lines_cabecera,
 
-def contratoPdf(request, pk):
-	array_elementos = list()
-	contrato_list 	= list()
-	total 	= 0
-	proceso = Proceso.objects.get(pk=pk)
-
-	for detalle in proceso.proceso_detalle_set.all():
-
-		contrato_list.append({
-			'id':detalle.id,
-			'nombre_contrato':detalle.contrato_id,
-			'monto':detalle.total,
-			})
-
-	array_elementos.append({
-		'id': 1,
-		'concepto': 'arriendos',
-		'contrato': contrato_list
-	})
+			for a in contrato_list:
+				lines = tuple(a)
+				libroreporte += lines,
 
 
-	response = HttpResponse(content_type='application/pdf')
-	response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
-	
+				return libroreporte
+
+				def contratoPdf(request, pk):
+					array_elementos = list()
+					contrato_list 	= list()
+					total 	= 0
+					proceso = Proceso.objects.get(pk=pk)
+
+					for detalle in proceso.proceso_detalle_set.all():
+
+						contrato_list.append({
+							'id':detalle.id,
+							'nombre_contrato':detalle.contrato_id,
+							'monto':detalle.total,
+							})
+
+						array_elementos.append({
+							'id': 1,
+							'concepto': 'arriendos',
+							'contrato': contrato_list
+							})
+
+
+						response = HttpResponse(content_type='application/pdf')
+						response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+						
 	# Create the PDF object, using the response object as its "file."
 	c = canvas.Canvas(response)
 
@@ -971,7 +971,7 @@ def contratoPdf(request, pk):
 	# 	'concepto': 'arriendos',
 	# 	'contrato': contrato_list
 	# })
-	wd, hg = A4
+wd, hg = A4
 	##GENERACION DOCUMENTO
 	for a in array_elementos:
 
@@ -979,12 +979,12 @@ def contratoPdf(request, pk):
 		hight = 600
 
 		table = Table(makeReportData(a),
-					  colWidths=[2.1 * cm, 4.1 * cm, 3.1 * cm, 2.9 * cm, 2.9 * cm, 2.9 * cm, 2.9 * cm,
-								 2.9 * cm, 2.5 * cm, 2 * cm])
+			colWidths=[2.1 * cm, 4.1 * cm, 3.1 * cm, 2.9 * cm, 2.9 * cm, 2.9 * cm, 2.9 * cm,
+			2.9 * cm, 2.5 * cm, 2 * cm])
 
 		table.setStyle(TableStyle([
 			('FONTSIZE', (0, 1), (-1, -1), 8),
-		]))
+			]))
 
 		table.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 1), 0.25, colors.black)]))
 
@@ -994,11 +994,11 @@ def contratoPdf(request, pk):
 
 		c.showPage()
 
-	c.save()
+		c.save()
 
-	return response
+		return response
 
-def arriendo(request, id=None):
+		def arriendo(request, id=None):
 	# if this is a POST request we need to process the form data
 	if request.method == 'POST':
 		# create a form instance and populate it with data from the request:
@@ -1011,8 +1011,8 @@ def arriendo(request, id=None):
 			return HttpResponseRedirect('/thanks/')
 
 	# if a GET (or any other method) we'll create a blank form
-	else:
-		form = NameForm()
+else:
+	form = NameForm()
 
 	return render(request, 'viewer/contratos/contrato_arriendo.html', {'form': form})
 
@@ -1020,39 +1020,39 @@ def arriendo(request, id=None):
 
 function send_data_contratos(){
 
-	var data 			= {}
-	var contratos 		= []
-	var tabla_contrato 	= $('#tabla-contratos').dataTable();
-	
-	data.fecha_inicio 	= '01-01-2015' //{falta, agregar la fecha que correponda}
-	data.fecha_termino 	= '31-12-2015' //{falta, agregar la fecha que correponda}
+var data 			= {}
+var contratos 		= []
+var tabla_contrato 	= $('#tabla-contratos').dataTable();
 
-	$('.checkbox-contrato:checked', tabla_contrato.fnGetNodes()).each(function(i){
+data.fecha_inicio 	= '01-01-2015' //{falta, agregar la fecha que correponda}
+data.fecha_termino 	= '31-12-2015' //{falta, agregar la fecha que correponda}
 
-		contrato 			= {}
-		contrato.id 		= $(this).val()
-		contrato.conceptos 	= [1] //{falta, agregar la fecha que correponda}
+$('.checkbox-contrato:checked', tabla_contrato.fnGetNodes()).each(function(i){
 
-		contratos.push(contrato)
+	contrato 			= {}
+	contrato.id 		= $(this).val()
+	contrato.conceptos 	= [1] //{falta, agregar la fecha que correponda}
+
+	contratos.push(contrato)
 	})
 
-	data.contratos = JSON.stringify(contratos)
+data.contratos = JSON.stringify(contratos)
 
-	console.log(data)
+console.log(data)
 
-	$.ajax({
-		url: '/procesos/contratos/propuesta',
-		type: 'POST',
-		data: data,
-		success: function (response) {
-			console.log(response)
-		},
-		error: function(response){
+$.ajax({
+	url: '/procesos/contratos/propuesta',
+	type: 'POST',
+	data: data,
+	success: function (response) {
+	console.log(response)
+	},
+	error: function(response){
 
-		}
+	}
 	})
 
-	// $.post('/procesos/contratos/propuesta',{
+// $.post('/procesos/contratos/propuesta',{
 	// 	'data': data,
 	// 	csrfmiddlewaretoken: getCookie('csrftoken')
 	// },
@@ -1061,3 +1061,122 @@ function send_data_contratos(){
 	// })
 
 }
+
+# operaciones/urls.py
+
+url(r'^lectura-medidores/new$', views.LecturaMedidorNew.as_view(), name='lectura_medidor_new'),
+url(r'^lectura-medidores/delete/(?P<pk>\d+)$', views.LecturaMedidorDelete.as_view(), name='lectura_medidor_delete'),
+url(r'^lectura-medidores/update/(?P<pk>\d+)$', views.LecturaMedidorUpdate.as_view(), name='lectura_medidor_update'),
+
+# operaciones/forms.py
+
+class LecturaMedidorForm(forms.ModelForm):
+
+	fecha = forms.DateField(input_formats=['%d/%m/%Y'], widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
+
+	class Meta:
+
+		model 	= Lectura_Medidor
+		fields 	= '__all__'
+		exclude = [ 'visible', 'creado_en', 'user', 'imagen_type', 'imagen_size']
+
+		widgets = {
+		'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
+		'mes'			: forms.Select(attrs={'class': 'form-control'}),
+		'imagen_file'	: forms.FileInput(attrs={'class': 'file-format'}),
+		}
+
+		error_messages = {
+		'valor' 		: {'required': 'campo requerido.'},
+		}
+
+		labels = {
+		'valor'			: 'Lectura',
+		'imagen_file'	: 'Cargar Imagen',
+		}
+
+		help_texts = {
+		'valor'			: '...',
+		'imagen_file'	: '...',
+		}
+
+# operaciones/views.py
+
+class LecturaMedidorMixin(object):
+
+	template_name = 'viewer/operaciones/lectura_medidor_new.html'
+	form_class = LecturaMedidorForm
+	success_url = '/lectura-medidores/list'
+
+	def form_invalid(self, form):
+		response = super(LecturaMedidorMixin, self).form_invalid(form)
+		if self.request.is_ajax():
+			return JsonResponse(form.errors, status=400)
+		else:
+			return response
+
+			def form_valid(self, form):
+				user 	= User.objects.get(pk=self.request.user.pk)
+				profile = UserProfile.objects.get(user=user)
+
+				obj = form.save(commit=False)
+				obj.user = user
+		# obj.empresa_id = profile.empresa_id
+		obj.save()
+
+		response = super(LecturaMedidorMixin, self).form_valid(form)
+		if self.request.is_ajax():
+			data = {
+			'pk': 'self.object.pk',
+			}
+			return JsonResponse(data)
+		else:
+			return response
+
+			class LecturaMedidorNew(LecturaMedidorMixin, FormView):
+				def get_context_data(self, **kwargs):
+					
+					context = super(LecturaMedidorNew, self).get_context_data(**kwargs)
+					context['title'] = 'Operaciones'
+					context['subtitle'] = 'Lectura Medidor'
+					context['name'] = 'Nueva'
+					context['href'] = 'lectura-medidores'
+					context['accion'] = 'create'
+					return context
+
+					class LecturaMedidorDelete(DeleteView):
+						model = Lectura_Medidor
+						success_url = reverse_lazy('/contratos-tipo/list')
+
+						def delete(self, request, *args, **kwargs):
+							self.object = self.get_object()
+							self.object.visible = False
+							self.object.save()
+							payload = {'delete': 'ok'}
+							return JsonResponse(payload, safe=False)
+
+							class LecturaMedidorUpdate(LecturaMedidorMixin, UpdateView):
+
+								model 			= Lectura_Medidor
+								form_class 		= LecturaMedidorForm
+								template_name 	= 'viewer/operaciones/lectura_medidor_new.html'
+								success_url 	= '/lectura-medidores/list'
+
+								def get_object(self, queryset=None):
+
+									queryset = Lectura_Medidor.objects.get(id=int(self.kwargs['pk']))
+
+									if queryset.fecha:
+										queryset.fecha = queryset.fecha.strftime('%d/%m/%Y')
+
+										return queryset
+
+										def get_context_data(self, **kwargs):
+											
+											context = super(LecturaMedidorUpdate, self).get_context_data(**kwargs)
+											context['title'] 	= 'Operaciones'
+											context['subtitle'] = 'Lectura Medidores'
+											context['name'] 	= 'Editar'
+											context['href'] 	= 'lectura-medidores'
+											context['accion'] 	= 'update'
+											return context

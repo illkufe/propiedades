@@ -13,7 +13,7 @@ from activos.models import Activo
 from conceptos.models import Concepto
 from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
 from procesos.models import Proceso, Proceso_Detalle
-from operaciones.models import Lectura_Medidor
+from operaciones.models import Lectura_Electricidad
 
 from django.db.models import Sum
 from datetime import datetime, timedelta
@@ -420,8 +420,8 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos):
 							# print ("-----------")
 							# print (medidor)
 							# print (medidor.id)
-							# lectura = Lectura_Medidor.objects.get(medidor=medidor)
-							lecturas = Lectura_Medidor.objects.filter(medidor=medidor).order_by('-id')[:2]
+							# lectura = Lectura_Electricidad.objects.get(medidor=medidor)
+							lecturas = Lectura_Electricidad.objects.filter(medidor=medidor).order_by('-id')[:2]
 							index =  0
 							for lectura in lecturas:
 								print (lectura.valor)

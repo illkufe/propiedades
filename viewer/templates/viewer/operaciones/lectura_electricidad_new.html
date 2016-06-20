@@ -20,11 +20,11 @@
 								<div class="row">
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor.help_text }}" ></i>
-										{{ form.medidor.label_tag }}
-										{{ form.medidor }}
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor_electricidad.help_text }}" ></i>
+										{{ form.medidor_electricidad.label_tag }}
+										{{ form.medidor_electricidad }}
 										<div class="container-error" style="height:20px">
-											{{ form.medidor.errors }}
+											{{ form.medidor_electricidad.errors }}
 										</div>
 									</div>
 
@@ -38,17 +38,11 @@
 									</div>
 
 									<div class="form-group col-sm-2">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha.help_text }}" ></i>
-										{{ form.fecha.label_tag }}
-										<div class="input-group">
-											{{ form.fecha }}
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
-										</div>
-
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.anio.help_text }}" ></i>
+										{{ form.anio.label_tag }}
+										{{ form.anio }}
 										<div class="container-error" style="height:20px">
-											{{ form.fecha.errors }}
+											{{ form.anio.errors }}
 										</div>
 									</div>
 
@@ -74,9 +68,6 @@
 								<br>
 								<div class="row buttons-form">
 									<div class="col-xs-12">
-										<!-- <a href="/lectura-medidores/list">
-											<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
-										</a> -->
 										<button class="btn btn-w-m btn-sm btn-default" type="button" onclick="location.href='/lectura-medidores/list'">CANCELAR</button>
 										<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
 										<button class="btn btn-w-m btn-sm btn-primary pull-right margin" type="button" onclick="guardar_formulario_file('{{accion}}', 'form-lectura-medidor')">GUARDAR Y SEGUIR</button>

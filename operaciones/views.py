@@ -1,61 +1,18 @@
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, FormView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.models import User
 
-from .forms import LecturaMedidorForm
-from .models import Lectura_Medidor
+from .forms import LecturaElectricidadForm, LecturaAguaForm, LecturaGasForm
+from .models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas
 
 from accounts.models import UserProfile
 from activos.models import Activo
 
 
-class LecturaMedidorMixin(object):
-
-	template_name = 'viewer/operaciones/lectura_medidor_new.html'
-	form_class = LecturaMedidorForm
-	success_url = '/lectura-medidores/list'
-
-	def form_invalid(self, form):
-		response = super(LecturaMedidorMixin, self).form_invalid(form)
-		if self.request.is_ajax():
-			return JsonResponse(form.errors, status=400)
-		else:
-			return response
-
-	def form_valid(self, form):
-		user 	= User.objects.get(pk=self.request.user.pk)
-		profile = UserProfile.objects.get(user=user)
-
-		obj = form.save(commit=False)
-		obj.user = user
-		# obj.empresa_id = profile.empresa_id
-		obj.save()
-
-		response = super(LecturaMedidorMixin, self).form_valid(form)
-		if self.request.is_ajax():
-			data = {
-				'pk': 'self.object.pk',
-			}
-			return JsonResponse(data)
-		else:
-			return response
-
-class LecturaMedidorNew(LecturaMedidorMixin, FormView):
-	def get_context_data(self, **kwargs):
-		
-		context = super(LecturaMedidorNew, self).get_context_data(**kwargs)
-		context['title'] = 'Operaciones'
-		context['subtitle'] = 'Lectura Medidor'
-		context['name'] = 'Nueva'
-		context['href'] = 'lectura-medidores'
-		context['accion'] = 'create'
-		return context
-
-# {falta: refactorizar esta para que muestre la lectura de todos los medidores}
 class LecturaMedidorList(ListView):
-	model = Lectura_Medidor
+
+	model = Lectura_Electricidad
 	template_name = 'viewer/operaciones/lectura_medidor_list.html'
 
 	def get_context_data(self, **kwargs):
@@ -70,71 +27,48 @@ class LecturaMedidorList(ListView):
 
 	def get_queryset(self):
 
-		meses = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE']
+		profile 	= UserProfile.objects.get(user=self.request.user)
+		profiles 	= profile.empresa.userprofile_set.all().values_list('id', flat=True)
+		users 		= User.objects.filter(userprofile__in=profiles).values_list('id', flat=True)
 
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profile 	= UserProfile.objects.get(user=user)
-		activos 	= Activo.objects.values_list('id', flat=True).filter(empresa=profile.empresa, visible=True)
-		# medidores 	= Medidor.objects.values_list('id', flat=True).filter(activo__in=activos, visible=True)
-		queryset 	= Lectura_Medidor.objects.all()
+		queryset 	= []
+		meses 		= ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE']
 
-		for item in queryset:
-			item.mes = meses[int(item.mes)]
+		electricidad 	= Lectura_Electricidad.objects.filter(visible=True, user__in=users)
+		agua 			= Lectura_Agua.objects.filter(visible=True, user__in=users)
+		gas 			= Lectura_Gas.objects.filter(visible=True, user__in=users)
 
-		return queryset
+		for item in electricidad:
+			item.activo = item.medidor_electricidad.activo
+			item.local 	= item.medidor_electricidad.local_set.all()[0]
+			item.mes 	= meses[int(item.mes)-1]
+			item.tipo 	= 'Electricidad'
+			item.url 	= 'electricidad'
+			queryset.append(item)
 
-class LecturaMedidorDelete(DeleteView):
-	model = Lectura_Medidor
-	success_url = reverse_lazy('/contratos-tipo/list')
+		for item in agua:
+			item.activo = item.medidor_agua.activo
+			item.local 	= item.medidor_agua.local_set.all()[0]
+			item.mes = meses[int(item.mes)-1]
+			item.tipo 	= 'Agua'
+			item.url 	= 'agua'
+			queryset.append(item)
 
-	def delete(self, request, *args, **kwargs):
-		self.object = self.get_object()
-		self.object.visible = False
-		self.object.save()
-		payload = {'delete': 'ok'}
-		return JsonResponse(payload, safe=False)
-
-class LecturaMedidorUpdate(LecturaMedidorMixin, UpdateView):
-
-	model 			= Lectura_Medidor
-	form_class 		= LecturaMedidorForm
-	template_name 	= 'viewer/operaciones/lectura_medidor_new.html'
-	success_url 	= '/lectura-medidores/list'
-
-	def get_object(self, queryset=None):
-
-		queryset = Lectura_Medidor.objects.get(id=int(self.kwargs['pk']))
-
-		if queryset.fecha:
-			queryset.fecha = queryset.fecha.strftime('%d/%m/%Y')
+		for item in gas:
+			item.activo = item.medidor_gas.activo
+			item.local 	= item.medidor_gas.local_set.all()[0]
+			item.mes = meses[int(item.mes)-1]
+			item.tipo 	= 'Gas'
+			item.url 	= 'gas'
+			queryset.append(item)
 
 		return queryset
-
-	def get_context_data(self, **kwargs):
-		
-		context = super(LecturaMedidorUpdate, self).get_context_data(**kwargs)
-		context['title'] 	= 'Operaciones'
-		context['subtitle'] = 'Lectura Medidores'
-		context['name'] 	= 'Editar'
-		context['href'] 	= 'lectura-medidores'
-		context['accion'] 	= 'update'
-		return context
-
-
-
-
-
-
-
-
-
-
 
 
 class LecturaElectricidadMixin(object):
 
-	template_name = 'viewer/operaciones/lectura_medidor_new.html'
-	form_class = LecturaMedidorForm
+	template_name = 'viewer/operaciones/lectura_electricidad_new.html'
+	form_class = LecturaElectricidadForm
 	success_url = '/lectura-medidores/list'
 
 	def form_invalid(self, form):
@@ -145,12 +79,19 @@ class LecturaElectricidadMixin(object):
 			return response
 
 	def form_valid(self, form):
-		user 	= User.objects.get(pk=self.request.user.pk)
-		profile = UserProfile.objects.get(user=user)
 
+		profile 	= UserProfile.objects.get(user=self.request.user)
 		obj 		= form.save(commit=False)
-		obj.user 	= user
-		obj.save()
+		obj.user 	= self.request.user
+
+		try:
+			lectura = Lectura_Electricidad.objects.get(medidor_electricidad_id= obj.medidor_electricidad.id, mes=obj.mes, anio=obj.anio)
+			lectura.valor 	= obj.valor
+			lectura.user 	= obj.user
+			lectura.visible = True
+			lectura.save()
+		except Exception:
+			obj.save()
 
 		response = super(LecturaElectricidadMixin, self).form_valid(form)
 		if self.request.is_ajax():
@@ -162,59 +103,54 @@ class LecturaElectricidadMixin(object):
 			return response
 
 class LecturaElectricidadNew(LecturaElectricidadMixin, FormView):
+
 	def get_context_data(self, **kwargs):
 		
 		context = super(LecturaElectricidadNew, self).get_context_data(**kwargs)
 		context['title'] = 'Operaciones'
-		context['subtitle'] = 'Lectura Medidor'
+		context['subtitle'] = 'Lectura Medidor Electricidad'
 		context['name'] = 'Nueva'
 		context['href'] = 'lectura-medidores'
 		context['accion'] = 'create'
+
 		return context
 
 class LecturaElectricidadDelete(DeleteView):
-	model = Lectura_Medidor
-	success_url = reverse_lazy('/contratos-tipo/list')
+
+	model = Lectura_Electricidad
+	success_url = reverse_lazy('/lectura-medidores/list')
 
 	def delete(self, request, *args, **kwargs):
+
 		self.object = self.get_object()
 		self.object.visible = False
 		self.object.save()
 		payload = {'delete': 'ok'}
+
 		return JsonResponse(payload, safe=False)
 
 class LecturaElectricidadUpdate(LecturaElectricidadMixin, UpdateView):
 
-	model 			= Lectura_Medidor
-	form_class 		= LecturaMedidorForm
-	template_name 	= 'viewer/operaciones/lectura_medidor_new.html'
+	model 			= Lectura_Electricidad
+	form_class 		= LecturaElectricidadForm
+	template_name 	= 'viewer/operaciones/lectura_electricidad_new.html'
 	success_url 	= '/lectura-medidores/list'
-
-	def get_object(self, queryset=None):
-
-		queryset = Lectura_Medidor.objects.get(id=int(self.kwargs['pk']))
-
-		if queryset.fecha:
-			queryset.fecha = queryset.fecha.strftime('%d/%m/%Y')
-
-		return queryset
 
 	def get_context_data(self, **kwargs):
 		
 		context = super(LecturaElectricidadUpdate, self).get_context_data(**kwargs)
 		context['title'] 	= 'Operaciones'
-		context['subtitle'] = 'Lectura Medidores'
+		context['subtitle'] = 'Lectura Medidor Electricidad'
 		context['name'] 	= 'Editar'
 		context['href'] 	= 'lectura-medidores'
 		context['accion'] 	= 'update'
 		return context
 
 
-
 class LecturaAguaMixin(object):
 
-	template_name = 'viewer/operaciones/lectura_medidor_new.html'
-	form_class = LecturaMedidorForm
+	template_name = 'viewer/operaciones/lectura_agua_new.html'
+	form_class = LecturaAguaForm
 	success_url = '/lectura-medidores/list'
 
 	def form_invalid(self, form):
@@ -225,13 +161,19 @@ class LecturaAguaMixin(object):
 			return response
 
 	def form_valid(self, form):
-		user 	= User.objects.get(pk=self.request.user.pk)
-		profile = UserProfile.objects.get(user=user)
 
-		obj = form.save(commit=False)
-		obj.user = user
-		# obj.empresa_id = profile.empresa_id
-		obj.save()
+		profile 	= UserProfile.objects.get(user=self.request.user)
+		obj 		= form.save(commit=False)
+		obj.user 	= self.request.user
+
+		try:
+			lectura 		= Lectura_Agua.objects.get(medidor_agua_id= obj.medidor_agua.id, mes=obj.mes, anio=obj.anio)
+			lectura.valor 	= obj.valor
+			lectura.user 	= obj.user
+			lectura.visible = True
+			lectura.save()
+		except Exception:
+			obj.save()
 
 		response = super(LecturaAguaMixin, self).form_valid(form)
 		if self.request.is_ajax():
@@ -254,31 +196,25 @@ class LecturaAguaNew(LecturaAguaMixin, FormView):
 		return context
 
 class LecturaAguaDelete(DeleteView):
-	model = Lectura_Medidor
+
+	model = Lectura_Agua
 	success_url = reverse_lazy('/contratos-tipo/list')
 
 	def delete(self, request, *args, **kwargs):
+
 		self.object = self.get_object()
 		self.object.visible = False
 		self.object.save()
 		payload = {'delete': 'ok'}
+
 		return JsonResponse(payload, safe=False)
 
 class LecturaAguaUpdate(LecturaAguaMixin, UpdateView):
 
-	model 			= Lectura_Medidor
-	form_class 		= LecturaMedidorForm
-	template_name 	= 'viewer/operaciones/lectura_medidor_new.html'
+	model 			= Lectura_Agua
+	form_class 		= LecturaAguaForm
+	template_name 	= 'viewer/operaciones/lectura_agua_new.html'
 	success_url 	= '/lectura-medidores/list'
-
-	def get_object(self, queryset=None):
-
-		queryset = Lectura_Medidor.objects.get(id=int(self.kwargs['pk']))
-
-		if queryset.fecha:
-			queryset.fecha = queryset.fecha.strftime('%d/%m/%Y')
-
-		return queryset
 
 	def get_context_data(self, **kwargs):
 		
@@ -291,11 +227,10 @@ class LecturaAguaUpdate(LecturaAguaMixin, UpdateView):
 		return context
 
 
-
 class LecturaGasMixin(object):
 
-	template_name = 'viewer/operaciones/lectura_medidor_new.html'
-	form_class = LecturaMedidorForm
+	template_name = 'viewer/operaciones/lectura_gas_new.html'
+	form_class = LecturaGasForm
 	success_url = '/lectura-medidores/list'
 
 	def form_invalid(self, form):
@@ -306,13 +241,19 @@ class LecturaGasMixin(object):
 			return response
 
 	def form_valid(self, form):
-		user 	= User.objects.get(pk=self.request.user.pk)
-		profile = UserProfile.objects.get(user=user)
 
-		obj = form.save(commit=False)
-		obj.user = user
-		# obj.empresa_id = profile.empresa_id
-		obj.save()
+		profile 	= UserProfile.objects.get(user=self.request.user)
+		obj 		= form.save(commit=False)
+		obj.user 	= self.request.user
+
+		try:
+			lectura 		= Lectura_Gas.objects.get(medidor_gas_id= obj.medidor_gas.id, mes=obj.mes, anio=obj.anio)
+			lectura.valor 	= obj.valor
+			lectura.user 	= obj.user
+			lectura.visible = True
+			lectura.save()
+		except Exception:
+			obj.save()
 
 		response = super(LecturaGasMixin, self).form_valid(form)
 		if self.request.is_ajax():
@@ -335,31 +276,25 @@ class LecturaGasNew(LecturaGasMixin, FormView):
 		return context
 
 class LecturaGasDelete(DeleteView):
-	model = Lectura_Medidor
+
+	model = Lectura_Gas
 	success_url = reverse_lazy('/contratos-tipo/list')
 
 	def delete(self, request, *args, **kwargs):
+
 		self.object = self.get_object()
 		self.object.visible = False
 		self.object.save()
 		payload = {'delete': 'ok'}
+
 		return JsonResponse(payload, safe=False)
 
 class LecturaGasUpdate(LecturaGasMixin, UpdateView):
 
-	model 			= Lectura_Medidor
-	form_class 		= LecturaMedidorForm
-	template_name 	= 'viewer/operaciones/lectura_medidor_new.html'
+	model 			= Lectura_Agua
+	form_class 		= LecturaAguaForm
+	template_name 	= 'viewer/operaciones/lectura_agua_new.html'
 	success_url 	= '/lectura-medidores/list'
-
-	def get_object(self, queryset=None):
-
-		queryset = Lectura_Medidor.objects.get(id=int(self.kwargs['pk']))
-
-		if queryset.fecha:
-			queryset.fecha = queryset.fecha.strftime('%d/%m/%Y')
-
-		return queryset
 
 	def get_context_data(self, **kwargs):
 		

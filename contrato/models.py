@@ -50,7 +50,6 @@ class Contrato(models.Model):
 	fecha_remodelacion 	= models.DateField()
 	fecha_aviso 		= models.DateField()
 	fecha_plazo 		= models.DateField()
-
 	comentario 			= models.TextField(blank=True)
 
 	# atributos (por defecto)

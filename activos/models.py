@@ -126,7 +126,7 @@ class Medidor_Gas(models.Model):
 	creado_en 			= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	activo 			= models.ForeignKey(Activo)
+	activo 	= models.ForeignKey(Activo)
 
 	def __str__(self):
 		return self.nombre
@@ -143,7 +143,7 @@ class Sector(models.Model):
 	creado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	activo = models.ForeignKey(Activo)
+	activo 	= models.ForeignKey(Activo)
 
 	def __str__(self):
 		return self.nombre
