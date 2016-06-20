@@ -1180,3 +1180,885 @@ class LecturaMedidorMixin(object):
 											context['href'] 	= 'lectura-medidores'
 											context['accion'] 	= 'update'
 											return context
+
+
+# viewer/tamplates/viewer/contratos/contrato_arriendo_new.html
+
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Nuevo Arriendo</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+						<div class="col-sm-12">
+
+							<form id="form-arriendo-new" role="form" action="" method="post">
+								{% csrf_token %}
+
+								{{ formset_detalle.management_form }}
+								{% for form in formset_detalle %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+								<table id="tabla-arriendo" class="table">
+									<thead>
+										{% for form in formset_detalle %}
+										{% if forloop.first %}
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+											{{ form.mes_inicio.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+											{{ form.mes_termino.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+											{{ form.valor.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+											{{ form.moneda.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+											{{ form.metro_cuadrado.label_tag }}
+										</th>
+
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="eliminar" ></i>
+											<label>ELiminar:</label>
+										</th>
+										{% endif %}
+										{% endfor %}
+									</thead>
+									<tbody>
+										{% for form in formset_detalle %}
+										<tr>
+											<td>
+
+												<div class="form-group">
+													{{ form.mes_inicio }}
+													<div class="container-error" style="height:20px">
+														{{ form.mes_inicio.errors }}
+													</div>
+												</div>
+											</td>
+											<td>
+
+												<div class="form-group">
+													{{ form.mes_termino }}
+													<div class="container-error" style="height:20px">
+														{{ form.mes_termino.errors }}
+													</div>
+												</div>
+											</td>
+											<td>
+
+												<div class="form-group">
+
+													{{ form.valor }}
+													<div class="container-error" style="height:20px">
+														{{ form.valor.errors }}
+													</div>
+												</div>
+											</td>
+											<td>
+
+												<div class="form-group">
+
+													{{ form.moneda }}
+													<div class="container-error" style="height:20px">
+														{{ form.moneda.errors }}
+													</div>
+												</div>
+											</td>
+											<td class="text-center">
+
+												<div class="form-group">
+
+													{{ form.metro_cuadrado }}
+													<div class="container-error" style="height:20px">
+														{{ form.metro_cuadrado.errors }}
+													</div>
+												</div>
+											</td>
+											<td class="text-center">
+
+												<div class="form-group">
+
+													{{ form.DELETE }}
+												</div>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+
+
+								<div class="row">
+
+									<input type="hidden" id="id_contrato" name="contrato" value="{{contrato_id}}">
+
+									<div class="form-group col-sm-2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.reajuste.help_text }}" ></i>
+										{{ form.reajuste.label_tag }}
+										{{ form.reajuste }}
+										<div class="container-error" style="height:20px">
+											{{ form.reajuste.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.meses.help_text }}" ></i>
+										{{ form.meses.label_tag }}
+										{{ form.meses }}
+										<div class="container-error" style="height:20px">
+											{{ form.meses.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+										{{ form.valor.label_tag }}
+										{{ form.valor }}
+										<div class="container-error" style="height:20px">
+											{{ form.valor.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+										{{ form.moneda.label_tag }}
+										{{ form.moneda }}
+										<div class="container-error" style="height:20px">
+											{{ form.moneda.errors }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_inicio.help_text }}" ></i>
+										{{ form.fecha_inicio.label_tag }}
+										<div class="input-group date">
+											{{ form.fecha_inicio }}
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+
+										<div class="container-error" style="height:20px">
+											{{ form.fecha_inicio.errors }}
+										</div>
+									</div>
+
+								</div>
+
+								<br>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+								<a href="/contratos-tipo/list">
+									<button class="btn btn-w-m btn-sm btn-success pull-right" type="button" style="margin-right: 15px;">CANCELAR</button>
+								</a>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+	var configuracion = {
+		'order': false,
+		'paginate': false,
+		'bLengthChange': false,
+		'bInfo': false,
+		'buttons': [],
+	} 
+
+
+	var columns = [
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'mes_inicio',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'mes_termino',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'valor',
+	},
+	{
+		'width': '20%',
+		'orderable': false,
+		'data': 'moneda',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'metros',
+	},
+	{
+		'width': '10%',
+		'orderable': false,
+		'data': 'eliminar',
+	}];
+
+	var table = load_table('#tabla-arriendo', columns, configuracion)
+
+});
+
+function enviar_form(accion){
+	$.ajax({
+		type: 'post',
+		url: $('#form-arriendo-new').attr('action'),
+		data: $('#form-arriendo-new').serialize(),
+		success: function(response) {
+
+			if (accion == 'create') {
+				clear_form('#form-arriendo-new')
+			}
+			clear_errors_form('#form-arriendo-new')
+
+			notification_toast('success', 'ÉXITO', 'Guardado correctamente.')
+		},
+		error: function(data, textStatus, jqXHR) {
+
+			clear_errors_form('#form-arriendo-new')
+
+			var errors = $.parseJSON(data.responseText)
+			apply_errors_form(errors)
+		}
+	});
+	return false;
+	
+}
+
+</script>
+{% endblock scripts %}
+
+# activos/forms.py
+
+class ActivoMedidoForm(forms.ModelForm):
+
+	class Meta:
+		model 	= Activo
+		fields 	= ['id']
+
+class LocalForm(forms.ModelForm):
+
+	def __init__(self, *args, **kwargs):
+
+		self.request 	= kwargs.pop('request')
+		activo_id 		= kwargs.pop('activo_id', None)
+		local_id 		= kwargs.pop('local_id', None)
+		user 			= User.objects.get(pk=self.request.user.pk)
+		profile 		= UserProfile.objects.get(user=user)
+
+		super(LocalForm, self).__init__(*args, **kwargs)
+
+		activo = Activo.objects.get(id=activo_id)
+
+		if local_id is not None:
+			locales = activo.local_set.all().values_list('id', flat=True).exclude(id__in=local_id)
+		else:
+			locales = activo.local_set.all().values_list('id', flat=True)
+
+		medidores_locales_electricidad 					= Medidor_Electricidad.objects.filter(local__in=locales)
+		medidores_locales_agua 							= Medidor_Agua.objects.filter(local__in=locales)
+		medidores_locales_gas 							= Medidor_Gas.objects.filter(local__in=locales)
+
+		self.fields['medidores_electricidad'].queryset 	= Medidor_Electricidad.objects.filter(activo_id=activo).exclude(id__in=medidores_locales_electricidad)
+		self.fields['medidores_agua'].queryset 			= Medidor_Agua.objects.filter(activo_id=activo).exclude(id__in=medidores_locales_agua)
+		self.fields['medidores_gas'].queryset 			= Medidor_Gas.objects.filter(activo_id=activo).exclude(id__in=medidores_locales_gas)
+
+		self.fields['local_tipo'].queryset 				= Local_Tipo.objects.filter(empresa=profile.empresa)
+		self.fields['sector'].queryset 					= Sector.objects.filter(activo=activo)
+		self.fields['nivel'].queryset 					= Nivel.objects.filter(activo=activo)
+		self.fields['medidores_electricidad'].required 	= False
+		self.fields['medidores_agua'].required 			= False
+		self.fields['medidores_gas'].required 			= False
+
+# activos/views.py
+
+class ActivoLocaleMixin(object):
+
+	template_name = 'viewer/activos/activo_local_new.html'
+	form_class = LocalForm
+	success_url = '/locales/list'
+
+	def get_form_kwargs(self):
+
+		kwargs = super(ActivoLocaleMixin, self).get_form_kwargs()
+
+		kwargs['request'] 	= self.request
+		kwargs['activo_id'] = self.kwargs['activo_id']
+
+		try:
+			kwargs['local_id'] = self.kwargs['pk']
+		except KeyError:
+			pass
+
+		return kwargs
+
+class ActivoMedidorMixin(object):
+
+	template_name = 'viewer/activos/activo_medidor_new.html'
+	form_class = ActivoMedidoForm
+	success_url = '/activos/list'
+
+	def form_invalid(self, form):
+
+		response = super(ActivoMedidorMixin, self).form_invalid(form)
+		if self.request.is_ajax():
+			return JsonResponse(form.errors, status=400)
+		else:
+			return response
+
+	def form_valid(self, form):
+
+		context 			= self.get_context_data()
+		form_electricidad 	= context['form_electricidad']
+		form_gas 			= context['form_gas']
+		form_agua 			= context['form_agua']
+
+		if form_electricidad.is_valid():
+			form_electricidad.save()
+
+		if form_agua.is_valid():
+			form_agua.save()
+
+		if form_gas.is_valid():
+			form_gas.save()
+
+		response = super(ActivoMedidorMixin, self).form_valid(form)
+		if self.request.is_ajax():
+			data = {
+				'status': 'ok',
+			}
+			return JsonResponse(data)
+		else:
+			return response
+
+class ActivoMedidorNew(ActivoMedidorMixin, FormView):
+
+	def get_context_data(self, **kwargs):
+
+		context 				= super(ActivoMedidorNew, self).get_context_data(**kwargs)
+		context['title'] 		= 'Activos'
+		context['subtitle'] 	= 'Medidor'
+		context['name'] 		= 'Nuevo'
+		context['href'] 		= 'activos'
+		context['accion'] 		= 'update'
+		context['activo_id']	= self.kwargs['activo_id']
+
+		if self.request.POST:
+
+			activo 	= Activo.objects.get(id=self.kwargs['activo_id'])
+
+			try:
+				medidor_electricidad = Medidor_Electricidad.objects.filter(activo_id=self.kwargs['activo_id'])
+				context['form_electricidad'] = ElectricidadFormSet(self.request.POST, instance=activo)
+			except Medidor_Electricidad.DoesNotExist:
+				context['form_electricidad'] = ElectricidadFormSet(self.request.POST)
+
+			try:
+				medidor_agua = Medidor_Agua.objects.filter(activo_id=self.kwargs['activo_id'])
+				context['form_agua'] = AguaFormSet(self.request.POST, instance=activo)
+			except Medidor_Agua.DoesNotExist:
+				context['form_agua'] = AguaFormSet(self.request.POST)
+
+			try:
+				medidor_gas = Medidor_Gas.objects.filter(activo_id=self.kwargs['activo_id'])
+				context['form_gas'] = GasFormSet(self.request.POST, instance=activo)
+			except Medidor_Gas.DoesNotExist:
+				context['form_gas'] = GasFormSet(self.request.POST)
+
+		else:
+
+			activo 	= Activo.objects.get(id=self.kwargs['activo_id'])
+
+			try:
+				medidor_electricidad = Medidor_Electricidad.objects.filter(activo_id=self.kwargs['activo_id'])
+				context['form_electricidad'] = ElectricidadFormSet(instance=activo)
+			except Medidor_Electricidad.DoesNotExist:
+				context['form_electricidad'] = ElectricidadFormSet()
+
+			try:
+				medidor_agua = Medidor_Agua.objects.filter(activo_id=self.kwargs['activo_id'])
+				context['form_agua'] = AguaFormSet(instance=activo)
+			except Medidor_Agua.DoesNotExist:
+				context['form_agua'] = AguaFormSet()
+
+			try:
+				medidor_gas = Medidor_Gas.objects.filter(activo_id=self.kwargs['activo_id'])
+				context['form_gas'] = GasFormSet(instance=activo)
+			except Medidor_Gas.DoesNotExist:
+				context['form_gas'] = GasFormSet()
+
+		return context
+
+# viewer/templates/viewer/activos/activo_medidor_new.html
+
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<form id="form-medidor-new" role="form" action="" method="post">
+
+					{% csrf_token %}
+
+					<div class="ibox-title">
+						<h5>Medidores de Electricidad</h5>
+					</div>
+
+					<div class="ibox-content">
+						<br>
+						<div class="row">
+							<div class="col-sm-12">
+
+								{{ form_electricidad.management_form }}
+								{% for form in form_electricidad %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-electricidad', 'medidor_electricidad')"><i class="fa fa-plus"></i> Medidor de Electricidad</button>
+								<table id="tabla-electricidad" class="table">
+									<thead>
+										{% for form in form_electricidad %}
+										{% if forloop.first %}
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+											{{ form.nombre.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero_rotulo.help_text }}" ></i>
+											{{ form.numero_rotulo.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia.help_text }}" ></i>
+											{{ form.potencia.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_presente.help_text }}" ></i>
+											{{ form.potencia_presente.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_fuera.help_text }}" ></i>
+											{{ form.potencia_fuera.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tarifa_electricidad.help_text }}" ></i>
+											{{ form.tarifa_electricidad.label_tag }}
+										</th>
+										<th></th>
+										{% endif %}
+										{% endfor %}
+									</thead>
+									<tbody>
+										{% for form in form_electricidad %}
+										<tr>
+											<td>
+												<div class="form-group">
+													{{ form.nombre }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.numero_rotulo }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.potencia }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.potencia_presente }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.potencia_fuera }}
+												</div>
+											</td>
+											<td class="text-center">
+												<div class="form-group">
+													{{ form.tarifa_electricidad }}
+												</div>
+											</td>
+											<td class="text-center delete">
+												<div class="form-group text-center">
+													{{ form.DELETE }}
+													<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Medidor')"><i class="fa fa-trash"></i></a>
+												</div>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="ibox-title">
+						<h5>Medidores de Agua</h5>
+					</div>
+
+					<div class="ibox-content">
+						<br>
+						<div class="row">
+							<div class="col-sm-12">
+
+								{{ form_agua.management_form }}
+								{% for form in form_agua %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-agua', 'medidor_agua')"><i class="fa fa-plus"></i> Medidor de Agua</button>
+								<table id="tabla-agua" class="table">
+									<thead>
+										{% for form in form_agua %}
+										{% if forloop.first %}
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+											{{ form.nombre.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero_rotulo.help_text }}" ></i>
+											{{ form.numero_rotulo.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia.help_text }}" ></i>
+											{{ form.potencia.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_presente.help_text }}" ></i>
+											{{ form.potencia_presente.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_fuera.help_text }}" ></i>
+											{{ form.potencia_fuera.label_tag }}
+										</th>
+										<th></th>
+										{% endif %}
+										{% endfor %}
+									</thead>
+									<tbody>
+										{% for form in form_agua %}
+										<tr>
+											<td>
+												<div class="form-group">
+													{{ form.nombre }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.numero_rotulo }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.potencia }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.potencia_presente }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.potencia_fuera }}
+												</div>
+											</td>
+											<td class="text-center delete">
+												<div class="form-group text-center">
+													{{ form.DELETE }}
+													<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Medidor')"><i class="fa fa-trash"></i></a>
+												</div>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>Medidores de Gas</h5>
+					</div>
+
+					<div class="ibox-content">
+						<br>
+						<div class="row">
+							<div class="col-sm-12">
+
+								{{ form_gas.management_form }}
+								{% for form in form_gas %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-gas', 'medidor_')"><i class="fa fa-plus"></i> Medidor de Gas</button>
+								<table id="tabla-gas" class="table">
+									<thead>
+										{% for form in form_gas %}
+										{% if forloop.first %}
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+											{{ form.nombre.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero_rotulo.help_text }}" ></i>
+											{{ form.numero_rotulo.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia.help_text }}" ></i>
+											{{ form.potencia.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_presente.help_text }}" ></i>
+											{{ form.potencia_presente.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.potencia_fuera.help_text }}" ></i>
+											{{ form.potencia_fuera.label_tag }}
+										</th>
+										<th></th>
+										{% endif %}
+										{% endfor %}
+									</thead>
+									<tbody>
+										{% for form in form_gas %}
+										<tr>
+											<td>
+												<div class="form-group">
+													{{ form.nombre }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.numero_rotulo }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.potencia }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.potencia_presente }}
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.potencia_fuera }}
+												</div>
+											</td>
+											<td class="text-center delete">
+												<div class="form-group text-center">
+													{{ form.DELETE }}
+													<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Medidor')"><i class="fa fa-trash"></i></a>
+												</div>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<br>
+						<br>
+						<a href="/activos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+						<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+						<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-medidor-new')">GUARDAR Y SEGUIR</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+var tabla_electricidad 	= []
+var tabla_agua			= []
+var tabla_gas			= []
+
+$(document).ready(function(){
+
+	var configuracion = {
+		'order': false,
+		'paginate': false,
+		'bLengthChange': false,
+		'bInfo': false,
+		'searching':false,
+		'buttons': [],
+	}
+
+	load_table_electricidad(configuracion)
+	load_table_agua(configuracion)
+	load_table_gas(configuracion)
+
+});
+
+
+function load_table_electricidad(configuracion){
+
+	var columns = [
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'nombre',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'numero_rotulo',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'potencia',
+	},
+	{
+		'width': '20%',
+		'orderable': false,
+		'data': 'potencia_presente',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'potencia_fuera',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'tarifa',
+	},
+	{
+		'width': '10%',
+		'orderable': false,
+		'data': 'eliminar',
+	}];
+
+	tabla_electricidad = load_table('#tabla-electricidad', columns, configuracion)
+}
+
+function load_table_agua(configuracion){
+
+	var columns = [
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'nombre',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'numero_rotulo',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'potencia',
+	},
+	{
+		'width': '20%',
+		'orderable': false,
+		'data': 'potencia_presente',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'potencia_fuera',
+	},
+	{
+		'width': '10%',
+		'orderable': false,
+		'data': 'eliminar',
+	}];
+
+	tabla_agua = load_table('#tabla-agua', columns, configuracion)
+}
+
+function load_table_gas(configuracion){
+
+	var columns = [
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'nombre',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'numero_rotulo',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'potencia',
+	},
+	{
+		'width': '20%',
+		'orderable': false,
+		'data': 'potencia_presente',
+	},
+	{
+		'width': '15%',
+		'orderable': false,
+		'data': 'potencia_fuera',
+	},
+	{
+		'width': '10%',
+		'orderable': false,
+		'data': 'eliminar',
+	}];
+
+	tabla_gas = load_table('#tabla-gas', columns, configuracion)
+}
+
+
+</script>
+{% endblock scripts %}
+

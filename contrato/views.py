@@ -129,8 +129,9 @@ class ContratoMixin(object):
 		profile 		= UserProfile.objects.get(user=self.request.user)
 		obj 			= form.save(commit=False)
 		obj.empresa_id 	= profile.empresa_id
-
+		# form.save_m2m()
 		obj.save()
+		form.save_m2m()
 
 		# generar_contrato_pdf(obj)
 

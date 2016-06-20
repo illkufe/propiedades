@@ -38,6 +38,8 @@ class ContratoTipoForm(forms.ModelForm):
 
 class ContratoForm(forms.ModelForm):
 
+	# {falta: modificar las querys y que traiga los datos de la empresa correspondiente}
+
 	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
@@ -62,7 +64,9 @@ class ContratoForm(forms.ModelForm):
 		exclude = ['creado_en', 'visible', 'empresa']
 
 		widgets = {
+			'bodega'		: forms.CheckboxInput(attrs={'onclick': 'habilitar_input_metros(this)'}),
 			'numero'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'metros_bodega'	: forms.NumberInput(attrs={'class': 'form-control', 'disabled': 'disabled'}),
 			'nombre_local'	: forms.TextInput(attrs={'class': 'form-control'}),
 			'comentario'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
 		}
@@ -75,7 +79,7 @@ class ContratoForm(forms.ModelForm):
 
 		labels = {
 			'numero'			: 'Nº Contrato',
-			'nombre_local'		: 'Nombre de Fantasía',
+			'nombre_local'		: 'Marca Comercial',
 			'fecha_renovacion'	: 'Fecha Renovación',
 		}
 
@@ -197,9 +201,6 @@ class GastoComunForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
 		super(GastoComunForm, self).__init__(*args, **kwargs)
-
-		# user 		= User.objects.get(pk=self.request.user.pk)
-		# profile 	= UserProfile.objects.get(user=user)
 
 		if contrato is not None:
 			self.fields['local'].queryset = contrato.locales.all()

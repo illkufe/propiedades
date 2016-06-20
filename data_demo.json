@@ -259,135 +259,6 @@
 	}
 },
 {
-	"model": "activos.medidor_electricidad",
-	"pk": 1,
-	"fields": {
-		"nombre": "Medidor Mall - Elec 01",
-		"numero_rotulo": 90662,
-		"potencia": 622.934,
-		"potencia_presente": 1381.708,
-		"potencia_fuera": 865.653,
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"activo_id": 1,
-		"tarifa_electricidad": 1
-	}
-},
-{
-	"model": "activos.medidor_electricidad",
-	"pk": 2,
-	"fields": {
-		"nombre": "Medidor Mall - Elec 02",
-		"numero_rotulo": 88737,
-		"potencia": 8916.83,
-		"potencia_presente": 3066.19,
-		"potencia_fuera": 5574.58,
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"activo_id": 1,
-		"tarifa_electricidad": 2
-	}
-},
-{
-	"model": "activos.medidor_agua",
-	"pk": 1,
-	"fields": {
-		"nombre": "Medidor Mall - Agua 01",
-		"numero_rotulo": 21315,
-		"potencia": 492.299,
-		"potencia_presente": 1128.837,
-		"potencia_fuera": 608.394,
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"activo_id": 1
-	}
-},
-{
-	"model": "activos.medidor_agua",
-	"pk": 2,
-	"fields": {
-		"nombre": "Medidor Mall - Agua 02",
-		"numero_rotulo": 52312,
-		"potencia": 6323.07,
-		"potencia_presente": 7273.31,
-		"potencia_fuera": 9157.14,
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"activo_id": 1
-	}
-},
-{
-	"model": "activos.medidor_gas",
-	"pk": 1,
-	"fields": {
-		"nombre": "Medidor Mall - Gas 01",
-		"numero_rotulo": 22937,
-		"potencia": 584.822,
-		"potencia_presente": 1895.791,
-		"potencia_fuera": 716.851,
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"activo_id": 1
-	}
-},
-{
-	"model": "activos.medidor_gas",
-	"pk": 2,
-	"fields": {
-		"nombre": "Medidor Mall - Gas 02",
-		"numero_rotulo": 32134,
-		"potencia": 43372.3,
-		"potencia_presente": 10851.3,
-		"potencia_fuera": 26978.4,
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"activo_id": 1
-	}
-},
-{
-	"model": "activos.medidor_electricidad",
-	"pk": 3,
-	"fields": {
-		"nombre": "Medidor Cent - Elec 01",
-		"numero_rotulo": 30839,
-		"potencia": 436.61,
-		"potencia_presente": 830.174,
-		"potencia_fuera": 521.157,
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"activo_id": 2,
-		"tarifa_electricidad": 1
-	}
-},
-{
-	"model": "activos.medidor_agua",
-	"pk": 3,
-	"fields": {
-		"nombre": "Medidor Cent - Agua 01",
-		"numero_rotulo": 14873,
-		"potencia": 655.905,
-		"potencia_presente": 1645.657,
-		"potencia_fuera": 103.027,
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"activo_id": 2
-	}
-},
-{
-	"model": "activos.medidor_gas",
-	"pk": 3,
-	"fields": {
-		"nombre": "Medidor Cent - Gas 01",
-		"numero_rotulo": 51981,
-		"potencia": 306.438,
-		"potencia_presente": 1348.551,
-		"potencia_fuera": 129.689,
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"activo_id": 2
-	}
-},
-{
 	"model": "locales.local_tipo",
 	"pk": 1,
 	"fields": {
@@ -469,75 +340,132 @@
 	}
 },
 {
-	"model": "locales.local_medidores_agua",
+	"model": "locales.medidor_electricidad",
 	"pk": 1,
 	"fields": {
+		"nombre": "Medidor Mall - Elec 01",
+		"numero_rotulo": 90662,
+		"potencia": 622.934,
+		"potencia_presente": 1381.708,
+		"potencia_fuera": 865.653,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
 		"local_id": 1,
-		"medidor_agua_id": 1
+		"tarifa_electricidad": 1
 	}
 },
 {
-	"model": "locales.local_medidores_agua",
+	"model": "locales.medidor_electricidad",
 	"pk": 2,
 	"fields": {
-		"local_id": 2,
-		"medidor_agua_id": 2
+		"nombre": "Medidor Mall - Elec 02",
+		"numero_rotulo": 88737,
+		"potencia": 8916.83,
+		"potencia_presente": 3066.19,
+		"potencia_fuera": 5574.58,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"local_id": 1,
+		"tarifa_electricidad": 2
 	}
 },
 {
-	"model": "locales.local_medidores_agua",
-	"pk": 3,
-	"fields": {
-		"local_id": 3,
-		"medidor_agua_id": 3
-	}
-},
-{
-	"model": "locales.local_medidores_electricidad",
+	"model": "locales.medidor_agua",
 	"pk": 1,
 	"fields": {
-		"local_id": 1,
-		"medidor_electricidad_id": 1
+		"nombre": "Medidor Mall - Agua 01",
+		"numero_rotulo": 21315,
+		"potencia": 492.299,
+		"potencia_presente": 1128.837,
+		"potencia_fuera": 608.394,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"local_id": 1
 	}
 },
 {
-	"model": "locales.local_medidores_electricidad",
+	"model": "locales.medidor_agua",
 	"pk": 2,
 	"fields": {
-		"local_id": 2,
-		"medidor_electricidad_id": 2
+		"nombre": "Medidor Mall - Agua 02",
+		"numero_rotulo": 52312,
+		"potencia": 6323.07,
+		"potencia_presente": 7273.31,
+		"potencia_fuera": 9157.14,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"local_id": 1
 	}
 },
 {
-	"model": "locales.local_medidores_electricidad",
-	"pk": 3,
-	"fields": {
-		"local_id": 3,
-		"medidor_electricidad_id": 3
-	}
-},
-{
-	"model": "locales.local_medidores_gas",
+	"model": "locales.medidor_gas",
 	"pk": 1,
 	"fields": {
-		"local_id": 1,
-		"medidor_gas_id": 1
+		"nombre": "Medidor Mall - Gas 01",
+		"numero_rotulo": 22937,
+		"potencia": 584.822,
+		"potencia_presente": 1895.791,
+		"potencia_fuera": 716.851,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"local_id": 1
 	}
 },
 {
-	"model": "locales.local_medidores_gas",
+	"model": "locales.medidor_gas",
 	"pk": 2,
 	"fields": {
-		"local_id": 2,
-		"medidor_gas_id": 2
+		"nombre": "Medidor Mall - Gas 02",
+		"numero_rotulo": 32134,
+		"potencia": 43372.3,
+		"potencia_presente": 10851.3,
+		"potencia_fuera": 26978.4,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"local_id": 1
 	}
 },
 {
-	"model": "locales.local_medidores_gas",
+	"model": "locales.medidor_electricidad",
 	"pk": 3,
 	"fields": {
+		"nombre": "Medidor Cent - Elec 01",
+		"numero_rotulo": 30839,
+		"potencia": 436.61,
+		"potencia_presente": 830.174,
+		"potencia_fuera": 521.157,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
 		"local_id": 3,
-		"medidor_gas_id": 3
+		"tarifa_electricidad": 1
+	}
+},
+{
+	"model": "locales.medidor_agua",
+	"pk": 3,
+	"fields": {
+		"nombre": "Medidor Cent - Agua 01",
+		"numero_rotulo": 14873,
+		"potencia": 655.905,
+		"potencia_presente": 1645.657,
+		"potencia_fuera": 103.027,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"local_id": 3
+	}
+},
+{
+	"model": "locales.medidor_gas",
+	"pk": 3,
+	"fields": {
+		"nombre": "Medidor Cent - Gas 01",
+		"numero_rotulo": 51981,
+		"potencia": 306.438,
+		"potencia_presente": 1348.551,
+		"potencia_fuera": 129.689,
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"local_id": 3
 	}
 },
 {

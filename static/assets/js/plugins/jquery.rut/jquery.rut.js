@@ -1,252 +1,149 @@
-/* Copyright (c) 2009 José Joaquín Núñez (josejnv@gmail.com) http://joaquinnunez.cl/blog/
- * Licensed under GPL (http://www.opensource.org/licenses/gpl-2.0.php)
- * Use only for non-commercial usage.
- *
- * Version : 0.5
- *
- * Requires: jQuery 1.2+
- */
- 
-(function($)
-{
-  jQuery.fn.Rut = function(options)
-  {
-    var defaults = {
-      digito_verificador: null,
-      on_error: function(){},
-      on_success: function(){},
-      validation: true,
-      format: true,
-      format_on: 'change'
-    };
+//		Permission is hereby granted, free of charge, to any person obtaining a copy
+//		of this software and associated documentation files (the "Software"), to deal
+//		in the Software without restriction, including without limitation the rights
+//		to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//		copies of the Software, and to permit persons to whom the Software is
+//		furnished to do so, subject to the following conditions:
 
-    var opts = $.extend(defaults, options);
+//		The above copyright notice and this permission notice shall be included in
+//		all copies or substantial portions of the Software.
 
-    return this.each(function(){
-    
-      if(defaults.format)
-      {
-        jQuery(this).bind(defaults.format_on, function(){
-          jQuery(this).val(jQuery.Rut.formatear(jQuery(this).val(),defaults.digito_verificador==null));
-        });
-      }
-      if(defaults.validation)
-      {
-        if(defaults.digito_verificador == null)
-        {
-          jQuery(this).bind('blur', function(){
-            var rut = jQuery(this).val();
-            if(jQuery(this).val() != "" && !jQuery.Rut.validar(rut))
-            {
-                defaults.on_error();
-            }
-            else if(jQuery(this).val() != "")
-            {
-                defaults.on_success();
-            }
-          });
-        }
-        else
-        {
-          var id = jQuery(this).attr("id");
-          jQuery(defaults.digito_verificador).bind('blur', function(){
-            var rut = jQuery("#"+id).val()+"-"+jQuery(this).val();
-            if(jQuery(this).val() != "" && !jQuery.Rut.validar(rut))
-            {
-                defaults.on_error();
-            }
-            else if(jQuery(this).val() != "")
-            {
-                defaults.on_success();
-            }
-          });
-        }
-      }
-    });
-  }
+//		THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//		IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//		FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//		AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//		LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//		THE SOFTWARE.
+
+//		Para obtener este programa bajo otra licencia, pÃ³ngase en 
+//		contacto con @pablomarambio en Twitter.
+;(function($){
+	var defaults = {
+		validateOn: 'blur',
+		formatOn: 'blur',
+		ignoreControlKeys: true
+	};
+
+	//private methods
+	function clearFormat(value) {
+		return value.replace(/[\.\-]/g, "");
+	};
+	function format(value) {
+		rutAndDv = splitRutAndDv(value);
+		var cRut = rutAndDv[0]; var cDv = rutAndDv[1];
+		if(!(cRut && cDv)) return cRut || value;
+		var rutF = "";
+		while(cRut.length > 3) {
+			rutF = "." + cRut.substr(cRut.length - 3) + rutF;
+			cRut = cRut.substring(0, cRut.length - 3);
+		}
+		return cRut + rutF + "-" + cDv;
+	};
+	function isControlKey(e) {
+		return e.type && e.type.match(/^key(up|down|press)/) &&
+			(
+				e.keyCode ==  8 || // del
+				e.keyCode == 16 || // shift
+				e.keyCode == 17 || // ctrl
+				e.keyCode == 18 || // alt
+				e.keyCode == 20 || // caps lock
+				e.keyCode == 27 || // esc
+				e.keyCode == 37 || // arrow
+				e.keyCode == 38 || // arrow
+				e.keyCode == 39 || // arrow
+				e.keyCode == 40 || // arrow
+				e.keyCode == 91    // command
+			);
+	};
+	function isValidRut(rut) {
+		if(typeof(rut) !== 'string') return false;
+		var cRut = clearFormat(rut);
+		if(cRut.length < 2) return false;
+		var cDv = cRut.charAt(cRut.length - 1).toUpperCase();
+		var nRut = parseInt(cRut.substr(0, cRut.length - 1));
+		if(nRut === NaN) return false;
+		return computeDv(nRut).toString().toUpperCase() === cDv;
+	};
+	function computeDv(rut) {
+		var suma	= 0;
+		var mul		= 2;
+		if(typeof(rut) !== 'number') return;
+		rut = rut.toString();
+		for(var i=rut.length -1;i >= 0;i--) {
+			suma = suma + rut.charAt(i) * mul;
+			mul = ( mul + 1 ) % 8 || 2;
+		}
+		switch(suma % 11) {
+			case 1	: return 'k';
+			case 0	: return 0;
+			default	: return 11 - (suma % 11);
+		}
+	};
+	function formatInput($input, e) {
+		$input.val(format($input.val()));
+	};
+	function validateInput($input, e) {
+		if(isValidRut($input.val())) {
+			$input.trigger('rutValido', splitRutAndDv($input.val()));
+		} else {
+			$input.trigger('rutInvalido');
+		}
+	};
+	function splitRutAndDv(rut) {
+		var cValue = clearFormat(rut);
+		if(cValue.length == 0) return [null, null];
+		if(cValue.length == 1) return [cValue, null];
+		var cDv = cValue.charAt(cValue.length - 1);
+		var cRut = cValue.substring(0, cValue.length - 1);
+		return [cRut, cDv];
+	};
+
+	// public methods
+	var methods = {
+		init: function(options) {
+			if (this.length > 1) {
+				/* Valida multiples objetos a la vez */
+				for (var i = 0; i < this.length; i++) {
+					// console.log(this[i]);
+					$(this[i]).rut(options);
+				};
+			} else {
+				var that = this;
+				that.opts = $.extend({}, defaults, options);
+				that.opts.formatOn && that.on(that.opts.formatOn, function(e) { 
+					if(that.opts.ignoreControlKeys && isControlKey(e)) return;
+					formatInput(that, e);
+				});
+				that.opts.validateOn && that.on(that.opts.validateOn, function(e) { 
+					validateInput(that, e);
+				});
+			}
+			return this;
+		}
+	};
+
+	$.fn.rut = function(methodOrOptions) {
+		if(methods[methodOrOptions]) {
+			return methods[methodOrOptions].apply(this, Array.prototype.slice.call( arguments, 1 ));
+		} else if ( typeof methodOrOptions === 'object' || ! methodOrOptions ) {
+			return methods.init.apply( this, arguments );
+		} else {
+			$.error("El mÃ©todo " + methodOrOptions + " no existe en jQuery.rut");
+		}
+	};
+
+	$.formatRut = function(rut) {
+		return format(rut);
+	}
+
+	$.validateRut = function(rut, fn) {
+		if(isValidRut(rut)) {
+			var rd = splitRutAndDv(rut);
+			$.isFunction(fn) && fn(rd[0], rd[1]);
+			return true;
+		} else {
+			return false;
+		}
+	}
 })(jQuery);
-
-/**
-  Funciones
-*/
-
-
-jQuery.Rut = {
-
-  formatear:  function(Rut, digitoVerificador)
-          {
-          var sRut = new String(Rut);
-          var sRutFormateado = '';
-          sRut = jQuery.Rut.quitarFormato(sRut);
-          if(digitoVerificador){
-            var sDV = sRut.charAt(sRut.length-1);
-            sRut = sRut.substring(0, sRut.length-1);
-          }
-          while( sRut.length > 3 )
-          {
-            sRutFormateado = "." + sRut.substr(sRut.length - 3) + sRutFormateado;
-            sRut = sRut.substring(0, sRut.length - 3);
-          }
-          sRutFormateado = sRut + sRutFormateado;
-          if(sRutFormateado != "" && digitoVerificador)
-          {
-            sRutFormateado += "-"+sDV;
-          }
-          else if(digitoVerificador)
-          {
-            sRutFormateado += sDV;
-          }
-          
-          return sRutFormateado;
-        },
-
-  quitarFormato: function(rut)
-        {
-          var strRut = new String(rut);
-          while( strRut.indexOf(".") != -1 )
-          {
-          strRut = strRut.replace(".","");
-          }
-          while( strRut.indexOf("-") != -1 )
-          {
-          strRut = strRut.replace("-","");
-          }
-          
-          return strRut;
-        },
-
-  digitoValido: function(dv)
-        { 
-          if ( dv != '0' && dv != '1' && dv != '2' && dv != '3' && dv != '4' 
-            && dv != '5' && dv != '6' && dv != '7' && dv != '8' && dv != '9' 
-            && dv != 'k'  && dv != 'K')
-          {   
-            return false; 
-          } 
-          return true;
-        },
-
-  digitoCorrecto:   function(crut)
-          { 
-            largo = crut.length;
-            if ( largo < 2 )  
-            {   
-              return false; 
-            }
-            if(largo > 2)
-            {
-              rut = crut.substring(0, largo - 1);
-            }
-            else
-            {   
-              rut = crut.charAt(0);
-            }
-            dv = crut.charAt(largo-1);
-            jQuery.Rut.digitoValido(dv);  
-          
-            if(rut == null || dv == null)
-            {
-              return 0;
-            }
-
-            dvr = jQuery.Rut.getDigito(rut);
-
-            if (dvr != dv.toLowerCase())  
-            {   
-              return false;
-            }
-            return true;
-          },
-
-  getDigito:    function(rut)
-        {
-          var dvr = '0';
-          suma = 0;
-          mul  = 2;
-          for(i=rut.length -1;i >= 0;i--) 
-          { 
-            suma = suma + rut.charAt(i) * mul;    
-            if (mul == 7)
-            {
-              mul = 2;
-            }   
-            else
-            {         
-              mul++;
-            } 
-          }
-          res = suma % 11;  
-          if (res==1)
-          {
-            return 'k';
-          } 
-          else if(res==0)
-          {   
-            return '0';
-          } 
-          else  
-          {   
-            return 11-res;
-          }
-        },
-
-  validar:   function(texto)
-        {
-          texto = jQuery.Rut.quitarFormato(texto);
-          largo = texto.length;
-        
-          // rut muy corto
-          if ( largo < 2 )  
-          {
-            return false; 
-          }
-    
-          // verifica que los numeros correspondan a los de rut
-          for (i=0; i < largo ; i++ ) 
-          {   
-            // numero o letra que no corresponda a los del rut
-            if(!jQuery.Rut.digitoValido(texto.charAt(i)))
-            {     
-              return false;
-            }
-          }
-    
-          var invertido = "";
-          for(i=(largo-1),j=0; i>=0; i--,j++)
-          {
-            invertido = invertido + texto.charAt(i);
-          }
-          var dtexto = "";
-          dtexto = dtexto + invertido.charAt(0);
-          dtexto = dtexto + '-';  
-          cnt = 0;  
-        
-          for ( i=1,j=2; i<largo; i++,j++ ) 
-          {
-            if ( cnt == 3 )   
-            {     
-              dtexto = dtexto + '.';      
-              j++;      
-              dtexto = dtexto + invertido.charAt(i);      
-              cnt = 1;    
-            }
-            else    
-            {       
-              dtexto = dtexto + invertido.charAt(i);      
-              cnt++;    
-            } 
-          } 
-        
-          invertido = ""; 
-          for (i=(dtexto.length-1),j=0; i>=0; i--,j++)
-          {   
-            invertido = invertido + dtexto.charAt(i);
-          }
-    
-          if (jQuery.Rut.digitoCorrecto(texto))
-          {   
-            return true;
-          }
-          return false;
-        }
-};

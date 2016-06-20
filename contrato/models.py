@@ -50,6 +50,8 @@ class Contrato(models.Model):
 	fecha_remodelacion 	= models.DateField()
 	fecha_aviso 		= models.DateField()
 	fecha_plazo 		= models.DateField()
+	bodega 				= models.BooleanField(default=False)
+	metros_bodega		= models.FloatField(null=True, blank=True)
 	comentario 			= models.TextField(blank=True)
 
 	# atributos (por defecto)

@@ -5,9 +5,9 @@ from django.contrib.auth.models import User, Group
 
 from accounts.models import UserProfile
 from administrador.models import Empresa
-from locales.models import Local, Local_Tipo
+from locales.models import Local, Local_Tipo, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 
-from .models import Activo, Sector, Nivel, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
+from .models import Activo, Sector, Nivel
 
 class ActivoForm(forms.ModelForm):
 
@@ -132,18 +132,13 @@ class NivelForm(forms.ModelForm):
 			'codigo' : {'required': 'Esta campo es requerido.'},
 		}
 
-class ActivoMedidoForm(forms.ModelForm):
-
-	class Meta:
-		model 	= Activo
-		fields 	= ['id']
 
 class ElectricidadForm(forms.ModelForm):
 
 	class Meta:
 		model 	= Medidor_Electricidad
 		fields 	= '__all__'
-		exclude = ['creado_en', 'visible']
+		exclude = ['creado_en', 'visible', 'local']
 
 		widgets = {
 			'nombre'				: forms.TextInput(attrs={'class': 'form-control'}),
@@ -178,7 +173,7 @@ class AguaForm(forms.ModelForm):
 	class Meta:
 		model 	= Medidor_Agua
 		fields 	= '__all__'
-		exclude = ['creado_en', 'visible']
+		exclude = ['creado_en', 'visible', 'local']
 
 		widgets = {
 			'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
@@ -202,7 +197,7 @@ class AguaForm(forms.ModelForm):
         }
 
 		labels = {
-			'numero_rotulo'	: 'Número Rótulo',
+			'numero_rotulo'		: 'Nº Rótulo',
 		}
 
 class GasForm(forms.ModelForm):
@@ -210,7 +205,7 @@ class GasForm(forms.ModelForm):
 	class Meta:
 		model 	= Medidor_Gas
 		fields 	= '__all__'
-		exclude = ['creado_en', 'visible']
+		exclude = ['creado_en', 'visible', 'local']
 
 		widgets = {
 			'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
@@ -234,7 +229,7 @@ class GasForm(forms.ModelForm):
         }
 
 		labels = {
-			'numero_rotulo'	: 'Número Rótulo',
+			'numero_rotulo'		: 'Nº Rótulo',
 		}
 
 class LocalForm(forms.ModelForm):
@@ -243,7 +238,6 @@ class LocalForm(forms.ModelForm):
 
 		self.request 	= kwargs.pop('request')
 		activo_id 		= kwargs.pop('activo_id', None)
-		local_id 		= kwargs.pop('local_id', None)
 		user 			= User.objects.get(pk=self.request.user.pk)
 		profile 		= UserProfile.objects.get(user=user)
 
@@ -251,26 +245,9 @@ class LocalForm(forms.ModelForm):
 
 		activo = Activo.objects.get(id=activo_id)
 
-		if local_id is not None:
-			locales = activo.local_set.all().values_list('id', flat=True).exclude(id__in=local_id)
-		else:
-			locales = activo.local_set.all().values_list('id', flat=True)
-
-		medidores_locales_electricidad 					= Medidor_Electricidad.objects.filter(local__in=locales)
-		medidores_locales_agua 							= Medidor_Agua.objects.filter(local__in=locales)
-		medidores_locales_gas 							= Medidor_Gas.objects.filter(local__in=locales)
-
-		self.fields['medidores_electricidad'].queryset 	= Medidor_Electricidad.objects.filter(activo_id=activo).exclude(id__in=medidores_locales_electricidad)
-		self.fields['medidores_agua'].queryset 			= Medidor_Agua.objects.filter(activo_id=activo).exclude(id__in=medidores_locales_agua)
-		self.fields['medidores_gas'].queryset 			= Medidor_Gas.objects.filter(activo_id=activo).exclude(id__in=medidores_locales_gas)
-
-		self.fields['local_tipo'].queryset 				= Local_Tipo.objects.filter(empresa=profile.empresa)
-		self.fields['sector'].queryset 					= Sector.objects.filter(activo=activo)
-		self.fields['nivel'].queryset 					= Nivel.objects.filter(activo=activo)
-		self.fields['medidores_electricidad'].required 	= False
-		self.fields['medidores_agua'].required 			= False
-		self.fields['medidores_gas'].required 			= False
-
+		self.fields['local_tipo'].queryset 	= Local_Tipo.objects.filter(empresa=profile.empresa)
+		self.fields['sector'].queryset 		= Sector.objects.filter(activo=activo)
+		self.fields['nivel'].queryset 		= Nivel.objects.filter(activo=activo)
 
 	class Meta:
 		model 	= Local
@@ -321,11 +298,10 @@ class LocalForm(forms.ModelForm):
 			'local_tipo'	: 'Tipo de Local',
 		}
 
-
 SectorFormSet 		= inlineformset_factory(Activo, Sector, form=SectorForm, extra=1, can_delete=True)
 NivelFormSet 		= inlineformset_factory(Activo, Nivel, form=NivelForm, extra=1, can_delete=True)
-AguaFormSet 		= inlineformset_factory(Activo, Medidor_Agua, form=AguaForm, extra=1, can_delete=True)
-GasFormSet 			= inlineformset_factory(Activo, Medidor_Gas, form=GasForm, extra=1, can_delete=True)
-ElectricidadFormSet = inlineformset_factory(Activo, Medidor_Electricidad, form=ElectricidadForm, extra=1, can_delete=True)
+AguaFormSet 		= inlineformset_factory(Local, Medidor_Agua, form=AguaForm, extra=1, can_delete=True)
+GasFormSet 			= inlineformset_factory(Local, Medidor_Gas, form=GasForm, extra=1, can_delete=True)
+ElectricidadFormSet = inlineformset_factory(Local, Medidor_Electricidad, form=ElectricidadForm, extra=1, can_delete=True)
 
 

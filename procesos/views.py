@@ -42,8 +42,13 @@ class PROCESOS(View):
 	http_method_names =  ['get', 'post']
 
 	def get(self, request, id=None):
+
+		profile 	= UserProfile.objects.get(user=self.request.user)
+		profiles 	= profile.empresa.userprofile_set.all().values_list('id', flat=True)
+		users 		= User.objects.filter(userprofile__in=profiles).values_list('id', flat=True)
+
 		if id == None:
-			self.object_list = Proceso.objects.all()
+			self.object_list = Proceso.objects.filter(visible=True, user__in=users)
 		else:
 			self.object_list = Proceso.objects.filter(pk=id)
 

@@ -1,6 +1,6 @@
 [
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 1,
 	"fields": {
 		"nombre": "Baja Tensión 1",
@@ -11,7 +11,7 @@
 	}
 },
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 2,
 	"fields": {
 		"nombre": "Baja Tensión 2",
@@ -22,7 +22,7 @@
 	}
 },
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 3,
 	"fields": {
 		"nombre": "Baja Tensión 3",
@@ -33,7 +33,7 @@
 	}
 },
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 4,
 	"fields": {
 		"nombre": "Baja Tensión 4.1",
@@ -44,7 +44,7 @@
 	}
 },
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 5,
 	"fields": {
 		"nombre": "Baja Tensión 4.2",
@@ -55,7 +55,7 @@
 	}
 },
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 6,
 	"fields": {
 		"nombre": "Baja Tensión 4.3",
@@ -66,7 +66,7 @@
 	}
 },
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 7,
 	"fields": {
 		"nombre": "Alta Tensión 2",
@@ -77,7 +77,7 @@
 	}
 },
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 8,
 	"fields": {
 		"nombre": "Alta Tensión 3",
@@ -88,7 +88,7 @@
 	}
 },
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 9,
 	"fields": {
 		"nombre": "Alta Tensión 4.1",
@@ -99,7 +99,7 @@
 	}
 },
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 10,
 	"fields": {
 		"nombre": "Alta Tensión 4.2",
@@ -110,7 +110,7 @@
 	}
 },
 {
-	"model": "activos.tarifa_electricidad",
+	"model": "administrador.tarifa_electricidad",
 	"pk": 11,
 	"fields": {
 		"nombre": "Alta Tensión 4.3",

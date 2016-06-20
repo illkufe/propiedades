@@ -30,7 +30,7 @@
 									<td>{{ item.rut_propietario }}</td>
 									<td>{{ item.tasacion_fiscal }}</td>
 									<td class="text-center">
-										<a class="btn btn-config btn-bitbucket" href="/activos/{{ item.id }}/medidores/new"><i class="fa fa-cog"></i></a>
+										<!-- <a class="btn btn-config btn-bitbucket" href="/activos/{{ item.id }}/medidores/new"><i class="fa fa-cog"></i></a> -->
 										<a class="btn btn-edit btn-bitbucket" href='{% url "activo_update" item.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'activos', 'tabla-activos', 'Activo')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
@@ -67,12 +67,12 @@ function load_tabla_activos(){
 		'visible':false,
 	},
 	{
-		'width': '10%',
+		'width': '15%',
 		'data': 'codigo',
 		'title': 'Código',
 	},
 	{
-		'width': '15%',
+		'width': '20%',
 		'data': 'nombre',
 		'title': 'Nombre',
 	},

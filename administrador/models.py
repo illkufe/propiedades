@@ -60,6 +60,22 @@ class Estado_Civil(models.Model):
 	def __str__(self):
 		return self.nombre
 
+
+class Tarifa_Electricidad(models.Model):
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+	codigo 		= models.CharField(max_length=250)
+	valor		= models.FloatField()
+	descripcion = models.TextField(blank=True)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.codigo
+
 class Empresa(models.Model):
 
 	# atributos (generales)

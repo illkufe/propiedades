@@ -2,10 +2,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from administrador.models import Empresa
-from activos.models import Activo, Sector, Nivel, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
+from administrador.models import Empresa, Tarifa_Electricidad
+from activos.models import Activo, Sector, Nivel
 
-# Create your models here.
+# Modelos
 class Local_Tipo(models.Model):
 
 	# atributos (generales)
@@ -22,7 +22,6 @@ class Local_Tipo(models.Model):
 	def __str__(self):
 		return self.nombre
 
-
 class Local(models.Model):
 
 	# atributos (generales)
@@ -31,7 +30,6 @@ class Local(models.Model):
 	metros_cuadrados 	= models.FloatField()
 	metros_lineales 	= models.FloatField(null=True, blank=True)
 	metros_compartidos 	= models.FloatField(null=True, blank=True)
-	metros_bodega 		= models.FloatField(null=True, blank=True)
 	descripcion 		= models.TextField(blank=True)
 
 	# atributos (por defecto)
@@ -43,9 +41,6 @@ class Local(models.Model):
 	sector 					= models.ForeignKey(Sector)
 	nivel 					= models.ForeignKey(Nivel)
 	local_tipo 				= models.ForeignKey(Local_Tipo)
-	medidores_electricidad 	= models.ManyToManyField(Medidor_Electricidad)
-	medidores_agua 			= models.ManyToManyField(Medidor_Agua)
-	medidores_gas 			= models.ManyToManyField(Medidor_Gas)
 
 	def __str__(self):
 		return self.nombre
@@ -77,3 +72,57 @@ class Venta(models.Model):
 
 	def __str__(self):
 		return self.local.nombre
+
+class Medidor_Electricidad(models.Model):
+
+	# atributos (generales)
+	nombre 				= models.CharField(max_length=250)
+	numero_rotulo 		= models.CharField(max_length=250)
+	potencia			= models.FloatField(default=0, null=True, blank=True)
+	potencia_presente	= models.FloatField(default=0, null=True, blank=True)
+	potencia_fuera		= models.FloatField(default=0, null=True, blank=True)
+
+	# atributos (por defecto)
+	visible 			= models.BooleanField(default=True)
+	creado_en 			= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	local 				= models.ForeignKey(Local)
+	tarifa_electricidad	= models.ForeignKey(Tarifa_Electricidad)
+	
+	def __str__(self):
+		return self.nombre
+
+class Medidor_Agua(models.Model):
+
+	# atributos (generales)
+	nombre 				= models.CharField(max_length=250)
+	numero_rotulo 		= models.CharField(max_length=250)
+	potencia			= models.FloatField(default=0, null=True, blank=True)
+
+	# atributos (por defecto)
+	visible 			= models.BooleanField(default=True)
+	creado_en 			= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	local 			= models.ForeignKey(Local)
+
+	def __str__(self):
+		return self.nombre
+
+class Medidor_Gas(models.Model):
+
+	# atributos (generales)
+	nombre 				= models.CharField(max_length=250)
+	numero_rotulo 		= models.CharField(max_length=250)
+	potencia			= models.FloatField(default=0, null=True, blank=True)
+
+	# atributos (por defecto)
+	visible 			= models.BooleanField(default=True)
+	creado_en 			= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	local 	= models.ForeignKey(Local)
+
+	def __str__(self):
+		return self.nombre

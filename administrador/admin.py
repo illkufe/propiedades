@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import Empresa, Moneda
+from .models import Empresa, Cliente, Moneda, Tarifa_Electricidad
 
-# Register your models here.
+# Modelos
 admin.site.register(Empresa)
+admin.site.register(Cliente)
 admin.site.register(Moneda)
+admin.site.register(Tarifa_Electricidad)

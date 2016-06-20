@@ -1,20 +1,16 @@
 $('td.delete input[type=checkbox]').hide()
 
-$('.format-rut').mask('A00.000.000-B',{
-	'reverse': true,
-	'translation': {
-		A: {pattern: /[0-9]/},
-		B: {pattern: /[k-k0-9]/},
-	}
-});
-
-
-// $('.format-rut').Rut({
-// 	on_error: function(){
-// 		console.log($(this))
-// 	},
-// 	format_on: 'keyup'
-// })
+$('.format-rut').rut({
+	formatOn: 'keyup',
+	validateOn: 'blur'
+	}).on('rutInvalido', function(){
+		error_msg = $("<li /> ").addClass("errorlist").text('Rut invalido');
+		$(this).closest('.form-group').find('.container-error').text('')
+		$(this).closest('.form-group').find('.container-error').append(error_msg)
+		$(this).val('')
+	}).on('rutValido', function(){
+		$(this).closest('.form-group').find('.container-error').text('')
+	});
 
 $('.format-date').datepicker({
 	todayBtn: 'linked',
@@ -103,6 +99,8 @@ function clear_form(form){
 	$(form +' '+ '.form-group input').val('')
 	$(form +' '+ '.form-group textarea').val('')
 	$(form +' '+ 'select option:first-child').prop('selected', true);
+	// inputs y selects formularios hijos
+	$(form +' '+ 'tbody input').val('')
 	// select 2
 	$('.select2').val(null).trigger("change")
 }

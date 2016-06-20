@@ -3,11 +3,11 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 
-from .forms import ActivoForm, SectorFormSet, NivelFormSet, LocalForm, ActivoMedidoForm, ElectricidadFormSet, AguaFormSet, GasFormSet
-from .models import Activo, Sector, Nivel, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
-
-from locales.models import Local
 from accounts.models import UserProfile
+from locales.models import Local, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
+
+from .forms import ActivoForm, SectorFormSet, NivelFormSet, LocalForm, ElectricidadFormSet, AguaFormSet, GasFormSet
+from .models import Activo, Sector, Nivel
 
 
 class ActivoMixin(object):
@@ -27,21 +27,13 @@ class ActivoMixin(object):
 		user 	= User.objects.get(pk=self.request.user.pk)
 		profile = UserProfile.objects.get(user=user)
 
-
 		context 		= self.get_context_data()
 		form_sector 	= context['sectorform']
 		form_nivel 		= context['nivelform']
-		# form_medidor 	= context['medidorform']
 
 		obj = form.save(commit=False)
 		obj.empresa_id = profile.empresa_id
 		obj.save()
-
-
-
-		# self.object = form.save(commit=False)
-		# self.object.empresa_id = profile.empresa_id
-		# self.object = self.object.save()
 
 		if form_sector.is_valid():
 			self.object = form.save(commit=False)
@@ -53,10 +45,6 @@ class ActivoMixin(object):
 			form_nivel.instance = self.object
 			form_nivel.save()
 
-		# if form_medidor.is_valid():
-		# 	form_medidor.instance = self.object
-		# 	form_medidor.save()
-
 		response = super(ActivoMixin, self).form_valid(form)
 		if self.request.is_ajax():
 			data = {
@@ -67,6 +55,7 @@ class ActivoMixin(object):
 			return response
 
 class ActivoNew(ActivoMixin, FormView):
+
 	def get_context_data(self, **kwargs):
 
 		context = super(ActivoNew, self).get_context_data(**kwargs)
@@ -155,109 +144,9 @@ class ActivoUpdate(ActivoMixin, UpdateView):
 		if self.request.POST:
 			context['sectorform'] = SectorFormSet(self.request.POST, instance=self.object)
 			context['nivelform'] = NivelFormSet(self.request.POST, instance=self.object)
-
 		else:
 			context['sectorform'] = SectorFormSet(instance=self.object)
 			context['nivelform'] = NivelFormSet(instance=self.object)
-
-		return context
-
-
-
-class ActivoMedidorMixin(object):
-
-	template_name = 'viewer/activos/activo_medidor_new.html'
-	form_class = ActivoMedidoForm
-	success_url = '/activos/list'
-
-	def form_invalid(self, form):
-
-		response = super(ActivoMedidorMixin, self).form_invalid(form)
-		if self.request.is_ajax():
-			return JsonResponse(form.errors, status=400)
-		else:
-			return response
-
-	def form_valid(self, form):
-
-		context 			= self.get_context_data()
-		form_electricidad 	= context['form_electricidad']
-		form_gas 			= context['form_gas']
-		form_agua 			= context['form_agua']
-
-		if form_electricidad.is_valid():
-			form_electricidad.save()
-
-		if form_agua.is_valid():
-			form_agua.save()
-
-		if form_gas.is_valid():
-			form_gas.save()
-
-		response = super(ActivoMedidorMixin, self).form_valid(form)
-		if self.request.is_ajax():
-			data = {
-				'status': 'ok',
-			}
-			return JsonResponse(data)
-		else:
-			return response
-
-class ActivoMedidorNew(ActivoMedidorMixin, FormView):
-
-	def get_context_data(self, **kwargs):
-
-		context 				= super(ActivoMedidorNew, self).get_context_data(**kwargs)
-		context['title'] 		= 'Activos'
-		context['subtitle'] 	= 'Medidor'
-		context['name'] 		= 'Nuevo'
-		context['href'] 		= 'activos'
-		context['accion'] 		= 'update'
-		context['activo_id']	= self.kwargs['activo_id']
-
-		if self.request.POST:
-
-			activo 	= Activo.objects.get(id=self.kwargs['activo_id'])
-
-			try:
-				medidor_electricidad = Medidor_Electricidad.objects.filter(activo_id=self.kwargs['activo_id'])
-				context['form_electricidad'] = ElectricidadFormSet(self.request.POST, instance=activo)
-			except Medidor_Electricidad.DoesNotExist:
-				context['form_electricidad'] = ElectricidadFormSet(self.request.POST)
-
-			try:
-				medidor_agua = Medidor_Agua.objects.filter(activo_id=self.kwargs['activo_id'])
-				context['form_agua'] = AguaFormSet(self.request.POST, instance=activo)
-			except Medidor_Agua.DoesNotExist:
-				context['form_agua'] = AguaFormSet(self.request.POST)
-
-			try:
-				medidor_gas = Medidor_Gas.objects.filter(activo_id=self.kwargs['activo_id'])
-				context['form_gas'] = GasFormSet(self.request.POST, instance=activo)
-			except Medidor_Gas.DoesNotExist:
-				context['form_gas'] = GasFormSet(self.request.POST)
-
-		else:
-
-			activo 	= Activo.objects.get(id=self.kwargs['activo_id'])
-
-			try:
-				medidor_electricidad = Medidor_Electricidad.objects.filter(activo_id=self.kwargs['activo_id'])
-				context['form_electricidad'] = ElectricidadFormSet(instance=activo)
-			except Medidor_Electricidad.DoesNotExist:
-				context['form_electricidad'] = ElectricidadFormSet()
-
-			try:
-				medidor_agua = Medidor_Agua.objects.filter(activo_id=self.kwargs['activo_id'])
-				context['form_agua'] = AguaFormSet(instance=activo)
-			except Medidor_Agua.DoesNotExist:
-				context['form_agua'] = AguaFormSet()
-
-			try:
-				medidor_gas = Medidor_Gas.objects.filter(activo_id=self.kwargs['activo_id'])
-				context['form_gas'] = GasFormSet(instance=activo)
-			except Medidor_Gas.DoesNotExist:
-				context['form_gas'] = GasFormSet()
 
 		return context
 
@@ -276,11 +165,6 @@ class ActivoLocaleMixin(object):
 		kwargs['request'] 	= self.request
 		kwargs['activo_id'] = self.kwargs['activo_id']
 
-		try:
-			kwargs['local_id'] = self.kwargs['pk']
-		except KeyError:
-			pass
-
 		return kwargs
 
 	def form_invalid(self, form):
@@ -292,10 +176,29 @@ class ActivoLocaleMixin(object):
 
 	def form_valid(self, form):
 
-		obj = form.save(commit=False)
-		obj.activo_id = self.kwargs['activo_id']
+		context 		= self.get_context_data()
+		obj 			= form.save(commit=False)
+		obj.activo_id 	= self.kwargs['activo_id']
 		obj.save()
-		# form.save_m2m()	
+
+		form_electricidad 	= context['form_electricidad']
+		form_gas 			= context['form_gas']
+		form_agua 			= context['form_agua']
+
+		if form_electricidad.is_valid():
+			self.object 				= form.save(commit=False)
+			form_electricidad.instance 	= self.object
+			form_electricidad.save()
+
+		if form_gas.is_valid():
+			self.object 		= form.save(commit=False)
+			form_gas.instance 	= self.object
+			form_gas.save()
+
+		if form_agua.is_valid():
+			self.object 		= form.save(commit=False)
+			form_agua.instance 	= self.object
+			form_agua.save()
 
 		response = super(ActivoLocaleMixin, self).form_valid(form)
 
@@ -318,6 +221,15 @@ class ActivoLocalNew(ActivoLocaleMixin, FormView):
 		context['href'] = 'locales'
 		context['accion'] = 'create'
 
+		if self.request.POST:
+			context['form_electricidad'] 	= ElectricidadFormSet(self.request.POST)
+			context['form_agua'] 			= AguaFormSet(self.request.POST)
+			context['form_gas']				= GasFormSet(self.request.POST)
+		else:
+			context['form_electricidad'] 	= ElectricidadFormSet()
+			context['form_agua'] 			= AguaFormSet()
+			context['form_gas'] 			= GasFormSet()
+
 		return context
 
 class ActivoLocalUpdate(ActivoLocaleMixin, UpdateView):
@@ -336,6 +248,15 @@ class ActivoLocalUpdate(ActivoLocaleMixin, UpdateView):
 		context['name'] = 'Editar'
 		context['href'] = 'locales'
 		context['accion'] = 'update'
+
+		if self.request.POST:
+			context['form_electricidad'] 	= ElectricidadFormSet(self.request.POST, instance=self.object)
+			context['form_agua'] 			= AguaFormSet(self.request.POST, instance=self.object)
+			context['form_gas'] 			= GasFormSet(self.request.POST, instance=self.object)
+		else:
+			context['form_electricidad'] 	= ElectricidadFormSet(instance=self.object)
+			context['form_agua'] 			= AguaFormSet(instance=self.object)
+			context['form_gas'] 			= GasFormSet(instance=self.object)
 
 		return context
 

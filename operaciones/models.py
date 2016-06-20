@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
-from activos.models import Medidor_Electricidad, Medidor_Agua, Medidor_Gas
+from locales.models import Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 
 # Modelos
 class Lectura_Electricidad(models.Model):
