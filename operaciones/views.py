@@ -39,24 +39,24 @@ class LecturaMedidorList(ListView):
 		gas 			= Lectura_Gas.objects.filter(visible=True, user__in=users)
 
 		for item in electricidad:
-			item.activo = item.medidor_electricidad.activo
-			item.local 	= item.medidor_electricidad.local_set.all()[0]
+			item.local 	= item.medidor_electricidad.local
+			item.activo = item.medidor_electricidad.local.activo
 			item.mes 	= meses[int(item.mes)-1]
 			item.tipo 	= 'Electricidad'
 			item.url 	= 'electricidad'
 			queryset.append(item)
 
 		for item in agua:
-			item.activo = item.medidor_agua.activo
-			item.local 	= item.medidor_agua.local_set.all()[0]
+			item.local 	= item.medidor_agua.local
+			item.activo = item.medidor_electricidad.local.activo
 			item.mes = meses[int(item.mes)-1]
 			item.tipo 	= 'Agua'
 			item.url 	= 'agua'
 			queryset.append(item)
 
 		for item in gas:
-			item.activo = item.medidor_gas.activo
-			item.local 	= item.medidor_gas.local_set.all()[0]
+			item.local 	= item.medidor_gas.local
+			item.activo = item.medidor_electricidad.local.activo
 			item.mes = meses[int(item.mes)-1]
 			item.tipo 	= 'Gas'
 			item.url 	= 'gas'
