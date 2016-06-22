@@ -5,6 +5,13 @@
 	"fields": {
 		"nombre": "Inversiones S.A.",
 		"rut": "24.186.766-8",
+		"cuidad" : "Santiago",
+		"comuna" : "Providencia",
+		"direccion" : "Pedro de Valdivia #7630",
+		"representante" : "Marcelo Pereira",
+		"representante_rut" : "17.234.557-3",
+		"representante_profesion" : "Contador",
+		"representante_nacionalidad" : "Chileno",
 		"descripcion": "Descripción Inversiones S.A.",
 		"creado_en": "2016-01-01 00:00:00",
 		"visible": true

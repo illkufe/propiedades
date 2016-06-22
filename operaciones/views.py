@@ -49,7 +49,7 @@ class LecturaMedidorList(ListView):
 		for item in agua:
 			item.local 	= item.medidor_agua.local
 			item.activo = item.medidor_electricidad.local.activo
-			item.mes = meses[int(item.mes)-1]
+			item.mes 	= meses[int(item.mes)-1]
 			item.tipo 	= 'Agua'
 			item.url 	= 'agua'
 			queryset.append(item)
@@ -57,7 +57,7 @@ class LecturaMedidorList(ListView):
 		for item in gas:
 			item.local 	= item.medidor_gas.local
 			item.activo = item.medidor_electricidad.local.activo
-			item.mes = meses[int(item.mes)-1]
+			item.mes 	= meses[int(item.mes)-1]
 			item.tipo 	= 'Gas'
 			item.url 	= 'gas'
 			queryset.append(item)

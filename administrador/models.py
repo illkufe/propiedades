@@ -79,9 +79,16 @@ class Tarifa_Electricidad(models.Model):
 class Empresa(models.Model):
 
 	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
-	rut         = models.CharField(max_length=250)
-	descripcion = models.TextField(blank=True)
+	nombre      				= models.CharField(max_length=250)
+	rut         				= models.CharField(max_length=250)
+	cuidad 						= models.CharField(max_length=250)
+	comuna 						= models.CharField(max_length=250)
+	direccion 					= models.CharField(max_length=250)
+	representante 				= models.CharField(max_length=250)
+	representante_rut 			= models.CharField(max_length=250)
+	representante_profesion 	= models.CharField(max_length=250)
+	representante_nacionalidad 	= models.CharField(max_length=250)
+	descripcion 				= models.TextField(blank=True)
 
 	# atributos (por defecto)
 	visible     = models.BooleanField(default=True)
