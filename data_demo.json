@@ -18,6 +18,24 @@
 	}
 },
 {
+	"model": "administrador.empresa",
+	"pk": 2,
+	"fields": {
+		"nombre": "Cencosud S.A.",
+		"rut": "14.231.586-6",
+		"cuidad" : "Santiago",
+		"comuna" : "Santiago Centro",
+		"direccion" : "huerfanos #7632",
+		"representante" : "Javier Miranda",
+		"representante_rut" : "13.262.099-7",
+		"representante_profesion" : "Ingeniero Industrial",
+		"representante_nacionalidad" : "Chileno",
+		"descripcion": "Descripción Cencosud S.A.",
+		"creado_en": "2016-01-01 00:00:00",
+		"visible": true
+	}
+},
+{
 	"model": "administrador.cliente",
 	"pk": 1,
 	"fields": {

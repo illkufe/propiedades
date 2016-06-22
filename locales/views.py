@@ -3,27 +3,25 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Sum
-# from utils.functions import renderjson as render
 from django.contrib.auth.models import User, Group
-from accounts.models import UserProfile
 from django.core.urlresolvers import reverse_lazy
 
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
+from accounts.models import UserProfile
 from administrador.models import Empresa
 from activos.models import Activo
 
 from .forms import LocalForm, LocalTipoForm
 from .models import Local, Local_Tipo, Venta
 
-import json
 from datetime import datetime, timedelta
+from xlrd import open_workbook
 
+import json
 import codecs
 import csv
 import xlrd
-
-from xlrd import open_workbook
 
 
 class AjaxableResponseMixin(object):
@@ -229,7 +227,6 @@ class LocalUpdate(UpdateView):
 
 
 
-
 class VentaList(ListView):
 	model = Venta
 	template_name = 'viewer/locales/venta_list.html'
@@ -345,7 +342,6 @@ class VENTAS(View):
 				})
 
 		return JsonResponse(data, safe=False)
-
 
 class LOCAL(View):
 	http_method_names = ['get']

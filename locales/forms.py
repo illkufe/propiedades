@@ -82,7 +82,7 @@ class LocalForm(forms.ModelForm):
 			'sector'				: forms.Select(attrs={'class': 'select2 form-control'}),
 			'nivel'					: forms.Select(attrs={'class': 'select2 form-control'}),
 			'local_tipo'			: forms.Select(attrs={'class': 'select2 form-control'}),
-			'local_tipo'			: forms.Select(attrs={'class': 'select2 form-control'}),
+			# 'local_tipo'			: forms.Select(attrs={'class': 'select2 form-control'}),
 			# 'medidores'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 		}
 

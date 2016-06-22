@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.forms.models import inlineformset_factory
+from django.contrib.auth.models import User
 
+from accounts.models import UserProfile
+from administrador.models import Cliente, Moneda
+from activos.models import Activo
 from locales.models import Local
 from conceptos.models import Concepto
-from administrador.models import Cliente, Moneda
 
 from .models import Contrato_Tipo, Contrato_Estado, Contrato, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
 
@@ -38,8 +41,6 @@ class ContratoTipoForm(forms.ModelForm):
 
 class ContratoForm(forms.ModelForm):
 
-	# {falta: modificar las querys y que traiga los datos de la empresa correspondiente}
-
 	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
@@ -49,14 +50,22 @@ class ContratoForm(forms.ModelForm):
 	fecha_remodelacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_plazo			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_aviso			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'}, label='Fecha aviso comercial')
-
-	locales 			= forms.ModelMultipleChoiceField(queryset=Local.objects.filter(visible=True),widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	conceptos 			= forms.ModelMultipleChoiceField(queryset=Concepto.objects.all(),required=False,widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}))
-
 	contrato_estado 	= forms.ModelChoiceField(queryset=Contrato_Estado.objects.all(),initial="Borrador",widget=forms.Select(attrs={'class': 'form-control'}))
-	cliente 			= forms.ModelChoiceField(queryset=Cliente.objects.filter(visible=True),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'})
-	contrato_tipo 		= forms.ModelChoiceField(queryset=Contrato_Tipo.objects.filter(visible=True),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'}, label='Tipo de Contrato')
 
+	def __init__(self, *args, **kwargs):
+
+
+		self.request 	= kwargs.pop('request')
+		user 			= User.objects.get(pk=self.request.user.pk)
+		profile 		= UserProfile.objects.get(user=user)
+		activos 		= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
+
+		super(ContratoForm, self).__init__(*args, **kwargs)
+
+		self.fields['locales'].queryset 		= Local.objects.filter(activo__in=activos, visible=True)
+		self.fields['cliente'].queryset 		= Cliente.objects.filter(empresa=profile.empresa, visible=True)
+		self.fields['contrato_tipo'].queryset 	= Contrato_Tipo.objects.filter(empresa=profile.empresa, visible=True)
 
 	class Meta:
 		model 	= Contrato
@@ -69,18 +78,25 @@ class ContratoForm(forms.ModelForm):
 			'metros_bodega'	: forms.NumberInput(attrs={'class': 'form-control', 'disabled': 'disabled'}),
 			'nombre_local'	: forms.TextInput(attrs={'class': 'form-control'}),
 			'comentario'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
+			'contrato_tipo' : forms.Select(attrs={'class': 'form-control'}),
+			'cliente'		: forms.Select(attrs={'class': 'form-control'}),
+			'locales'		: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 		}
 
 		error_messages = {
 			'numero'		: {'required': 'campo requerido.', 'invalid': 'campo invalido'},
 			'nombre_local'	: {'required': 'campo requerido.'},
 			'comentario'	: {'required': 'campo requerido.'},
+			'contrato_tipo'	: {'required': 'campo requerido.'},
+			'cliente'		: {'required': 'campo requerido.'},
+			'locales'		: {'required': 'campo requerido.'},
 		}
 
 		labels = {
 			'numero'			: 'Nº Contrato',
 			'nombre_local'		: 'Marca Comercial',
 			'fecha_renovacion'	: 'Fecha Renovación',
+			'contrato_tipo' 	: 'Tipo de Contrato',
 		}
 
 		help_texts = {
