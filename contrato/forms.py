@@ -50,12 +50,12 @@ class ContratoForm(forms.ModelForm):
 	fecha_plazo			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	fecha_aviso			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'}, label='Fecha aviso comercial')
 
-	locales 			= forms.ModelMultipleChoiceField(queryset=Local.objects.all(),widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
+	locales 			= forms.ModelMultipleChoiceField(queryset=Local.objects.filter(visible=True),widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
 	conceptos 			= forms.ModelMultipleChoiceField(queryset=Concepto.objects.all(),required=False,widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}))
 
 	contrato_estado 	= forms.ModelChoiceField(queryset=Contrato_Estado.objects.all(),initial="Borrador",widget=forms.Select(attrs={'class': 'form-control'}))
-	cliente 			= forms.ModelChoiceField(queryset=Cliente.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'})
-	contrato_tipo 		= forms.ModelChoiceField(queryset=Contrato_Tipo.objects.all(),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'}, label='Tipo de Contrato')
+	cliente 			= forms.ModelChoiceField(queryset=Cliente.objects.filter(visible=True),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'})
+	contrato_tipo 		= forms.ModelChoiceField(queryset=Contrato_Tipo.objects.filter(visible=True),widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido.'}, label='Tipo de Contrato')
 
 
 	class Meta:
