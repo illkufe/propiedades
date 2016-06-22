@@ -212,16 +212,6 @@ td.delete input[type=checkbox] {
 }
 
 
-/*.select2-container .select2-selection--single {
-    height: 26px;
-}
-
-
-.select2-search--dropdown .select2-search__field:focus {
-    border-color: #286CA0 !important;
-    box-shadow: none;
-}*/
-
 .buttons-form button.margin{
 	margin-right: 15px;
 }
@@ -235,4 +225,16 @@ td.delete input[type=checkbox] {
 		margin-top: 5px ;
 	}
 
+}
+
+.input-group-addon{
+	cursor: pointer;
+}
+
+select#id_locales {
+    position: absolute;
+}
+
+.ads .select2.select2-container.select2-container--default{
+	width: 100% !important;
 }

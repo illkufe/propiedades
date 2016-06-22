@@ -17,7 +17,7 @@
 					<div class="ibox-content">
 						<div class="row">
 							<div class="col-sm-12">
-								
+
 								<div class="form-group col-sm-3">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero.help_text }}" ></i>
 									{{ form.numero.label_tag }}
@@ -70,11 +70,18 @@
 									</div>
 								</div>
 
-
 								<div class="form-group col-sm-3">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.locales.help_text }}" ></i>
 									{{ form.locales.label_tag }}
-									{{ form.locales }}
+									<div class="input-group">
+										<div class="ads">
+											{{ form.locales }}
+										</div>
+										<span class="input-group-addon" data-toggle="modal" data-target="#m-locales">
+											<i class="fa fa-search"></i>
+										</span>
+									</div>
+
 									<div class="container-error" style="height:20px">
 										{{ form.locales.errors }}
 									</div>
@@ -504,6 +511,30 @@
 	</div>
 </div>
 
+
+<div class="modal inmodal fade" id="m-locales" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h6 class="modal-title text-left">Seleccionar Locales</h6>
+			</div>
+			<div class="modal-body" style="padding:15px">
+				<table id="tabla-locales" class="table table-striped table-bordered table-hover" width="100%">
+					<thead></thead>
+					<tbody></tbody>
+				</table>
+
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+				<button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="seleccionar()">GUARDAR</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 {% endblock section %}
 
 {% block scripts %}
@@ -511,9 +542,114 @@
 
 $(document).ready(function(){
 
+	// $('#m-locales').on('shown.bs.modal', function (e) {
+	// 	$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+	// });
+
 	initialize()
 
+	var tabla_locales = []
+
+
+	var configuracion = {
+		'buttons': [],
+	} 
+
+	var columns = [
+	{		
+		'data': 'id',
+		'title': 'ID',
+		'visible': false,
+	},
+	{
+		'width': '15%',
+		'data': 'codigo',
+		'title': 'Código',
+	},
+	{
+		'width': '15%',
+		'data': 'nombre',
+		'title': 'Nombre',
+	},
+	{
+		'width': '15%',
+		'data': 'activo',
+		'title': 'Activo',
+	},
+	{
+		'width': '15%',
+		'data': 'tipo',
+		'title': 'Tipo',
+	},
+	{
+		'width': '15%',
+		'data': 'sector',
+		'title': 'Sector',
+	},
+	{
+		'width': '15%',
+		'data': 'nivel',
+		'title': 'Nivel',
+	},
+	{
+		'width': '15%',
+		'data': 'opcion',
+		'orderable': false,
+	}]
+
+	tabla_locales = load_table('#tabla-locales', columns, configuracion)
+
+	$.ajax({
+		url: '/locales',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			rows = [];
+
+			for (var i = 0; i < data.length; i++) {
+
+				row = {}
+
+				row.id		= data[i].id
+				row.codigo 	= data[i].codigo
+				row.nombre	= data[i].nombre
+				row.tipo    = data[i].tipo
+				row.activo  = data[i].activo
+				row.sector 	= data[i].sector
+				row.nivel 	= data[i].nivel
+				row.opcion 	= '<div class="text-center"><input type="checkbox" class="checkbox-local" value="'+data[i].id+'"></div>'
+
+				rows.push(row)
+			}
+			tabla_locales.rows.add(rows).draw();
+		}
+	})
+
+
 });
+
+
+
+function seleccionar(){
+
+	var tabla 	= $('#tabla-locales').dataTable();
+	var locales = []
+
+
+	$('.checkbox-local:checked', tabla.fnGetNodes()).each(function(i){
+		locales.push($(this).val())
+	})
+
+	var $exampleMulti = $("#id_locales").select2();
+	$exampleMulti.val(null).trigger("change");
+	$exampleMulti.val(locales).trigger("change");
+
+
+
+	$('#m-locales').modal('hide')
+}
+
 
 function initialize(){
 

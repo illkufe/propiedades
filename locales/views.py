@@ -9,6 +9,8 @@ from accounts.models import UserProfile
 from django.core.urlresolvers import reverse_lazy
 
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
+
+from administrador.models import Empresa
 from activos.models import Activo
 
 from .forms import LocalForm, LocalTipoForm
@@ -17,11 +19,8 @@ from .models import Local, Local_Tipo, Venta
 import json
 from datetime import datetime, timedelta
 
-
-
 import codecs
 import csv
-
 import xlrd
 
 from xlrd import open_workbook
@@ -118,7 +117,6 @@ class LocalTipoUpdate(UpdateView):
 		context['href'] = 'locales-tipo'
 		context['accion'] = 'update'
 		return context
-
 
 
 
@@ -228,6 +226,8 @@ class LocalUpdate(UpdateView):
 		context['accion'] = 'update'
 
 		return context
+
+
 
 
 class VentaList(ListView):
@@ -347,4 +347,40 @@ class VENTAS(View):
 		return JsonResponse(data, safe=False)
 
 
+class LOCAL(View):
+	http_method_names = ['get']
+	
+	def get(self, request, id=None):
 
+		profile = UserProfile.objects.get(user=self.request.user)
+		empresa = Empresa.objects.get(id=profile.empresa_id)
+		activos = Activo.objects.filter(empresa=empresa).values_list('id', flat=True)
+
+		if id == None:
+			self.object_list = Local.objects.filter(activo__in=activos, visible=True)
+		else:
+			self.object_list = Local.objects.filter(pk=id)
+
+		if request.is_ajax():
+			return self.json_to_response()
+
+		if self.request.GET.get('format', None) == 'json':
+			return self.json_to_response()
+
+	def json_to_response(self):
+
+		data = list()
+
+		for local in self.object_list:
+
+			data.append({
+				'id' 		: local.id,
+				'nombre' 	: local.nombre,
+				'codigo' 	: local.codigo,
+				'tipo' 		: local.local_tipo.nombre,
+				'activo' 	: local.activo.nombre,
+				'sector' 	: local.sector.nombre,
+				'nivel' 	: local.nivel.nombre,
+				})
+
+		return JsonResponse(data, safe=False)

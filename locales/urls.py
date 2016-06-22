@@ -7,6 +7,9 @@ from . import views
 
 urlpatterns = [
 
+	url(r'^locales/$', csrf_exempt(views.LOCAL.as_view()),name='local'),
+	url(r'^locales/(?P<id>\d+)$', csrf_exempt(views.LOCAL.as_view()),name='local_con_id'),
+
 	url(r'^ventas/list$', views.VentaList.as_view(), name='ventas_list'),
 
 	url(r'^ventas/$', views.VENTAS.as_view(), name='venta_list'),
