@@ -93,12 +93,12 @@ WSGI_APPLICATION = 'lease.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'lease',
-        'USER': 'root',
-        'PASSWORD': '',
+        'USER': 'lease',
+        'PASSWORD': 'asgard2016',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 
