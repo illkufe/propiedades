@@ -299,7 +299,7 @@
 	"model": "locales.local",
 	"pk": 1,
 	"fields": {
-		"nombre": "Local 01 - MALL",
+		"nombre": "Local01 - M",
 		"codigo": "L-01",
 		"metros_cuadrados": 10,
 		"descripcion": "Descripción Local 01",
@@ -315,7 +315,7 @@
 	"model": "locales.local",
 	"pk": 2,
 	"fields": {
-		"nombre": "Local 02 - MALL",
+		"nombre": "Local02 - M",
 		"codigo": "L-02",
 		"metros_cuadrados": 20,
 		"descripcion": "Descripción Local 02",
@@ -331,7 +331,7 @@
 	"model": "locales.local",
 	"pk": 3,
 	"fields": {
-		"nombre": "Local 01 - CEN",
+		"nombre": "Local01 - C",
 		"codigo": "L-01",
 		"metros_cuadrados": 10,
 		"descripcion": "Descripción Local 01",

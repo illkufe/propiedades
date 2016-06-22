@@ -222,6 +222,38 @@ function open_modal_delete_child(obj, text){
 }
 
 
+function guardar_formulario_final(accion, entidad){
+
+	$.ajax({
+		type: 'post',
+		url: $('#form-'+entidad+'-new').attr('action'),
+		data: $('#form-'+entidad+'-new').serialize(),
+		success: function(data) {
+
+			if (accion == 'create') {
+				clear_form('#form-'+entidad+'-new')
+			}
+			else if(accion == 'modal'){
+				$('#m-'+entidad+'-new').modal('hide')
+				$('#id_'+entidad+'').append($("<option selected></option>").attr("value",data.id).text(data.nombre))
+			}
+			else{
+
+			}
+
+			clear_errors_form('#form-'+entidad+'-new')
+			notification_toast('success', 'ÉXITO', 'guardado correctamente')
+		},
+		error: function(data, textStatus, jqXHR) {
+			clear_errors_form('#form-'+entidad+'-new')
+			var errors = $.parseJSON(data.responseText)
+			apply_errors_form(errors)
+		}
+	});
+	return false;
+}
+
+
 function guardar_formulario(accion, form){
 
 	$.ajax({
@@ -233,14 +265,9 @@ function guardar_formulario(accion, form){
 				clear_form('#'+form)
 			}
 			clear_errors_form('#'+form)
-
 			notification_toast('success', 'ÉXITO', 'guardado correctamente')
 		},
 		error: function(data, textStatus, jqXHR) {
-			console.log(data)
-			console.log(data.responseText)
-			console.log(textStatus)
-			console.log(jqXHR)
 			clear_errors_form('#'+form)
 			var errors = $.parseJSON(data.responseText)
 			apply_errors_form(errors)

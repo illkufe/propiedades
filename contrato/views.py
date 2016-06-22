@@ -418,8 +418,13 @@ def contrato_pdf(request, contrato_id):
 		'no-outline': None
 		}
 
-	css 		= 'static/assets/css/bootstrap.min.css'
-	template 	= get_template('pdf/contratos/contrato_'+str(contrato.contrato_tipo_id)+'.html')
+	css = 'static/assets/css/bootstrap.min.css'
+
+	try:
+		template = get_template('pdf/contratos/contrato_'+str(contrato.contrato_tipo_id)+'.html')
+	except Exception:
+		template = get_template('pdf/contratos/contrato_default.html')
+
 
 	context = Context({
 		'meses'				: meses,

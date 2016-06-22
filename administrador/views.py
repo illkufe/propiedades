@@ -115,7 +115,6 @@ class ClienteMixin(object):
 			return response
 
 	def form_valid(self, form):
-		print ("valido")
 
 		user 	= User.objects.get(pk=self.request.user.pk)
 		profile = UserProfile.objects.get(user=user)
@@ -123,9 +122,9 @@ class ClienteMixin(object):
 		context 			= self.get_context_data()
 		form_representante 	= context['representante_form']
 
-		objeto 				= form.save(commit=False)
-		objeto.empresa_id 	= profile.empresa_id
-		objeto.save()
+		obj 			= form.save(commit=False)
+		obj.empresa_id 	= profile.empresa_id
+		obj.save()
 
 		if form_representante.is_valid():
 			self.object = form.save(commit=False)
@@ -133,9 +132,11 @@ class ClienteMixin(object):
 			form_representante.save()
 
 		response = super(ClienteMixin, self).form_valid(form)
+
 		if self.request.is_ajax():
 			data = {
-				'pk': 'self.object.pk',
+				'id' 	: obj.id,
+				'nombre': obj.nombre,
 			}
 			return JsonResponse(data)
 		else:
