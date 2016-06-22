@@ -60,7 +60,7 @@
 									{{ form.cliente.label_tag }}
 									<div class="input-group">
 										{{ form.cliente }}
-										<span class="input-group-addon">
+										<span class="input-group-addon" data-toggle="modal" data-target="#m-cliente-new">
 											<i class="fa fa-plus"></i>
 										</span>
 									</div>
@@ -298,6 +298,246 @@
 		</div>
 	</div>
 </div>
+
+
+<div class="modal inmodal fade" id="m-cliente-new" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h6 class="modal-title text-left">Nuevo Cliente</h6>
+			</div>
+			<div class="modal-body">
+
+
+
+				<form id="form-cliente-new" role="form" action="" method="post">
+
+					{% csrf_token %}
+
+					<div class="ibox-title">
+						<h5>INFORMACIÓN GENERAL</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+
+								<div class="row">
+
+									<div class="row">
+									<div class="form-group col-sm-3">
+										<input type="radio" id="persona-juridica" value="1" name="cliente_tipo" checked="" onclick="cambiar_tipo_persona(1)">
+										<label for="persona-juridica"> Persona Jurídica</label>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<input type="radio" id="persona-natural" value="2" name="cliente_tipo" onclick="cambiar_tipo_persona(2)">
+										<label for="persona-natural"> Persona Natural</label>
+									</div>
+									</div>
+
+									<br>
+									<br>
+									<br>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="rut"></i>
+										<label for="id_rut">Rut:</label>
+										<input class="form-control format-rut" id="id_rut" maxlength="250" name="rut" type="text">
+										<div class="container-error" style="height:20px">
+											
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="nombre"></i>
+										<label for="id_nombre">Nombre:</label>
+										<input class="form-control" id="id_nombre" maxlength="250" name="nombre" type="text">
+										<div class="container-error" style="height:20px">
+											
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3 datos-persona-juridica">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="nombre"></i>
+										<label for="id_razon_social">Razón Social:</label>
+										<input class="form-control" id="id_razon_social" maxlength="250" name="razon_social" type="text">
+										<div class="container-error" style="height:20px">
+											
+										</div>
+									</div>
+
+
+									<div class="form-group col-sm-3 datos-persona-juridica">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="nombre"></i>
+										<label for="id_giro">Giro:</label>
+										<input class="form-control" id="id_giro" maxlength="250" name="giro" type="text">
+										<div class="container-error" style="height:20px">
+											
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>UBICACIÓN</h5>
+					</div>
+
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+
+								<div class="row">
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="region"></i>
+										<label for="id_region">Región:</label>
+										<input class="form-control" id="id_region" maxlength="250" name="region" type="text">
+										<div class="container-error" style="height:20px">
+											
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="comuna"></i>
+										<label for="id_comuna">Comuna:</label>
+										<input class="form-control" id="id_comuna" maxlength="250" name="comuna" type="text">
+										<div class="container-error" style="height:20px">
+											
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="direccion"></i>
+										<label for="id_direccion">Dirección:</label>
+										<input class="form-control" id="id_direccion" maxlength="250" name="direccion" type="text">
+										<div class="container-error" style="height:20px">
+											
+										</div>
+									</div>
+
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="telefono"></i>
+										<label for="id_telefono">Teléfono:</label>
+										<input class="form-control" id="id_telefono" maxlength="250" name="telefono" type="text">
+										<div class="container-error" style="height:20px">
+											
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>REPRESENTANTES</h5>
+						<div class="ibox-tools">
+							<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-representantes', 'representante')"><i class="fa fa-plus"></i> Representante</button>
+						</div>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="col-xs-12">
+
+								<input id="id_representante_set-TOTAL_FORMS" name="representante_set-TOTAL_FORMS" type="hidden" value="1"><input id="id_representante_set-INITIAL_FORMS" name="representante_set-INITIAL_FORMS" type="hidden" value="0"><input id="id_representante_set-MIN_NUM_FORMS" name="representante_set-MIN_NUM_FORMS" type="hidden" value="0"><input id="id_representante_set-MAX_NUM_FORMS" name="representante_set-MAX_NUM_FORMS" type="hidden" value="1000">
+								
+								
+								<input id="id_representante_set-0-id" name="representante_set-0-id" type="hidden">
+								
+								<input id="id_representante_set-0-cliente" name="representante_set-0-cliente" type="hidden">
+								
+								
+								<table id="tabla-representantes" class="table">
+									<thead>
+										<tr>
+											<th>Dirección</th>
+											<th>Rut</th>
+											<th>Nacionalidad</th>
+											<th>Profesión</th>
+											<th>Estado Civil</th>
+											<th>Domicilio</th>
+											<th></th>
+										</tr>
+
+									</thead>
+									<tbody>
+										
+										<tr>
+											<td><input class="form-control" id="id_representante_set-0-nombre" maxlength="250" name="representante_set-0-nombre" type="text"></td>
+											<td><input class="form-control format-rut" id="id_representante_set-0-rut" maxlength="250" name="representante_set-0-rut" type="text"></td>
+											<td><input class="form-control" id="id_representante_set-0-nacionalidad" maxlength="250" name="representante_set-0-nacionalidad" type="text"></td>
+											<td><input class="form-control" id="id_representante_set-0-profesion" maxlength="250" name="representante_set-0-profesion" type="text"></td>
+											<td><select class="form-control" id="id_representante_set-0-estado_civil" name="representante_set-0-estado_civil">
+												<option value="" selected="selected">---------</option>
+												<option value="1">Hijo/Hija</option>
+												<option value="2">Padre/Madre</option>
+												<option value="3">Soltero/a</option>
+												<option value="4">Casado(a)</option>
+												<option value="5">Viudo(a)</option>
+												<option value="6">Divorciado(a)</option>
+												<option value="7">Conviviente Civil</option>
+											</select></td>
+											<td><input class="form-control" id="id_representante_set-0-domicilio" maxlength="250" name="representante_set-0-domicilio" type="text"></td>
+
+											<td class="text-center delete">
+												<input id="id_representante_set-0-DELETE" name="representante_set-0-DELETE" type="checkbox" style="display: none;">
+												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Representante')">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
+										</tr>
+
+										
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+						<br>
+						<br>
+
+						<div class="row">
+							<div class="col-sm-12">
+								<a href="/clientes/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('create', 'form-cliente-new')">GUARDAR Y SEGUIR</button>
+							</div>
+						</div>
+					</div>
+				</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 {% endblock section %}
 
 {% block scripts %}
@@ -305,7 +545,7 @@
 
 $(document).ready(function(){
 
-initialize()
+	initialize()
 
 });
 
@@ -315,7 +555,6 @@ function initialize(){
 		$("#id_metros_bodega").attr('disabled', false)
 	}
 }
-
 
 function habilitar_input_metros(obj){
 	$("#id_metros_bodega").attr('disabled', !($(obj).is(':checked')))

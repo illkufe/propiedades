@@ -1,0 +1,123 @@
+<div class="panel panel-default">
+	<div class="panel-heading" role="tab" id="heading-2">
+		<h4 class="panel-title">
+			<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+				Arriendo Variable
+			</a>
+		</h4>
+	</div>
+	<div id="collapse-2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-2">
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-sm-12">
+
+					{{ form_arriendo_variable.management_form }}
+					{% for form in form_arriendo_variable %}
+					{% for hidden in form.hidden_fields %}
+					{{ hidden }}
+					{% endfor %}
+					{% endfor %}
+
+					<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+					<table id="tabla-arriendo-variable" class="table">
+						<thead>
+							{% for form in form_arriendo_variable %}
+							{% if forloop.first %}
+							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+								{{ form.mes_inicio.label_tag }}
+							</th>
+							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+								{{ form.mes_termino.label_tag }}
+							</th>
+							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+								{{ form.periodicidad.label_tag }}
+							</th>
+							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+								{{ form.valor.label_tag }}
+							</th>
+							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+								{{ form.moneda.label_tag }}
+							</th>
+							<th></th>
+							{% endif %}
+							{% endfor %}
+						</thead>
+						<tbody>
+							{% for form in form_arriendo_variable %}
+							<tr>
+								<td>
+
+									<div class="form-group">
+										{{ form.mes_inicio }}
+										<div class="container-error" style="height:20px">
+											{{ form.mes_inicio.errors }}
+										</div>
+									</div>
+								</td>
+								<td>
+
+									<div class="form-group">
+										{{ form.mes_termino }}
+										<div class="container-error" style="height:20px">
+											{{ form.mes_termino.errors }}
+										</div>
+									</div>
+								</td>
+								<td>
+
+									<div class="form-group">
+
+										{{ form.periodicidad }}
+										<div class="container-error" style="height:20px">
+											{{ form.periodicidad.errors }}
+										</div>
+									</div>
+								</td>
+								<td>
+
+									<div class="form-group">
+
+										{{ form.valor }}
+										<div class="container-error" style="height:20px">
+											{{ form.valor.errors }}
+										</div>
+									</div>
+								</td>
+								<td class="text-center">
+
+									<div class="form-group">
+
+										{{ form.moneda }}
+										<div class="container-error" style="height:20px">
+											{{ form.moneda.errors }}
+										</div>
+									</div>
+								</td>
+								<td class="text-center delete">
+
+									<div class="form-group text-center">
+										{{ form.DELETE }}
+										<a class="btn btn-delete btn-bitbucket" onclick="eliminar_periodo_arriendo(this)"><i class="fa fa-trash"></i></a>
+									</div>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<br>
+			<a href="/contratos/list">
+				<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
+			</a>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button>
+		</div>
+	</div>
+</div>

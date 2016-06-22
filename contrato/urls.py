@@ -20,12 +20,7 @@ urlpatterns = [
 	url(r'^contratos-tipo/delete/(?P<pk>\d+)$', views.ContratoTipoDelete.as_view(), name='contrato_tipo_delete'),
 	url(r'^contratos-tipo/update/(?P<pk>\d+)$', views.ContratoTipoUpdate.as_view(), name='contrato_tipo_update'),
 
-	# url(r'^contratos/arriendo/$', views.ContratoArriendo.as_view(), name='contrato_arriendo'),
-	# url(r'^contratos/(?P<contrato_id>\d+)/arriendo/new$', views.ArriendoNew.as_view(), name='arriendo_new'),
-	# url(r'^contratos/(?P<contrato_id>\d+)/arriendo/update/(?P<arriendo_id>\d+)$', views.ArriendoUpdate.as_view(), name='arriendo_update'),
-	# url(r'^contratos/(?P<contrato_id>\d+)/informacion$', views.ArriendoPruebaNew.as_view(), name='arriendo_prueba_new'),
-
 	url(r'^contratos/(?P<contrato_id>\d+)/conceptos$', views.ArriendoPruebaNew.as_view(), name='arriendo_prueba_new'),
-	url(r'^generar_contrato_pdf/(?P<contrato_id>\d+)$', views.generar_contrato_pdf, name='generar_contrato_pdf'),
+	url(r'^contratos/(?P<contrato_id>\d+)/pdf$', views.contrato_pdf, name='contrato_pdf'),
 
 ]

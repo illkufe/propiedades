@@ -2062,3 +2062,9 @@ function load_table_gas(configuracion){
 </script>
 {% endblock scripts %}
 
+# contratos/urls.py
+
+	url(r'^contratos/arriendo/$', views.ContratoArriendo.as_view(), name='contrato_arriendo'),
+	url(r'^contratos/(?P<contrato_id>\d+)/arriendo/new$', views.ArriendoNew.as_view(), name='arriendo_new'),
+	url(r'^contratos/(?P<contrato_id>\d+)/arriendo/update/(?P<arriendo_id>\d+)$', views.ArriendoUpdate.as_view(), name='arriendo_update'),
+	url(r'^contratos/(?P<contrato_id>\d+)/informacion$', views.ArriendoPruebaNew.as_view(), name='arriendo_prueba_new'),

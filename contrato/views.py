@@ -154,6 +154,7 @@ class ContratoNew(ContratoMixin, FormView):
 		context['name'] = 'Nuevo'
 		context['href'] = 'contratos'
 		context['accion'] = 'create'
+		
 		return context
 
 class ContratoList(ListView):
@@ -314,6 +315,14 @@ class ArriendoPruebaNew(ArriendoPruebMixin, FormView):
 		context['href'] 		= 'contratos'
 		context['accion'] 		= 'create'
 		context['contrato_id']	= self.kwargs['contrato_id']
+		contrato		= Contrato.objects.get(id=self.kwargs['contrato_id'])
+
+		context['conceptos']	= contrato.conceptos.all()
+		context['shop_name']	= '1'
+
+		# conceptos = contrato.conceptos.all()
+		# for concepto in conceptos:
+		# 	print (concepto)
 
 		if self.request.POST:
 
@@ -392,19 +401,15 @@ class ArriendoPruebaNew(ArriendoPruebMixin, FormView):
 
 
 
-def generar_contrato_pdf(contrato, contrato_id=None):
+def contrato_pdf(request, contrato_id):
 
-	if contrato_id != None:
-		contrato = Contrato.objects.get(id=contrato_id)
-
+	contrato 		= Contrato.objects.get(id=contrato_id)
 	cliente 		= Cliente.objects.get(id=contrato.cliente_id)
-	empresa 		= Empresa.objects.get(id=cliente.empresa_id)
 	representantes 	= cliente.representante_set.all()
+	empresa 		= Empresa.objects.get(id=cliente.empresa_id)
 	meses 			= ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 
 	options = {
-		# 'page-size': 'Letter',
-		# 'orientation': 'Landscape',
 		'margin-top': '0.75in',
 		'margin-right': '0.75in',
 		'margin-bottom': '0.55in',
@@ -414,7 +419,7 @@ def generar_contrato_pdf(contrato, contrato_id=None):
 		}
 
 	css 		= 'static/assets/css/bootstrap.min.css'
-	template 	= get_template('contratos/contrato_'+str(empresa.id)+'_'+str(contrato.contrato_tipo_id)+'.html')
+	template 	= get_template('pdf/contratos/contrato_'+str(contrato.contrato_tipo_id)+'.html')
 
 	context = Context({
 		'meses'				: meses,
@@ -424,15 +429,14 @@ def generar_contrato_pdf(contrato, contrato_id=None):
 		'representantes' 	: representantes,
 	})
 
-	html = template.render(context)  # Renders the template with the context data.
-	pdfkit.from_string(html, 'public/media/contratos/'+str(contrato.id)+'.pdf', options=options, css=css)
-	pdf = open('public/media/contratos/'+str(contrato.id)+'.pdf')
-	response = HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
-	response['Content-Disposition'] = 'attachment; filename=output.pdf'
+	html 		= template.render(context)
+	pdfkit.from_string(html, 'public/media/contratos/contrato_'+str(contrato.id)+'.pdf', options=options, css=css)
+	pdf 		= open('public/media/contratos/contrato_'+str(contrato.id)+'.pdf', 'rb')
+	response 	= HttpResponse(pdf.read(), content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename=contrato_'+str(contrato.id)+'.pdf'
 	pdf.close()
-	# os.remove("out.pdf")  # remove the locally created pdf file.
 
-	return response  # returns the response.
+	return response
 
 
 
@@ -464,27 +468,46 @@ class CONTRATO(View):
 
 		for contrato in self.object_list:
 
-			data_local 	= list()
-			locales 	= contrato.locales.all()
+			data_locales 	= list()
+			data_conceptos 	= list()
+
+			locales 		= contrato.locales.all()
+			conceptos 		= contrato.conceptos.all()
 
 			for local in locales:
-
-				data_local.append({
+				data_locales.append({
 					'id'	: local.id,
 					'nombre': local.nombre,
 					'tipo'	: local.local_tipo.nombre,
 					})
 
+			for concepto in conceptos:
+				data_conceptos.append({
+					'id'	: concepto.id,
+					'nombre': concepto.nombre,
+					})
+
 			data.append({
-				'id'			: contrato.id,
-				'numero'		: contrato.numero,
-				'tipo'			: contrato.contrato_tipo.nombre,
-				'nombre_local'	: contrato.nombre_local,
-				'fecha_inicio'	: contrato.fecha_inicio,
-				'fecha_termino'	: contrato.fecha_termino,
-				'activo'		: 'cambiar',#local.activo.nombre, # {falta: cargar el activo del local, ojo que el contrato no puede tener locales de diferentes locales}
-				'locales'		: data_local,
-				'estado'		: contrato.contrato_estado.nombre,
+				'id' 					: contrato.id,
+				'numero' 				: contrato.numero,
+				'fecha_contrato' 		: contrato.fecha_contrato,
+				'nombre_local' 			: contrato.nombre_local,
+				'fecha_inicio' 			: contrato.fecha_inicio,
+				'fecha_termino' 		: contrato.fecha_termino,
+				'fecha_habilitacion' 	: contrato.fecha_habilitacion,
+				'fecha_activacion' 		: contrato.fecha_activacion,
+				'fecha_renovacion' 		: contrato.fecha_renovacion,
+				'fecha_remodelacion' 	: contrato.fecha_remodelacion,
+				'fecha_aviso' 			: contrato.fecha_aviso,
+				'fecha_plazo' 			: contrato.fecha_plazo,
+				'bodega' 				: contrato.bodega,
+				'metros_bodega' 		: contrato.metros_bodega,
+				'comentario' 			: contrato.comentario,
+				'tipo' 					: {'id': contrato.contrato_tipo.id, 'nombre': contrato.contrato_tipo.nombre},
+				'estado' 				: {'id': contrato.contrato_estado.id, 'nombre': contrato.contrato_estado.nombre},
+				'cliente' 				: {'id': contrato.cliente.id, 'nombre': contrato.cliente.nombre},
+				'locales' 				: data_locales,
+				'conceptos' 			: data_conceptos,
 				})
 
 		return JsonResponse(data, safe=False)

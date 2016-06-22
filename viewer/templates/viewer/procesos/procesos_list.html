@@ -99,7 +99,6 @@
 					</form>
 				</div>
 
-
 				<div class="ibox-title">
 					<h5>Procesar Contratos</h5>
 				</div>
@@ -408,27 +407,31 @@ function filtrar_contratos(){
 		submitHandler: function(form) {
 			$('#form-fitrar-contratos').ajaxSubmit({
 				dataType: 'json',
-				success: function(data){
+				success: function(data){				
 
-					$('#form-proceso button#enviar-proceso').attr('disabled', true)
-					$('.checkbox-all').prop('checked', false)
-					tabla_contratos.column(1).visible(false);
-					data_tabla_contratos(data)
+					if (data.length == 0) {
+						notification_toast('error', 'No Existen', 'contratos con estos filtros')
+					}else{
+						$('#form-proceso button#enviar-proceso').attr('disabled', true)
+						$('.checkbox-all').prop('checked', false)
+						tabla_contratos.column(1).visible(false);
+						data_tabla_contratos(data)
 
-					var mes_inicio 	= $('#form-fitrar-contratos select[name="mes_inicio"]').val()
-					var mes_termino = $('#form-fitrar-contratos select[name="mes_termino"]').val()
+						var mes_inicio 	= $('#form-fitrar-contratos select[name="mes_inicio"]').val()
+						var mes_termino = $('#form-fitrar-contratos select[name="mes_termino"]').val()
 
-					mes_inicio 	= mes_inicio <= 10 ? '0'+mes_inicio : mes_inicio
-					mes_termino = mes_termino <= 10 ? '0'+mes_termino : mes_termino
+						mes_inicio 	= mes_inicio <= 10 ? '0'+mes_inicio : mes_inicio
+						mes_termino = mes_termino <= 10 ? '0'+mes_termino : mes_termino
 
-					var ano_inicio 	= $('#form-fitrar-contratos input[name="ano_inicio"]').val()
-					var ano_termino = $('#form-fitrar-contratos input[name="ano_termino"]').val()
-					var concepto 	= $('#form-fitrar-contratos select[name="concepto"]').val()
-					
-					$('#form-proceso input[name="fecha_inicio"]').val('01/'+mes_inicio+'/'+ano_termino)
-					$('#form-proceso input[name="fecha_termino"]').val('01/'+mes_termino+'/'+ano_termino)
-					$('#form-proceso input[name="concepto"]').val(concepto)
+						var ano_inicio 	= $('#form-fitrar-contratos input[name="ano_inicio"]').val()
+						var ano_termino = $('#form-fitrar-contratos input[name="ano_termino"]').val()
+						var concepto 	= $('#form-fitrar-contratos select[name="concepto"]').val()
 
+						$('#form-proceso input[name="fecha_inicio"]').val('01/'+mes_inicio+'/'+ano_termino)
+						$('#form-proceso input[name="fecha_termino"]').val('01/'+mes_termino+'/'+ano_termino)
+						$('#form-proceso input[name="concepto"]').val(concepto)
+
+					}
 				}
 			});
 		}

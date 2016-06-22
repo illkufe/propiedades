@@ -78,15 +78,18 @@ function getCookie(name){
 
 function apply_errors_form(errors){
 	$.each(errors, function(index, value) {
-		if (index === "__all__") {
-			django_message(value[0], "error");
-		} else {
+		console.log(index)
+		console.log(value)
+		// if (index === "__all__") {
+		// 	console.log('caca')
+		// 	django_message(value[0], "error");
+		// } else {
+			// console.log('pipi')
 			var input = $("#id_" + index),
 			container = $("#div_id_" + index),
 			error_msg = $("<li /> ").addClass("errorlist").text(value[0]);
 			$("#id_" + index).closest('.form-group').find('.container-error').append(error_msg)
-			
-		}
+		// }
 	});
 }
 
@@ -234,6 +237,10 @@ function guardar_formulario(accion, form){
 			notification_toast('success', 'ÉXITO', 'guardado correctamente')
 		},
 		error: function(data, textStatus, jqXHR) {
+			console.log(data)
+			console.log(data.responseText)
+			console.log(textStatus)
+			console.log(jqXHR)
 			clear_errors_form('#'+form)
 			var errors = $.parseJSON(data.responseText)
 			apply_errors_form(errors)

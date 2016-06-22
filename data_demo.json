@@ -81,6 +81,7 @@
 		"nombre": "Arriendo Mínimo",
 		"codigo": "ARR-MIN",
 		"orden": 1,
+		"template": "arriendo_minimo",
 		"descripcion": "Descripción Arriendo Mínimo",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
@@ -96,6 +97,7 @@
 		"nombre": "Arriendo Variable",
 		"codigo": "ARR-VAR",
 		"orden": 2,
+		"template": "arriendo_variable",
 		"descripcion": "Descripción Arriendo Variable",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
@@ -111,6 +113,7 @@
 		"nombre": "Gasto Común",
 		"codigo": "GAS-COM",
 		"orden": 3,
+		"template": "gasto_comun",
 		"descripcion": "Descripción Gasto Común",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
@@ -126,6 +129,7 @@
 		"nombre": "Servicios Básicos",
 		"codigo": "SER-BAS",
 		"orden": 4,
+		"template": "servicio_basico",
 		"descripcion": "Descripción Servicios Básicos",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
@@ -376,8 +380,6 @@
 		"nombre": "Medidor Mall - Agua 01",
 		"numero_rotulo": 21315,
 		"potencia": 492.299,
-		"potencia_presente": 1128.837,
-		"potencia_fuera": 608.394,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"local_id": 1
@@ -390,8 +392,6 @@
 		"nombre": "Medidor Mall - Agua 02",
 		"numero_rotulo": 52312,
 		"potencia": 6323.07,
-		"potencia_presente": 7273.31,
-		"potencia_fuera": 9157.14,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"local_id": 1
@@ -404,8 +404,6 @@
 		"nombre": "Medidor Mall - Gas 01",
 		"numero_rotulo": 22937,
 		"potencia": 584.822,
-		"potencia_presente": 1895.791,
-		"potencia_fuera": 716.851,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"local_id": 1
@@ -418,8 +416,6 @@
 		"nombre": "Medidor Mall - Gas 02",
 		"numero_rotulo": 32134,
 		"potencia": 43372.3,
-		"potencia_presente": 10851.3,
-		"potencia_fuera": 26978.4,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"local_id": 1
@@ -447,8 +443,6 @@
 		"nombre": "Medidor Cent - Agua 01",
 		"numero_rotulo": 14873,
 		"potencia": 655.905,
-		"potencia_presente": 1645.657,
-		"potencia_fuera": 103.027,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"local_id": 3
@@ -461,8 +455,6 @@
 		"nombre": "Medidor Cent - Gas 01",
 		"numero_rotulo": 51981,
 		"potencia": 306.438,
-		"potencia_presente": 1348.551,
-		"potencia_fuera": 129.689,
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"local_id": 3
@@ -472,9 +464,9 @@
 	"model": "contrato.contrato_tipo",
 	"pk": 1,
 	"fields": {
-		"nombre": "Por Faena o Trabajos",
-		"codigo": "CONT-POR-TRA",
-		"descripcion": "Descripción Por Faena o Trabajos",
+		"nombre": "Plazo Fijo",
+		"codigo": "CONT-PLAZ-FIJ",
+		"descripcion": "Descripción Plazo Fijo",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"empresa_id": 1
@@ -496,9 +488,9 @@
 	"model": "contrato.contrato_tipo",
 	"pk": 3,
 	"fields": {
-		"nombre": "Plazo Fijo",
-		"codigo": "CONT-PLAZ-FIJ",
-		"descripcion": "Descripción Plazo Fijo",
+		"nombre": "Por Faena o Trabajos",
+		"codigo": "CONT-POR-TRA",
+		"descripcion": "Descripción Por Faena o Trabajos",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"empresa_id": 1

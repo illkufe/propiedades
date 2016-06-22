@@ -23,7 +23,8 @@ class Concepto(models.Model):
 
 	# atributos (generales)
 	nombre  	= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=250, blank=True)
+	codigo 		= models.CharField(max_length=250)
+	template 	= models.CharField(max_length=250)
 	orden 		= models.IntegerField()
 	descripcion = models.TextField(blank=True)
 
