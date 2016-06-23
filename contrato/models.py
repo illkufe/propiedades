@@ -51,8 +51,8 @@ class Contrato(models.Model):
 	fecha_aviso 		= models.DateField()
 	fecha_plazo 		= models.DateField()
 	bodega 				= models.BooleanField(default=False)
-	metros_bodega		= models.FloatField(null=True, blank=True)
-	comentario 			= models.TextField(blank=True)
+	metros_bodega		= models.FloatField(default=0, null=True, blank=True)
+	destino_comercial 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)

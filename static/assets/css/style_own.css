@@ -238,3 +238,7 @@ select#id_locales {
 .ads .select2.select2-container.select2-container--default{
 	width: 100% !important;
 }
+
+.img-profile{
+	border: 5px solid #215175;
+}

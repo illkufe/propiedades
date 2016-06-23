@@ -4,6 +4,7 @@ from django.template import Context, loader
 from django.template.loader import get_template 
 from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
+from django.db.models import Sum
 from django.views.generic import View, ListView, FormView, CreateView, DeleteView, UpdateView
 
 from .forms import ContratoTipoForm, ContratoForm, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, GastoComunFormSet, ServicioBasicoFormSet
@@ -14,6 +15,8 @@ from administrador.models import Empresa, Cliente
 from locales.models import Local
 from procesos.models import Proceso, Proceso_Detalle
 
+from datetime import datetime, timedelta
+import calendar
 import pdfkit
 import json
 import os
@@ -134,11 +137,8 @@ class ContratoMixin(object):
 		profile 		= UserProfile.objects.get(user=self.request.user)
 		obj 			= form.save(commit=False)
 		obj.empresa_id 	= profile.empresa_id
-		# form.save_m2m()
 		obj.save()
 		form.save_m2m()
-
-		# generar_contrato_pdf(obj)
 
 		response = super(ContratoMixin, self).form_valid(form)
 		if self.request.is_ajax():
@@ -409,9 +409,14 @@ class ArriendoPruebaNew(ArriendoPruebMixin, FormView):
 def contrato_pdf(request, contrato_id):
 
 	contrato 		= Contrato.objects.get(id=contrato_id)
+	locales 		= contrato.locales.all()
 	cliente 		= Cliente.objects.get(id=contrato.cliente_id)
 	representantes 	= cliente.representante_set.all()
 	empresa 		= Empresa.objects.get(id=cliente.empresa_id)
+
+	metros 			= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
+	plazo 			= meses_entre_fechas(contrato.fecha_inicio, contrato.fecha_termino)
+	
 	meses 			= ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 
 	options = {
@@ -435,6 +440,9 @@ def contrato_pdf(request, contrato_id):
 		'meses'				: meses,
 		'empresa'			: empresa,
 		'contrato'			: contrato,
+		'locales'			: locales,
+		'metros'			: metros['metros_cuadrados__sum'],
+		'plazo'				: plazo,
 		'cliente'			: cliente,
 		'representantes' 	: representantes,
 	})
@@ -527,3 +535,15 @@ class CONTRATO(View):
 
 
 
+def meses_entre_fechas(f_inicio, f_termino):
+	delta = 0
+	while True:
+
+		dias = calendar.monthrange(f_inicio.year, f_inicio.month)[1]
+		f_inicio += timedelta(days=dias)
+		if f_inicio <= f_termino:
+			delta += 1
+		else:
+			break
+
+	return delta + 1

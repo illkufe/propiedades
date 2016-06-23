@@ -2068,3 +2068,14 @@ function load_table_gas(configuracion){
 	url(r'^contratos/(?P<contrato_id>\d+)/arriendo/new$', views.ArriendoNew.as_view(), name='arriendo_new'),
 	url(r'^contratos/(?P<contrato_id>\d+)/arriendo/update/(?P<arriendo_id>\d+)$', views.ArriendoUpdate.as_view(), name='arriendo_update'),
 	url(r'^contratos/(?P<contrato_id>\d+)/informacion$', views.ArriendoPruebaNew.as_view(), name='arriendo_prueba_new'),
+
+# viewer/templates/viewer/locales/local_list.html
+
+select.push({'id':data[i].id, 'text':data[i].nombre})
+select_config 	= {
+	select 		: 's-activo',
+	placeholder : 'Seleccionar Activo',
+	data: select
+}
+format_select(select_config)
+$('#url-new-local').attr('href', '/activos/'+$('#s-activo').val()+'/locales/new')

@@ -73,23 +73,23 @@ class ContratoForm(forms.ModelForm):
 		exclude = ['creado_en', 'visible', 'empresa']
 
 		widgets = {
-			'bodega'		: forms.CheckboxInput(attrs={'onclick': 'habilitar_input_metros(this)'}),
-			'numero'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'metros_bodega'	: forms.NumberInput(attrs={'class': 'form-control', 'disabled': 'disabled'}),
-			'nombre_local'	: forms.TextInput(attrs={'class': 'form-control'}),
-			'comentario'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
-			'contrato_tipo' : forms.Select(attrs={'class': 'form-control'}),
-			'cliente'		: forms.Select(attrs={'class': 'form-control'}),
-			'locales'		: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			'bodega'			: forms.CheckboxInput(attrs={'onclick': 'habilitar_input_metros(this)'}),
+			'numero'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'metros_bodega'		: forms.NumberInput(attrs={'class': 'form-control', 'disabled': 'disabled'}),
+			'nombre_local'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'destino_comercial'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
+			'contrato_tipo' 	: forms.Select(attrs={'class': 'form-control'}),
+			'cliente'			: forms.Select(attrs={'class': 'form-control'}),
+			'locales'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 		}
 
 		error_messages = {
-			'numero'		: {'required': 'campo requerido.', 'invalid': 'campo invalido'},
-			'nombre_local'	: {'required': 'campo requerido.'},
-			'comentario'	: {'required': 'campo requerido.'},
-			'contrato_tipo'	: {'required': 'campo requerido.'},
-			'cliente'		: {'required': 'campo requerido.'},
-			'locales'		: {'required': 'campo requerido.'},
+			'numero'			: {'required': 'campo requerido.', 'invalid': 'campo invalido'},
+			'nombre_local'		: {'required': 'campo requerido.'},
+			'destino_comercial'	: {'required': 'campo requerido.'},
+			'contrato_tipo'		: {'required': 'campo requerido.'},
+			'cliente'			: {'required': 'campo requerido.'},
+			'locales'			: {'required': 'campo requerido.'},
 		}
 
 		labels = {
@@ -100,9 +100,9 @@ class ContratoForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'numero'		: 'numero',			
-			'nombre_local' 	: 'nombre local',
-			'comentario' 	: 'comentario',
+			'numero'			: 'numero',			
+			'nombre_local' 		: 'nombre local',
+			'destino_comercial' : 'Destino Comercial',
 		}
 
 class InformacionForm(forms.ModelForm):

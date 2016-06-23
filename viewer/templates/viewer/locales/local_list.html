@@ -10,13 +10,16 @@
 				<div class="ibox-title">
 					<h5>Lista de Locales</h5>
 					<div class="ibox-tools">
+						<label>Seleccionar Activo: </label>
 						<div class="text-left" style="display:inline-block;">
-							<select id="s-activo" name="activo" class="form-control" onchange="cambiar_url(this)"></select>
+							<select id="s-activo" name="activo" class="form-control" style="font-size: 12px; height:22px; min-width: 150px;" onchange="cambiar_url(this)">
+								<option value>---------</option>
+							</select>
 						</div>
 
-						<a id="url-new-local">
-							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Nuevo Local</button>
-						</a>
+						<a id="url-new-local"></a>
+						<button type="button" class="btn btn-primary btn-xs" onclick="nuevo_local()"><i class="fa fa-plus"></i> Nuevo Local</button>
+						
 					</div>
 				</div>
 				<div class="ibox-content">
@@ -37,7 +40,6 @@
 									<td>{{ item.sector }}</td>
 									<td>{{ item.nivel }}</td>
 									<td class="text-center">
-										<!-- <a class="btn btn-edit btn-bitbucket" href='{% url "local_update" item.id %}'><i class="fa fa-edit"></i></a> -->
 										<a class="btn btn-edit btn-bitbucket" href='/activos/{{item.activo.id}}/locales/update/{{item.id}}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'locales', 'tabla-locales', 'Local')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
@@ -120,21 +122,23 @@ function load_select_activo(){
 			var select 	= []
 
 			for (var i = 0; i < data.length; i++) {
-				select.push({'id':data[i].id, 'text':data[i].nombre})
+				$('#s-activo').append($("<option></option>").attr("value",data[i].id).text(data[i].nombre))
 			}
-
-			select_config 	= {
-				select 		: 's-activo',
-				placeholder : 'Seleccionar Activo',
-				data: select
-			}
-
-			format_select(select_config)
-
-			$('#url-new-local').attr('href', '/activos/'+$('#s-activo').val()+'/locales/new')
 		}
 	})
 }
+
+function nuevo_local(){
+	var href = $('#url-new-local').attr('href');
+
+	if (href==null) {
+		notification_toast('error', 'ACTIVO NO SELECCIONADO', 'crear o seleccionar un activo')
+		console.log('es nula')
+	}else{
+		window.location.href = href;
+	}
+}
+
 
 </script>
 

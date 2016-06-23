@@ -1,0 +1,370 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% load avatar_tags %}
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row animated fadeInRight">
+		<div class="col-md-4">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Perfil</h5>
+				</div>
+				<div>
+					<div class="ibox-content border-left-right">
+						<div class="text-center">
+							<img src="{% avatar_url request.user %}" class="img-circle img-profile" alt="" width="120" height="120">
+
+							<form id="form-update-avatar" action="/avatar/add/" method="POST" enctype="multipart/form-data">
+								{% csrf_token %}
+								<br>
+								<input id="id_avatar" class="hide" name="avatar" type="file" accept="image/*">
+								<button type="button" id="btn-change-avatar" class="btn btn-primary btn-xs">Cambiar Avatar</button>
+							</form>
+						</div>
+					</div>
+
+					<div class="ibox-content profile-content text-center">
+
+						<h4><strong>{{ request.user.first_name }} {{ request.user.last_name }}</strong></h4>
+
+						<p><i class="fa fa-briefcase"></i> &nbsp;&nbsp;{{ request.user.userprofile.cargo }}</p>
+						<p><i class="fa fa-envelope-o"></i> &nbsp;&nbsp;{{ request.user.email }}</p>
+						<p><i class="fa fa-map-marker"></i> &nbsp;&nbsp;&nbsp;&nbsp;{{ request.user.userprofile.direccion }}</p>
+						
+						<h5>Sobre mi</h5>
+						<p class="text-left">{{ request.user.userprofile.descripcion }}</p>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Actualizar Información General</h5>
+					<div class="ibox-tools">
+						<a class="collapse-link">
+							<i class="fa fa-chevron-up"></i>
+						</a>
+					</div>
+				</div>
+				<div class="ibox-content">
+					<form id="form-update-profile" action="update-profile" role="form" method="post">
+						{% csrf_token %}
+
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group col-sm-4">
+									{{ form_profile.first_name.label_tag }}
+									{{ form_profile.first_name }}
+									<div class="container-error" style="height:20px">
+										{{ form_profile.first_name.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-4">
+									{{ form_profile.last_name.label_tag }}
+									{{ form_profile.last_name }}
+									<div class="container-error" style="height:20px">
+										{{ form_profile.last_name.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-4">
+									{{ form_profile.rut.label_tag }}
+									{{ form_profile.rut }}
+									<div class="container-error" style="height:20px">
+										{{ form_profile.rut.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-4">
+									{{ form_profile.cargo.label_tag }}
+									{{ form_profile.cargo }}
+									<div class="container-error" style="height:20px">
+										{{ form_profile.cargo.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-4">
+									{{ form_profile.ciudad.label_tag }}
+									{{ form_profile.ciudad }}
+									<div class="container-error" style="height:20px">
+										{{ form_profile.ciudad.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-4">
+									{{ form_profile.comuna.label_tag }}
+									{{ form_profile.comuna }}
+									<div class="container-error" style="height:20px">
+										{{ form_profile.comuna.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-4">
+									{{ form_profile.direccion.label_tag }}
+									{{ form_profile.direccion }}
+									<div class="container-error" style="height:20px">
+										{{ form_profile.direccion.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-8">
+									{{ form_profile.descripcion.label_tag }}
+									{{ form_profile.descripcion }}
+									<div class="container-error" style="height:20px">
+										{{ form_profile.descripcion.errors }}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-12">
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit" style="margin-right: 15px;">Actualizar</button>
+							</div>
+						</div>
+					</form>
+
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Actualizar Contraseña</h5>
+					<div class="ibox-tools">
+						<a class="collapse-link">
+							<i class="fa fa-chevron-up"></i>
+						</a>
+					</div>
+				</div>
+				<div class="ibox-content">
+					
+					<form id="form-update-password" action="update-password" role="form" method="post">
+						{% csrf_token %}
+						<div class="row">
+							<div class="col-sm-12">
+
+								<div class="form-group col-sm-4">
+									{{ form_password.password_actual.label_tag }}
+									{{ form_password.password_actual }}
+									<div class="container-error" style="height:20px">
+										{{ form_password.password_actual.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-4">
+									{{ form_password.password_nueva.label_tag }}
+									{{ form_password.password_nueva }}
+									<div class="container-error" style="height:20px">
+										{{ form_password.password_nueva.errors }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-4">
+									{{ form_password.password_copia.label_tag }}
+									{{ form_password.password_copia }}
+									<div class="container-error" style="height:20px">
+										{{ form_password.password_copia.errors }}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-12">
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit" style="margin-right: 15px;">Actualizar</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+
+	initialize()
+	update_profile()
+	update_password()
+
+})
+
+function initialize(){
+	$("input[name=avatar]").change(function(){
+		$('#form-update-avatar').submit();
+	});
+
+	$("#btn-change-avatar").click(function(){
+		$("input[name=avatar]").trigger('click');
+	});
+}
+
+function update_profile(){
+	
+	$("#form-update-profile").validate({
+		rules: {
+			first_name: {
+				required: true,
+			},
+			last_name: {
+				required: true,
+			},
+			rut: {
+				required: true,
+			},
+			cargo: {
+				required: true,
+			},
+			ciudad: {
+				required: true,
+			},
+			comuna: {
+				required: true,
+			},
+			direccion: {
+				required: true,
+			},
+		},
+		messages: {
+			first_name: {
+				required: "Campo requerido",
+			},
+			last_name: {
+				required: "Campo requerido",
+			},
+			rut: {
+				required: "Campo requerido",
+			},
+			cargo: {
+				required: "Campo requerido",
+			},
+			ciudad: {
+				required: "Campo requerido",
+			},
+			comuna: {
+				required: "Campo requerido",
+			},
+			direccion: {
+				required: "Campo requerido",
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group").find('.container-error'));
+		},
+		submitHandler: function(form) {
+			$('#form-update-profile').ajaxSubmit({
+				dataType: 'json',
+				success: function(data){
+					window.location.href = "/profile";
+				},
+				error: function(data, textStatus, jqXHR) {
+					clear_errors_form('#form-update-profile')
+					var errors = $.parseJSON(data.responseText)
+					apply_errors_form(errors)
+				}
+			});
+		}
+	}) 
+}
+
+function update_password(){
+
+	$.validator.addMethod("notEqualTo", function (value, element) {
+		password_actual = $('#form-update-password input[name="password_actual"]').val()
+		password_nueva 	= $('#form-update-password input[name="password_nueva"]').val()
+
+		if (password_actual == password_nueva) {
+			return false;
+		}
+		else{
+			return true;
+		}
+
+	}, 'Contraseña igual a la actual');
+	
+	$("#form-update-password").validate({
+		rules: {
+			password_actual: {
+				required: true,
+				minlength: 8,
+			},
+			password_nueva: {
+				required: true,
+				minlength: 8,
+				notEqualTo: true,
+			},
+			password_copia: {
+				required: true,
+				minlength: 8,
+				equalTo: "#id_password_nueva",
+			},
+		},
+		messages: {
+			password_actual: {
+				required: "Campo requerido",
+				minlength: "Mínimo 8 caracteres",
+			},
+			password_nueva: {
+				required: "Campo requerido",
+				minlength: "Mínimo 8 caracteres",
+			},
+			password_copia: {
+				required: "Campo requerido",
+				minlength: "Mínimo 8 caracteres",
+				equalTo: "Las contraseñas no coinciden",
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group").find('.container-error'));
+		},
+		submitHandler: function(form) {
+			$('#form-update-password').ajaxSubmit({
+				dataType: 'json',
+				success: function(data){
+					clear_form('#form-update-password')
+					clear_errors_form('#form-update-password')
+					notification_toast('success', 'CONTRASEÑA', 'actualizada correctamente')
+				},
+				error: function(data, textStatus, jqXHR) {
+					console.log(data.responseText)
+					clear_errors_form('#form-update-profile')
+					var errors = $.parseJSON(data.responseText)
+					apply_errors_form(errors)
+				}
+			});
+		}
+	}) 
+}
+
+
+</script>
+
+{% endblock scripts %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

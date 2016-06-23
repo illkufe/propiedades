@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
 from .models import UserProfile
-from .forms import UserForm, UserProfileForm, UserProfileFormSet
+from .forms import UserForm, UserProfileForm, UserProfileFormSet, UpdateUserProfileForm, UpdatePasswordForm
 
 import string
 import random
@@ -28,21 +28,21 @@ class UsuarioUpdateMixin(object):
 			return response
 
 	def form_valid(self, form):
-		user 	= User.objects.get(pk=self.request.user.pk)
+		user    = User.objects.get(pk=self.request.user.pk)
 		profile = UserProfile.objects.get(user=user)
 
-		context 		= self.get_context_data()
-		form_profile 	= context['userprofileform']
+		context         = self.get_context_data()
+		form_profile    = context['userprofileform']
 
-		obj 			= form.save(commit=False)
-		obj.username 	= obj.email
+		obj             = form.save(commit=False)
+		obj.username    = obj.email
 		obj.save()
 
 		if form_profile.is_valid():
 
-			self.object 			= form.save(commit=False)
-			form_profile.instance 	= self.object
-			detalle_nuevo 			= form_profile.save(commit=False)
+			self.object             = form.save(commit=False)
+			form_profile.instance   = self.object
+			detalle_nuevo           = form_profile.save(commit=False)
 
 			for item in detalle_nuevo:
 				item.empresa_id = profile.empresa_id
@@ -76,23 +76,23 @@ class UsuarioNewMixin(object):
 			return response
 
 	def form_valid(self, form):
-		user 	= User.objects.get(pk=self.request.user.pk)
+		user    = User.objects.get(pk=self.request.user.pk)
 		profile = UserProfile.objects.get(user=user)
 
-		context 		= self.get_context_data()
-		form_profile 	= context['userprofileform']
-		password 		= password_random(8)
+		context         = self.get_context_data()
+		form_profile    = context['userprofileform']
+		password        = password_random(8)
 
-		obj 			= form.save(commit=False)
-		obj.username 	= obj.email
+		obj             = form.save(commit=False)
+		obj.username    = obj.email
 		obj.set_password(password)
 		obj.save()
 
 		if form_profile.is_valid():
 
-			self.object 			= form.save(commit=False)
-			form_profile.instance 	= self.object
-			detalle_nuevo 			= form_profile.save(commit=False)
+			self.object             = form.save(commit=False)
+			form_profile.instance   = self.object
+			detalle_nuevo           = form_profile.save(commit=False)
 
 			for item in detalle_nuevo:
 				item.empresa_id = profile.empresa_id
@@ -146,9 +146,9 @@ class UsuarioList(ListView):
 
 	def get_queryset(self):
 
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profiles 	= UserProfile.objects.values_list('user_id', flat=True).filter(empresa=user.userprofile.empresa)
-		queryset 	= User.objects.filter(id__in=profiles, is_active=True)
+		user        = User.objects.get(pk=self.request.user.pk)
+		profiles    = UserProfile.objects.values_list('user_id', flat=True).filter(empresa=user.userprofile.empresa)
+		queryset    = User.objects.filter(id__in=profiles, is_active=True)
 
 		return queryset
 
@@ -210,16 +210,79 @@ def user_logout(request):
 
 def password_random(size):
 
-	chars 		= string.letters + string.digits
-	password 	= ''.join((random.choice(chars)) for x in range(size))
+	chars       = string.letters + string.digits
+	password    = ''.join((random.choice(chars)) for x in range(size))
 
 	return password
 
+def profile(request):
+
+	form_profile    = UpdateUserProfileForm(user=request.user)
+	form_password   = UpdatePasswordForm(user=request.user)
+
+	return render(request, 'viewer/accounts/profile.html', {
+		'form_profile': form_profile,
+		'form_password': form_password,
+		'title' : 'Perfil',
+		'subtitle' : 'Usuario',
+		'name' : 'Editar',
+		'href' : 'usuarios',
+		})
+
+
+def update_profile(request):
+	
+	form    = UpdateUserProfileForm(request.POST, user=request.user)
+	user    = User.objects.get(pk=request.user.pk)
+	profile = UserProfile.objects.get(user=user)
+
+	if form.is_valid():
+
+		user.first_name     = form.cleaned_data['first_name']
+		user.last_name      = form.cleaned_data['last_name']
+		profile.rut         = form.cleaned_data['rut']
+		profile.cargo       = form.cleaned_data['cargo']
+		profile.ciudad      = form.cleaned_data['ciudad']
+		profile.comuna      = form.cleaned_data['comuna']
+		profile.direccion   = form.cleaned_data['direccion']
+		profile.descripcion = form.cleaned_data['descripcion']
+
+		user.save()
+		profile.save()
+
+		return JsonResponse({'estado':'ok'})
+	else:
+		return JsonResponse(form.errors, status=400)
+	
+def update_password(request):
+
+	form    = UpdatePasswordForm(request.POST, user=request.user)
+	user    = User.objects.get(pk=request.user.pk)
+	profile = UserProfile.objects.get(user=user)
+
+	if form.is_valid():
+
+		password = form.cleaned_data['password_nueva']
+		user.set_password(password)
+		user.save()
+		user = authenticate(username=request.user.email, password=password)
+		login(request, user)
+
+		return JsonResponse({'estado':'ok'})
+	else:
+		return JsonResponse(form.errors, status=400)
+
+	
+
+
+
+
+
 # def custom_404(request):
-# 	return render(request, '404.html')
+#   return render(request, '404.html')
 # def custom_500(request):
-# 	return render(request, '500.html')
+#   return render(request, '500.html')
 # def custom_403(request):
-# 	return render(request, '403.html')
+#   return render(request, '403.html')
 # def custom_400(request):
-# 	return render(request, '400.html')
+#   return render(request, '400.html')

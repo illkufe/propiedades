@@ -6,60 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <link href="css/bootstrap.css" rel="stylesheet">
-
     <style>
-
-    table{
-        font-size: 12px;
-    }
-
-    table td{
-        padding: 2px 6px !important;
-        border: 1px solid #000 !important;;
-    }
 
     p{
         font-size: 12px;
     }
 
     /* utilities */
-    .page{
-        page-break-after: always;
-        /*width: 816px;
-        padding: 72px; 
-        border: 1px solid;
-        margin-top: 10px;*/
-    }
-
-    .bold{
-        font-weight: bold;
-    }
-
-    .underline{
-        text-decoration: underline;
-    }
-
-    .uppercase{
-        text-transform: uppercase;
-    }
 
     p.text{
         line-height: normal;
     }
 
-    .data{
-        color: #2B80FF;
-        text-decoration: line-through;
-        font-weight: normal !important;
-    }
-
     .container-title{
         text-align: center;
-        margin-bottom: 16px;
+        margin-bottom: 30px;
     }
 
     .container-title p{
+        font-size: 18px;
         margin: 0;
         font-weight: bold;
         line-height: normal;
@@ -69,273 +34,22 @@
         text-decoration: underline;
     }
 
-    .section{
-        margin: 0;
-        font-weight: bold;
-    }
-
-    .container-signatures{
-        margin-top: 45px;
-        font-size: 12px;
-    }
-
-    .container-signatures .container-lessor,
-    .container-signatures .container-lessee{
-        width: 49.7%;
-        display: inline-block;
-    }
-
-    .container-signatures .container-lessor{
-        text-align: left;
-    }
-
-    .container-signatures .container-lessee{
-        text-align: right;
-    }
-
-    .container-signatures .lessor,
-    .container-signatures .lessee{
-        border-top: 1px solid;
-        padding: 0px 60px;
-        color: #000;
-        text-decoration: none;
-    }
-
-
-
     </style>
 </head>
 <body>
     <div class="page">
 
         <div class='container-title text-center'>
-            <p class='title'>CONTRATO DE ARRENDAMIENTO</span></p>
-            <p><span class='uppercase'>{{empresa.nombre}}</p>
-            <p>CON</p>
-            <p><span class='uppercase'>{{cliente.razon_social}}</span></p>
+            <p class='title'>TIPO DE CONTRATO SIN TEMPLATE</span></p>
         </div>
 
 
         <p class="text">
-            En <span class='data'>Puerto Montt</span>, <span class='data'>República de Chile</span>, a <span class='data'>29</span> de <span class='data'>Octubre</span> de <span class='data'>2014</span>, entre por una parte: <span class="bold">A) ARRENDADOR. {{empresa.nombre}}</span>, R.U.T. {{empresa.rut}}, representada por don <span class='data'>Juan Carlos Ojeda Ojeda</span>, <span class='data'>chileno</span>, <span class='data'>contador auditor</span>, cedula nacional de identificación Nº <span class='data'>12.343.446-3</span>, ambos domicilios en la cuidad de <span class='data'>Santiago, Avenida Apoquindo Nº 3669 Piso 10, comuna las Condes</span>,por una parte y en adelante "la Arrendadora"; y por la otra:
+            contactarse con ....            
         </p>
 
-        <p class="section">B) ARRENDATARIO</p>
-
-        <table class="table table-bordered">
-            <tbody>
-                <tr>
-                    <td class="bold" style="width: 30%">Razón Social</td>
-                    <td colspan="3" style="width: 70%">{{cliente.razon_social}}</td>
-                </tr>
-                <tr>
-                    <td class="bold" style="width: 25%">Giro</td>
-                    <td style="width: 30%">{{cliente.giro}}</td>
-                    <td class="bold" style="width: 20%">RUT</td>
-                    <td style="width: 25%">{{cliente.rut}}</td>
-                </tr>
-
-                {% for representante in representantes %}
-                <tr>
-                    <td class="bold" style="width: 30%">Representante Legal {{forloop.counter}}</td>
-                    <td colspan="3">{{representante.nombre}}</td>
-                </tr>
-                <tr>
-                    <td class="bold" style="width: 30%">RUN {{forloop.counter}}</td>
-                    <td colspan="3">{{representante.rut}}</td>
-                </tr>
-                <tr>
-                    <td class="bold" style="width: 30%">Nacionalidad {{forloop.counter}}</td>
-                    <td colspan="3">{{representante.nacionalidad}}</td>
-                </tr>
-                <tr>
-                    <td class="bold" style="width: 30%">Profesión u Oficio {{forloop.counter}}</td>
-                    <td colspan="3">{{representante.profesion}}</td>
-                </tr>
-                <tr>
-                    <td class="bold" style="width: 30%">Estado Civil {{forloop.counter}}</td>
-                    <td colspan="3">{{representante.estado_civil}}</td>
-                </tr>
-                <tr>
-                    <td class="bold" style="width: 30%">Domicilio {{forloop.counter}}</td>
-                    <td colspan="3">{{representante.domicilio}}</td>
-                </tr>
-                {% endfor %}
-
-            </tbody>
-        </table>
-
-        <p class="text">
-            Se ha acordado celebrar el siguiente contrato de arrendamiento sobre el inmueble que mas adelante
-            se singulariza, en los términos y condiciones que a continuación se expresa.
-        </p>
-
-        <p class="section">C) CONDICIONES PARTICULARES DE CONTRATACIÓN.</p>
-
-        <table class="table table-bordered">
-            <tbody>
-                <tr>
-                    <td colspan="2" class="bold" style="width:25%">C.1) Bien dado en arrendamiento</td>
-                    <td colspan="6" style="width:75%"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="4" class="bold" style="width:50%" >C.2) Superficie bruta aproximadamente del local</td>
-                    <td colspan="1" style="width:12.5%"><span class='data'>-------</span></td>
-                    <td colspan="2" class="bold" style="width:25%" >C.2.1) Otras superficies</td>
-                    <td colspan="1" style="width:12.5%"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold">C.3) Plazo del contrato</td>
-                    <td colspan="1"><span class='data'>-------</span></td>
-                    <td colspan="4" class="bold">C.4) Renovación de plazo por períodos de</td>
-                    <td colspan="1"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="7" class="bold">C.5) Anticipación del aviso por ambas partes en caso de no desear renovar contrato</td>
-                    <td colspan="1"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold">C.6) Arriendo Mínimo Local</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
-                    <td colspan="2" class="bold">C.6.1) Arriendo Mínimo Otras superficies</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold">C.7) Arriendo porcentual</td>
-                    <td colspan="6"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="4" class="bold">C.8) Reajuste de la renta de arrendamiento</td>
-                    <td colspan="4"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold">C.9) Fondo de Promoción</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
-                    <td colspan="2" class="bold">C.10) Cuota incorporación al fondo de promoción</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold">C.11) Arriendo mes de Diciembte</td>
-                    <td colspan="6"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold">C.12) Inicio Renta</td>
-                    <td colspan="6"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold">C.13) Gasto común Local</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
-                    <td colspan="2" class="bold">C.13.1) Gasto común otras superficies</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="container-signatures">
-            <div class="container-lessor">
-                <a class="lessor">Arrendador</a>
-            </div>
-
-            <div class="container-lessee">
-                <a class="lessee">Arrendatario</a>
-            </div>
-        </div>
+        
     </div>
-
-
-    <div class="page">
-
-        <table class="table table-bordered">
-            <tbody>
-                <tr>
-                    <td colspan="2" class="bold" style="width:25%">C.14) Reajuste gasto común</td>
-                    <td colspan="2" style="width:25%"><span class='data'>-------</span></td>
-                    <td colspan="2" class="bold" style="width:25%">C.15) Garantía</td>
-                    <td colspan="2" style="width:25%"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold" style="width:25%" >C.16) Destino Comercial</td>
-                    <td colspan="6" style="width:75%"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold" style="width:25%" >C.17) Marca Comercial</td>
-                    <td colspan="6" style="width:75%"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold" style="width:25%" >C.18) Entrega de local</td>
-                    <td colspan="6" style="width:75%"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold" style="width:25%">C.19) Renta de Habilitación</td>
-                    <td colspan="2" style="width:25%"><span class='data'>-------</span></td>
-                    <td colspan="3" class="bold" style="width:37.5%">C.20) Revisión Arquitectura</td>
-                    <td colspan="1" style="width:12.5%"><span class='data'>-------</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="bold" style="width:25%" >C.21) Anexos</td>
-                    <td colspan="6" style="width:75%"><span class='data'>-------</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <p class="section underline">PRIMERO. "Bien dado en Arriendo".</p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-
-        <p class="section underline">SEGUNDO. "Regulación de las Condiciones Particulares de Contratación".</p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-
-        <p class="section underline">2.1.- "Duración y vigencia del contrato".</p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-
-        <p class="section underline">2.2.- "Renta de Arrendamiento".</p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-
-        <div class="container-signatures">
-            <div class="container-lessor">
-                <a class="lessor">Arrendador</a>
-            </div>
-
-            <div class="container-lessee">
-                <a class="lessee">Arrendatario</a>
-            </div>
-        </div>
-
-    </div>
-
 
 </body>
 </html>

@@ -106,11 +106,7 @@
 </head>
 <body>
 
-    
     <div class="page">
-    
-        <img src="/static/assets/img/a1.jpg">
-        <img src="static/assets/img/a1.jpg">
 
         <div class='container-title text-center'>
             <p class='title'>CONTRATO DE ARRENDAMIENTO</span></p>
@@ -180,17 +176,22 @@
             <tbody>
                 <tr>
                     <td colspan="2" class="bold" style="width:25%">C.1) Bien dado en arrendamiento</td>
-                    <td colspan="6" style="width:75%"><span class='data'>-------</span></td>
+                    <td colspan="6" style="width:75%">
+                        {% for local in locales %}
+                            {{local.nombre}} del {{local.nivel.nombre}}, {{local.sector.nombre}} del {{local.activo.nombre}}
+                            <br>
+                        {% endfor %}
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="4" class="bold" style="width:50%" >C.2) Superficie bruta aproximadamente del local</td>
-                    <td colspan="1" style="width:12.5%"><span class='data'>-------</span></td>
+                    <td colspan="1" style="width:12.5%">{{metros}} m2</td>
                     <td colspan="2" class="bold" style="width:25%" >C.2.1) Otras superficies</td>
-                    <td colspan="1" style="width:12.5%"><span class='data'>-------</span></td>
+                    <td colspan="1" style="width:12.5%">{{contrato.metros_bodega}} m2</td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold">C.3) Plazo del contrato</td>
-                    <td colspan="1"><span class='data'>-------</span></td>
+                    <td colspan="1">{{plazo}} meses</td>
                     <td colspan="4" class="bold">C.4) Renovación de plazo por períodos de</td>
                     <td colspan="1"><span class='data'>-------</span></td>
                 </tr>
@@ -259,11 +260,11 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="bold" style="width:25%" >C.16) Destino Comercial</td>
-                    <td colspan="6" style="width:75%"><span class='data'>-------</span></td>
+                    <td colspan="6" style="width:75%">{{contrato.destino_comercial}}</span></td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold" style="width:25%" >C.17) Marca Comercial</td>
-                    <td colspan="6" style="width:75%"><span class='data'>-------</span></td>
+                    <td colspan="6" style="width:75%">{{contrato.nombre_local}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold" style="width:25%" >C.18) Entrega de local</td>

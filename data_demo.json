@@ -489,9 +489,9 @@
 	"model": "contrato.contrato_tipo",
 	"pk": 1,
 	"fields": {
-		"nombre": "Plazo Fijo",
-		"codigo": "CONT-PLAZ-FIJ",
-		"descripcion": "Descripción Plazo Fijo",
+		"nombre": "Contrato Local Menor",
+		"codigo": "LOCAL-MENOR",
+		"descripcion": "Descripción local menor",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"empresa_id": 1
@@ -501,9 +501,9 @@
 	"model": "contrato.contrato_tipo",
 	"pk": 2,
 	"fields": {
-		"nombre": "Plazo Indefinido",
-		"codigo": "CONT-PLAZ-IND",
-		"descripcion": "Descripción Plazo Indefinido",
+		"nombre": "Contrato Bodega",
+		"codigo": "BODEGA",
+		"descripcion": "Descripción bodega",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"empresa_id": 1
@@ -513,9 +513,9 @@
 	"model": "contrato.contrato_tipo",
 	"pk": 3,
 	"fields": {
-		"nombre": "Por Faena o Trabajos",
-		"codigo": "CONT-POR-TRA",
-		"descripcion": "Descripción Por Faena o Trabajos",
+		"nombre": "Contrato Módulo",
+		"codigo": "MODULO",
+		"descripcion": "Descripción módulo",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00",
 		"empresa_id": 1
