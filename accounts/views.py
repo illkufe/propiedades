@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse_lazy
+from django.core.mail import send_mail
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
 from .models import UserProfile
@@ -90,6 +91,13 @@ class UsuarioNewMixin(object):
 
 		if form_profile.is_valid():
 
+			try:
+				print ('enviar correo')
+				# send_mail('HOLA CTM', 'QEWA', 'jmieres@informat.cl', ['juan.mieres.s@gmail.com'], fail_silently=False)
+			except Exception as error:
+				print ('error')
+				print (error)
+
 			self.object             = form.save(commit=False)
 			form_profile.instance   = self.object
 			detalle_nuevo           = form_profile.save(commit=False)
@@ -147,7 +155,7 @@ class UsuarioList(ListView):
 	def get_queryset(self):
 
 		user        = User.objects.get(pk=self.request.user.pk)
-		profiles    = UserProfile.objects.values_list('user_id', flat=True).filter(empresa=user.userprofile.empresa)
+		profiles    = UserProfile.objects.values_list('user_id', flat=True).filter(empresa=user.userprofile.empresa).exclude(id=self.request.user.userprofile.id)
 		queryset    = User.objects.filter(id__in=profiles, is_active=True)
 
 		return queryset
@@ -210,7 +218,7 @@ def user_logout(request):
 
 def password_random(size):
 
-	chars       = string.letters + string.digits
+	chars       = string.ascii_letters + string.digits
 	password    = ''.join((random.choice(chars)) for x in range(size))
 
 	return password

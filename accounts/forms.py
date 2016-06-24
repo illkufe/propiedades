@@ -37,7 +37,7 @@ class UserProfileForm(forms.ModelForm):
 		exclude = [ 'visible', 'creado_en', 'user', 'empresa']
 
 		widgets = {
-			'rut'			: forms.TextInput(attrs={'class': 'form-control', 'data-mask': '000.000.000-0',  'data-mask-reverse': 'true'}),
+			'rut'			: forms.TextInput(attrs={'class': 'form-control format-rut'}),
 			'tipo'			: forms.Select(attrs={'class': 'form-control'}),
 			'cargo'			: forms.TextInput(attrs={'class': 'form-control'}),
 			'direccion'		: forms.TextInput(attrs={'class': 'form-control'}),
@@ -56,7 +56,7 @@ class UpdateUserProfileForm(forms.Form):
 
 	first_name 		= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Nombres')
 	last_name 		= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Apellidos')
-	rut 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control format-rut'}), label='R.U.T.')
+	rut 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control format-rut'}), label='RUT')
 	cargo 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Cargo')
 	ciudad 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Ciudad')
 	comuna 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Comuna')

@@ -16,6 +16,7 @@ from locales.models import Local
 from procesos.models import Proceso, Proceso_Detalle
 
 from datetime import datetime, timedelta
+import base64
 import calendar
 import pdfkit
 import json
@@ -414,6 +415,8 @@ def contrato_pdf(request, contrato_id):
 	representantes 	= cliente.representante_set.all()
 	empresa 		= Empresa.objects.get(id=cliente.empresa_id)
 
+	# encoded 		= base64.b64encode(open("public/media/avatars/jmieres@informat.cl/avatar1.png", "rb").read())
+
 	metros 			= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
 	plazo 			= meses_entre_fechas(contrato.fecha_inicio, contrato.fecha_termino)
 	
@@ -425,10 +428,11 @@ def contrato_pdf(request, contrato_id):
 		'margin-bottom': '0.55in',
 		'margin-left': '0.75in',
 		'encoding': "UTF-8",
-		'no-outline': None
+		'header-html': 'static/assets/asd.html',
+		# 'no-outline': None
 		}
 
-	css = 'static/assets/css/bootstrap.min.css'
+	css = ['static/assets/css/bootstrap.min.css']
 
 	try:
 		template = get_template('pdf/contratos/contrato_'+str(contrato.contrato_tipo_id)+'.html')
@@ -529,9 +533,6 @@ class CONTRATO(View):
 				})
 
 		return JsonResponse(data, safe=False)
-
-
-
 
 
 
