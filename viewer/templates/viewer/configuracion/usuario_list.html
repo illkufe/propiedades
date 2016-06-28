@@ -30,7 +30,7 @@
 									<td>activo</td>
 									<td>{{ item.userprofile.cargo }}</td>
 									<td class="text-center">
-										<a class="btn btn-config btn-bitbucket"><i class="fa fa-key"></i></a>
+										<a class="btn btn-config btn-bitbucket" onclick="open_modal_password({{item.id}})"><i class="fa fa-key"></i></a>
 										<a class="btn btn-edit btn-bitbucket" href='{% url "accounts:usuario_update" item.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'usuarios', 'tabla-usuarios', 'Usuario')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
@@ -46,14 +46,66 @@
 	</div>
 </div>
 
+
+<!-- modal formulario actualizar password -->
+<div class="modal inmodal fade" id="m-form-password" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h6 class="modal-title text-left">Actulizar Contraseña</h6>
+			</div>
+			<form id="form-update-password" action="update-password" role="form" method="post">
+				{% csrf_token %}
+
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12">
+
+							<div class="form-group col-sm-6">
+								{{ form_password.password_nueva.label_tag }}
+								{{ form_password.password_nueva }}
+								<div class="container-error" style="height:20px">
+									{{ form_password.password_nueva.errors }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-6">
+								{{ form_password.password_copia.label_tag }}
+								{{ form_password.password_copia }}
+								<div class="container-error" style="height:20px">
+									{{ form_password.password_copia.errors }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+					<button type="submit" class="btn btn-w-m btn-sm btn-primary pull-right">GUARDAR</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 {% endblock section %}
 
 {% block scripts %}
 <script>
 
+var tabla_usuarios;
+
 $(document).ready(function(){
 
-	var tabla_usuarios = []
+	load_tabla_usuarios()
+	update_password()
+
+});
+
+
+function load_tabla_usuarios(){
 
 	var columns = [
 	{       
@@ -93,8 +145,61 @@ $(document).ready(function(){
 	}]
 
 	tabla_usuarios = load_table('#tabla-usuarios', columns, {})
+}
 
-});
+function open_modal_password(id){
+
+	$('#m-form-password').modal('show')
+	$('#form-update-password').attr('action', '/update-password/'+id)
+}
+
+function update_password(){
+	
+	$("#form-update-password").validate({
+		rules: {
+			password_nueva: {
+				required: true,
+				minlength: 8,
+			},
+			password_copia: {
+				required: true,
+				minlength: 8,
+				equalTo: "#id_password_nueva",
+			},
+		},
+		messages: {
+			password_nueva: {
+				required: "Campo requerido",
+				minlength: "Mínimo 8 caracteres",
+			},
+			password_copia: {
+				required: "Campo requerido",
+				minlength: "Mínimo 8 caracteres",
+				equalTo: "Las contraseñas no coinciden",
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group").find('.container-error'));
+		},
+		submitHandler: function(form) {
+			$('#form-update-password').ajaxSubmit({
+				dataType: 'json',
+				success: function(data){
+					$('#m-form-password').modal('hide')
+					clear_form('#form-update-password')
+					clear_errors_form('#form-update-password')
+					notification_toast('success', 'CONTRASEÑA', 'actualizada correctamente')
+				},
+				error: function(data, textStatus, jqXHR) {
+					console.log(data.responseText)
+					clear_errors_form('#form-update-profile')
+					var errors = $.parseJSON(data.responseText)
+					apply_errors_form(errors)
+				}
+			});
+		}
+	}) 
+}
 
 
 </script>

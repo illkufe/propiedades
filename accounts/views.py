@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
 from .models import UserProfile
-from .forms import UserForm, UserProfileForm, UserProfileFormSet, UpdateUserProfileForm, UpdatePasswordForm
+from .forms import UserForm, UserProfileForm, UserProfileFormSet, UpdateUserProfileForm, UpdatePasswordForm, UpdatePasswordAdminForm
 
 import string
 import random
@@ -145,10 +145,13 @@ class UsuarioList(ListView):
 	def get_context_data(self, **kwargs):
 
 		context = super(UsuarioList, self).get_context_data(**kwargs)
-		context['title'] = 'Configuración'
-		context['subtitle'] = 'Usuario'
-		context['name'] = 'Lista'
-		context['href'] = 'usuarios'
+		context['title'] 			= 'Configuración'
+		context['subtitle'] 		= 'Usuario'
+		context['name'] 			= 'Lista'
+		context['href'] 			= 'usuarios'
+		context['form_password'] 	= UpdatePasswordAdminForm()
+
+		
 
 		return context
 
@@ -262,23 +265,39 @@ def update_profile(request):
 	else:
 		return JsonResponse(form.errors, status=400)
 	
-def update_password(request):
+def update_password(request, pk=None):
+	if pk is None:
 
-	form    = UpdatePasswordForm(request.POST, user=request.user)
-	user    = User.objects.get(pk=request.user.pk)
-	profile = UserProfile.objects.get(user=user)
+		form  = UpdatePasswordForm(request.POST, user=request.user)
+		user  = User.objects.get(pk=request.user.pk)
 
-	if form.is_valid():
+		if form.is_valid():
 
-		password = form.cleaned_data['password_nueva']
-		user.set_password(password)
-		user.save()
-		user = authenticate(username=request.user.email, password=password)
-		login(request, user)
+			password = form.cleaned_data['password_nueva']
+			user.set_password(password)
+			user.save()
+			user = authenticate(username=request.user.email, password=password)
+			login(request, user)
 
-		return JsonResponse({'estado':'ok'})
+			return JsonResponse({'estado':'ok'})
+		else:
+			return JsonResponse(form.errors, status=400)
+
 	else:
-		return JsonResponse(form.errors, status=400)
+
+		form = UpdatePasswordAdminForm(request.POST)
+		user = User.objects.get(pk=pk)
+		
+		if form.is_valid():
+			password = form.cleaned_data['password_nueva']
+			user.set_password(password)
+			print (user)
+			user.save()
+			return JsonResponse({'estado':'ok'})
+		else:
+			return JsonResponse(form.errors, status=400)
+
+	
 
 	
 

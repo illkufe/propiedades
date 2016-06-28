@@ -414,9 +414,6 @@ def contrato_pdf(request, contrato_id):
 	cliente 		= Cliente.objects.get(id=contrato.cliente_id)
 	representantes 	= cliente.representante_set.all()
 	empresa 		= Empresa.objects.get(id=cliente.empresa_id)
-
-	# encoded 		= base64.b64encode(open("public/media/avatars/jmieres@informat.cl/avatar1.png", "rb").read())
-
 	metros 			= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
 	plazo 			= meses_entre_fechas(contrato.fecha_inicio, contrato.fecha_termino)
 	
@@ -428,8 +425,7 @@ def contrato_pdf(request, contrato_id):
 		'margin-bottom': '0.55in',
 		'margin-left': '0.75in',
 		'encoding': "UTF-8",
-		'header-html': 'static/assets/asd.html',
-		# 'no-outline': None
+		'no-outline': None,
 		}
 
 	css = ['static/assets/css/bootstrap.min.css']

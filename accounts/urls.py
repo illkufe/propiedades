@@ -18,8 +18,9 @@ urlpatterns = [
 
 	url(r'^profile$', views.profile, name='profile'),
 	url(r'^update-profile$', views.update_profile, name='update_profile'),
-	url(r'^update-password$', views.update_password, name='update_password'),
 	
+	url(r'^update-password/(?P<pk>\d+)$', views.update_password, name='update_password_id'),
+	url(r'^update-password', views.update_password, name='update_password'),
 
 ]
 

@@ -94,8 +94,15 @@ class UpdatePasswordForm(forms.Form):
 		authentication  = authenticate(username=self.user.email, password=password_actual)
 
 		if authentication is None:
-		    msg = "Tu contraseña es incorrecta"
-		    self.add_error('password_actual', msg)
+			msg = "Tu contraseña es incorrecta"
+			self.add_error('password_actual', msg)
+
+
+class UpdatePasswordAdminForm(forms.Form):
+
+	password_nueva 	= forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Contraseña Nueva')
+	password_copia 	= forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Repetir Contraseña')
+
 
 
 UserProfileFormSet 	= inlineformset_factory(User, UserProfile, form=UserProfileForm, extra=1, can_delete=False)
