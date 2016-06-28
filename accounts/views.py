@@ -291,16 +291,10 @@ def update_password(request, pk=None):
 		if form.is_valid():
 			password = form.cleaned_data['password_nueva']
 			user.set_password(password)
-			print (user)
 			user.save()
 			return JsonResponse({'estado':'ok'})
 		else:
 			return JsonResponse(form.errors, status=400)
-
-	
-
-	
-
 
 
 

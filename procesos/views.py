@@ -8,12 +8,12 @@ from django.contrib.auth.models import User
 
 from administrador.models import Empresa, Cliente, Moneda, Moneda_Historial
 from accounts.models import UserProfile
-from locales.models import Local, Venta
+from locales.models import Local, Venta, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 from activos.models import Activo
 from conceptos.models import Concepto
 from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
-from procesos.models import Proceso, Proceso_Detalle
-from operaciones.models import Lectura_Electricidad
+from procesos.models import Proceso, Proceso_Detalle, Detalle_Electricidad, Detalle_Agua, Detalle_Gas
+from operaciones.models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas
 
 from django.db.models import Sum
 from datetime import datetime, timedelta
@@ -25,8 +25,8 @@ import pdfkit
 
 def procesos_list(request):
 
-	conceptos 		= Concepto.objects.all()
-	activos 		= Activo.objects.all()
+	conceptos 	= Concepto.objects.all()
+	activos 	= Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
 
 	return render(request, 'viewer/procesos/procesos_list.html',{
 		'title': 'Cálculo de Conceptos',
@@ -73,7 +73,10 @@ class PROCESOS(View):
 		elif int(concepto) == 3:
 			data = calculo_gasto_comun(request, fecha_inicio, fecha_termino, contratos)
 		elif int(concepto) == 4:
-			data = calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos)
+			val_luz 	= var_post.get('valor_luz')
+			val_agua 	= var_post.get('valor_agua')
+			val_gas 	= var_post.get('valor_gas')
+			data = calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, val_luz, val_agua, val_gas)
 		else:
 			data = []
 
@@ -377,7 +380,7 @@ def calculo_gasto_comun(request, fecha_inicio, fecha_termino, contratos):
 
 	return data
 
-def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos):
+def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, valor_luz, valor_agua, valor_gas):
 
 	user 		= User.objects.get(pk=request.user.pk)
 	contratos 	= contratos
@@ -391,71 +394,85 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos):
 		fecha_inicio		= f_inicio.strftime('%Y-%m-%d'),
 		fecha_termino		= f_termino.strftime('%Y-%m-%d'),
 		user				= user,
-		concepto_id			= 4, # {falta: buscar de otra manera}
+		concepto_id			= 4,
 		proceso_estado_id 	= 1,
 		)
 	proceso.save()
 	
 	for x in range(meses):
+
 		for item in contratos:
-
-			contrato 	= Contrato.objects.get(id=item)
-			total 		= 0
-
-			locales 	= contrato.locales.values_list('id', flat=True).all()
-			medidores  	= Medidor.objects.filter(local__in=locales)
-			print ("contrato")
-			print (item)
-			print ("medidor")
-			print (medidores)
-
-			# asd = Servicio_Basico.objects.filter(contrato=contrato)
 			
+			contrato 		= Contrato.objects.get(id=item)
+			locales 		= contrato.locales.values_list('id', flat=True).all()	
+			medidores_luz  	= Medidor_Electricidad.objects.filter(local__in=locales)
+			medidores_agua  = Medidor_Agua.objects.filter(local__in=locales)
+			medidores_gas  	= Medidor_Gas.objects.filter(local__in=locales)
 
-			try:
-				detalles = Servicio_Basico.objects.filter(contrato=contrato)
 
-				print (detalles)
+			for medidor in medidores_luz:
+				try:
+					valor_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=(fecha.month-1), anio=fecha.year).valor
+				except Exception:
+					valor_anterior	= None
+				try:
+					valor_actual 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=fecha.month, anio=fecha.year).valor
+				except Exception:
+					valor_actual	= None
 
-				for detalle in detalles:
-					print (detalle)
-					if fecha.month >= int(detalle.mes_inicio) and fecha.month <= int(detalle.mes_termino):
+				Detalle_Electricidad(
+					valor			= valor_luz,
+					valor_anterior	= valor_anterior,
+					valor_actual	= valor_actual,
+					fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+					fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+					proceso			= proceso,
+					contrato		= contrato,
+					medidor			= medidor,
+				).save()
 
-						for medidor in medidores:
-							# print ("-----------")
-							# print (medidor)
-							# print (medidor.id)
-							# lectura = Lectura_Electricidad.objects.get(medidor=medidor)
-							lecturas = Lectura_Electricidad.objects.filter(medidor=medidor).order_by('-id')[:2]
-							index =  0
-							for lectura in lecturas:
-								print (lectura.valor)
-								if index == 0:
-									val = lectura.valor
-								else:
-									val = val - lectura.valor
+			for medidor in medidores_agua:
+				try:
+					lectura_anterior 	= Lectura_Agua.objects.get(medidor_electricidad=medidor, mes=(fecha.month-1), anio=fecha.year)
+				except Exception as error:
+					lectura_anterior	= None
+				try:
+					lectura_actual 		= Lectura_Agua.objects.get(medidor_electricidad=medidor, mes=fecha.month, anio=fecha.year)
+				except Exception as error:
+					lectura_actual		= None
 
-								index += 1	
-							print ("VALOR")
-							print (val)
-								# {falta: lectura del mes anterior}
+				Detalle_Agua(
+					valor			= valor_agua,
+					valor_anterior	= None,
+					valor_actual	= None,
+					fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+					fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+					proceso			= proceso,
+					contrato		= contrato,
+					medidor			= medidor,
+				).save()
 
-						valor = detalle.valor
-						# total = valor # {falta: traer la diferencia entre este mes y el mes anterior} 
-						total = val
+			for medidor in medidores_gas:
+				try:
+					lectura_anterior 	= Lectura_Gas.objects.get(medidor_electricidad=medidor, mes=(fecha.month-1), anio=fecha.year)
+				except Exception as error:
+					lectura_anterior	= None
+				try:
+					lectura_actual 		= Lectura_Gas.objects.get(medidor_electricidad=medidor, mes=fecha.month, anio=fecha.year)
+				except Exception as error:
+					lectura_actual		= None
 
-			except Arriendo_Variable.DoesNotExist:
-				total = 0
+				Detalle_Gas(
+					valor			= valor_gas,
+					valor_anterior	= None,
+					valor_actual	= None,
+					fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+					fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+					proceso			= proceso,
+					contrato		= contrato,
+					medidor			= medidor,
+				).save()
 
-			proceso_detalle = Proceso_Detalle(
-				total 			= total,
-				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
-				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
-				contrato 		= contrato,
-				proceso 		= proceso,
-			)
-			proceso_detalle.save()
-			
 			data.append({
 				'id'				: proceso.id,
 				'fecha_inicio'		: primer_dia(fecha),
@@ -463,7 +480,6 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos):
 				'concepto'			: 'Servicio Basico',
 				'contrato_numero'	: contrato.numero,
 				'contrato_nombre'	: contrato.nombre_local,
-				'valor'				: total,
 			})
 
 		fecha = sumar_meses(fecha, 1)
@@ -512,37 +528,18 @@ def sumar_meses(fecha, meses):
 
 	return datetime.strptime(fecha, "%d/%m/%Y")
 
+
+
+
 def propuesta_pdf(proceso, pk=None):
 
-	data = []
-	total = 0
 
-	if pk != None:
+	if pk is not None:
 		proceso = Proceso.objects.get(id=pk)
+		print (proceso.id)
 
-	detalles = Proceso_Detalle.objects.filter(proceso=proceso)
-
-	for detalle in detalles:
-
-		contrato = detalle.contrato
-		locales = contrato.locales.all()
-
-		data.append({
-			'fecha_inicio'		: detalle.fecha_inicio,
-			'fecha_termino'		: detalle.fecha_termino,
-			'concepto'			: proceso.concepto.nombre,
-			'contrato_numero'	: contrato.numero,
-			'contrato_nombre'	: contrato.nombre_local,
-			'cliente'			: contrato.cliente.nombre,
-			'locales'			: locales,
-			'valor'				: detalle.total,
-		})
-
-		total += detalle.total
-		
 	options = {
-		# 'page-size': 'Letter',
-		# 'orientation': 'Landscape',
+		'orientation': 'Landscape',
 		'margin-top': '0.75in',
 		'margin-right': '0.75in',
 		'margin-bottom': '0.55in',
@@ -551,13 +548,44 @@ def propuesta_pdf(proceso, pk=None):
 		'no-outline': None
 		}
 
-	css 		= 'static/assets/css/bootstrap.min.css'
-	template 	= get_template('pdf/procesos/propuesta_facturacion.html')
+	css = 'static/assets/css/bootstrap.min.css'
+
+	if proceso.concepto_id == 4:
+		data 		= data_detalle_electricidad(proceso)
+		template 	= get_template('pdf/procesos/propuesta_servicios_basicos.html')
+	else:
+		data 	= {}
+		detalle = []
+		total 	= 0
+		template = get_template('pdf/procesos/propuesta_facturacion.html')
+
+		detalles = Proceso_Detalle.objects.filter(proceso=proceso)
+
+		for item in detalles:
+
+			contrato = item.contrato
+			locales = contrato.locales.all()
+
+			detalle.append({
+				'fecha_inicio'		: item.fecha_inicio,
+				'fecha_termino'		: item.fecha_termino,
+				'concepto'			: proceso.concepto.nombre,
+				'contrato_numero'	: contrato.numero,
+				'contrato_nombre'	: contrato.nombre_local,
+				'cliente'			: contrato.cliente.nombre,
+				'locales'			: locales,
+				'valor'				: item.total,
+			})
+
+			total += item.total
+
+		data['detalle'] = detalle
+		data['total'] 	= total
 
 	context = Context({
-		'data' : data,
-		'proceso': proceso,
-		'total': total,
+		'proceso' 	: proceso,
+		'detalle' 	: data['detalle'],
+		'total'		: data['total'],
 	})
 
 	html = template.render(context)  # Renders the template with the context data.
@@ -569,3 +597,48 @@ def propuesta_pdf(proceso, pk=None):
 	# os.remove("propuesta_facturacion.pdf")  # remove the locally created pdf file.
 
 	return response  # returns the response.
+
+
+
+def data_detalle_electricidad(proceso):
+
+	data 			= {}
+	detalles 		= []
+	detalle 		= []
+	total			= 0
+
+	detalles_luz 	= Detalle_Electricidad.objects.filter(proceso=proceso)
+	detalles_agua 	= Detalle_Agua.objects.filter(proceso=proceso)
+	detalles_gas 	= Detalle_Gas.objects.filter(proceso=proceso)
+
+	for item in detalles_luz:
+		detalles.append(item)
+
+	for item in detalles_agua:
+		detalles.append(item)
+
+	for item in detalles_gas:
+		detalles.append(item)
+
+
+	for item in detalles:
+		detalle.append({
+			'fecha_inicio'		: item.fecha_inicio,
+			'fecha_termino'		: item.fecha_termino,
+			'contrato'			: item.contrato.numero,
+			'local'				: item.medidor.local.nombre,
+			'medidor'			: item.medidor.nombre,
+			'lectura_anterior' 	: item.valor_anterior if item.valor_anterior is not None else 'Sin Datos',
+			'lectura_actual' 	: item.valor_actual if item.valor_actual is not None else 'Sin Datos',
+			'valor' 			: item.valor,
+			'diferencia'		: (item.valor_actual - item.valor_anterior) if item.valor_anterior is not None and item.valor_actual is not None else 'N/A',
+			'total'				: (item.valor_actual - item.valor_anterior) * item.valor if item.valor_anterior is not None and item.valor_actual is not None else 'N/A',
+		})
+
+		total += (item.valor_actual - item.valor_anterior) * item.valor if item.valor_anterior is not None and item.valor_actual is not None else 0
+
+	
+	data['detalle'] = detalle
+	data['total'] 	= total
+
+	return data
