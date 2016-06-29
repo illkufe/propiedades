@@ -5,6 +5,8 @@ from django.views.generic import View
 from django.template import Context, loader
 from django.template.loader import get_template 
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
 from administrador.models import Empresa, Cliente, Moneda, Moneda_Historial
 from accounts.models import UserProfile
@@ -23,19 +25,34 @@ import json
 import pdfkit
 
 
-def procesos_list(request):
+class ProcesoList(ListView):
+	model = Proceso
+	template_name = 'viewer/procesos/procesos_list.html'
 
-	conceptos 	= Concepto.objects.all()
-	activos 	= Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+	def get_context_data(self, **kwargs):		
+		context = super(ProcesoList, self).get_context_data(**kwargs)
+		context['title'] 		= 'Cálculo de Conceptos'
+		context['subtitle'] 	= 'Procesos de Facturación'
+		context['name'] 		= 'Lista'
+		context['href'] 		= 'procesos'
 
-	return render(request, 'viewer/procesos/procesos_list.html',{
-		'title': 'Cálculo de Conceptos',
-		'subtitle': 'Procesos de Facturación',
-		'name': 'Lista',
-		'href': 'contratos-tipo',
-		'conceptos': conceptos,
-		'activos': activos,
-		})
+		context['conceptos'] 	= Concepto.objects.all()
+		context['activos'] 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		
+		return context
+
+class ProcesoDelete(DeleteView):
+	model = Proceso
+	success_url = reverse_lazy('/procesos/list')
+
+	def delete(self, request, *args, **kwargs):
+		self.object = self.get_object()
+		self.object.delete()
+		payload = {'delete': 'ok'}
+		return JsonResponse(payload, safe=False)
+
+
+
 
 class PROCESOS(View):
 
@@ -87,17 +104,59 @@ class PROCESOS(View):
 		data = list()
 
 		for proceso in self.object_list:
-			total = 0
 
-			for detalle in proceso.proceso_detalle_set.all():
-				total += detalle.total
+			detalles = []
+
+			if proceso.concepto.id == 1:
+				print ('arriendo minimo')
+			elif proceso.concepto.id == 2:
+				print ('arriendo variable')
+			elif proceso.concepto.id == 3:
+				print ('gasto comun')
+			elif proceso.concepto.id == 4:
+				
+				detalles_luz 	= Detalle_Electricidad.objects.filter(proceso=proceso)
+				detalles_agua 	= Detalle_Agua.objects.filter(proceso=proceso)
+				detalles_gas 	= Detalle_Gas.objects.filter(proceso=proceso)
+
+				for item in detalles_luz:
+					detalles.append(item)
+
+				for item in detalles_agua:
+					detalles.append(item)
+
+				for item in detalles_gas:
+					detalles.append(item)
+				
+			else:
+				print ('no existe')
+
+			for detalle in detalles:
+				print (detalle.id)
+
+
+			# usuario
+			usuario = {
+				'id'		:proceso.user.id,
+				'first_name':proceso.user.first_name,
+				'last_name'	:proceso.user.last_name,
+				'email'		:proceso.user.email,
+			}
+
+			# concepto
+			concepto = {
+				'id'	:proceso.concepto.id,
+				'nombre':proceso.concepto.nombre,
+			}
 
 			data.append({
-				'id':proceso.id,
-				'fecha_inicio':proceso.fecha_inicio,
-				'fecha_termino':proceso.fecha_termino,
-				'total': total,
-				'estado': proceso.proceso_estado.nombre,
+				'id'			: proceso.id,
+				'fecha_creacion': proceso.creado_en.strftime('%d/%m/%Y'),
+				'fecha_inicio'	: proceso.fecha_inicio.strftime('%d/%m/%Y'),
+				'fecha_termino'	: proceso.fecha_termino.strftime('%d/%m/%Y'),
+				'estado'		: proceso.proceso_estado.nombre,
+				'usuario'		: usuario,
+				'concepto'		: concepto,
 				})
 
 		return JsonResponse(data, safe=False)
@@ -127,9 +186,9 @@ def filtrar_contratos(request):
 		data.append({
 			'id'					: contrato.id,
 			'numero'				: contrato.numero,
-			'fecha_inicio'			: contrato.fecha_inicio,
-			'fecha_termino'			: contrato.fecha_termino,
-			'fecha_habilitacion'	: contrato.fecha_habilitacion,
+			'fecha_inicio'			: contrato.fecha_inicio.strftime('%d/%m/%Y'),
+			'fecha_termino'			: contrato.fecha_termino.strftime('%d/%m/%Y'),
+			'fecha_habilitacion'	: contrato.fecha_habilitacion.strftime('%d/%m/%Y'),
 			'cliente'				: contrato.cliente.nombre,
 			'locales'				: 'locales', # {falta: poner locales}
 		})	
@@ -539,13 +598,13 @@ def propuesta_pdf(proceso, pk=None):
 		print (proceso.id)
 
 	options = {
-		'orientation': 'Landscape',
-		'margin-top': '0.75in',
-		'margin-right': '0.75in',
-		'margin-bottom': '0.55in',
-		'margin-left': '0.75in',
+		# 'orientation': 'Landscape',
+		'margin-top': '0.5in',
+		'margin-right': '0.2in',
+		'margin-left': '0.2in',
+		'margin-bottom': '0.5in',
 		'encoding': "UTF-8",
-		'no-outline': None
+		# 'no-outline': None
 		}
 
 	css = 'static/assets/css/bootstrap.min.css'

@@ -22,8 +22,8 @@
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero.help_text }}" ></i>
 									{{ form.numero.label_tag }}
 									{{ form.numero }}
-									<div class="container-error" style="height:20px">
-										{{ form.numero.errors }}
+									<div class="container-error">
+										{{ form.numero.errors|striptags }}
 									</div>
 								</div>
 
@@ -31,8 +31,8 @@
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre_local.help_text }}" ></i>
 									{{ form.nombre_local.label_tag }}
 									{{ form.nombre_local }}
-									<div class="container-error" style="height:20px">
-										{{ form.nombre_local.errors }}
+									<div class="container-error">
+										{{ form.nombre_local.errors|striptags }}
 									</div>
 								</div>
 
@@ -41,8 +41,8 @@
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.contrato_tipo.help_text }}" ></i>
 									{{ form.contrato_tipo.label_tag }}
 									{{ form.contrato_tipo }}
-									<div class="container-error" style="height:20px">
-										{{ form.contrato_tipo.errors }}
+									<div class="container-error">
+										{{ form.contrato_tipo.errors|striptags }}
 									</div>
 								</div>
 
@@ -50,8 +50,8 @@
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.contrato_estado.help_text }}" ></i>
 									{{ form.contrato_estado.label_tag }}
 									{{ form.contrato_estado }}
-									<div class="container-error" style="height:20px">
-										{{ form.contrato_estado.errors }}
+									<div class="container-error">
+										{{ form.contrato_estado.errors|striptags }}
 									</div>
 								</div>
 
@@ -65,8 +65,8 @@
 										</span>
 									</div>
 
-									<div class="container-error" style="height:20px">
-										{{ form.cliente.errors }}
+									<div class="container-error">
+										{{ form.cliente.errors|striptags }}
 									</div>
 								</div>
 
@@ -82,8 +82,8 @@
 										</span>
 									</div>
 
-									<div class="container-error" style="height:20px">
-										{{ form.locales.errors }}
+									<div class="container-error">
+										{{ form.locales.errors|striptags }}
 									</div>
 								</div>
 
@@ -91,8 +91,8 @@
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.conceptos.help_text }}" ></i>
 									{{ form.conceptos.label_tag }}
 									{{ form.conceptos }}
-									<div class="container-error" style="height:20px">
-										{{ form.conceptos.errors }}
+									<div class="container-error">
+										{{ form.conceptos.errors|striptags }}
 									</div>
 								</div>
 
@@ -100,8 +100,8 @@
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.destino_comercial.help_text }}" ></i>
 									{{ form.destino_comercial.label_tag }}
 									{{ form.destino_comercial }}
-									<div class="container-error" style="height:20px">
-										{{ form.destino_comercial.errors }}
+									<div class="container-error">
+										{{ form.destino_comercial.errors|striptags }}
 									</div>
 								</div>
 								
@@ -129,8 +129,8 @@
 										</span>
 									</div>
 
-									<div class="container-error" style="height:20px">
-										{{ form.fecha_contrato.errors }}
+									<div class="container-error">
+										{{ form.fecha_contrato.errors|striptags }}
 									</div>
 								</div>
 
@@ -146,8 +146,8 @@
 													<i class="fa fa-calendar"></i>
 												</span>
 											</div>
-											<div class="container-error" style="height:20px">
-												{{ form.fecha_inicio.errors }}
+											<div class="container-error">
+												{{ form.fecha_inicio.errors|striptags }}
 											</div>
 										</div>
 
@@ -162,8 +162,8 @@
 												</span>
 											</div>
 
-											<div class="container-error" style="height:20px">
-												{{ form.fecha_termino.errors }}
+											<div class="container-error">
+												{{ form.fecha_termino.errors|striptags }}
 											</div>
 										</div>
 									</div>
@@ -179,8 +179,8 @@
 										</span>
 									</div>
 
-									<div class="container-error" style="height:20px">
-										{{ form.fecha_habilitacion.errors }}
+									<div class="container-error">
+										{{ form.fecha_habilitacion.errors|striptags }}
 									</div>
 								</div>
 
@@ -194,8 +194,8 @@
 										</span>
 									</div>
 
-									<div class="container-error" style="height:20px">
-										{{ form.fecha_activacion.errors }}
+									<div class="container-error">
+										{{ form.fecha_activacion.errors|striptags }}
 									</div>
 								</div>
 
@@ -208,8 +208,8 @@
 											<i class="fa fa-calendar"></i>
 										</span>
 									</div>
-									<div class="container-error" style="height:20px">
-										{{ form.fecha_renovacion.errors }}
+									<div class="container-error">
+										{{ form.fecha_renovacion.errors|striptags }}
 									</div>
 								</div>
 
@@ -222,8 +222,8 @@
 											<i class="fa fa-calendar"></i>
 										</span>
 									</div>
-									<div class="container-error" style="height:20px">
-										{{ form.fecha_remodelacion.errors }}
+									<div class="container-error">
+										{{ form.fecha_remodelacion.errors|striptags }}
 									</div>
 								</div>
 
@@ -236,8 +236,8 @@
 											<i class="fa fa-calendar"></i>
 										</span>
 									</div>
-									<div class="container-error" style="height:20px">
-										{{ form.fecha_aviso.errors }}
+									<div class="container-error">
+										{{ form.fecha_aviso.errors|striptags }}
 									</div>
 								</div>
 
@@ -250,8 +250,8 @@
 											<i class="fa fa-calendar"></i>
 										</span>
 									</div>
-									<div class="container-error" style="height:20px">
-										{{ form.fecha_plazo.errors }}
+									<div class="container-error">
+										{{ form.fecha_plazo.errors|striptags }}
 									</div>
 								</div>
 
@@ -274,8 +274,8 @@
 										{{ form.bodega }}
 										<label for="checkbox2"></label>
 									</div>
-									<div class="container-error" style="height:20px">
-										{{ form.bodega.errors }}
+									<div class="container-error">
+										{{ form.bodega.errors|striptags }}
 									</div>
 								</div>
 
@@ -283,8 +283,8 @@
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_bodega.help_text }}" ></i>
 									{{ form.metros_bodega.label_tag }}
 									{{ form.metros_bodega }}
-									<div class="container-error" style="height:20px">
-										{{ form.metros_bodega.errors }}
+									<div class="container-error">
+										{{ form.metros_bodega.errors|striptags }}
 									</div>
 								</div>
 							</div>
@@ -349,7 +349,7 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="rut"></i>
 										<label for="id_rut">Rut:</label>
 										<input class="form-control format-rut" id="id_rut" maxlength="250" name="rut" type="text">
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											
 										</div>
 									</div>
@@ -358,7 +358,7 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="nombre"></i>
 										<label for="id_nombre">Nombre:</label>
 										<input class="form-control" id="id_nombre" maxlength="250" name="nombre" type="text">
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											
 										</div>
 									</div>
@@ -367,7 +367,7 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="nombre"></i>
 										<label for="id_razon_social">Razón Social:</label>
 										<input class="form-control" id="id_razon_social" maxlength="250" name="razon_social" type="text">
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											
 										</div>
 									</div>
@@ -377,7 +377,7 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="nombre"></i>
 										<label for="id_giro">Giro:</label>
 										<input class="form-control" id="id_giro" maxlength="250" name="giro" type="text">
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											
 										</div>
 									</div>
@@ -402,7 +402,7 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="region"></i>
 										<label for="id_region">Región:</label>
 										<input class="form-control" id="id_region" maxlength="250" name="region" type="text">
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											
 										</div>
 									</div>
@@ -411,7 +411,7 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="comuna"></i>
 										<label for="id_comuna">Comuna:</label>
 										<input class="form-control" id="id_comuna" maxlength="250" name="comuna" type="text">
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											
 										</div>
 									</div>
@@ -420,7 +420,7 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="direccion"></i>
 										<label for="id_direccion">Dirección:</label>
 										<input class="form-control" id="id_direccion" maxlength="250" name="direccion" type="text">
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											
 										</div>
 									</div>
@@ -430,7 +430,7 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="telefono"></i>
 										<label for="id_telefono">Teléfono:</label>
 										<input class="form-control" id="id_telefono" maxlength="250" name="telefono" type="text">
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											
 										</div>
 									</div>

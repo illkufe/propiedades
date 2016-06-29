@@ -36,8 +36,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.rut.help_text }}" ></i>
 										{{ form.rut.label_tag }}
 										{{ form.rut }}
-										<div class="container-error" style="height:20px">
-											{{ form.rut.errors }}
+										<div class="container-error">
+											{{ form.rut.errors|striptags }}
 										</div>
 									</div>
 
@@ -45,8 +45,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
 										{{ form.nombre.label_tag }}
 										{{ form.nombre }}
-										<div class="container-error" style="height:20px">
-											{{ form.nombre.errors }}
+										<div class="container-error">
+											{{ form.nombre.errors|striptags }}
 										</div>
 									</div>
 
@@ -54,8 +54,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
 										{{ form.razon_social.label_tag }}
 										{{ form.razon_social }}
-										<div class="container-error" style="height:20px">
-											{{ form.razon_social.errors }}
+										<div class="container-error">
+											{{ form.razon_social.errors|striptags }}
 										</div>
 									</div>
 
@@ -64,8 +64,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
 										{{ form.giro.label_tag }}
 										{{ form.giro }}
-										<div class="container-error" style="height:20px">
-											{{ form.giro.errors }}
+										<div class="container-error">
+											{{ form.giro.errors|striptags }}
 										</div>
 									</div>
 								</div>
@@ -89,8 +89,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.region.help_text }}" ></i>
 										{{ form.region.label_tag }}
 										{{ form.region }}
-										<div class="container-error" style="height:20px">
-											{{ form.region.errors }}
+										<div class="container-error">
+											{{ form.region.errors|striptags }}
 										</div>
 									</div>
 
@@ -98,8 +98,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.comuna.help_text }}" ></i>
 										{{ form.comuna.label_tag }}
 										{{ form.comuna }}
-										<div class="container-error" style="height:20px">
-											{{ form.comuna.errors }}
+										<div class="container-error">
+											{{ form.comuna.errors|striptags }}
 										</div>
 									</div>
 
@@ -107,8 +107,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.direccion.help_text }}" ></i>
 										{{ form.direccion.label_tag }}
 										{{ form.direccion}}
-										<div class="container-error" style="height:20px">
-											{{ form.direccion.errors }}
+										<div class="container-error">
+											{{ form.direccion.errors|striptags }}
 										</div>
 									</div>
 
@@ -117,8 +117,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.telefono.help_text }}" ></i>
 										{{ form.telefono.label_tag }}
 										{{ form.telefono }}
-										<div class="container-error" style="height:20px">
-											{{ form.telefono.errors }}
+										<div class="container-error">
+											{{ form.telefono.errors|striptags }}
 										</div>
 									</div>
 								</div>

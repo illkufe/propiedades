@@ -17,7 +17,7 @@ class MonedaForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' : {'required': 'Esta campo es requerido.'},		
+			'nombre' : {'required': 'Este campo es requerido'},		
 		}
 
 		labels = {
@@ -48,10 +48,10 @@ class ClienteForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 	: {'required': 'Esta campo es requerido.'},
-			'rut' 		: {'required': 'Esta campo es requerido.'},
-			'direccion' : {'required': 'Esta campo es requerido.'},
-			'telefono' 	: {'required': 'Esta campo es requerido.'},
+			'nombre' 	: {'required': 'Este campo es requerido'},
+			'rut' 		: {'required': 'Este campo es requerido'},
+			'direccion' : {'required': 'Este campo es requerido'},
+			'telefono' 	: {'required': 'Este campo es requerido'},
 		}
 
 		labels = {
@@ -89,10 +89,10 @@ class RepresentanteForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 		: {'required': 'Esta campo es requerido.'},
-			'numero_rotulo' : {'required': 'Esta campo es requerido.'},
-			'activo' 		: {'required': 'Esta campo es requerido.'},
-			'medidor_tipo' 	: {'required': 'Esta campo es requerido.'},
+			'nombre' 		: {'required': 'Este campo es requerido'},
+			'numero_rotulo' : {'required': 'Este campo es requerido'},
+			'activo' 		: {'required': 'Este campo es requerido'},
+			'medidor_tipo' 	: {'required': 'Este campo es requerido'},
 		}
 
 		help_texts = {

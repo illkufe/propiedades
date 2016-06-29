@@ -23,8 +23,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor_agua.help_text }}" ></i>
 										{{ form.medidor_agua.label_tag }}
 										{{ form.medidor_agua }}
-										<div class="container-error" style="height:20px">
-											{{ form.medidor_agua.errors }}
+										<div class="container-error">
+											{{ form.medidor_agua.errors|striptags }}
 										</div>
 									</div>
 
@@ -32,8 +32,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes.help_text }}" ></i>
 										{{ form.mes.label_tag }}
 										{{ form.mes }}
-										<div class="container-error" style="height:20px">
-											{{ form.mes.errors }}
+										<div class="container-error">
+											{{ form.mes.errors|striptags }}
 										</div>
 									</div>
 
@@ -41,8 +41,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.anio.help_text }}" ></i>
 										{{ form.anio.label_tag }}
 										{{ form.anio }}
-										<div class="container-error" style="height:20px">
-											{{ form.anio.errors }}
+										<div class="container-error">
+											{{ form.anio.errors|striptags }}
 										</div>
 									</div>
 
@@ -50,8 +50,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
 										{{ form.valor.label_tag }}
 										{{ form.valor }}
-										<div class="container-error" style="height:20px">
-											{{ form.valor.errors }}
+										<div class="container-error">
+											{{ form.valor.errors|striptags }}
 										</div>
 									</div>
 
@@ -59,8 +59,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.imagen_file.help_text }}" ></i>
 										{{ form.imagen_file.label_tag }}
 										{{ form.imagen_file }}
-										<div class="container-error" style="height:20px">
-											{{ form.imagen_file.errors }}
+										<div class="container-error">
+											{{ form.imagen_file.errors|striptags }}
 										</div>
 									</div>
 

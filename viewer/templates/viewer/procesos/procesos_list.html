@@ -41,6 +41,7 @@
 								<div style="float:left; width:35%; margin-left:4%;">
 									<input type="number" class="form-control" name="ano_inicio">
 								</div>
+								<div class="container-error"></div>
 							</div>
 
 							<div class="form-group col-sm-3">
@@ -68,6 +69,7 @@
 								<div style="float:left; width:35%; margin-left:4%;">
 									<input type="number" class="form-control" name="ano_termino">
 								</div>
+								<div class="container-error"></div>
 							</div>
 
 							<div class="form-group col-sm-2">
@@ -79,6 +81,7 @@
 									<option value="{{ activo.id }}">{{ activo.nombre }}</option>
 									{% endfor %}
 								</select>
+								<div class="container-error"></div>
 							</div>
 
 							<div class="form-group col-sm-2">
@@ -90,13 +93,13 @@
 									<option value="{{ concepto.id }}">{{ concepto.nombre }}</option>
 									{% endfor %}
 								</select>
+								<div class="container-error"></div>
 							</div>
 
 							<div class="form-group col-sm-2">
 								<button type="submit" class="btn btn-primary btn-sm btn-w-m" style="margin-top:24px">ACEPTAR</button>
 							</div>
 						</div>
-						<br>
 
 						<div class="row info-servicios-basicos hide">
 
@@ -104,19 +107,19 @@
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="..."></i>
 								<label for="valor_luz">Valor Electricidad:</label>
 								<input class="form-control" id="valor_luz" name="valor_luz" type="number">
-								<!-- <div class="container-error" style="height:20px"></div> -->
+								<div class="container-error"></div>
 							</div>
 							<div class="form-group col-sm-2">
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="..."></i>
 								<label for="valor_agua">Valor Agua:</label>
 								<input class="form-control" id="valor_agua" name="valor_agua" type="number">
-								<!-- <div class="container-error" style="height:20px"></div> -->
+								<div class="container-error"></div>
 							</div>
 							<div class="form-group col-sm-2">
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="..."></i>
 								<label for="valor_gas">Valor Gas:</label>
 								<input class="form-control" id="valor_gas" name="valor_gas" type="number">
-								<!-- <div class="container-error" style="height:20px"></div> -->
+								<div class="container-error"></div>
 							</div>
 						</div>
 					</form>
@@ -156,7 +159,7 @@
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>Lista de Procesos</h5>
+					<h5>Procesos de Facturación</h5>
 				</div>
 				<div class="ibox-content">
 
@@ -292,28 +295,34 @@ function load_tabla_procesos(){
 	},
 	{
 		'width': '15%',
-		'data': 'fecha_inicio',
-		'title': 'FECHA INICIO',
-	},
-	{
-		'width': '15%',
-		'data': 'fecha_termino',
-		'title': 'FECHA TERMINO',
+		'data': 'fecha',
+		'title': 'FECHA',
 	},
 	{
 		'width': '20%',
+		'data': 'periodo',
+		'title': 'PERIODO',
+	},
+	{
+		'width': '15%',
 		'data': 'concepto',
 		'title': 'CONCEPTO',
 	},
 	{
 		'width': '10%',
-		'data': 'total',
-		'title': 'MONTO',
+		'data': 'cliente',
+		'title': 'CLIENTE',
+		'visible': false,
 	},
 	{
 		'width': '20%',
 		'data': 'contratos',
 		'title': 'CONTRATOS',
+	},
+	{
+		'width': '10%',
+		'data': 'monto',
+		'title': 'MONTO',
 	},
 	{
 		'width': '10%',
@@ -324,7 +333,7 @@ function load_tabla_procesos(){
 		'width': '10%',
 		'data': 'opciones',
 		'orderable': false,
-		'title': ''
+		'title': '',
 	}];
 
 	tabla_procesos = load_table('#tabla-procesos', columns, {})
@@ -371,16 +380,22 @@ function data_tabla_procesos(){
 
 			for (var i = 0; i < data.length; i++) {
 
+				var template = ''
+				template += '<div class="text-center">'
+				template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>'
+				template += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].id+',\'procesos\', \'tabla-procesos\', \'Proceso\')"><i class="fa fa-trash"></i></a>'
+
 				row = {}
 
-				row.id				= data[i].id
-				row.fecha_termino 	= data[i].fecha_termino
-				row.fecha_inicio	= data[i].fecha_inicio
-				row.concepto		= '---'
-				row.total 			= data[i].total
-				row.estado			= data[i].estado
-				row.contratos 		= 'Contrato 1'
-				row.opciones 		= '<div class="text-center"><a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a></div>'
+				row.id 			= data[i].id
+				row.fecha 		= data[i].fecha_creacion
+				row.periodo 	= data[i].fecha_inicio+' - '+data[i].fecha_termino
+				row.concepto 	= data[i].concepto.nombre
+				row.cliente 	= '---' // {falta: poner cliente}
+				row.contratos 	= '---' // {falta: poner contratos}
+				row.monto 		= '---' // {falta: poner monto}
+				row.estado 		= data[i].estado
+				row.opciones 	= template
 
 				rows.push(row)
 			}
@@ -393,6 +408,7 @@ function data_tabla_procesos(){
 function filtrar_contratos(){
 
 	$.validator.addMethod("requiere_luz", function (value, element) {
+		console.log(element)
 
 		concepto 	= parseInt($('#form-fitrar-contratos select[name="concepto"]').val())
 		valor 		= $('#form-fitrar-contratos input[name="valor_luz"]').val()
@@ -407,6 +423,7 @@ function filtrar_contratos(){
 
 
 	$.validator.addMethod("requiere_agua", function (value, element) {
+		console.log(element)
 
 		concepto 	= parseInt($('#form-fitrar-contratos select[name="concepto"]').val())
 		valor 		= $('#form-fitrar-contratos input[name="valor_agua"]').val()
@@ -420,6 +437,7 @@ function filtrar_contratos(){
 	}, 'Campo requerido');
 
 	$.validator.addMethod("requiere_gas", function (value, element) {
+		console.log(element)
 
 		concepto 	= parseInt($('#form-fitrar-contratos select[name="concepto"]').val())
 		valor 		= $('#form-fitrar-contratos input[name="valor_gas"]').val()
@@ -505,7 +523,7 @@ function filtrar_contratos(){
 			}
 		},
 		errorPlacement: function(error, element) {
-			error.appendTo(element.closest(".form-group"));
+			error.appendTo(element.closest(".form-group").find('.container-error'));
 		},
 		submitHandler: function(form) {
 			$('#form-fitrar-contratos').ajaxSubmit({

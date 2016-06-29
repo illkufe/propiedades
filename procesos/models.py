@@ -39,6 +39,7 @@ class Proceso(models.Model):
 	def __str__(self):
 		return self.proceso_estado.nombre
 
+# {falta: borrar este modelo y dejar separado en detalle_arriendo_minimo, detalle_arriendo_variable y detalle_gasto_comun}
 class Proceso_Detalle(models.Model):
 	
 	total 			= models.FloatField()

@@ -594,7 +594,7 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
   border-radius: 3px;
 }
 .float-e-margins .btn {
-  margin-bottom: 5px;
+  margin-bottom: 1px;
 }
 .btn-w-m {
   min-width: 120px;
@@ -659,8 +659,8 @@ fieldset[disabled] .btn-primary:hover,
 fieldset[disabled] .btn-primary:focus,
 fieldset[disabled] .btn-primary:active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #1dc5a3;
-  border-color: #1dc5a3;
+  background-color: #676a70;
+  border-color: #676a70;
 }
 .btn-success {
   background-color: #1c84c6;
@@ -2358,12 +2358,13 @@ div.dt-button-info {
 }
 /* Validation */
 label.error {
-  color: #cc5965;
+  color: #ed5565;
   display: inline-block;
   margin-left: 5px;
+  font-weight: normal;
 }
 .form-control.error {
-  border: 1px dotted #cc5965;
+  /*border: 1px solid #ed5565;*/
 }
 /* ngGrid */
 .gridStyle {
@@ -2448,11 +2449,15 @@ label.error {
   background-color: #286CA0;
 }
 .toast-success {
-  background-color: #286CA0;
+   /* modificado background-color: #286CA0;*/
+  background-color: #59D7D7;
+  
 }
 .toast-error {
-  background-color: #ed5565;
+  /* modificado background-color: #ed5565;*/
+  background-color: #F68793;
 }
+
 .toast-info {
   background-color: #23c6c8;
 }
@@ -3418,7 +3423,7 @@ video {
   background: #f8fafb;
 }
 .inmodal .modal-header {
-  padding: 30px 15px;
+  padding: 10px 15px;
   text-align: center;
 }
 .animated.modal.fade .modal-dialog {
@@ -3428,7 +3433,8 @@ video {
   transform: none;
 }
 .inmodal .modal-title {
-  font-size: 26px;
+  font-size: 20px;
+  letter-spacing: 1px;
 }
 .inmodal .modal-icon {
   font-size: 84px;
@@ -4472,7 +4478,8 @@ body.mini-navbar.fixed-sidebar .logo-element {
   margin-bottom: 0;
 }
 .middle-box h1 {
-  font-size: 170px;
+  font-size: 115px;
+  margin-top: 60px;
 }
 .wrapper .middle-box {
   margin-top: 140px;

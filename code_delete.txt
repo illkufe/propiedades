@@ -163,7 +163,7 @@ class AjaxableResponseMixinMedidor(object):
 
 <div class="form-group">
 {{ form.nombre }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.nombre.errors }}
 </div>
 </div>
@@ -172,7 +172,7 @@ class AjaxableResponseMixinMedidor(object):
 
 <div class="form-group">
 {{ form.numero_rotulo }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.numero_rotulo.errors }}
 </div>
 </div>
@@ -182,7 +182,7 @@ class AjaxableResponseMixinMedidor(object):
 <div class="form-group">
 
 {{ form.potencia }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.potencia.errors }}
 </div>
 </div>
@@ -192,7 +192,7 @@ class AjaxableResponseMixinMedidor(object):
 <div class="form-group">
 
 {{ form.potencia_presente }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.potencia_presente.errors }}
 </div>
 </div>
@@ -201,7 +201,7 @@ class AjaxableResponseMixinMedidor(object):
 <div class="form-group">
 
 {{ form.potencia_fuera }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.potencia_fuera.errors }}
 </div>
 </div>
@@ -211,7 +211,7 @@ class AjaxableResponseMixinMedidor(object):
 <div class="form-group">
 
 {{ form.medidor_tipo }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.medidor_tipo.errors }}
 </div>
 </div>
@@ -254,9 +254,9 @@ class MedidorForm(forms.ModelForm):
 		}
 
 		error_messages = {
-		'nombre' 		: {'required': 'Esta campo es requerido.'},
-		'numero_rotulo' : {'required': 'Esta campo es requerido.'},
-		'medidor_tipo' 	: {'required': 'Esta campo es requerido.'},
+		'nombre' 		: {'required': 'Este campo es requerido'},
+		'numero_rotulo' : {'required': 'Este campo es requerido'},
+		'medidor_tipo' 	: {'required': 'Este campo es requerido'},
 		}
 
 		help_texts = {
@@ -308,7 +308,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_local.help_text }}" ></i>
 {{ form.metros_local.label_tag }}
 {{ form.metros_local }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.metros_local.errors }}
 </div>
 </div>
@@ -317,7 +317,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_otros.help_text }}" ></i>
 {{ form.metros_otros.label_tag }}
 {{ form.metros_otros }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.metros_otros.errors }}
 </div>
 </div>
@@ -326,7 +326,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_local.help_text }}" ></i>
 {{ form.arriendo_local.label_tag }}
 {{ form.arriendo_local }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.arriendo_local.errors }}
 </div>
 </div>
@@ -335,7 +335,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_otros.help_text }}" ></i>
 {{ form.arriendo_otros.label_tag }}
 {{ form.arriendo_otros }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.arriendo_otros.errors }}
 </div>
 </div>
@@ -344,7 +344,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_porcentual.help_text }}" ></i>
 {{ form.arriendo_porcentual.label_tag }}
 {{ form.arriendo_porcentual }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.arriendo_porcentual.errors }}
 </div>
 </div>
@@ -353,7 +353,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.reajuste_porcentaje.help_text }}" ></i>
 {{ form.reajuste_porcentaje.label_tag }}
 {{ form.reajuste_porcentaje }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.reajuste_porcentaje.errors }}
 </div>
 </div>
@@ -362,7 +362,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.reajuste_meses.help_text }}" ></i>
 {{ form.reajuste_meses.label_tag }}
 {{ form.reajuste_meses }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.reajuste_meses.errors }}
 </div>
 </div>
@@ -371,7 +371,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fondo_promocion.help_text }}" ></i>
 {{ form.fondo_promocion.label_tag }}
 {{ form.fondo_promocion }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.fondo_promocion.errors }}
 </div>
 </div>
@@ -380,7 +380,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cuota_promocion.help_text }}" ></i>
 {{ form.cuota_promocion.label_tag }}
 {{ form.cuota_promocion }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.cuota_promocion.errors }}
 </div>
 </div>
@@ -389,7 +389,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.gasto_comun_local.help_text }}" ></i>
 {{ form.gasto_comun_local.label_tag }}
 {{ form.gasto_comun_local }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.gasto_comun_local.errors }}
 </div>
 </div>
@@ -398,7 +398,7 @@ class MedidorForm(forms.ModelForm):
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.gasto_comun_otros.help_text }}" ></i>
 {{ form.gasto_comun_otros.label_tag }}
 {{ form.gasto_comun_otros }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ form.gasto_comun_otros.errors }}
 </div>
 </div>
@@ -658,8 +658,8 @@ class UnidadNegocioForm(forms.ModelForm):
 		}
 
 		error_messages = {
-		'nombre' : {'required': 'Esta campo es requerido.'},
-		'codigo' : {'required': 'Esta campo es requerido.'},
+		'nombre' : {'required': 'Este campo es requerido'},
+		'codigo' : {'required': 'Este campo es requerido'},
 		}
 
 
@@ -783,7 +783,7 @@ $(document).ready(function(){
 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ field.help_text }}" ></i>
 {{ field.label_tag }}
 {{ field }}
-<div class="container-error" style="height:20px">
+<div class="container-error">
 {{ field.errors }}
 </div>
 </div>
@@ -1249,7 +1249,7 @@ class LecturaMedidorMixin(object):
 
 												<div class="form-group">
 													{{ form.mes_inicio }}
-													<div class="container-error" style="height:20px">
+													<div class="container-error">
 														{{ form.mes_inicio.errors }}
 													</div>
 												</div>
@@ -1258,7 +1258,7 @@ class LecturaMedidorMixin(object):
 
 												<div class="form-group">
 													{{ form.mes_termino }}
-													<div class="container-error" style="height:20px">
+													<div class="container-error">
 														{{ form.mes_termino.errors }}
 													</div>
 												</div>
@@ -1268,7 +1268,7 @@ class LecturaMedidorMixin(object):
 												<div class="form-group">
 
 													{{ form.valor }}
-													<div class="container-error" style="height:20px">
+													<div class="container-error">
 														{{ form.valor.errors }}
 													</div>
 												</div>
@@ -1278,7 +1278,7 @@ class LecturaMedidorMixin(object):
 												<div class="form-group">
 
 													{{ form.moneda }}
-													<div class="container-error" style="height:20px">
+													<div class="container-error">
 														{{ form.moneda.errors }}
 													</div>
 												</div>
@@ -1288,7 +1288,7 @@ class LecturaMedidorMixin(object):
 												<div class="form-group">
 
 													{{ form.metro_cuadrado }}
-													<div class="container-error" style="height:20px">
+													<div class="container-error">
 														{{ form.metro_cuadrado.errors }}
 													</div>
 												</div>
@@ -1314,7 +1314,7 @@ class LecturaMedidorMixin(object):
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.reajuste.help_text }}" ></i>
 										{{ form.reajuste.label_tag }}
 										{{ form.reajuste }}
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											{{ form.reajuste.errors }}
 										</div>
 									</div>
@@ -1323,7 +1323,7 @@ class LecturaMedidorMixin(object):
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.meses.help_text }}" ></i>
 										{{ form.meses.label_tag }}
 										{{ form.meses }}
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											{{ form.meses.errors }}
 										</div>
 									</div>
@@ -1332,7 +1332,7 @@ class LecturaMedidorMixin(object):
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
 										{{ form.valor.label_tag }}
 										{{ form.valor }}
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											{{ form.valor.errors }}
 										</div>
 									</div>
@@ -1341,7 +1341,7 @@ class LecturaMedidorMixin(object):
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
 										{{ form.moneda.label_tag }}
 										{{ form.moneda }}
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											{{ form.moneda.errors }}
 										</div>
 									</div>
@@ -1356,7 +1356,7 @@ class LecturaMedidorMixin(object):
 											</span>
 										</div>
 
-										<div class="container-error" style="height:20px">
+										<div class="container-error">
 											{{ form.fecha_inicio.errors }}
 										</div>
 									</div>

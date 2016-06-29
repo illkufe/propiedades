@@ -23,8 +23,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ field.help_text }}" ></i>
 										{{ field.label_tag }}
 										{{ field }}
-										<div class="container-error" style="height:20px">
-											{{ field.errors }}
+										<div class="container-error">
+											{{ field.errors|striptags }}
 										</div>
 									</div>
 									{% endfor %}

@@ -19,8 +19,8 @@ class UserForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'first_name' 	: {'required': 'Esta campo es requerido.'},
-			'email' 		: {'required': 'Esta campo es requerido.'},
+			'first_name' 	: {'required': 'Este campo es requerido'},
+			'email' 		: {'required': 'Este campo es requerido'},
 		}
 
 		labels = {

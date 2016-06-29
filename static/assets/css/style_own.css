@@ -42,8 +42,9 @@
 
 
 form .container-error{
-	height: 20px;
 	color: #ed5565;
+	height: 20px;
+	padding-left: 1px;
 }
 
 .select2-container .select2-selection--single {

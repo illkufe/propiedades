@@ -2360,7 +2360,7 @@ div.dt-button-info {
 label.error {
   color: #ed5565;
   display: inline-block;
-  margin-left: 5px;
+  /* eliminado margin-left: 5px;*/
   font-weight: normal;
 }
 .form-control.error {

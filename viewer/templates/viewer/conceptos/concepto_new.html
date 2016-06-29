@@ -22,8 +22,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
 										{{ form.nombre.label_tag }}
 										{{ form.nombre }}
-										<div class="container-error" style="height:20px">
-											{{ form.nombre.errors }}
+										<div class="container-error">
+											{{ form.nombre.errors|striptags }}
 										</div>
 									</div>
 
@@ -31,8 +31,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.codigo.help_text }}" ></i>
 										{{ form.codigo.label_tag }}
 										{{ form.codigo }}
-										<div class="container-error" style="height:20px">
-											{{ form.codigo.errors }}
+										<div class="container-error">
+											{{ form.codigo.errors|striptags }}
 										</div>
 									</div>
 
@@ -40,8 +40,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.orden.help_text }}" ></i>
 										{{ form.orden.label_tag }}
 										{{ form.orden }}
-										<div class="container-error" style="height:20px">
-											{{ form.orden.errors }}
+										<div class="container-error">
+											{{ form.orden.errors|striptags }}
 										</div>
 									</div>
 
@@ -58,8 +58,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
 										{{ form.moneda.label_tag }}
 										{{ form.moneda }}
-										<div class="container-error" style="height:20px">
-											{{ form.moneda.errors }}
+										<div class="container-error">
+											{{ form.moneda.errors|striptags }}
 										</div>
 									</div>
 
@@ -67,8 +67,8 @@
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.concepto_tipo.help_text }}" ></i>
 										{{ form.concepto_tipo.label_tag }}
 										{{ form.concepto_tipo }}
-										<div class="container-error" style="height:20px">
-											{{ form.concepto_tipo.errors }}
+										<div class="container-error">
+											{{ form.concepto_tipo.errors|striptags }}
 										</div>
 									</div>
 								</div>
