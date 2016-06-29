@@ -223,8 +223,8 @@ class GastoComunForm(forms.ModelForm):
 
 
 	moneda = forms.ModelChoiceField(
-		queryset = Moneda.objects.filter(id__in=[2,4,5]),
-		widget 	= forms.Select(attrs={'class': 'form-control moneda','disabled':'disabled'})
+		queryset = Moneda.objects.filter(id__in=[2,3,4,5]),
+		widget 	= forms.Select(attrs={'class': 'form-control moneda'})
 
 		)
 
@@ -234,32 +234,33 @@ class GastoComunForm(forms.ModelForm):
 		exclude = ['visible', 'creado_en']
 
 		widgets = {
-			'mes_inicio'		: forms.Select(attrs={'class': 'form-control'}),
-			'mes_termino'		: forms.Select(attrs={'class': 'form-control'}),
-			'valor'				: forms.NumberInput(attrs={'class': 'form-control'}),
+			'local' 	: forms.Select(attrs={'class': 'form-control'}),
+			# 'mes_inicio'		: forms.Select(attrs={'class': 'form-control'}),
+			# 'mes_termino'		: forms.Select(attrs={'class': 'form-control'}),
+			'valor'				: forms.NumberInput(attrs={'class': 'form-control valor_no_prorrateo'}),
 			'prorrateo'			: forms.CheckboxInput(attrs={'class': 'form-control prorrateo'}),
-			'valor_prorrateo' 	: forms.NumberInput(attrs={'class': 'form-control valor_prorrateo','disabled':'disabled'}),
+			# 'valor_prorrateo' 	: forms.NumberInput(attrs={'class': 'form-control valor_prorrateo','disabled':'disabled'}),
 		}
 
 		error_messages = {
-			'mes_inicio'		: {'required': 'campo requerido.'},
-			'mes_termino'		: {'required': 'campo requerido.'},
+			# 'mes_inicio'		: {'required': 'campo requerido.'},
+			# 'mes_termino'		: {'required': 'campo requerido.'},
 			'valor'				: {'required': 'campo requerido.'},
-			'prorrateo'			: {'required': 'campo requerido.'},
-			'valor_prorrateo' 	: {'required': 'campo requerido.'},
+			# 'prorrateo'			: {'required': 'campo requerido.'},
+			# 'valor_prorrateo' 	: {'required': 'campo requerido.'},
 		}
 
 		labels = {
-			'mes_inicio'	: 'Meses Inicio',
-			'mes_termino'	: 'Mes Termino',
+			# 'mes_inicio'	: 'Meses Inicio',
+			# 'mes_termino'	: 'Mes Termino',
 		}
 
 		help_texts = {
-			'mes_inicio' 		: 'mes inicio',
-			'mes_termino' 		: 'mes termino',
+			# 'mes_inicio' 		: 'mes inicio',
+			# 'mes_termino' 		: 'mes termino',
 			'valor' 			: 'valor',
 			'prorrateo' 		: 'prorrateo',
-			'valor_prorrateo'	: 'valor prorrateo',
+			# 'valor_prorrateo'	: 'valor prorrateo',
 		}
 
 

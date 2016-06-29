@@ -8,7 +8,7 @@ from accounts.models import UserProfile
 from administrador.models import Empresa
 from locales.models import Local, Local_Tipo, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 
-from .models import Activo, Sector, Nivel
+from .models import Activo, Sector, Nivel, Gasto_Mensual
 
 class ActivoForm(forms.ModelForm):
 
@@ -132,6 +132,46 @@ class NivelForm(forms.ModelForm):
 			'nombre' : {'required': 'Este campo es requerido'},
 			'codigo' : {'required': 'Este campo es requerido'},
 		}
+
+class GastoMensualForm(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+
+		self.request 	= kwargs.pop('request')
+		user 			= User.objects.get(pk=self.request.user.pk)
+		profile 		= UserProfile.objects.get(user=user)
+
+		super(GastoMensualForm, self).__init__(*args, **kwargs)
+
+		self.fields['activo'].queryset = Activo.objects.filter(empresa=profile.empresa, visible=True)		
+
+	class Meta:
+
+		model 	= Gasto_Mensual
+		fields 	= '__all__'
+		exclude = [ 'visible', 'creado_en', 'user']
+
+		widgets = {
+			'activo' 	: forms.Select(attrs={'class': 'form-control'}),
+			'valor'	 	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'mes'	 	: forms.Select(attrs={'class': 'form-control'}),
+			'anio' 		: forms.NumberInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'activo' 	: {'required': 'Este Campo es requerido'},
+			'valor' 	: {'required': 'Este Campo es requerido'},
+			'mes' 		: {'required': 'Este Campo es requerido'},
+			'anio' 		: {'required': 'Este Campo es requerido'},
+		}
+
+		labels = {
+			'anio'			: 'Año',
+		}
+
+		help_texts = {
+			'valor'			: '...',
+		}
+
 
 
 class ElectricidadForm(forms.ModelForm):

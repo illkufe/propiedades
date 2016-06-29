@@ -11,10 +11,10 @@ from django.views.generic import View, ListView, FormView, DeleteView, UpdateVie
 from administrador.models import Empresa, Cliente, Moneda, Moneda_Historial
 from accounts.models import UserProfile
 from locales.models import Local, Venta, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
-from activos.models import Activo
+from activos.models import Activo, Gasto_Mensual
 from conceptos.models import Concepto
 from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
-from procesos.models import Proceso, Proceso_Detalle, Detalle_Electricidad, Detalle_Agua, Detalle_Gas
+from procesos.models import Proceso, Proceso_Detalle, Detalle_Gasto_Comun, Detalle_Electricidad, Detalle_Agua, Detalle_Gas
 from operaciones.models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas
 
 from django.db.models import Sum
@@ -108,11 +108,14 @@ class PROCESOS(View):
 			detalles = []
 
 			if proceso.concepto.id == 1:
-				print ('arriendo minimo')
+				pass
+				# print ('arriendo minimo')
 			elif proceso.concepto.id == 2:
-				print ('arriendo variable')
+				pass
+				# print ('arriendo variable')
 			elif proceso.concepto.id == 3:
-				print ('gasto comun')
+				pass
+				# print ('gasto comun')
 			elif proceso.concepto.id == 4:
 				
 				detalles_luz 	= Detalle_Electricidad.objects.filter(proceso=proceso)
@@ -132,7 +135,8 @@ class PROCESOS(View):
 				print ('no existe')
 
 			for detalle in detalles:
-				print (detalle.id)
+				pass
+				# print (detalle.id)
 
 
 			# usuario
@@ -397,42 +401,55 @@ def calculo_gasto_comun(request, fecha_inicio, fecha_termino, contratos):
 	
 	for x in range(meses):
 		for item in contratos:
-			contrato 	= Contrato.objects.get(id=item)
-			total 		= 0
 
-			try:
-				detalles = Gasto_Comun.objects.filter(contrato=contrato)
-				for detalle in detalles:
-					if fecha.month >= int(detalle.mes_inicio) and fecha.month <= int(detalle.mes_termino):
+			contrato 		= Contrato.objects.get(id=item)
+			locales 		= contrato.locales.all()
+			metros_total 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
+	
+			for local in locales:
+				
+				try:
+					gasto_comun = Gasto_Comun.objects.get(contrato=contrato, local=local)
+					if gasto_comun.prorrateo == True:
+						valor 		= None
+						prorrateo 	= True
+						try:
+							gasto_mensual 	= Gasto_Mensual.objects.get(activo=local.activo, mes=fecha.month, anio=fecha.year).valor
+							total 		 	= (local.metros_cuadrados * gasto_mensual) / metros_total['metros_cuadrados__sum']
+						except Exception:						
+							gasto_mensual	= None
+							total 			= None
+					else:
+						factor 			= gasto_comun.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
-						valor 	= detalle.valor
-						factor 	= detalle.moneda.moneda_historial_set.all().order_by('-id').first().valor
-						total 	= valor * factor
+						valor 			= gasto_comun.valor
+						gasto_mensual 	= None
+						prorrateo 		= False
+						total 			= valor * factor
+					
 
-						if detalle.prorrateo == True:
-							pass
+				except Gasto_Comun.DoesNotExist:
+					valor 			= None
+					gasto_mensual 	= None
+					prorrateo 		= False
+					total 			= None
 
-			except Arriendo_Variable.DoesNotExist:
-				total = 0
 
-
-			proceso_detalle = Proceso_Detalle(
-				total 			= total,
-				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
-				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
-				proceso 		= proceso,
-				contrato 		= contrato,			
-			)
-			proceso_detalle.save()
+				Detalle_Gasto_Comun(
+					valor 			= valor,
+					prorrateo		= prorrateo,
+					gasto_mensual 	= gasto_mensual,
+					metros_total 	= metros_total['metros_cuadrados__sum'],
+					total 			= total, 
+					fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+					fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+					proceso 		= proceso,
+					contrato 		= contrato,
+					local 			= local,
+				).save()
 			
 			data.append({
-				'id'				: proceso.id,
-				'fecha_inicio'		: primer_dia(fecha),
-				'fecha_termino'		: ultimo_dia(fecha),
-				'concepto'			: 'Gasto Comun',
-				'contrato_numero'	: contrato.numero,
-				'contrato_nombre'	: contrato.nombre_local,
-				'valor'				: total,
+				'id':'id'
 			})
 
 		fecha = sumar_meses(fecha, 1)
@@ -595,7 +612,7 @@ def propuesta_pdf(proceso, pk=None):
 
 	if pk is not None:
 		proceso = Proceso.objects.get(id=pk)
-		print (proceso.id)
+		# print (proceso.id)
 
 	options = {
 		# 'orientation': 'Landscape',
@@ -612,6 +629,9 @@ def propuesta_pdf(proceso, pk=None):
 	if proceso.concepto_id == 4:
 		data 		= data_detalle_electricidad(proceso)
 		template 	= get_template('pdf/procesos/propuesta_servicios_basicos.html')
+	elif proceso.concepto_id == 3:
+		data 		= data_gastos_comunes(proceso)
+		template 	= get_template('pdf/procesos/propuesta_gastos_comunes.html')
 	else:
 		data 	= {}
 		detalle = []
@@ -701,3 +721,35 @@ def data_detalle_electricidad(proceso):
 	data['total'] 	= total
 
 	return data
+
+
+def data_gastos_comunes(proceso):
+
+	data 			= {}
+	detalle 		= []
+	total			= 0
+
+	detalles = Detalle_Gasto_Comun.objects.filter(proceso=proceso)
+
+	for item in detalles:
+		detalle.append({
+			'fecha_inicio'		: item.fecha_inicio,
+			'fecha_termino'		: item.fecha_termino,
+			'contrato'			: item.contrato.numero,
+			'local'				: item.local.nombre,
+			'proratea' 			: 'si' if item.prorrateo == True else 'no',
+			'valor' 			: item.valor if item.valor is not None else 'N/A',
+			'metros_local' 		: item.local.metros_cuadrados,
+			'factor' 			: item.gasto_mensual if item.gasto_mensual is not None else 'N/A',
+			'total' 			: item.total if item.total is not None else 'N/A',
+		})
+
+		total += item.total if item.total is not None else 0
+
+	
+	data['detalle'] = detalle
+	data['total'] 	= total
+
+	return data
+
+

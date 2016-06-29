@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <style>
+
+    table{
+        font-size: 11px;
+    }
+    
+    table th,
+    table td{
+        padding: 2px 6px !important;
+        border: 1px solid #000 !important;;
+    }
+
+    p{
+        font-size: 11px;
+    }
+
+    /* utilities */
+    .page{
+        page-break-after: always;
+    }
+
+    .bold{
+        font-weight: bold;
+    }
+
+    .underline{
+        text-decoration: underline;
+    }
+
+    .uppercase{
+        text-transform: uppercase;
+    }
+
+    p.text{
+        line-height: normal;
+    }
+    
+    </style>
+</head>
+<body>
+    <div class="page">
+        <h4 class="text-center">PROPUESTA DE FACTURACIÓN</h4>
+        <br>
+        <br>
+        <p><span>CONCEPTO FACTURADO:</span>{{proceso.concepto.nombre}}</p>
+        <p><span>FECHA INICIO:</span>{{proceso.fecha_inicio}}</p>
+        <p><span>FECHA TERMINO:</span>{{proceso.fecha_termino}}</p>
+        <p><span>USUARIO:</span>{{proceso.user.first_name}}</p>
+        <br>
+        <br>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Termino</th>
+                    <th>Nº Contrato</th>
+                    <th>Local</th>
+                    <th>Proratea</th>
+                    <th>Valor</th>
+                    <th>Mt 2</th>
+                    <th>Factor</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in detalle %}
+                <tr>
+                    <td>{{item.fecha_inicio}}</td>
+                    <td>{{item.fecha_termino}}</td>
+                    <td>{{item.contrato}}</td>
+                    <td>{{item.local}}</td>
+                    <td>{{item.proratea}}</td>
+                    <td>{{item.valor}}</td>
+                    <td>{{item.metros_local}}</td>
+                    <td>{{item.factor}}</td>
+                    <td>{{item.total}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <thead>
+                <th colspan="8">Total</th>
+                <th>{{total}}</th>
+            </thead>
+        </table>
+    </div>
+</body>
+</html>

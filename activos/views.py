@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from accounts.models import UserProfile
 from locales.models import Local, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 
-from .forms import ActivoForm, SectorFormSet, NivelFormSet, LocalForm, ElectricidadFormSet, AguaFormSet, GasFormSet
-from .models import Activo, Sector, Nivel
+from .forms import ActivoForm, SectorFormSet, NivelFormSet, GastoMensualForm, LocalForm, ElectricidadFormSet, AguaFormSet, GasFormSet
+from .models import Activo, Sector, Nivel, Gasto_Mensual
 
 
 class ActivoMixin(object):
@@ -152,6 +152,124 @@ class ActivoUpdate(ActivoMixin, UpdateView):
 
 
 
+class GastoMensualMixin(object):
+
+	template_name = 'viewer/activos/gasto_mensual_new.html'
+	form_class = GastoMensualForm
+	success_url = '/gastos-mensual/list'
+
+	def get_form_kwargs(self):
+		kwargs = super(GastoMensualMixin, self).get_form_kwargs()
+		kwargs['request'] = self.request
+		return kwargs
+
+	def form_invalid(self, form):
+		response = super(GastoMensualMixin, self).form_invalid(form)
+		if self.request.is_ajax():
+			return JsonResponse(form.errors, status=400)
+		else:
+			return response
+
+	def form_valid(self, form):
+		profile 	= UserProfile.objects.get(user=self.request.user)
+		obj 		= form.save(commit=False)
+		obj.user 	= self.request.user
+
+		try:
+			gasto = Gasto_Mensual.objects.get(activo_id= obj.activo.id, mes=obj.mes, anio=obj.anio)
+			gasto.valor 	= obj.valor
+			gasto.user 	= obj.user
+			gasto.visible = True
+			gasto.save()
+		except Exception:
+			obj.save()
+
+		response = super(GastoMensualMixin, self).form_valid(form)
+		if self.request.is_ajax():
+			data = {
+				'pk': 'self.object.pk',
+			}
+			return JsonResponse(data)
+		else:
+			return response
+
+class GastoMensualNew(GastoMensualMixin, FormView):
+
+	def get_context_data(self, **kwargs):
+
+		context = super(GastoMensualNew, self).get_context_data(**kwargs)
+		context['title'] = 'Activos'
+		context['subtitle'] = 'Gasto Mensual'
+		context['name'] = 'Nuevo'
+		context['href'] = 'gastos-mensual'
+		context['accion'] = 'create'
+
+		return context
+
+class GastoMensualList(ListView):
+	model = Gasto_Mensual
+	template_name = 'viewer/activos/gasto_mensual_list.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(GastoMensualList, self).get_context_data(**kwargs)
+		context['title'] = 'Activos'
+		context['subtitle'] = 'Gastos Mensuales'
+		context['name'] = 'Lista'
+		context['href'] = 'gastos-mensual'
+		
+		return context
+
+	def get_queryset(self):
+
+		meses 		= ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE']
+		user 		= User.objects.get(pk=self.request.user.pk)
+		profile 	= UserProfile.objects.get(user=user)
+		activos   	= Activo.objects.values_list('id', flat=True).filter(empresa=profile.empresa)
+		queryset 	= Gasto_Mensual.objects.filter(visible=True, activo__in=activos)
+
+		for item in queryset:
+			item.mes 		= meses[int(item.mes)-1]
+			item.creado_en 	= item.creado_en.strftime('%d/%m/%Y')
+
+		return queryset
+
+class GastoMensualDelete(DeleteView):
+	model = Activo
+	success_url = reverse_lazy('/gastos-mensual/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object = self.get_object()
+		self.object.visible = False
+		self.object.save()
+		payload = {'delete': 'ok'}
+
+		return JsonResponse(payload, safe=False)
+
+class GastoMensualUpdate(GastoMensualMixin, UpdateView):
+
+	model = Gasto_Mensual
+	form_class = GastoMensualForm
+	template_name = 'viewer/activos/gasto_mensual_new.html'
+	success_url = '/gastos-mensual/list'
+
+
+	def get_context_data(self, **kwargs):
+
+		context = super(GastoMensualUpdate, self).get_context_data(**kwargs)
+
+		context['title'] = 'Activos'
+		context['subtitle'] = 'Activo'
+		context['name'] = 'Editar'
+		context['href'] = 'activos'
+		context['accion'] = 'update'
+
+
+		return context
+
+
+
+
 class ActivoLocaleMixin(object):
 
 	template_name = 'viewer/activos/activo_local_new.html'
@@ -291,8 +409,4 @@ class ACTIVOS(View):
 				})
 
 		return JsonResponse(data, safe=False)
-
-
-
-
 
