@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'accounts',
     'avatar',
     'viewer',
+    'utilidades',
     'administrador',
     'activos',
     'locales',

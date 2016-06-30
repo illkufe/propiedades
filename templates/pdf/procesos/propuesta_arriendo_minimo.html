@@ -9,7 +9,7 @@
     <style>
 
     table{
-        font-size: 11px;
+        font-size: 12px;
     }
     
     table th,
@@ -19,12 +19,14 @@
     }
 
     p{
-        font-size: 11px;
+        font-size: 12px;
     }
 
     /* utilities */
     .page{
         page-break-after: always;
+        padding-top: 25px;
+
     }
 
     .bold{
@@ -63,12 +65,14 @@
                     <th>Fecha Inicio</th>
                     <th>Fecha Termino</th>
                     <th>Nº Contrato</th>
-                    <th>Local</th>
-                    <th>Prorratea</th>
+                    <th>Cliente</th>
                     <th>Valor</th>
-                    <th>Mt 2</th>
-                    <th>Factor</th>
-                    <th>Total</th>
+                    <th>Metros Cuadrado</th>
+                    <th>Metros Local(s)</th>
+                    <th>Reajuste</th>
+                    <th>Reajuste Valor</th>
+                    <th>Local(es)</th>
+                    <th>Valor</th>
                 </tr>
             </thead>
 
@@ -78,21 +82,28 @@
                     <td>{{item.fecha_inicio}}</td>
                     <td>{{item.fecha_termino}}</td>
                     <td>{{item.contrato}}</td>
-                    <td>{{item.local}}</td>
-                    <td>{{item.proratea}}</td>
+                    <td>{{item.cliente}}</td>
                     <td>{{item.valor}}</td>
+                    <td>{{item.metro_cuadrado}}</td>
                     <td>{{item.metros_local}}</td>
-                    <td>{{item.factor}}</td>
+                    <td>{{item.reajuste}}</td>
+                    <td>{{item.reajuste_valor}}</td>
+                    <td>
+                        {% for local in item.locales %}
+                        <li>{{local.nombre}}</li>
+                        {% endfor %}
+                    </td>
                     <td>{{item.total}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
 
             <thead>
-                <th colspan="8">Total</th>
+                <th colspan="10">Total</th>
                 <th>{{total}}</th>
             </thead>
         </table>
     </div>
+
 </body>
 </html>

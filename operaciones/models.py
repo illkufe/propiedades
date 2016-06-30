@@ -8,21 +8,21 @@ from locales.models import Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 class Lectura_Electricidad(models.Model):
 
 	MESES = (
-		('1', 'ENERO'),
-		('2', 'FEBRERO'),
-		('3', 'MARZO'),
-		('4', 'ABRIL'),
-		('5', 'MAYO'),
-		('6', 'JUNIO'),
-		('7', 'JULIO'),
-		('8', 'AGOSTO'),
-		('9', 'SEPTIEMBRE'),
-		('10', 'OCTUBRE'),
-		('11', 'NOVIEMBRE'),
-		('12', 'DICIEMBRE'),
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
 	)
 
-	mes 			= models.CharField(max_length=2, choices=MESES)
+	mes 			= models.IntegerField(choices=MESES)
 	anio			= models.IntegerField()
 	valor 			= models.FloatField()
 	imagen_file 	= models.FileField(upload_to='lectura-medidor', blank=True)
@@ -43,21 +43,21 @@ class Lectura_Electricidad(models.Model):
 class Lectura_Agua(models.Model):
 
 	MESES = (
-		('1', 'ENERO'),
-		('2', 'FEBRERO'),
-		('3', 'MARZO'),
-		('4', 'ABRIL'),
-		('5', 'MAYO'),
-		('6', 'JUNIO'),
-		('7', 'JULIO'),
-		('8', 'AGOSTO'),
-		('9', 'SEPTIEMBRE'),
-		('10', 'OCTUBRE'),
-		('11', 'NOVIEMBRE'),
-		('12', 'DICIEMBRE'),
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
 	)
 
-	mes 			= models.CharField(max_length=2, choices=MESES)
+	mes 			= models.IntegerField(choices=MESES)
 	anio			= models.IntegerField()
 	valor 			= models.FloatField()
 	imagen_file 	= models.FileField(upload_to='lectura-medidor', blank=True)
@@ -78,21 +78,21 @@ class Lectura_Agua(models.Model):
 class Lectura_Gas(models.Model):
 
 	MESES = (
-		('1', 'ENERO'),
-		('2', 'FEBRERO'),
-		('3', 'MARZO'),
-		('4', 'ABRIL'),
-		('5', 'MAYO'),
-		('6', 'JUNIO'),
-		('7', 'JULIO'),
-		('8', 'AGOSTO'),
-		('9', 'SEPTIEMBRE'),
-		('10', 'OCTUBRE'),
-		('11', 'NOVIEMBRE'),
-		('12', 'DICIEMBRE'),
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
 	)
 
-	mes 			= models.CharField(max_length=2, choices=MESES)
+	mes 			= models.IntegerField(choices=MESES)
 	anio			= models.IntegerField()
 	valor 			= models.FloatField()
 	imagen_file 	= models.FileField(upload_to='lectura-medidor', blank=True)

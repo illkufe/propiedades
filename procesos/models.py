@@ -37,7 +37,7 @@ class Proceso(models.Model):
 
 
 	def __str__(self):
-		return self.proceso_estado.nombre
+		return self.concepto.nombre
 
 # {falta: borrar este modelo y dejar separado en detalle_arriendo_minimo, detalle_arriendo_variable y detalle_gasto_comun}
 class Proceso_Detalle(models.Model):
@@ -58,6 +58,29 @@ class Proceso_Detalle(models.Model):
 	def __str__(self):
 		return self.contrato.nombre_local
 
+
+
+class Detalle_Arriendo_Minimo(models.Model):
+	
+	fecha_inicio 	= models.DateField()
+	fecha_termino 	= models.DateField()
+	valor 			= models.FloatField(null=True, blank=True)
+	metro_cuadrado 	= models.BooleanField(default=False)
+	metros_local 	= models.FloatField(null=True, blank=True)
+	reajuste 		= models.BooleanField(default=False)
+	reajuste_valor 	= models.FloatField(null=True, blank=True)
+	total 			= models.FloatField(null=True, blank=True)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	proceso 	= models.ForeignKey(Proceso)
+	contrato 	= models.ForeignKey(Contrato)
+
+	def __str__(self):
+		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
 
 class Detalle_Gasto_Comun(models.Model):
 
@@ -80,8 +103,7 @@ class Detalle_Gasto_Comun(models.Model):
 	local 		= models.ForeignKey(Local)
 
 	def __str__(self):
-		return medidor.nombre+' '+self.contrato.numero
-
+		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
 
 class Detalle_Electricidad(models.Model):
 

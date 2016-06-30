@@ -73,8 +73,8 @@ class Arriendo(models.Model):
 
 	# atributos (generales
 	reajuste 		= models.BooleanField(default=False)
-	meses 			= models.IntegerField()
-	valor			= models.FloatField()
+	meses 			= models.IntegerField(default=0)
+	valor			= models.FloatField(default=0)
 	fecha_inicio 	= models.DateField()
 	
 	# atributos (por defecto)
@@ -91,23 +91,23 @@ class Arriendo(models.Model):
 class Arriendo_Detalle(models.Model):
 
 	MESES = (
-		('1', 'ENERO'),
-		('2', 'FEBRERO'),
-		('3', 'MARZO'),
-		('4', 'ABRIL'),
-		('5', 'MAYO'),
-		('6', 'JUNIO'),
-		('7', 'JULIO'),
-		('8', 'AGOSTO'),
-		('9', 'SEPTIEMBRE'),
-		('10', 'OCTUBRE'),
-		('11', 'NOVIEMBRE'),
-		('12', 'DICIEMBRE'),
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
 	)
 
 	# atributos (generales
-	mes_inicio 		= models.CharField(max_length=2, choices=MESES)
-	mes_termino		= models.CharField(max_length=2, choices=MESES)
+	mes_inicio 		= models.IntegerField(choices=MESES)
+	mes_termino		= models.IntegerField(choices=MESES)
 	valor			= models.FloatField()
 	metro_cuadrado 	= models.BooleanField(default=False)
 	
@@ -125,34 +125,34 @@ class Arriendo_Detalle(models.Model):
 class Arriendo_Variable(models.Model):
 
 	MESES = (
-		('1', 'ENERO'),
-		('2', 'FEBRERO'),
-		('3', 'MARZO'),
-		('4', 'ABRIL'),
-		('5', 'MAYO'),
-		('6', 'JUNIO'),
-		('7', 'JULIO'),
-		('8', 'AGOSTO'),
-		('9', 'SEPTIEMBRE'),
-		('10', 'OCTUBRE'),
-		('11', 'NOVIEMBRE'),
-		('12', 'DICIEMBRE'),
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
 	)
 
 	PERIODICIDAD = (
-		('0', 'ANUAL'),
-		('1', 'SEMESTRAL'),
-		('2', 'TRIMESTRAL'),
-		('3', 'MENSUAL'),
-		('4', 'QUINCENAL'),
-		('5', 'SEMANAL'),
-		('6', 'DIARIA'),
+		(0, 'ANUAL'),
+		(1, 'SEMESTRAL'),
+		(2, 'TRIMESTRAL'),
+		(3, 'MENSUAL'),
+		(4, 'QUINCENAL'),
+		(5, 'SEMANAL'),
+		(6, 'DIARIA'),
 	)
 
 	# atributos (generales
-	mes_inicio 		= models.CharField(max_length=2, choices=MESES)
-	mes_termino		= models.CharField(max_length=2, choices=MESES)
-	periodicidad	= models.CharField(max_length=1, choices=PERIODICIDAD)
+	mes_inicio 		= models.IntegerField(choices=MESES)
+	mes_termino		= models.IntegerField(choices=MESES)
+	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
 	valor			= models.FloatField()
 
 	# atributos (por defecto)
@@ -169,30 +169,30 @@ class Arriendo_Variable(models.Model):
 class Servicio_Basico(models.Model):
 
 	TIPO = (
-		('1', 'AGUA'),
-		('2', 'ELECTRICIDAD'),
-		('3', 'GAS'),
+		(1, 'AGUA'),
+		(2, 'ELECTRICIDAD'),
+		(3, 'GAS'),
 	)
 
 	MESES = (
-		('1', 'ENERO'),
-		('2', 'FEBRERO'),
-		('3', 'MARZO'),
-		('4', 'ABRIL'),
-		('5', 'MAYO'),
-		('6', 'JUNIO'),
-		('7', 'JULIO'),
-		('8', 'AGOSTO'),
-		('9', 'SEPTIEMBRE'),
-		('10', 'OCTUBRE'),
-		('11', 'NOVIEMBRE'),
-		('12', 'DICIEMBRE'),
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
 	)
 
 	# atributos (generales
-	tipo			= models.CharField(max_length=1, choices=TIPO)
-	mes_inicio 		= models.CharField(max_length=2, choices=MESES)
-	mes_termino		= models.CharField(max_length=2, choices=MESES)
+	tipo			= models.IntegerField(choices=TIPO)
+	mes_inicio 		= models.IntegerField(choices=MESES)
+	mes_termino		= models.IntegerField(choices=MESES)
 	valor			= models.FloatField()
 
 	# atributos (por defecto)
@@ -241,6 +241,4 @@ class Gasto_Comun(models.Model):
 
 	def __str__(self):
 		return self.local.nombre
-
-
 

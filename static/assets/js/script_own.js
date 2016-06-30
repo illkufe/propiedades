@@ -3,14 +3,14 @@ $('td.delete input[type=checkbox]').hide()
 $('.format-rut').rut({
 	formatOn: 'keyup',
 	validateOn: 'blur'
-	}).on('rutInvalido', function(){
-		error_msg = $("<li /> ").addClass("errorlist").text('Rut invalido');
-		$(this).closest('.form-group').find('.container-error').text('')
-		$(this).closest('.form-group').find('.container-error').append(error_msg)
-		$(this).val('')
-	}).on('rutValido', function(){
-		$(this).closest('.form-group').find('.container-error').text('')
-	});
+}).on('rutInvalido', function(){
+	error_msg = $("<li /> ").addClass("errorlist").text('Rut invalido');
+	$(this).closest('.form-group').find('.container-error').text('')
+	$(this).closest('.form-group').find('.container-error').append(error_msg)
+	$(this).val('')
+}).on('rutValido', function(){
+	$(this).closest('.form-group').find('.container-error').text('')
+});
 
 $('.format-date').datepicker({
 	todayBtn: 'linked',
@@ -78,19 +78,12 @@ function getCookie(name){
 
 function apply_errors_form(errors){
 	$.each(errors, function(index, value) {
-		// console.log(index)
-		// console.log(value)
-		// if (index === "__all__") {
-		// 	console.log('caca')
-		// 	django_message(value[0], "error");
-		// } else {
-			// console.log('pipi')
-			var input = $("#id_" + index),
-			container = $("#div_id_" + index),
-			// error_msg = $("<li /> ").addClass("errorlist").text(value[0]);
-			error_msg = value[0]
-			$("#id_" + index).closest('.form-group').find('.container-error').append(error_msg)
-		// }
+		
+		// var input = $("#id_" + index),
+		// container = $("#div_id_" + index),
+		error_msg = value[0]
+		$("#id_" + index).closest('.form-group').find('.container-error').append(error_msg)
+		
 	});
 }
 

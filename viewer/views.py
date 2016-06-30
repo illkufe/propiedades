@@ -10,7 +10,6 @@ from administrador.models import Moneda, Moneda_Historial
 from activos.models import Activo
 from locales.models import Local
 
-
 # Create your views here.
 @login_required
 def dashboard(request):
@@ -63,3 +62,4 @@ def flag_commercial(request):
 
 
 	return JsonResponse(data, safe=False)
+

@@ -48,19 +48,19 @@ class Local(models.Model):
 class Venta(models.Model):
 
 	PERIODICIDAD = (
-		('0', 'ANUAL'),
-		('1', 'SEMESTRAL'),
-		('2', 'TRIMESTRAL'),
-		('3', 'MENSUAL'),
-		('4', 'QUINCENAL'),
-		('5', 'SEMANAL'),
-		('6', 'DIARIA'),
+		(0, 'ANUAL'),
+		(1, 'SEMESTRAL'),
+		(2, 'TRIMESTRAL'),
+		(3, 'MENSUAL'),
+		(4, 'QUINCENAL'),
+		(5, 'SEMANAL'),
+		(6, 'DIARIA'),
 	)
 
 	# atributos (generales)
 	fecha_inicio 	= models.DateTimeField()
 	fecha_termino 	= models.DateTimeField()
-	periodicidad	= models.CharField(max_length=1, choices=PERIODICIDAD)
+	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
 	valor 			= models.FloatField()
 	
 	# atributos (por defecto)

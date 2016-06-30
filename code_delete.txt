@@ -2079,3 +2079,139 @@ select_config 	= {
 }
 format_select(select_config)
 $('#url-new-local').attr('href', '/activos/'+$('#s-activo').val()+'/locales/new')
+
+# contrato/forms.py
+
+class ServicioBasicoForm(forms.ModelForm):
+
+	def __init__(self, *args, **kwargs):
+
+		contrato = kwargs.pop('contrato', None)
+		super(ServicioBasicoForm, self).__init__(*args, **kwargs)
+
+		if contrato is not None:
+			self.fields['local'].queryset = contrato.locales.all()
+
+	class Meta:
+		model 	= Servicio_Basico
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en']
+
+		widgets = {
+			'tipo'			: forms.Select(attrs={'class': 'form-control tipo-asd'}),
+			'local'			: forms.Select(attrs={'class': 'form-control'}),
+			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
+			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
+			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'tipo'			: {'required': 'campo requerido.'},
+			'mes_inicio'	: {'required': 'campo requerido.'},
+			'mes_termino'	: {'required': 'campo requerido.'},
+			'valor'			: {'required': 'campo requerido.'},
+		}
+
+		labels = {
+			'tipo'			: 'Tipo',
+			'mes_inicio'	: 'Meses Inicio',
+			'mes_termino'	: 'Mes Termino',
+		}
+
+		help_texts = {
+			'tipo' 			: 'tipo',
+			'mes_inicio' 	: 'mes inicio',
+			'mes_termino' 	: 'mes termino',
+			'valor' 		: 'valor',
+		}
+
+ServicioBasicoFormSet 	= inlineformset_factory(Contrato, Servicio_Basico, form=ServicioBasicoForm, extra=1, can_delete=True)
+
+# procesos/views.py
+
+def calculo_arriendo_minimo(request, fecha_inicio, fecha_termino, contratos):
+
+	user 		= User.objects.get(pk=request.user.pk)
+	contratos 	= contratos
+	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
+	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%d/%m/%Y"))
+	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
+	meses		= meses_entre_fechas(f_inicio, f_termino)
+	data 		= []
+
+	proceso = Proceso(
+		fecha_inicio		= f_inicio.strftime('%Y-%m-%d'),
+		fecha_termino		= f_termino.strftime('%Y-%m-%d'),
+		user				= user,
+		concepto_id			= 1,
+		proceso_estado_id 	= 1,
+		)
+	proceso.save()
+	
+	for x in range(meses):
+
+		for item in contratos:
+
+			total 		= 0
+			contrato 	= Contrato.objects.get(id=item)
+
+			try:
+				arriendo = Arriendo.objects.get(contrato=contrato)
+				detalles = Arriendo_Detalle.objects.filter(arriendo=arriendo)
+
+				for detalle in detalles:
+					if fecha.month >= int(detalle.mes_inicio) and fecha.month <= int(detalle.mes_termino):
+						valor 	= detalle.valor
+						moneda 	= detalle.moneda.id
+						factor  = detalle.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+						reajuste_valor 	= 1
+						reajuste_moneda = 1
+						reajuste_factor = 1
+						reajuste 		= arriendo.reajuste
+						metros 			= detalle.metro_cuadrado
+						metros_valor 	= 1
+
+						if arriendo.reajuste == True and fecha >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
+
+							reajuste_valor 	= arriendo.valor
+							reajuste_moneda = arriendo.moneda.id
+							reajuste_factor = arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+							if arriendo.moneda.id == 6:
+								reajuste_valor = (reajuste_valor/100)+1
+						
+						if detalle.metro_cuadrado == True:
+							locales =  contrato.locales.all()
+							metros_valor = 0
+							for local in locales:
+								metros_valor += local.metros_cuadrados
+
+					total = valor * factor * metros_valor * (reajuste_valor * reajuste_factor)
+
+			except Arriendo.DoesNotExist:
+				total = 0
+
+			proceso_detalle = Proceso_Detalle(
+				total 			= total,
+				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+				proceso 		= proceso,
+				contrato 		= contrato,
+			)
+			proceso_detalle.save()
+			
+			data.append({
+				'id'				: proceso.id,
+				'fecha_inicio'		: primer_dia(fecha),
+				'fecha_termino'		: ultimo_dia(fecha),
+				'concepto'			: 'Arriendo Minimo',
+				'contrato_numero'	: contrato.numero,
+				'contrato_nombre'	: contrato.nombre_local,
+				'valor'				: total,
+			})
+
+		fecha = sumar_meses(fecha, 1)
+
+	return data
+

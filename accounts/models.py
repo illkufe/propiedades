@@ -7,16 +7,16 @@ from administrador.models import Empresa
 # Create your models here.
 class UserProfile(models.Model):
 	TIPO = (
-		('1', 'NORMAL'),
-		('2', 'COMERCIAL'),
-		('3', 'CLIENTE'),
-		('4', 'ADMINISTRADOR'),
+		(1, 'NORMAL'),
+		(2, 'COMERCIAL'),
+		(3, 'CLIENTE'),
+		(4, 'ADMINISTRADOR'),
 	)
 
 	# atributos (generales)
 	rut			= models.CharField(max_length=250, blank=True)
 	cargo		= models.CharField(max_length=250, blank=True)
-	tipo 		= models.CharField(max_length=2, choices=TIPO)
+	tipo 		= models.IntegerField(choices=TIPO)
 	direccion 	= models.CharField(max_length=250, blank=True)
 	ciudad 		= models.CharField(max_length=250, blank=True)
 	comuna 		= models.CharField(max_length=250, blank=True)

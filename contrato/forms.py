@@ -111,13 +111,16 @@ class InformacionForm(forms.ModelForm):
 		model 	= Contrato
 		fields 	= ['id']
 
-
 class ArriendoForm(forms.ModelForm):
 
-	moneda = forms.ModelChoiceField(
-		queryset = Moneda.objects.filter(id__in=[2,3,4,6]),
-		widget 	= forms.Select(attrs={'class': 'form-control'})
-		)
+	def __init__(self, *args, **kwargs):
+		contrato = kwargs.pop('contrato', None)
+		super(ArriendoForm, self).__init__(*args, **kwargs)
+
+		if contrato is not None:
+			self.fields['fecha_inicio'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
+
+	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,6]), initial='6',widget=forms.Select(attrs={'class': 'form-control'}))
 
 	class Meta:
 		model 	= Arriendo
@@ -151,8 +154,8 @@ class ArriendoForm(forms.ModelForm):
 			'fecha_inicio' 	: 'Fecha Inicio',
 		}
 
-
 class ArriendoDetalleForm(forms.ModelForm):
+
 
 	moneda = forms.ModelChoiceField(
 		queryset = Moneda.objects.filter(id__in=[2,3,4,5]),
@@ -169,7 +172,6 @@ class ArriendoDetalleForm(forms.ModelForm):
 			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
 			'_DELETE_'		: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
-
 
 class ArriendoVariableForm(forms.ModelForm):
 
@@ -211,8 +213,9 @@ class ArriendoVariableForm(forms.ModelForm):
 			'moneda' 		: 'moneda',
 		}
 
-
 class GastoComunForm(forms.ModelForm):
+
+	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,5]), widget=forms.Select(attrs={'class': 'form-control moneda'}))
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
@@ -221,13 +224,6 @@ class GastoComunForm(forms.ModelForm):
 		if contrato is not None:
 			self.fields['local'].queryset = contrato.locales.all()
 
-
-	moneda = forms.ModelChoiceField(
-		queryset = Moneda.objects.filter(id__in=[2,3,4,5]),
-		widget 	= forms.Select(attrs={'class': 'form-control moneda'})
-
-		)
-
 	class Meta:
 		model 	= Gasto_Comun
 		fields 	= '__all__'
@@ -235,76 +231,17 @@ class GastoComunForm(forms.ModelForm):
 
 		widgets = {
 			'local' 	: forms.Select(attrs={'class': 'form-control'}),
-			# 'mes_inicio'		: forms.Select(attrs={'class': 'form-control'}),
-			# 'mes_termino'		: forms.Select(attrs={'class': 'form-control'}),
-			'valor'				: forms.NumberInput(attrs={'class': 'form-control valor_no_prorrateo'}),
-			'prorrateo'			: forms.CheckboxInput(attrs={'class': 'form-control prorrateo'}),
-			# 'valor_prorrateo' 	: forms.NumberInput(attrs={'class': 'form-control valor_prorrateo','disabled':'disabled'}),
+			'valor'		: forms.NumberInput(attrs={'class': 'form-control valor_no_prorrateo'}),
+			'prorrateo'	: forms.CheckboxInput(attrs={'class': 'form-control prorrateo'}),
 		}
 
 		error_messages = {
-			# 'mes_inicio'		: {'required': 'campo requerido.'},
-			# 'mes_termino'		: {'required': 'campo requerido.'},
-			'valor'				: {'required': 'campo requerido.'},
-			# 'prorrateo'			: {'required': 'campo requerido.'},
-			# 'valor_prorrateo' 	: {'required': 'campo requerido.'},
-		}
-
-		labels = {
-			# 'mes_inicio'	: 'Meses Inicio',
-			# 'mes_termino'	: 'Mes Termino',
+			'valor'		: {'required': 'campo requerido.'},
 		}
 
 		help_texts = {
-			# 'mes_inicio' 		: 'mes inicio',
-			# 'mes_termino' 		: 'mes termino',
-			'valor' 			: 'valor',
-			'prorrateo' 		: 'prorrateo',
-			# 'valor_prorrateo'	: 'valor prorrateo',
-		}
-
-
-class ServicioBasicoForm(forms.ModelForm):
-
-	def __init__(self, *args, **kwargs):
-
-		contrato = kwargs.pop('contrato', None)
-		super(ServicioBasicoForm, self).__init__(*args, **kwargs)
-
-		if contrato is not None:
-			self.fields['local'].queryset = contrato.locales.all()
-
-	class Meta:
-		model 	= Servicio_Basico
-		fields 	= '__all__'
-		exclude = ['visible', 'creado_en']
-
-		widgets = {
-			'tipo'			: forms.Select(attrs={'class': 'form-control tipo-asd'}),
-			'local'			: forms.Select(attrs={'class': 'form-control'}),
-			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
-			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
-			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
-		}
-
-		error_messages = {
-			'tipo'			: {'required': 'campo requerido.'},
-			'mes_inicio'	: {'required': 'campo requerido.'},
-			'mes_termino'	: {'required': 'campo requerido.'},
-			'valor'			: {'required': 'campo requerido.'},
-		}
-
-		labels = {
-			'tipo'			: 'Tipo',
-			'mes_inicio'	: 'Meses Inicio',
-			'mes_termino'	: 'Mes Termino',
-		}
-
-		help_texts = {
-			'tipo' 			: 'tipo',
-			'mes_inicio' 	: 'mes inicio',
-			'mes_termino' 	: 'mes termino',
-			'valor' 		: 'valor',
+			'valor' 	: 'valor',
+			'prorrateo' : 'prorrateo',
 		}
 
 
@@ -312,6 +249,5 @@ class ServicioBasicoForm(forms.ModelForm):
 ArriendoDetalleFormSet 	= inlineformset_factory(Arriendo, Arriendo_Detalle, form=ArriendoDetalleForm, extra=1, can_delete=True)
 ArriendoVariableFormSet = inlineformset_factory(Contrato, Arriendo_Variable, form=ArriendoVariableForm, extra=1, can_delete=True)
 GastoComunFormSet 		= inlineformset_factory(Contrato, Gasto_Comun, form=GastoComunForm, extra=1, can_delete=True)
-ServicioBasicoFormSet 	= inlineformset_factory(Contrato, Servicio_Basico, form=ServicioBasicoForm, extra=1, can_delete=True)
 
 
