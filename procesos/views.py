@@ -14,7 +14,7 @@ from locales.models import Local, Venta, Medidor_Electricidad, Medidor_Agua, Med
 from activos.models import Activo, Gasto_Mensual
 from conceptos.models import Concepto
 from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
-from procesos.models import Proceso, Detalle_Arriendo_Minimo, Proceso_Detalle, Detalle_Gasto_Comun, Detalle_Electricidad, Detalle_Agua, Detalle_Gas
+from procesos.models import Proceso, Detalle_Arriendo_Minimo, Detalle_Arriendo_Variable, Proceso_Detalle, Detalle_Gasto_Comun, Detalle_Electricidad, Detalle_Agua, Detalle_Gas
 from operaciones.models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas
 
 from django.db.models import Sum
@@ -289,7 +289,6 @@ def calculo_arriendo_minimo(request, fecha_inicio, fecha_termino, contratos):
 
 	return data
 
-
 def calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos):
 
 	user 		= User.objects.get(pk=request.user.pk)
@@ -314,68 +313,58 @@ def calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos):
 
 		for item in contratos:
 
-			total 		= 0
 			contrato 	= Contrato.objects.get(id=item)
+			locales 	= contrato.locales.all()
 
 			try:
-				detalles = Arriendo_Variable.objects.filter(contrato=contrato)
+				existe = Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month).exists()
+				if existe is True:
+					detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month)	
+					valor 			= detalle[0].valor
+					ventas 			= 0
+					ventas_local 	= Venta.objects.filter(local_id__in=locales).\
+					extra(select={'year': "EXTRACT(year FROM fecha_inicio)",'month': "EXTRACT(month FROM fecha_inicio)", 'id': "id"}).\
+					values('year', 'month', 'local_id').\
+					annotate(Sum('valor'))
 
-				for detalle in detalles:
-					if fecha.month >= int(detalle.mes_inicio) and fecha.month <= int(detalle.mes_termino):
+					for venta in ventas_local:
+						if fecha.month == venta['month'] and fecha.year == venta['year']:
+							ventas += venta['valor__sum']
 
-						venta_valor	= 0
-						
-						locales = contrato.locales.all()
+					arriendo_minimo = 0
 
-						ventas 	= Venta.objects.filter(local_id__in=locales).\
-						extra(select={'year': "EXTRACT(year FROM fecha_inicio)",'month': "EXTRACT(month FROM fecha_inicio)", 'id': "id"}).\
-						values('year', 'month', 'local_id').\
-						annotate(Sum('valor'))
-
-						for venta in ventas:
-							if fecha.month == venta['month'] and fecha.year == venta['year']:
-								venta_valor += venta['valor__sum']
-
-						valor = (detalle.valor / 100) + 1
-
-						reajuste_valor 	= 1
-						reajuste_moneda = 1
-						reajuste_factor = 1
-
-						metros_valor 	= 1
-
+					if arriendo_minimo >= ventas:
+						total = 0
 					else:
-						venta_valor	= 0
-						valor 	= 0
+						total = ((ventas * valor) / 100)
 
-						reajuste_valor 	= 0
-						reajuste_moneda = 0
-						reajuste_factor = 0
-						metros_valor 	= 0
+				else:
 
-					total = venta_valor * valor
+					valor 			= None
+					ventas 			= None
+					arriendo_minimo = None
+					total 			= None
 
-			except Arriendo_Variable.DoesNotExist:
-				total 			= 0
+			except Exception:
 
-			proceso_detalle = Proceso_Detalle(
+				valor 			= None
+				ventas 			= None
+				arriendo_minimo = None
+				total 			= None
+
+
+			proceso_detalle = Detalle_Arriendo_Variable(
+				valor 			= valor,
+				ventas 			= ventas,
+				arriendo_minimo = arriendo_minimo,
 				total 			= total,
 				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
 				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
 				proceso 		= proceso,
 				contrato 		= contrato,
-			)
-			proceso_detalle.save()
+			).save()
 			
-			data.append({
-				'id'				: proceso.id,
-				'fecha_inicio'		: primer_dia(fecha),
-				'fecha_termino'		: ultimo_dia(fecha),
-				'concepto'			: 'Arriendo Variable',
-				'contrato_numero'	: contrato.numero,
-				'contrato_nombre'	: contrato.nombre_local,
-				'valor'				: total,
-			})
+			data.append({'id':'id'})
 
 		fecha = sumar_meses(fecha, 1)
 
@@ -565,6 +554,7 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, va
 	return data
 
 
+
 def data_arriendo_minimo(proceso):
 
 	data 	= {}
@@ -592,7 +582,7 @@ def data_arriendo_minimo(proceso):
 			'locales'			: locales,
 		})
 
-		total += item.total
+		total += item.total if item.total is not None else 0
 
 	data['detalle'] = detalle
 	data['total'] 	= total
@@ -605,7 +595,7 @@ def data_arriendo_variable(proceso):
 	detalle = []
 	total 	= 0
 
-	detalles = Proceso_Detalle.objects.filter(proceso=proceso)
+	detalles = Detalle_Arriendo_Variable.objects.filter(proceso=proceso)
 
 	for item in detalles:
 
@@ -613,17 +603,18 @@ def data_arriendo_variable(proceso):
 		locales = contrato.locales.all()
 
 		detalle.append({
+			'valor' 			: item.valor if item.valor is not None else '---',
+			'ventas' 			: item.ventas if item.ventas is not None else '---',
+			'arriendo_minimo' 	: item.arriendo_minimo if item.arriendo_minimo is not None else '---',
+			'total' 			: item.total if item.total is not None else '---',
 			'fecha_inicio'		: item.fecha_inicio.strftime('%d/%m/%Y'),
 			'fecha_termino'		: item.fecha_termino.strftime('%d/%m/%Y'),
-			'concepto'			: proceso.concepto.nombre,
-			'contrato_numero'	: contrato.numero,
-			'contrato_nombre'	: contrato.nombre_local,
+			'contrato'			: contrato.numero,
 			'cliente'			: contrato.cliente.nombre,
 			'locales'			: locales,
-			'valor'				: item.total,
 		})
 
-		total += item.total
+		total += item.total if item.total is not None else 0
 
 	data['detalle'] = detalle
 	data['total'] 	= total
@@ -696,7 +687,6 @@ def data_gastos_comunes(proceso):
 
 		total += item.total if item.total is not None else 0
 
-	
 	data['detalle'] = detalle
 	data['total'] 	= total
 
@@ -727,7 +717,7 @@ def propuesta_pdf(proceso, pk=None):
 
 	elif proceso.concepto_id == 2:
 		data    	= data_arriendo_variable(proceso)
-		template 	= get_template('pdf/procesos/propuesta_facturacion.html')
+		template 	= get_template('pdf/procesos/propuesta_arriendo_variable.html')
 
 	elif proceso.concepto_id == 3:
 		data 		= data_gastos_comunes(proceso)

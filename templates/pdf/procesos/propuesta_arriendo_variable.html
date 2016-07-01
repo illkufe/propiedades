@@ -64,12 +64,12 @@
                 <tr>
                     <th>Fecha Inicio</th>
                     <th>Fecha Termino</th>
-                    <th>Concepto</th>
                     <th>Nº Contrato</th>
                     <th>Cliente</th>
-                    <th>Nombre</th>
-                    <th>Local(es)</th>
+                    <th>Locales</th>
                     <th>Valor</th>
+                    <th>Ventas</th>
+                    <th>Total</th>
                 </tr>
             </thead>
 
@@ -78,18 +78,16 @@
                 <tr>
                     <td>{{item.fecha_inicio}}</td>
                     <td>{{item.fecha_termino}}</td>
-                    <td>{{item.concepto}}</td>
-                    <td>{{item.contrato_numero}}</td>
+                    <td>{{item.contrato}}</td>
                     <td>{{item.cliente}}</td>
-                    <td>{{item.contrato_nombre}}</td>
                     <td>
                         {% for local in item.locales %}
                         <li>{{local.nombre}}</li>
                         {% endfor %}
-                        
                     </td>
                     <td>{{item.valor}}</td>
-                    
+                    <td>{{item.ventas}}</td>
+                    <td>{{item.total}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
