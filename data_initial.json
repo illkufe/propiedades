@@ -425,5 +425,41 @@
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
+},
+{
+	"model": "contrato.contrato_tipo",
+	"pk": 1,
+	"fields": {
+		"nombre": "Contrato Local Menor",
+		"codigo": "LOCAL-MENOR",
+		"descripcion": "Descripción local menor",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1
+	}
+},
+{
+	"model": "contrato.contrato_tipo",
+	"pk": 2,
+	"fields": {
+		"nombre": "Contrato Bodega",
+		"codigo": "BODEGA",
+		"descripcion": "Descripción bodega",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1
+	}
+},
+{
+	"model": "contrato.contrato_tipo",
+	"pk": 3,
+	"fields": {
+		"nombre": "Contrato Módulo",
+		"codigo": "MODULO",
+		"descripcion": "Descripción módulo",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1
+	}
 }
 ]
