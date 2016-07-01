@@ -93,7 +93,8 @@ function clear_errors_form(form){
 
 function clear_form(form){
 	// inputs y selects normales
-	$(form +' '+ '.form-group input').val('')
+	$(form +' '+ '.form-group input[type="number"]').val('')
+	$(form +' '+ '.form-group input[type="text"]').val('')
 	$(form +' '+ '.form-group textarea').val('')
 	$(form +' '+ 'select option:first-child').prop('selected', true);
 	// inputs y selects formularios hijos
@@ -217,6 +218,8 @@ function open_modal_delete_child(obj, text){
 
 
 function guardar_formulario_final(accion, entidad){
+	console.log(entidad)
+	console.log(accion)
 
 	$.ajax({
 		type: 'post',
