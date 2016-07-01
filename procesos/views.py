@@ -231,35 +231,48 @@ def calculo_arriendo_minimo(request, fecha_inicio, fecha_termino, contratos):
 
 			try:
 				arriendo 	= Arriendo.objects.get(contrato=contrato)
-				detalle 	= Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month)
+				print (arriendo.id)
+
+				existe = Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month).exists()
+
+				if existe is True:
+					detalle = Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month)
+
+					metro_cuadrado	= detalle[0].metro_cuadrado
 					
-				metro_cuadrado	= detalle[0].metro_cuadrado
-				
-				if metro_cuadrado is True:
-					factor 			= detalle[0].moneda.moneda_historial_set.all().order_by('-id').first().valor
-					metros 			= metros_total['metros_cuadrados__sum']
-					metros_local 	= metros_total['metros_cuadrados__sum']
-				else:
-					factor 			= 1
-					metros 			= 1
-					metros_local 	=  None
-
-				valor = detalle[0].valor * factor * metros
-
-				if arriendo.reajuste is True and fecha >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
-					reajuste = True
-
-					if arriendo.moneda.id == 6:
-						reajuste_valor = (arriendo.valor/100)+1
+					if metro_cuadrado is True:
+						factor 			= detalle[0].moneda.moneda_historial_set.all().order_by('-id').first().valor
+						metros 			= metros_total['metros_cuadrados__sum']
+						metros_local 	= metros_total['metros_cuadrados__sum']
 					else:
-						reajuste_valor = arriendo.valor * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+						factor 			= 1
+						metros 			= 1
+						metros_local 	=  None
 
-					total = valor * reajuste_valor
+					valor = detalle[0].valor * factor * metros
+
+					if arriendo.reajuste is True and fecha >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
+						reajuste = True
+
+						if arriendo.moneda.id == 6:
+							reajuste_valor = (arriendo.valor/100)+1
+						else:
+							reajuste_valor = arriendo.valor * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+						total = valor * reajuste_valor
+
+					else:
+						reajuste 		= False
+						reajuste_valor 	= None
+						total 			= valor
 
 				else:
-					reajuste 		= False
-					reajuste_valor 	= None
-					total 			= valor
+					valor			= None
+					metro_cuadrado	= False
+					metros_local    = None
+					reajuste		= False
+					reajuste_valor	= None
+					total 			= None
 
 			except Arriendo.DoesNotExist:
 				valor			= None
