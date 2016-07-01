@@ -19,17 +19,17 @@
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="row">
+
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_plazo.help_text }}" ></i>
-										<label for="">Local</label>
-										<select name="activo" class="form-control valid" aria-invalid="false">
-											<option value="">-------------</option>
-											<option value="1">Local 1</option>
-											<option value="2">Local 2</option>
-											<option value="3">Local 3</option>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
+										<label>Activo:</label>
+										<select name="local" class="form-control">
+											<option value="">---------</option>
+											{% for local in locales %}
+											<option value="{{ local.id }}">{{ local.nombre }}</option>
+											{% endfor %}
 										</select>
-										<div class="container-error">
-										</div>
+										<div class="container-error"></div>
 									</div>
 
 									<div class="form-group col-sm-3">

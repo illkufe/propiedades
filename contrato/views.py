@@ -266,13 +266,19 @@ class ContratoConceptoMixin(object):
 			return response
 
 	def form_valid(self, form):
-		
+
 		context 				= self.get_context_data()
 
 		formset_arriendo 		= context['formset_arriendo']
 		formset_detalle 		= context['formset_detalle']
 		form_arriendo_variable 	= context['form_arriendo_variable']
 		formset_gasto_comun		= context['form_gasto_comun']
+		print ('--------------------------')
+		print (formset_gasto_comun)
+		# if formset_gasto_comun is None:
+		# 	print ('es false')
+		# else:
+		# 	print ('es true')
 		
 		if formset_gasto_comun.is_valid():
 			formset_gasto_comun.save()

@@ -669,11 +669,11 @@ def data_gastos_comunes(proceso):
 			'fecha_termino'		: item.fecha_termino.strftime('%d/%m/%Y'),
 			'contrato'			: item.contrato.numero,
 			'local'				: item.local.nombre,
-			'proratea' 			: 'si' if item.prorrateo == True else 'no',
-			'valor' 			: item.valor if item.valor is not None else 'N/A',
+			'proratea' 			: 'si' if item.prorrateo == True else '---',
+			'valor' 			: item.valor if item.valor is not None else '---',
 			'metros_local' 		: item.local.metros_cuadrados,
-			'factor' 			: item.gasto_mensual if item.gasto_mensual is not None else 'N/A',
-			'total' 			: item.total if item.total is not None else 'N/A',
+			'factor' 			: item.gasto_mensual if item.gasto_mensual is not None else '---',
+			'total' 			: item.total if item.total is not None else '---',
 		})
 
 		total += item.total if item.total is not None else 0

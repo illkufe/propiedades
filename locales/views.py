@@ -238,6 +238,12 @@ class VentaList(ListView):
 		context['name'] = 'Lista'
 		context['href'] = 'locales'
 		
+		user 				= User.objects.get(pk=self.request.user.pk)
+		profile 			= UserProfile.objects.get(user=user)
+		activos 			= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
+		locales 			= Local.objects.filter(activo_id__in=activos, visible=True)
+		context['locales'] 	= locales
+		
 		return context
 
 
@@ -265,8 +271,9 @@ class VENTAS(View):
 			return self.json_to_response()
 
 	def post(self, request):
-		# var_post 	= request.POST.copy()
-		# local     = var_post['local']
+		var_post 	= request.POST.copy()
+		local     	= var_post['local']
+
 		tempfile = request.FILES.get('file')
 
 		book = open_workbook(filename=None, file_contents=tempfile.read())
@@ -290,7 +297,7 @@ class VENTAS(View):
 					fecha_inicio		= fecha_inicio,
 					fecha_termino		= fecha_termino,
 					valor				= valor,
-					local_id 			= 1,
+					local_id 			= local,
 					periodicidad		= 3,
 					)
 				venta.save()
