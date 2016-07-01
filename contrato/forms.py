@@ -113,12 +113,15 @@ class InformacionForm(forms.ModelForm):
 
 class ArriendoForm(forms.ModelForm):
 
+	fecha_inicio = forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
+
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
 		super(ArriendoForm, self).__init__(*args, **kwargs)
 
 		if contrato is not None:
 			self.fields['fecha_inicio'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
+			
 
 	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,6]), initial='6',widget=forms.Select(attrs={'class': 'form-control'}))
 

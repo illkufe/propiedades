@@ -283,7 +283,7 @@ def calculo_arriendo_minimo(request, fecha_inicio, fecha_termino, contratos):
 				contrato 		= contrato,
 			).save()
 			
-			data.append({'id':'id'})
+			data.append({'id':proceso.id})
 
 		fecha = sumar_meses(fecha, 1)
 
@@ -364,7 +364,7 @@ def calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos):
 				contrato 		= contrato,
 			).save()
 			
-			data.append({'id':'id'})
+			data.append({'id':proceso.id})
 
 		fecha = sumar_meses(fecha, 1)
 
@@ -439,9 +439,7 @@ def calculo_gasto_comun(request, fecha_inicio, fecha_termino, contratos):
 					local 			= local,
 				).save()
 			
-			data.append({
-				'id':'id'
-			})
+			data.append({'id':proceso.id})
 
 		fecha = sumar_meses(fecha, 1)
 
@@ -540,14 +538,7 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, va
 					medidor			= medidor,
 				).save()
 
-			data.append({
-				'id'				: proceso.id,
-				'fecha_inicio'		: primer_dia(fecha),
-				'fecha_termino'		: ultimo_dia(fecha),
-				'concepto'			: 'Servicio Basico',
-				'contrato_numero'	: contrato.numero,
-				'contrato_nombre'	: contrato.nombre_local,
-			})
+			data.append({'id':proceso.id})
 
 		fecha = sumar_meses(fecha, 1)
 
