@@ -206,13 +206,6 @@ td.delete input[type=checkbox] {
 	display: none !important;
 }
 
-
-#tabla-contratos_filter,
-#tabla-contratos_length{
-	display: none;
-}
-
-
 .buttons-form button.margin{
 	margin-right: 15px;
 }

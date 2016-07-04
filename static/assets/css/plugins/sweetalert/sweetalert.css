@@ -40,7 +40,8 @@ body.stop-scrolling {
       right: 15px; } }
   .sweet-alert h2 {
     color: #575757;
-    font-size: 30px;
+    /* modificado font-size: 30px;*/
+    font-size: 26px;
     text-align: center;
     font-weight: 600;
     text-transform: none;
@@ -163,12 +164,15 @@ body.stop-scrolling {
     color: white;
     border: none;
     box-shadow: none;
-    font-size: 17px;
+    /* modificado font-size: 16px;*/
+    font-size: 16px;
     font-weight: 500;
     -webkit-border-radius: 4px;
     border-radius: 5px;
-    padding: 10px 32px;
-    margin: 26px 5px 0 5px;
+    /* modificado padding: 10px 32px;*/
+    padding: 6px 26px;
+    /* modificado margin: 26px 5px 0 5px;*/
+    margin: 15px 5px 0px 5px;
     cursor: pointer; }
     .sweet-alert button:focus {
       outline: none;
@@ -252,7 +256,8 @@ body.stop-scrolling {
         background-color: #F68793;
       }
     .sweet-alert .sa-icon.sa-info {
-      border-color: #C9DAE1; }
+      /*border-color: #C9DAE1;*/
+      border-color: #FCC491; }
       .sweet-alert .sa-icon.sa-info::before {
         content: "";
         position: absolute;
@@ -262,7 +267,8 @@ body.stop-scrolling {
         bottom: 17px;
         border-radius: 2px;
         margin-left: -2px;
-        background-color: #C9DAE1; }
+        /*background-color: #C9DAE1;*/
+        background-color: #FCC491; }
       .sweet-alert .sa-icon.sa-info::after {
         content: "";
         position: absolute;
@@ -271,7 +277,8 @@ body.stop-scrolling {
         border-radius: 50%;
         margin-left: -3px;
         top: 19px;
-        background-color: #C9DAE1; }
+        /*background-color: #C9DAE1;*/
+        background-color: #FCC491; }
     .sweet-alert .sa-icon.sa-success {
       border-color: #A5DC86; }
       .sweet-alert .sa-icon.sa-success::before, .sweet-alert .sa-icon.sa-success::after {

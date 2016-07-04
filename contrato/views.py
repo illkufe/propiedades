@@ -194,8 +194,9 @@ class ContratoList(ListView):
 		queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 
 		for item in queryset:
-			item.fecha_inicio  = item.fecha_inicio.strftime('%d/%m/%Y')
-			item.fecha_termino = item.fecha_termino.strftime('%d/%m/%Y')
+			item.fecha_inicio  	= item.fecha_inicio.strftime('%d/%m/%Y')
+			item.fecha_termino 	= item.fecha_termino.strftime('%d/%m/%Y')
+			item.cantidad 		= len(item.conceptos.all()) # cantidad de conceptos
 
 		return queryset
 

@@ -7,7 +7,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
-				<form id="form-arriendo-new" role="form" action="" method="post">
+				<form id="form-conceptos-new" role="form" action="" method="post">
 
 					{% csrf_token %}
 
@@ -37,6 +37,25 @@ var tabla_arriendo_minimo = []
 var tabla_arriendo_variable = []
 
 $(document).ready(function(){
+
+	initialize()
+
+});
+
+
+
+function initialize(){
+
+	// abrir el primer concepto
+	$('#accordion .panel-heading a').attr('aria-expanded', true)
+	$('#accordion .panel-collapse').first().addClass('in')
+
+
+
+
+
+
+
 
 	$('.tipo-asd').on('change', function(){
 
@@ -78,105 +97,28 @@ $(document).ready(function(){
 		
 	})
 
-
-	// if ($('.prorrateo').is(':checked')) {
-	// 	console.log($(this).closest('tr').html())
-	// 	// .find('.valor_no_prorrateo').attr('readonly', true)
-	// }
+}
 
 
+function guardar_formulario_conceptos(form, id){
 
-
-
-	var configuracion = {
-		'order': false,
-		'paginate': false,
-		'bLengthChange': false,
-		'bInfo': false,
-		'searching':false,
-		'buttons': [],
-	}
-
-
-	var columns = [
-	{
-		'width': '15%',
-		'orderable': false,
-		'data': 'mes_inicio',
-	},
-	{
-		'width': '15%',
-		'orderable': false,
-		'data': 'mes_termino',
-	},
-	{
-		'width': '15%',
-		'orderable': false,
-		'data': 'valor',
-	},
-	{
-		'width': '20%',
-		'orderable': false,
-		'data': 'moneda',
-	},
-	{
-		'width': '15%',
-		'orderable': false,
-		'data': 'metros',
-	},
-	{
-		'width': '10%',
-		'orderable': false,
-		'data': 'eliminar',
-	}];
-
-	// tabla_arriendo_minimo 	= load_table('#tabla-arriendo', columns, configuracion)
-	// tabla_arriendo_variable = load_table('#tabla-arriendo-variable', columns, configuracion)
-
-	$('td.delete input[type=checkbox]').hide()
-
-
-
-	// $('#collapse-2').collapse()
-
-	// $('.input-group.date').datepicker({
-	// 	todayBtn: 'linked',
-	// 	keyboardNavigation: false,
-	// 	forceParse: false,
-	// 	calendarWeeks: true,
-	// 	autoclose: true
-	// });
-
-
-
-});
-
-
-
-function enviar_form(accion){
 	$.ajax({
 		type: 'post',
-		url: $('#form-arriendo-new').attr('action'),
-		data: $('#form-arriendo-new').serialize(),
+		url: $('#'+form).attr('action'),
+		data: $('#'+form).serialize(),
 		success: function(response) {
-
-			if (accion == 'create') {
-				// clear_form('#form-arriendo-new')
-			}
-			// clear_errors_form('#form-arriendo-new')
-
-			notification_toast('success', 'ÉXITO', 'Guardado correctamente.')
+			window.location.href = '/contratos/'+id+'/conceptos'
 		},
 		error: function(data, textStatus, jqXHR) {
-
-			// clear_errors_form('#form-arriendo-new')
-
+			clear_errors_form('#'+form)
 			var errors = $.parseJSON(data.responseText)
 			apply_errors_form(errors)
 		}
 	});
-	return false;	
+	return false;
 }
+
+
 
 
 function agregar_periodo_arriendo(){
@@ -204,10 +146,6 @@ function agregar_periodo_arriendo(){
 function eliminar_periodo_arriendo(obj){
 	$(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
 	$(obj).closest('tr').addClass('hide')
-}
-
-function template_row_periodo_arriendo(count){
-	console.log(count)
 }
 
 </script>

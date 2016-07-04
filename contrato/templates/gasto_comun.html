@@ -2,7 +2,7 @@
 
 	<div class="panel-heading" role="tab" id="heading-3">
 		<h4 class="panel-title">
-			<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-3" aria-controls="collapse-3" aria-expanded="false">
 				Gasto Común
 			</a>
 		</h4>
@@ -30,14 +30,6 @@
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.local.help_text }}" ></i>
 								{{ form.local.label_tag }}
 							</th>
-							<!-- <th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
-								{{ form.mes_inicio.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
-								{{ form.mes_termino.label_tag }}
-							</th> -->
 							<th>
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
 								{{ form.valor.label_tag }}
@@ -46,10 +38,6 @@
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.prorrateo.help_text }}" ></i>
 								{{ form.prorrateo.label_tag }}
 							</th>
-<!-- 							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_prorrateo.help_text }}" ></i>
-								{{ form.valor_prorrateo.label_tag }}
-							</th> -->
 							<th>
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
 								{{ form.moneda.label_tag }}
@@ -69,33 +57,16 @@
 										</div>
 									</div>
 								</td>
-<!-- 								<td>
-									<div class="form-group">
-										{{ form.mes_inicio }}
-										<div class="container-error">
-											{{ form.mes_inicio.errors }}
-										</div>
-									</div>
-								</td>
+
 								<td>
-
 									<div class="form-group">
-										{{ form.mes_termino }}
-										<div class="container-error">
-											{{ form.mes_termino.errors }}
-										</div>
-									</div>
-								</td> -->
-								<td>
-
-									<div class="form-group">
-
 										{{ form.valor }}
 										<div class="container-error">
 											{{ form.valor.errors }}
 										</div>
 									</div>
 								</td>
+
 								<td>
 									<div class="form-group">
 										{{ form.prorrateo }}
@@ -104,15 +75,6 @@
 										</div>
 									</div>
 								</td>
-
-<!-- 								<td>
-									<div class="form-group">
-										{{ form.valor_prorrateo }}
-										<div class="container-error">
-											{{ form.valor_prorrateo.errors }}
-										</div>
-									</div>
-								</td> -->
 
 								<td class="text-center">
 									<div class="form-group">
@@ -141,7 +103,7 @@
 				<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
 			</a>
 			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-			<!-- <button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">GUARDAR Y SEGUIR</button> -->
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-new', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
 		</div>
 	</div>
 </div>

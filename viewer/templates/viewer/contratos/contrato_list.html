@@ -16,7 +16,7 @@
 				<div class="ibox-content">
 					<br>
 					<div class="table-responsive">
-						<table id="tabla-contratos" class="table table-striped table-bordered table-hover dataTables-example" >
+						<table id="tabla-contratos" class="table table-striped table-bordered table-hover">
 							<thead></thead>
 							<tbody>
 								{% for item in object_list %}
@@ -27,10 +27,13 @@
 									<td>{{ item.contrato_tipo }}</td>
 									<td>{{ item.fecha_inicio }}</td>
 									<td>{{ item.fecha_termino }}</td>
-									<td><!-- {falta: poner locales asociados al contrato} --></td>
 									<td>{{ item.contrato_estado }}</td>
 									<td class="text-center">
-										<a class="btn btn-config btn-bitbucket" href="/contratos/{{ item.id }}/conceptos"><i class="fa fa-cog"></i></a>
+										{% if item.cantidad == 0 %}
+											<a class="btn btn-config btn-bitbucket" onclick="alerta_contrato_sin_conceptos({{ item.id }})"><i class="fa fa-cog"></i></a>
+										{% else %}
+											<a class="btn btn-config btn-bitbucket" href="/contratos/{{ item.id }}/conceptos"><i class="fa fa-cog"></i></a>
+										{% endif %}										
 										<a class="btn btn-edit btn-bitbucket" href='{% url "contrato_update" item.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'contratos', 'tabla-contratos', 'Contrato')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-view btn-bitbucket" href='{% url "contrato_pdf" item.id %}'><i class="fa fa-eye"></i></a>
@@ -45,6 +48,7 @@
 		</div>
 	</div>
 </div>
+
 {% endblock section %}
 
 {% block scripts %}
@@ -67,49 +71,62 @@ function load_tabla_contratos(){
 		'visible': false,
 	},
 	{
-		'width': '10%',
+		'width': '15%',
 		'data': 'numero',
-		'title': 'NÚMERO',
+		'title': 'Número',
 	},
 	{
-		'width': '10%',
+		'width': '20%',
 		'data': 'nombre',
 		'title': 'Nombre',
 	},
 	{
-		'width': '10%',
+		'width': '15%',
 		'data': 'tipo',
 		'title': 'Tipo',
 	},
 	{
 		'width': '10%',
 		'data': 'fecha_inicio',
-		'title': 'F. INICIO',
+		'title': 'F.inicio',
 	},
 	{
 		'width': '10%',
 		'data': 'fecha_termino',
-		'title': 'F. TERMINO',
-	},
-	{
-		'width': '10%',
-		'data': 'locales',
-		'title': 'LOCAL(s)',
-		'visible': false,
+		'title': 'F.termino',
 	},
 	{
 		'width': '10%',
 		'data': 'estado',
-		'title': 'ESTADO',
+		'title': 'Estado',
 	},
 	{
-		'width': '15%',
+		'width': '20%',
 		'data': 'options',
+		'title': '<div class="text-center">Opciones</div>',
 		'orderable': false,
 	}];
 
 	tabla_contratos = load_table('#tabla-contratos', columns, {})
 }
+
+
+function alerta_contrato_sin_conceptos(id){
+
+	swal({
+		title: 'Contrato sin conceptos',
+		type: 'info',
+		showCancelButton: true,
+		confirmButtonColor: '#FCC491',
+		confirmButtonText: 'Editar Contrato',
+		cancelButtonText: 'Salir',
+		closeOnConfirm: true 
+	}, function(){
+		window.location.href = '/contratos/update/'+id
+	})
+
+}
+
 
 </script>
 

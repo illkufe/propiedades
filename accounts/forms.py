@@ -60,8 +60,8 @@ class UpdateUserProfileForm(forms.Form):
 	cargo 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Cargo')
 	ciudad 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Ciudad')
 	comuna 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Comuna')
-	direccion 		= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Dirección')
-	descripcion 	= forms.CharField(max_length=100, required=False, widget=forms.Textarea(attrs={'class': 'form-control',  'rows':'2'}), label='Descripción')
+	direccion 		= forms.CharField(max_length=200, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Dirección')
+	descripcion 	= forms.CharField(max_length=200, required=False, widget=forms.Textarea(attrs={'class': 'form-control',  'rows':'2'}), label='Descripción')
 
 	def __init__(self, *args, **kwargs):
 		self.user = kwargs.pop('user', None)

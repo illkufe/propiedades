@@ -4,9 +4,8 @@ $('.format-rut').rut({
 	formatOn: 'keyup',
 	validateOn: 'blur'
 }).on('rutInvalido', function(){
-	error_msg = $("<li /> ").addClass("errorlist").text('Rut invalido');
 	$(this).closest('.form-group').find('.container-error').text('')
-	$(this).closest('.form-group').find('.container-error').append(error_msg)
+	$(this).closest('.form-group').find('.container-error').append('Rut invalido')
 	$(this).val('')
 }).on('rutValido', function(){
 	$(this).closest('.form-group').find('.container-error').text('')
