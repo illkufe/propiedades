@@ -273,26 +273,34 @@ class ContratoConceptoMixin(object):
 		formset_detalle 		= context['formset_detalle']
 		form_arriendo_variable 	= context['form_arriendo_variable']
 		formset_gasto_comun		= context['form_gasto_comun']
+
 		print ('--------------------------')
-		print (formset_gasto_comun)
 		# if formset_gasto_comun is None:
 		# 	print ('es false')
 		# else:
 		# 	print ('es true')
-		
-		if formset_gasto_comun.is_valid():
-			formset_gasto_comun.save()
 
-		if form_arriendo_variable.is_valid():
-			form_arriendo_variable.save()
+		conceptos = Contrato.objects.get(id=self.kwargs['contrato_id']).conceptos.all()
 
-		if formset_arriendo.is_valid():
-			formset_arriendo.save()
+		print (conceptos)
 
-			if formset_detalle.is_valid():
-				self.object = formset_arriendo.save(commit=False)
-				formset_detalle.instance = self.object
-				formset_detalle.save()
+		for concepto in conceptos:
+			if concepto.id == 1:
+				if formset_arriendo.is_valid():
+					formset_arriendo.save()
+
+					if formset_detalle.is_valid():
+						self.object = formset_arriendo.save(commit=False)
+						formset_detalle.instance = self.object
+						formset_detalle.save()
+			elif concepto.id == 2:
+				if form_arriendo_variable.is_valid():
+					form_arriendo_variable.save()
+			elif concepto.id == 3:
+				if formset_gasto_comun.is_valid():
+					formset_gasto_comun.save()
+			else:
+				pass
 
 		response = super(ContratoConceptoMixin, self).form_valid(form)
 		if self.request.is_ajax():
