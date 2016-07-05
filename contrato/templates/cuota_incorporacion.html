@@ -1,64 +1,63 @@
 <div class="panel panel-default">
 
-	<div class="panel-heading" role="tab" id="heading-3">
+	<div class="panel-heading" role="tab" id="heading-5">
 		<h4 class="panel-title">
-			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-3" aria-controls="collapse-3" aria-expanded="false">
-				Gasto Común
+			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-5" aria-controls="collapse-5" aria-expanded="false">
+				Cuota de Incorporación
 			</a>
 		</h4>
 	</div>
 
-	<div id="collapse-3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-3">
+	<div id="collapse-5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-3">
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-sm-12">
 
-					{{ form_gasto_comun.management_form }}
-					{% for form in form_gasto_comun %}
+					{{ form_cuota_incorporacion.management_form }}
+					{% for form in form_cuota_incorporacion %}
 					{% for hidden in form.hidden_fields %}
 					{{ hidden }}
 					{% endfor %}
 					{% endfor %}
 
-					<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-gastos-comunes', 'gasto_comun')"><i class="fa fa-plus"></i> Nuevo Periodo</button>
-					<table id="tabla-gastos-comunes" class="table">
+					<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-cuota-incorporacion', 'cuota_incorporacion')"><i class="fa fa-plus"></i> Nueva Cuota</button>
+					<table id="tabla-cuota-incorporacion" class="table">
 						<thead>
 
-							{% for form in form_gasto_comun %}
+							{% for form in form_cuota_incorporacion %}
 							{% if forloop.first %}
 							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.local.help_text }}" ></i>
-								{{ form.local.label_tag }}
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha.help_text }}" ></i>
+								{{ form.fecha.label_tag }}
 							</th>
 							<th>
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
 								{{ form.valor.label_tag }}
 							</th>
 							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.prorrateo.help_text }}" ></i>
-								{{ form.prorrateo.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
 								{{ form.moneda.label_tag }}
 							</th>
+
 							<th></th>
 							{% endif %}
 							{% endfor %}
 						</thead>
 						<tbody>
-							{% for form in form_gasto_comun %}
+							{% for form in form_cuota_incorporacion %}
 							<tr>
-								<td>
+								<td  style="width:30%">
 									<div class="form-group">
-										{{ form.local }}
-										<div class="container-error">
-											{{ form.local.errors }}
+										<div class="input-group date">
+											<input class="form-control format-date" id="id_cuota_incorporacion_set-{{forloop.counter0}}-fecha" name="cuota_incorporacion_set-{{forloop.counter0}}-fecha" type="text" value='{{ form.fecha.value|date:"d/m/Y" }}'>
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
 										</div>
 									</div>
 								</td>
 
-								<td>
+								<td style="width:30%">
 									<div class="form-group">
 										{{ form.valor }}
 										<div class="container-error">
@@ -67,16 +66,7 @@
 									</div>
 								</td>
 
-								<td>
-									<div class="form-group">
-										{{ form.prorrateo }}
-										<div class="container-error">
-											{{ form.prorrateo.errors }}
-										</div>
-									</div>
-								</td>
-
-								<td class="text-center">
+								<td style="width:30%">
 									<div class="form-group">
 										{{ form.moneda }}
 										<div class="container-error">
@@ -84,11 +74,11 @@
 										</div>
 									</div>
 								</td>
-								<td class="text-center delete">
 
+								<td class="text-center delete">
 									<div class="form-group text-center">
 										{{ form.DELETE }}
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Periodo')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Cuota')"><i class="fa fa-trash"></i></a>
 									</div>
 								</td>
 							</tr>

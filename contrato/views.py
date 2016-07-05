@@ -7,8 +7,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.db.models import Sum
 from django.views.generic import View, ListView, FormView, CreateView, DeleteView, UpdateView
 
-from .forms import ContratoTipoForm, ContratoForm, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, GastoComunFormSet
-from .models import Contrato_Tipo, Contrato, Arriendo, Arriendo_Variable, Gasto_Comun
+from .forms import ContratoTipoForm, ContratoForm, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, GastoComunFormSet, CuotaIncorporacionFormet, FondoPromocionForm
+from .models import Contrato_Tipo, Contrato, Arriendo, Arriendo_Variable, Gasto_Comun, Cuota_Incorporacion, Fondo_Promocion
 
 from accounts.models import UserProfile
 from administrador.models import Empresa, Cliente
@@ -253,7 +253,7 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 
 class ContratoConceptoMixin(object):
 
-	template_name 	= 'viewer/contratos/contrato_informacion.html'
+	template_name 	= 'viewer/contratos/contrato_conceptos_new.html'
 	form_class 		= InformacionForm
 	success_url 	= '/contratos/list'
 
@@ -268,38 +268,41 @@ class ContratoConceptoMixin(object):
 
 	def form_valid(self, form):
 
-		context 				= self.get_context_data()
+		context 					= self.get_context_data()
 
-		formset_arriendo 		= context['formset_arriendo']
-		formset_detalle 		= context['formset_detalle']
-		form_arriendo_variable 	= context['form_arriendo_variable']
-		formset_gasto_comun		= context['form_gasto_comun']
-
-		print ('--------------------------')
-		# if formset_gasto_comun is None:
-		# 	print ('es false')
-		# else:
-		# 	print ('es true')
-
-		conceptos = Contrato.objects.get(id=self.kwargs['contrato_id']).conceptos.all()
-
-		print (conceptos)
+		formset_arriendo 			= context['formset_arriendo']
+		formset_detalle 			= context['formset_detalle']
+		form_arriendo_variable 		= context['form_arriendo_variable']
+		formset_gasto_comun			= context['form_gasto_comun']
+		formset_cuota_incorporacion	= context['form_cuota_incorporacion']
+		formset_fondo_promocion		= context['form_fondo_promocion']
+		conceptos 					= Contrato.objects.get(id=self.kwargs['contrato_id']).conceptos.all()
 
 		for concepto in conceptos:
 			if concepto.id == 1:
 				if formset_arriendo.is_valid():
 					formset_arriendo.save()
-
 					if formset_detalle.is_valid():
 						self.object = formset_arriendo.save(commit=False)
 						formset_detalle.instance = self.object
 						formset_detalle.save()
+
 			elif concepto.id == 2:
 				if form_arriendo_variable.is_valid():
 					form_arriendo_variable.save()
+
 			elif concepto.id == 3:
 				if formset_gasto_comun.is_valid():
 					formset_gasto_comun.save()
+
+			elif concepto.id == 5:
+				if formset_cuota_incorporacion.is_valid():
+					formset_cuota_incorporacion.save()
+
+			elif concepto.id == 6:
+				if formset_fondo_promocion.is_valid():
+					formset_fondo_promocion.save()
+
 			else:
 				pass
 
@@ -354,6 +357,20 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 			except Exception:
 				context['form_gasto_comun'] = GastoComunFormSet(self.request.POST)
 
+			# cuota incorporacion
+			try:
+				cuota_incorporacion 				= Cuota_Incorporacion.objects.filter(contrato_id=self.kwargs['contrato_id'])
+				context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(self.request.POST, instance=contrato)
+			except Exception:
+				context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(self.request.POST)
+
+			# fondo promocion
+			try:
+				fondo_promocion 				= Fondo_Promocion.objects.get(contrato_id=self.kwargs['contrato_id'])
+				context['form_fondo_promocion'] = FondoPromocionForm(self.request.POST, instance=fondo_promocion)
+			except Exception:
+				context['form_fondo_promocion'] = FondoPromocionForm(self.request.POST)
+
 		else:
 
 			contrato_id = self.kwargs['contrato_id']
@@ -382,6 +399,23 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 				context['form_gasto_comun'] = GastoComunFormSet(instance=contrato, form_kwargs={'contrato': contrato})
 			except Exception:
 				context['form_gasto_comun'] = GastoComunFormSet(form_kwargs={'contrato': contrato})
+
+			# cuota incorporación
+			try:
+				cuota_incorporacion 				= Cuota_Incorporacion.objects.filter(contrato_id=contrato_id)
+				context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(instance=contrato, form_kwargs={'contrato': contrato})
+
+			except Exception as asd:
+				print (asd)
+				context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(form_kwargs={'contrato': contrato})
+
+			# fondo promoción
+			try:
+				fondo_promocion 				= Fondo_Promocion.objects.get(contrato=contrato)
+				fondo_promocion.fecha 			= fondo_promocion.fecha.strftime('%d/%m/%Y')
+				context['form_fondo_promocion'] = FondoPromocionForm(instance=fondo_promocion, contrato=contrato)
+			except Exception:
+				context['form_fondo_promocion'] = FondoPromocionForm(contrato=contrato)
 
 		return context
 

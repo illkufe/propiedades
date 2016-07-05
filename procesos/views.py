@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+
 from django.shortcuts import render
 from django.views.generic import View
 from django.template import Context, loader
@@ -13,11 +14,11 @@ from accounts.models import UserProfile
 from locales.models import Local, Venta, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 from activos.models import Activo, Gasto_Mensual
 from conceptos.models import Concepto
-from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
-from procesos.models import Proceso, Detalle_Arriendo_Minimo, Detalle_Arriendo_Variable, Proceso_Detalle, Detalle_Gasto_Comun, Detalle_Electricidad, Detalle_Agua, Detalle_Gas
+from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from procesos.models import Proceso, Detalle_Arriendo_Minimo, Detalle_Arriendo_Variable, Proceso_Detalle, Detalle_Gasto_Comun, Detalle_Electricidad, Detalle_Agua, Detalle_Gas, Detalle_Cuota_Incorporacion, Detalle_Fondo_Promocion
 from operaciones.models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas
 
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from datetime import datetime, timedelta
 import os
 import json
@@ -95,6 +96,10 @@ class PROCESOS(View):
 			val_agua 	= var_post.get('valor_agua')
 			val_gas 	= var_post.get('valor_gas')
 			data = calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, val_luz, val_agua, val_gas)
+		elif int(concepto) == 5:
+			data = calculo_cuota_incorporacion(request, fecha_inicio, fecha_termino, contratos)
+		elif int(concepto) == 6:
+			data = calculo_fondo_promocion(request, fecha_inicio, fecha_termino, contratos)
 		else:
 			data = []
 
@@ -131,7 +136,13 @@ class PROCESOS(View):
 
 				for item in detalles_gas:
 					detalles.append(item)
-				
+
+			elif proceso.concepto.id == 5:
+				pass
+				# print ('gasto comun')
+			elif proceso.concepto.id == 6:
+				pass
+				# print ('gasto comun')
 			else:
 				print ('no existe')
 
@@ -185,7 +196,7 @@ def filtrar_contratos(request):
 	fecha_termino 	= ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+ano_termino+'', "%d/%m/%Y"))
 	activo 			= Activo.objects.get(id=activo_id)
 	locales 		= activo.local_set.all().values_list('id', flat=True)
-	contratos 		= Contrato.objects.filter(locales__in=locales, fecha_habilitacion__lt=fecha_inicio, fecha_termino__gt=fecha_termino, visible=True).distinct()
+	contratos 		= Contrato.objects.filter(locales__in=locales, fecha_habilitacion__lte=fecha_inicio, fecha_termino__gte=fecha_termino, visible=True).distinct()
 
 	for contrato in contratos:
 		data.append({
@@ -231,9 +242,7 @@ def calculo_arriendo_minimo(request, fecha_inicio, fecha_termino, contratos):
 
 			try:
 				arriendo 	= Arriendo.objects.get(contrato=contrato)
-				print (arriendo.id)
-
-				existe = Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month).exists()
+				existe 		= Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month).exists()
 
 				if existe is True:
 					detalle = Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month)
@@ -245,7 +254,7 @@ def calculo_arriendo_minimo(request, fecha_inicio, fecha_termino, contratos):
 						metros 			= metros_total['metros_cuadrados__sum']
 						metros_local 	= metros_total['metros_cuadrados__sum']
 					else:
-						factor 			= 1
+						factor 			= detalle[0].moneda.moneda_historial_set.all().order_by('-id').first().valor
 						metros 			= 1
 						metros_local 	=  None
 
@@ -557,6 +566,186 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, va
 
 	return data
 
+def calculo_cuota_incorporacion(request, fecha_inicio, fecha_termino, contratos):
+
+	user 		= User.objects.get(pk=request.user.pk)
+	contratos 	= contratos
+	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
+	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%d/%m/%Y"))
+	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
+	meses		= meses_entre_fechas(f_inicio, f_termino)
+	data 		= []
+
+	proceso = Proceso(
+		fecha_inicio		= f_inicio.strftime('%Y-%m-%d'),
+		fecha_termino		= f_termino.strftime('%Y-%m-%d'),
+		user				= user,
+		concepto_id			= 5,
+		proceso_estado_id 	= 1,
+		)
+	proceso.save()
+	
+	for x in range(meses):
+		for item in contratos:
+
+			contrato = Contrato.objects.get(id=item)
+			
+			try:
+				existe = Cuota_Incorporacion.objects.filter(contrato=contrato, fecha__year=fecha.year, fecha__month=fecha.month).exists()
+
+				if existe is True:
+					cuota_incorporacion = Cuota_Incorporacion.objects.filter(contrato=contrato, fecha__year=fecha.year, fecha__month=fecha.month)
+					valor 				= cuota_incorporacion[0].valor
+					factor 				= cuota_incorporacion[0].moneda.moneda_historial_set.all().order_by('-id').first().valor
+					total 				= valor * factor
+				else:
+					valor 	= None
+					factor 	= None
+					total 	= None
+
+
+			except Cuota_Incorporacion.DoesNotExist:
+				valor 			= None
+				factor 			= None
+				total 			= None
+
+			Detalle_Cuota_Incorporacion(
+				valor 			= valor,
+				factor 			= factor,
+				total 			= total,
+				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+				proceso 		= proceso,
+				contrato 		= contrato,
+			).save()
+
+			data.append({'id':proceso.id})
+
+		fecha = sumar_meses(fecha, 1)
+
+	return data
+
+def calculo_fondo_promocion(request, fecha_inicio, fecha_termino, contratos):
+
+	user 		= User.objects.get(pk=request.user.pk)
+	contratos 	= contratos
+	f_inicio 	= primer_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
+	f_termino 	= ultimo_dia(datetime.strptime(fecha_termino, "%d/%m/%Y"))
+	fecha 		= ultimo_dia(datetime.strptime(fecha_inicio, "%d/%m/%Y"))
+	meses		= meses_entre_fechas(f_inicio, f_termino)
+	data 		= []
+
+	proceso = Proceso(
+		fecha_inicio		= f_inicio.strftime('%Y-%m-%d'),
+		fecha_termino		= f_termino.strftime('%Y-%m-%d'),
+		user				= user,
+		concepto_id			= 6,
+		proceso_estado_id 	= 1,
+		)
+	proceso.save()
+
+	for x in range(meses):
+		for item in contratos:
+
+			contrato = Contrato.objects.get(id=item)
+			
+			try:
+				fondo_promocion = Fondo_Promocion.objects.get(contrato=contrato)
+
+				if fondo_promocion.periodicidad == 0:
+
+					try:
+						mes_1 = sumar_meses(fondo_promocion.fecha, 11)
+
+						if fecha.month == mes_1.month:
+							fondo 	= Fondo_Promocion.objects.get(contrato=contrato)
+							valor 	= fondo.valor
+							factor 	= fondo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+							total 	= valor * factor
+						else:
+							valor 	= None
+							factor 	= None
+							total 	= None
+						
+					except Exception:
+						valor 	= None
+						factor 	= None
+						total 	= None
+
+				elif fondo_promocion.periodicidad == 1:
+
+					mes_1 = sumar_meses(fondo_promocion.fecha, 5)
+					mes_2 = sumar_meses(fondo_promocion.fecha, 11)
+
+					try:
+						if fecha.month == mes_1.month or fecha.month==mes_2.month:
+
+							fondo 	= Fondo_Promocion.objects.get(contrato=contrato)
+							valor 	= fondo.valor
+							factor 	= fondo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+							total 	= valor * factor
+						else:
+							valor 	= None
+							factor 	= None
+							total 	= None
+						
+					except Exception:
+						valor 	= None
+						factor 	= None
+						total 	= None
+					
+				elif fondo_promocion.periodicidad == 2:
+
+					mes_1 = sumar_meses(fondo_promocion.fecha, 3)
+					mes_2 = sumar_meses(fondo_promocion.fecha, 7)
+					mes_3 = sumar_meses(fondo_promocion.fecha, 11)
+
+					try:
+						if fecha.month == mes_1.month or fecha.month==mes_2.month or fecha.month==mes_3.month:
+							fondo 	= Fondo_Promocion.objects.get(contrato=contrato)
+							valor 	= fondo.valor
+							factor 	= fondo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+							total 	= valor * factor
+						else:
+							valor 	= None
+							factor 	= None
+							total 	= None
+					except Exception:
+						valor 	= None
+						factor 	= None
+						total 	= None
+
+				elif fondo_promocion.periodicidad == 3:
+					valor 	= fondo_promocion.valor
+					factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
+					total 	= valor * factor
+				else:
+					valor 			= None
+					factor 			= None
+					total 			= None
+
+			except Fondo_Promocion.DoesNotExist:
+				valor 			= None
+				factor 			= None
+				total 			= None
+
+			Detalle_Fondo_Promocion(
+				valor 			= valor,
+				factor 			= factor,
+				total 			= total,
+				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+				proceso 		= proceso,
+				contrato 		= contrato,
+			).save()
+
+			data.append({'id':proceso.id})
+
+		fecha = sumar_meses(fecha, 1)
+
+	return data
+
+
 
 
 def data_arriendo_minimo(proceso):
@@ -696,7 +885,67 @@ def data_gastos_comunes(proceso):
 
 	return data
 
+def data_cuota_incorporacion(proceso):
 
+	data 	= {}
+	detalle = []
+	total 	= 0
+	
+	detalles = Detalle_Cuota_Incorporacion.objects.filter(proceso=proceso)
+
+	for item in detalles:
+
+		contrato 	= item.contrato
+		locales 	= contrato.locales.all()
+
+		detalle.append({
+			'valor'				: item.valor if item.valor is not None else '---',
+			'factor'			: item.factor if item.factor is not None else '---',
+			'total'				: item.total if item.total is not None else '---',
+			'fecha_inicio'		: item.fecha_inicio.strftime('%d/%m/%Y'),
+			'fecha_termino'		: item.fecha_termino.strftime('%d/%m/%Y'),
+			'contrato'			: contrato.numero,
+			'cliente'			: contrato.cliente.nombre,
+			'locales'			: locales,
+		})
+
+		total += item.total if item.total is not None else 0
+
+	data['detalle'] = detalle
+	data['total'] 	= total
+
+	return data
+
+def data_fondo_promocion(proceso):
+
+	data 	= {}
+	detalle = []
+	total 	= 0
+	
+	detalles = Detalle_Fondo_Promocion.objects.filter(proceso=proceso)
+
+	for item in detalles:
+
+		contrato 	= item.contrato
+		locales 	= contrato.locales.all()
+
+		detalle.append({
+			'valor'				: item.valor if item.valor is not None else '---',
+			'factor'			: item.factor if item.factor is not None else '---',
+			'total'				: item.total if item.total is not None else '---',
+			'fecha_inicio'		: item.fecha_inicio.strftime('%d/%m/%Y'),
+			'fecha_termino'		: item.fecha_termino.strftime('%d/%m/%Y'),
+			'contrato'			: contrato.numero,
+			'cliente'			: contrato.cliente.nombre,
+			'locales'			: locales,
+		})
+
+		total += item.total if item.total is not None else 0
+
+	data['detalle'] = detalle
+	data['total'] 	= total
+
+	return data
 
 def propuesta_pdf(proceso, pk=None):
 
@@ -729,7 +978,15 @@ def propuesta_pdf(proceso, pk=None):
 
 	elif proceso.concepto_id == 4:
 		data 		= data_servicios_basicos(proceso)
-		template 	= get_template('pdf/procesos/propuesta_servicios_basicos.html')	
+		template 	= get_template('pdf/procesos/propuesta_servicios_basicos.html')
+
+	elif proceso.concepto_id == 5:
+		data 		= data_cuota_incorporacion(proceso)
+		template 	= get_template('pdf/procesos/propuesta_cuota_incorporacion.html')
+
+	elif proceso.concepto_id == 6:
+		data 		= data_fondo_promocion(proceso)
+		template 	= get_template('pdf/procesos/propuesta_fondo_promocion.html')
 
 	else:
 		print ('error: concepto sin template ni data')

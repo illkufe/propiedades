@@ -20,8 +20,8 @@
 					{% endfor %}
 					{% endfor %}
 
-					<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_periodo_arriendo()"><i class="fa fa-plus"></i> Nuevo Periodo</button>
-					<table id="tabla-arriendo" class="table">
+					<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-arriendo-detalle', 'arriendo_detalle')"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+					<table id="tabla-arriendo-detalle" class="table">
 						<thead>
 							{% for form in formset_detalle %}
 							{% if forloop.first %}
@@ -101,7 +101,7 @@
 
 									<div class="form-group text-center">
 										{{ form.DELETE }}
-										<a class="btn btn-delete btn-bitbucket" onclick="eliminar_periodo_arriendo(this)"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Periodo')"><i class="fa fa-trash"></i></a>
 									</div>
 								</td>
 							</tr>

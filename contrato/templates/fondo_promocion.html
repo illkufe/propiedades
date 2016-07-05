@@ -1,0 +1,70 @@
+<div class="panel panel-default">
+
+	<div class="panel-heading" role="tab" id="heading-6">
+		<h4 class="panel-title">
+			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-6" aria-controls="collapse-6" aria-expanded="false">
+				Fondo de Promoción
+			</a>
+		</h4>
+	</div>
+
+	<div id="collapse-6" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-3">
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-sm-12">
+
+					<div class="row">
+
+						<div class="form-group col-sm-3">
+							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_fondo_promocion.periodicidad.help_text }}" ></i>
+							{{ form_fondo_promocion.periodicidad.label_tag }}
+							{{ form_fondo_promocion.periodicidad }}
+							<div class="container-error">
+								{{ form_fondo_promocion.periodicidad.errors }}
+							</div>
+						</div>
+
+						<div class="form-group col-sm-3">
+							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_fondo_promocion.fecha.help_text }}" ></i>
+							{{ form_fondo_promocion.fecha.label_tag }}
+							<div class="input-group date">
+								{{ form_fondo_promocion.fecha}}
+								<span class="input-group-addon">
+									<i class="fa fa-calendar"></i>
+								</span>
+							</div>
+							<div class="container-error">
+								{{ form_fondo_promocion.fecha.errors }}
+							</div>
+						</div>
+
+						<div class="form-group col-sm-3">
+							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_fondo_promocion.valor.help_text }}" ></i>
+							{{ form_fondo_promocion.valor.label_tag }}
+							{{ form_fondo_promocion.valor }}
+							<div class="container-error">
+								{{ form_fondo_promocion.valor.errors }}
+							</div>
+						</div>
+
+						<div class="form-group col-sm-3">
+							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_fondo_promocion.moneda.help_text }}" ></i>
+							{{ form_fondo_promocion.moneda.label_tag }}
+							{{ form_fondo_promocion.moneda }}
+							<div class="container-error">
+								{{ form_fondo_promocion.moneda.errors }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<br>
+			<a href="/contratos/list">
+				<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
+			</a>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-new', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
+		</div>
+	</div>
+</div>

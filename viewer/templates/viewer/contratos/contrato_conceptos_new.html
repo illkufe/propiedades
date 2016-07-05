@@ -33,9 +33,6 @@
 {% block scripts %}
 <script>
 
-var tabla_arriendo_minimo = []
-var tabla_arriendo_variable = []
-
 $(document).ready(function(){
 
 	initialize()
@@ -50,51 +47,22 @@ function initialize(){
 	$('#accordion .panel-heading a').attr('aria-expanded', true)
 	$('#accordion .panel-collapse').first().addClass('in')
 
-
-
-
-
-
-
-
-	$('.tipo-asd').on('change', function(){
-
-		text = $(this).closest('td').find('.tipo-asd option:selected').text()
-
-		$(this).closest('tr').find('.medidor-asd option').each(function() {
-
-			text2 = $(this).text()
-			if (text2.indexOf(text) == 0) {
-				console.log('ests')
-				$(this).attr('disabled', false)
-			}
-			else{
-				$(this).attr('disabled', true)
-			}
-		});
-
-	})
-
 	$('.prorrateo').on('click', function(){
 
 		if ($(this).closest('tr').find('.valor_no_prorrateo').attr('readonly')=='readonly') {
 			console.log('poner false')
 			$(this).closest('tr').find('.valor_no_prorrateo').attr('readonly', false)
-			
-
 		}else{
 			console.log('poner true')
 			$(this).closest('tr').find('.valor_no_prorrateo').attr('readonly', true)
-			
 		}
 	})
 
 
 	$('.prorrateo').each(function( index ) {
 		if ($(this).is(':checked')) {
-			$(this).closest('tr').find('.valor_no_prorrateo').attr('readonly', true)	
+			$(this).closest('tr').find('.valor_no_prorrateo').attr('readonly', true)
 		}
-		
 	})
 
 }
@@ -116,36 +84,6 @@ function guardar_formulario_conceptos(form, id){
 		}
 	});
 	return false;
-}
-
-
-
-
-function agregar_periodo_arriendo(){
-
-	var count 	= $('#tabla-arriendo tbody').children().length;
-	var $tr 	= $('#tabla-arriendo tbody tr:first');
-	var $clone 	= $tr.clone();
-	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count);
-	var $row 	= $(row)
-
-	$row.find('input').val('');
-	$row.find('select option:first-child').attr("selected", "selected");
-	$row.find('input:checkbox').prop('checked',false);
-
-	$('#tabla-arriendo tbody').append('<tr></tr>')
-	$('#tabla-arriendo tbody tr:last').append($row)
-
-
-	var cantidad = parseInt($('#id_arriendo_detalle_set-TOTAL_FORMS').val())
-	cantidad += 1
-	$('#id_arriendo_detalle_set-TOTAL_FORMS').val(cantidad)
-
-}
-
-function eliminar_periodo_arriendo(obj){
-	$(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
-	$(obj).closest('tr').addClass('hide')
 }
 
 </script>

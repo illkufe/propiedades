@@ -82,7 +82,6 @@ class Detalle_Arriendo_Minimo(models.Model):
 	def __str__(self):
 		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
 
-
 class Detalle_Arriendo_Variable(models.Model):
 	
 	fecha_inicio 	= models.DateField()
@@ -185,4 +184,45 @@ class Detalle_Gas(models.Model):
 	
 	def __str__(self):
 		return medidor.nombre+' '+self.contrato.numero
+
+class Detalle_Cuota_Incorporacion(models.Model):
+
+	valor 			= models.FloatField(null=True, blank=True)
+	factor 		 	= models.FloatField(null=True, blank=True)
+	total 		 	= models.FloatField(null=True, blank=True)
+
+	fecha_inicio 	= models.DateField()
+	fecha_termino 	= models.DateField()
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	proceso 	= models.ForeignKey(Proceso)
+	contrato 	= models.ForeignKey(Contrato)
+
+	def __str__(self):
+		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+
+
+class Detalle_Fondo_Promocion(models.Model):
+
+	valor 			= models.FloatField(null=True, blank=True)
+	factor 		 	= models.FloatField(null=True, blank=True)
+	total 		 	= models.FloatField(null=True, blank=True)
+
+	fecha_inicio 	= models.DateField()
+	fecha_termino 	= models.DateField()
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	proceso 	= models.ForeignKey(Proceso)
+	contrato 	= models.ForeignKey(Contrato)
+
+	def __str__(self):
+		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
 

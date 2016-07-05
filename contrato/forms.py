@@ -9,7 +9,7 @@ from activos.models import Activo
 from locales.models import Local
 from conceptos.models import Concepto
 
-from .models import Contrato_Tipo, Contrato_Estado, Contrato, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico
+from .models import Contrato_Tipo, Contrato_Estado, Contrato, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
 
 class ContratoTipoForm(forms.ModelForm):
 	class Meta:
@@ -173,7 +173,7 @@ class ArriendoDetalleForm(forms.ModelForm):
 			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
 			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
 			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			'_DELETE_'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			# '_DELETE_'		: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
 class ArriendoVariableForm(forms.ModelForm):
@@ -247,10 +247,72 @@ class GastoComunForm(forms.ModelForm):
 			'prorrateo' : 'prorrateo',
 		}
 
+class CuotaIncorporacionForm(forms.ModelForm):
 
 
-ArriendoDetalleFormSet 	= inlineformset_factory(Arriendo, Arriendo_Detalle, form=ArriendoDetalleForm, extra=1, can_delete=True)
-ArriendoVariableFormSet = inlineformset_factory(Contrato, Arriendo_Variable, form=ArriendoVariableForm, extra=1, can_delete=True)
-GastoComunFormSet 		= inlineformset_factory(Contrato, Gasto_Comun, form=GastoComunForm, extra=1, can_delete=True)
+	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4]), widget=forms.Select(attrs={'class': 'form-control'}))
+
+	def __init__(self, *args, **kwargs):
+		contrato = kwargs.pop('contrato', None)
+		super(CuotaIncorporacionForm, self).__init__(*args, **kwargs)
+
+		if contrato is not None:
+			pass
+			self.fields['fecha'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
+
+	class Meta:
+		model 	= Cuota_Incorporacion
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en']
+
+		widgets = {
+			'valor'		: forms.NumberInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'valor'		: {'required': 'campo requerido.'},
+		}
+
+		help_texts = {
+			'valor' 	: 'valor',
+		}
+
+class FondoPromocionForm(forms.ModelForm):
+
+	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4]), widget=forms.Select(attrs={'class': 'form-control'}))
+
+	def __init__(self, *args, **kwargs):
+		contrato = kwargs.pop('contrato', None)
+		super(FondoPromocionForm, self).__init__(*args, **kwargs)
+
+		if contrato is not None:
+			self.fields['fecha'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
+
+	class Meta:
+		model 	= Fondo_Promocion
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en']
+
+		widgets = {
+			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'periodicidad'	: forms.Select(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'valor'			: {'required': 'campo requerido.'},
+			'periodicidad'	: {'required': 'campo requerido.'},
+		}
+
+		help_texts = {
+			'valor' 		: 'valor',
+			'periodicidad'	: 'periodicidad',
+		}
+
+ArriendoDetalleFormSet 		= inlineformset_factory(Arriendo, Arriendo_Detalle, form=ArriendoDetalleForm, extra=1, can_delete=True)
+ArriendoVariableFormSet 	= inlineformset_factory(Contrato, Arriendo_Variable, form=ArriendoVariableForm, extra=1, can_delete=True)
+GastoComunFormSet 			= inlineformset_factory(Contrato, Gasto_Comun, form=GastoComunForm, extra=1, can_delete=True)
+CuotaIncorporacionFormet 	= inlineformset_factory(Contrato, Cuota_Incorporacion, form=CuotaIncorporacionForm, extra=1, can_delete=True)
 
 

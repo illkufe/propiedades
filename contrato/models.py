@@ -166,51 +166,11 @@ class Arriendo_Variable(models.Model):
 	def __str__(self):
 		return self.contrato.nombre_local
 
-class Servicio_Basico(models.Model):
-
-	TIPO = (
-		(1, 'AGUA'),
-		(2, 'ELECTRICIDAD'),
-		(3, 'GAS'),
-	)
-
-	MESES = (
-		(1, 'ENERO'),
-		(2, 'FEBRERO'),
-		(3, 'MARZO'),
-		(4, 'ABRIL'),
-		(5, 'MAYO'),
-		(6, 'JUNIO'),
-		(7, 'JULIO'),
-		(8, 'AGOSTO'),
-		(9, 'SEPTIEMBRE'),
-		(10, 'OCTUBRE'),
-		(11, 'NOVIEMBRE'),
-		(12, 'DICIEMBRE'),
-	)
-
-	# atributos (generales)
-	tipo			= models.IntegerField(choices=TIPO)
-	mes_inicio 		= models.IntegerField(choices=MESES)
-	mes_termino		= models.IntegerField(choices=MESES)
-	valor			= models.FloatField()
-
-	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
-
-	# relaciones
-	contrato 	= models.ForeignKey(Contrato)
-	local 		= models.ForeignKey(Local)
-
-	def __str__(self):
-		return self.local.nombre
-
 class Gasto_Comun(models.Model):
 
 	# atributos (generales)
-	valor			= models.FloatField(default=0)
-	prorrateo 		= models.BooleanField(default=False)
+	valor		= models.FloatField(default=0)
+	prorrateo 	= models.BooleanField(default=False)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -223,4 +183,63 @@ class Gasto_Comun(models.Model):
 
 	def __str__(self):
 		return self.local.nombre
+
+class Servicio_Basico(models.Model):
+
+	# atributos (generales)
+	valor_electricidad	= models.FloatField()
+	valor_agua			= models.FloatField()
+	valor_gas			= models.FloatField()
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	contrato 	= models.ForeignKey(Contrato)
+
+	def __str__(self):
+		return self.contrato.nombre_local
+
+class Cuota_Incorporacion(models.Model):
+
+	# atributos (generales)
+	fecha 		= models.DateField()
+	valor		= models.FloatField()
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	contrato 	= models.ForeignKey(Contrato)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.contrato.nombre_local
+
+class Fondo_Promocion(models.Model):
+
+	PERIODICIDAD = (
+		(0, 'ANUAL'),
+		(1, 'SEMESTRAL'),
+		(2, 'TRIMESTRAL'),
+		(3, 'MENSUAL'),
+	)
+
+	# atributos (generales)
+	fecha 			= models.DateField()
+	valor			= models.FloatField()
+	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	contrato 	= models.ForeignKey(Contrato)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.contrato.nombre_local
 

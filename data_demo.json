@@ -160,7 +160,39 @@
 		"creado_en": "2016-01-01 00:00:00",
 		"empresa_id": 1,
 		"moneda_id": 5,
-		"concepto_tipo": 3
+		"concepto_tipo": 4
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 5,
+	"fields": {
+		"nombre": "Cuota de Incorporación",
+		"codigo": "CUO-INC",
+		"orden": 4,
+		"template": "cuota_incorporacion",
+		"descripcion": "Descripción Cuota de Incorporación",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 4
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 6,
+	"fields": {
+		"nombre": "Fondo de Promoción",
+		"codigo": "FON-PRO",
+		"orden": 4,
+		"template": "fondo_promocion",
+		"descripcion": "Descripción Fondo de Promoción",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 4
 	}
 },
 {
