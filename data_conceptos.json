@@ -1,0 +1,96 @@
+[{
+	"model": "conceptos.concepto",
+	"pk": 1,
+	"fields": {
+		"nombre": "Arriendo Mínimo",
+		"codigo": "ARR-MIN",
+		"orden": 1,
+		"template": "arriendo_minimo",
+		"descripcion": "Descripción Arriendo Mínimo",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 3
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 2,
+	"fields": {
+		"nombre": "Arriendo Variable",
+		"codigo": "ARR-VAR",
+		"orden": 2,
+		"template": "arriendo_variable",
+		"descripcion": "Descripción Arriendo Variable",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 2
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 3,
+	"fields": {
+		"nombre": "Gasto Común",
+		"codigo": "GAS-COM",
+		"orden": 3,
+		"template": "gasto_comun",
+		"descripcion": "Descripción Gasto Común",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 2
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 4,
+	"fields": {
+		"nombre": "Servicios Básicos",
+		"codigo": "SER-BAS",
+		"orden": 4,
+		"template": "servicio_basico",
+		"descripcion": "Descripción Servicios Básicos",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 4
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 5,
+	"fields": {
+		"nombre": "Cuota de Incorporación",
+		"codigo": "CUO-INC",
+		"orden": 4,
+		"template": "cuota_incorporacion",
+		"descripcion": "Descripción Cuota de Incorporación",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 4
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 6,
+	"fields": {
+		"nombre": "Fondo de Promoción",
+		"codigo": "FON-PRO",
+		"orden": 4,
+		"template": "fondo_promocion",
+		"descripcion": "Descripción Fondo de Promoción",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 4
+	}
+}]
