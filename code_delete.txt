@@ -2305,3 +2305,43 @@ def calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos):
 		fecha = sumar_meses(fecha, 1)
 
 	return data
+
+# viewer/templates/viewer/procesos_list.html
+
+<select name="concepto" class="form-control" onchange="mostrar_values_servicios()">
+
+<div class="row info-servicios-basicos hide">
+
+	<div class="form-group col-sm-2">
+		<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="..."></i>
+		<label for="valor_luz">Valor Electricidad:</label>
+		<input class="form-control" id="valor_luz" name="valor_luz" type="number">
+		<div class="container-error"></div>
+	</div>
+	<div class="form-group col-sm-2">
+		<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="..."></i>
+		<label for="valor_agua">Valor Agua:</label>
+		<input class="form-control" id="valor_agua" name="valor_agua" type="number">
+		<div class="container-error"></div>
+	</div>
+	<div class="form-group col-sm-2">
+		<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="..."></i>
+		<label for="valor_gas">Valor Gas:</label>
+		<input class="form-control" id="valor_gas" name="valor_gas" type="number">
+		<div class="container-error"></div>
+	</div>
+</div>
+
+
+<input type="hidden" name="valor_luz">
+<input type="hidden" name="valor_agua">
+<input type="hidden" name="valor_gas">
+
+function mostrar_values_servicios(){
+	concepto 	= parseInt($('#form-fitrar-contratos select[name="concepto"]').val())
+	if (concepto == 4) {
+		$('.info-servicios-basicos').removeClass('hide')
+	}else{
+		$('.info-servicios-basicos').addClass('hide')
+	}
+}

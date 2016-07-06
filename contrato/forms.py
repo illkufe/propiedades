@@ -55,7 +55,6 @@ class ContratoForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 
-
 		self.request 	= kwargs.pop('request')
 		user 			= User.objects.get(pk=self.request.user.pk)
 		profile 		= UserProfile.objects.get(user=user)
@@ -247,6 +246,42 @@ class GastoComunForm(forms.ModelForm):
 			'prorrateo' : 'prorrateo',
 		}
 
+
+
+class ServicioBasicoForm(forms.ModelForm):
+
+	def __init__(self, *args, **kwargs):
+		contrato = kwargs.pop('contrato', None)
+		super(ServicioBasicoForm, self).__init__(*args, **kwargs)
+
+		if contrato is not None:
+			self.fields['locales'].queryset = contrato.locales.all()
+
+	class Meta:
+		model 	= Servicio_Basico
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en']
+
+		widgets = {
+			'locales'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			'valor_electricidad' 	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'valor_agua' 			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'valor_gas' 			: forms.NumberInput(attrs={'class': 'form-control'}),
+			}
+
+		error_messages = {
+			'valor_electricidad' 	: {'required': 'campo requerido.'},
+			'valor_agua' 			: {'required': 'campo requerido.'},
+			'valor_gas' 			: {'required': 'campo requerido.'},
+			}
+
+		help_texts = {
+			'valor_electricidad' 	: 'Valor Electricidad',
+			'valor_agua' 			: 'Valor Agua',
+			'valor_gas' 			: 'Valor Gas',
+			}
+
+
 class CuotaIncorporacionForm(forms.ModelForm):
 
 
@@ -289,6 +324,7 @@ class FondoPromocionForm(forms.ModelForm):
 
 		if contrato is not None:
 			self.fields['fecha'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
+			self.fields['concepto'].queryset = Concepto.objects.filter(id__in=[1,2])
 
 	class Meta:
 		model 	= Fondo_Promocion
@@ -298,6 +334,7 @@ class FondoPromocionForm(forms.ModelForm):
 		widgets = {
 			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
 			'periodicidad'	: forms.Select(attrs={'class': 'form-control'}),
+			'concepto'		: forms.Select(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
@@ -314,5 +351,6 @@ ArriendoDetalleFormSet 		= inlineformset_factory(Arriendo, Arriendo_Detalle, for
 ArriendoVariableFormSet 	= inlineformset_factory(Contrato, Arriendo_Variable, form=ArriendoVariableForm, extra=1, can_delete=True)
 GastoComunFormSet 			= inlineformset_factory(Contrato, Gasto_Comun, form=GastoComunForm, extra=1, can_delete=True)
 CuotaIncorporacionFormet 	= inlineformset_factory(Contrato, Cuota_Incorporacion, form=CuotaIncorporacionForm, extra=1, can_delete=True)
+ServicioBasicoFormSet 		= inlineformset_factory(Contrato, Servicio_Basico, form=ServicioBasicoForm, extra=1, can_delete=True)
 
 

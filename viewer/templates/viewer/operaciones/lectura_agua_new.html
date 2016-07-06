@@ -88,8 +88,19 @@
 <script>
 
 $(document).ready(function(){
+
+	intialize()
+
 });
 
+function intialize(){
+
+	var fecha = new Date();
+
+	$('#form-lectura-medidor select[name="mes"]').val(fecha.getMonth() + 1)
+	$('#form-lectura-medidor input[name="anio"]').val(fecha.getFullYear())	
+
+}
 
 </script>
 {% endblock scripts %}

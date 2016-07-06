@@ -7,8 +7,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.db.models import Sum
 from django.views.generic import View, ListView, FormView, CreateView, DeleteView, UpdateView
 
-from .forms import ContratoTipoForm, ContratoForm, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, GastoComunFormSet, CuotaIncorporacionFormet, FondoPromocionForm
-from .models import Contrato_Tipo, Contrato, Arriendo, Arriendo_Variable, Gasto_Comun, Cuota_Incorporacion, Fondo_Promocion
+from .forms import ContratoTipoForm, ContratoForm, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, GastoComunFormSet, ServicioBasicoFormSet, CuotaIncorporacionFormet, FondoPromocionForm
+from .models import Contrato_Tipo, Contrato, Arriendo, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
 
 from accounts.models import UserProfile
 from administrador.models import Empresa, Cliente
@@ -274,6 +274,7 @@ class ContratoConceptoMixin(object):
 		formset_detalle 			= context['formset_detalle']
 		form_arriendo_variable 		= context['form_arriendo_variable']
 		formset_gasto_comun			= context['form_gasto_comun']
+		formset_servicios_basicos	= context['form_servicios_basicos']
 		formset_cuota_incorporacion	= context['form_cuota_incorporacion']
 		formset_fondo_promocion		= context['form_fondo_promocion']
 		conceptos 					= Contrato.objects.get(id=self.kwargs['contrato_id']).conceptos.all()
@@ -294,6 +295,10 @@ class ContratoConceptoMixin(object):
 			elif concepto.id == 3:
 				if formset_gasto_comun.is_valid():
 					formset_gasto_comun.save()
+
+			elif concepto.id == 4:
+				if formset_servicios_basicos.is_valid():
+					formset_servicios_basicos.save()
 
 			elif concepto.id == 5:
 				if formset_cuota_incorporacion.is_valid():
@@ -350,12 +355,19 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 				
 				context['form_arriendo_variable'] 	= ArriendoVariableFormSet(self.request.POST)
 
-			# gasto comun
+			# gasto común
 			try:
 				gasto_comun 				= Gasto_Comun.objects.filter(contrato_id=self.kwargs['contrato_id'])
 				context['form_gasto_comun'] = GastoComunFormSet(self.request.POST, instance=contrato)
 			except Exception:
 				context['form_gasto_comun'] = GastoComunFormSet(self.request.POST)
+
+			# servicios básicos
+			try:
+				servicio_basico 					= Servicio_Basico.objects.filter(contrato=contrato)
+				context['form_servicios_basicos'] 	= ServicioBasicoFormSet(self.request.POST, instance=contrato)
+			except Exception:
+				context['form_servicios_basicos'] 	= ServicioBasicoFormSet(self.request.POST)
 
 			# cuota incorporacion
 			try:
@@ -393,20 +405,25 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 			except Exception:
 				context['form_arriendo_variable'] 	= ArriendoVariableFormSet()
 
-			# gasto comun
+			# gasto común
 			try:
-				gasto_comun 				= Gasto_Comun.objects.filter(contrato_id=contrato_id)
+				gasto_comun 				= Gasto_Comun.objects.filter(contrato=contrato)
 				context['form_gasto_comun'] = GastoComunFormSet(instance=contrato, form_kwargs={'contrato': contrato})
 			except Exception:
 				context['form_gasto_comun'] = GastoComunFormSet(form_kwargs={'contrato': contrato})
+
+			# servicios básicos
+			try:
+				servicio_basico 					= Servicio_Basico.objects.filter(contrato=contrato)
+				context['form_servicios_basicos'] 	= ServicioBasicoFormSet(instance=contrato, form_kwargs={'contrato': contrato})
+			except Exception:
+				context['form_servicios_basicos'] 	= ServicioBasicoFormSet(form_kwargs={'contrato': contrato})
 
 			# cuota incorporación
 			try:
 				cuota_incorporacion 				= Cuota_Incorporacion.objects.filter(contrato_id=contrato_id)
 				context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(instance=contrato, form_kwargs={'contrato': contrato})
-
-			except Exception as asd:
-				print (asd)
+			except Exception:
 				context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(form_kwargs={'contrato': contrato})
 
 			# fondo promoción

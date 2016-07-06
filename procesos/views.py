@@ -92,10 +92,7 @@ class PROCESOS(View):
 		elif int(concepto) == 3:
 			data = calculo_gasto_comun(request, fecha_inicio, fecha_termino, contratos)
 		elif int(concepto) == 4:
-			val_luz 	= var_post.get('valor_luz')
-			val_agua 	= var_post.get('valor_agua')
-			val_gas 	= var_post.get('valor_gas')
-			data = calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, val_luz, val_agua, val_gas)
+			data = calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos)
 		elif int(concepto) == 5:
 			data = calculo_cuota_incorporacion(request, fecha_inicio, fecha_termino, contratos)
 		elif int(concepto) == 6:
@@ -467,7 +464,7 @@ def calculo_gasto_comun(request, fecha_inicio, fecha_termino, contratos):
 
 	return data
 
-def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, valor_luz, valor_agua, valor_gas):
+def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos):
 
 	user 		= User.objects.get(pk=request.user.pk)
 	contratos 	= contratos
@@ -506,6 +503,14 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, va
 					valor_actual 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=fecha.month, anio=fecha.year).valor
 				except Exception:
 					valor_actual	= None
+				try:
+					if medidor.local.servicio_basico_set.all().exists():
+						servicios_basicos = medidor.local.servicio_basico_set.all()
+						valor_luz = servicios_basicos[0].valor_electricidad
+					else:
+						valor_luz	= None
+				except Exception:
+					valor_luz	= None
 
 				Detalle_Electricidad(
 					valor			= valor_luz,
@@ -527,11 +532,19 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, va
 					lectura_actual 		= Lectura_Agua.objects.get(medidor_electricidad=medidor, mes=fecha.month, anio=fecha.year)
 				except Exception as error:
 					lectura_actual		= None
+				try:
+					if medidor.local.servicio_basico_set.all().exists():
+						servicios_basicos = medidor.local.servicio_basico_set.all()
+						valor_agua = servicios_basicos[0].valor_agua
+					else:
+						valor_agua	= None
+				except Exception:
+					valor_agua	= None
 
 				Detalle_Agua(
 					valor			= valor_agua,
-					valor_anterior	= None,
-					valor_actual	= None,
+					valor_anterior	= lectura_anterior,
+					valor_actual	= lectura_actual,
 					fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
 					fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
 					proceso			= proceso,
@@ -548,11 +561,19 @@ def calculo_servicios_basico(request, fecha_inicio, fecha_termino, contratos, va
 					lectura_actual 		= Lectura_Gas.objects.get(medidor_electricidad=medidor, mes=fecha.month, anio=fecha.year)
 				except Exception as error:
 					lectura_actual		= None
+				try:
+					if medidor.local.servicio_basico_set.all().exists():
+						servicios_basicos = medidor.local.servicio_basico_set.all()
+						valor_gas = servicios_basicos[0].valor_gas
+					else:
+						valor_gas	= None
+				except Exception:
+					valor_gas	= None
 
 				Detalle_Gas(
 					valor			= valor_gas,
-					valor_anterior	= None,
-					valor_actual	= None,
+					valor_anterior	= lectura_actual,
+					valor_actual	= lectura_actual,
 					fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
 					fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
 					proceso			= proceso,
@@ -842,11 +863,11 @@ def data_servicios_basicos(proceso):
 			'contrato'			: item.contrato.numero,
 			'local'				: item.medidor.local.nombre,
 			'medidor'			: item.medidor.nombre,
-			'lectura_anterior' 	: item.valor_anterior if item.valor_anterior is not None else 'Sin Datos',
-			'lectura_actual' 	: item.valor_actual if item.valor_actual is not None else 'Sin Datos',
-			'valor' 			: item.valor,
-			'diferencia'		: (item.valor_actual - item.valor_anterior) if item.valor_anterior is not None and item.valor_actual is not None else 'N/A',
-			'total'				: (item.valor_actual - item.valor_anterior) * item.valor if item.valor_anterior is not None and item.valor_actual is not None else 'N/A',
+			'lectura_anterior' 	: item.valor_anterior if item.valor_anterior is not None else '---',
+			'lectura_actual' 	: item.valor_actual if item.valor_actual is not None else '---',
+			'valor' 			: item.valor if item.valor is not None else '---',
+			'diferencia'		: (item.valor_actual - item.valor_anterior) if item.valor_anterior is not None and item.valor_actual is not None else '---',
+			'total'				: (item.valor_actual - item.valor_anterior) * item.valor if item.valor_anterior is not None and item.valor_actual is not None and item.valor is not None else '---',
 		})
 
 		total += (item.valor_actual - item.valor_anterior) * item.valor if item.valor_anterior is not None and item.valor_actual is not None else 0

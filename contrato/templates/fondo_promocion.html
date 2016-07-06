@@ -25,6 +25,15 @@
 						</div>
 
 						<div class="form-group col-sm-3">
+							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_fondo_promocion.concepto.help_text }}" ></i>
+							{{ form_fondo_promocion.concepto.label_tag }}
+							{{ form_fondo_promocion.concepto }}
+							<div class="container-error">
+								{{ form_fondo_promocion.concepto.errors }}
+							</div>
+						</div>
+
+						<div class="form-group col-sm-2">
 							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_fondo_promocion.fecha.help_text }}" ></i>
 							{{ form_fondo_promocion.fecha.label_tag }}
 							<div class="input-group date">
@@ -38,7 +47,7 @@
 							</div>
 						</div>
 
-						<div class="form-group col-sm-3">
+						<div class="form-group col-sm-2">
 							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_fondo_promocion.valor.help_text }}" ></i>
 							{{ form_fondo_promocion.valor.label_tag }}
 							{{ form_fondo_promocion.valor }}
@@ -47,7 +56,7 @@
 							</div>
 						</div>
 
-						<div class="form-group col-sm-3">
+						<div class="form-group col-sm-2">
 							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_fondo_promocion.moneda.help_text }}" ></i>
 							{{ form_fondo_promocion.moneda.label_tag }}
 							{{ form_fondo_promocion.moneda }}

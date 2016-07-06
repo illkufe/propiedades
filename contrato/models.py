@@ -197,6 +197,7 @@ class Servicio_Basico(models.Model):
 
 	# relaciones
 	contrato 	= models.ForeignKey(Contrato)
+	locales 	= models.ManyToManyField(Local)
 
 	def __str__(self):
 		return self.contrato.nombre_local
@@ -238,6 +239,7 @@ class Fondo_Promocion(models.Model):
 
 	# relaciones
 	contrato 	= models.ForeignKey(Contrato)
+	concepto 	= models.ForeignKey(Concepto)
 	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
