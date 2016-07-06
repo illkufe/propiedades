@@ -414,36 +414,62 @@ def calculo_gasto_comun(request, fecha_inicio, fecha_termino, contratos):
 
 			contrato 		= Contrato.objects.get(id=item)
 			locales 		= contrato.locales.all()
-			metros_total 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
-	
+						
+			activos 		= contrato.locales.all().values_list('activo_id', flat=True)
+			# metros_total 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
+			metros_total   	= Local.objects.filter(activo__in=activos).aggregate(Sum('metros_cuadrados'))
+
 			for local in locales:
-				
-				try:
-					gasto_comun = Gasto_Comun.objects.get(contrato=contrato, local=local)
-					if gasto_comun.prorrateo == True:
+
+				if Gasto_Comun.objects.filter(contrato=contrato, local=local).exists():
+					gasto_comun = Gasto_Comun.objects.filter(contrato=contrato, local=local)
+					if gasto_comun[0].prorrateo == True:
 						valor 		= None
 						prorrateo 	= True
 						try:
 							gasto_mensual 	= Gasto_Mensual.objects.get(activo=local.activo, mes=fecha.month, anio=fecha.year).valor
 							total 		 	= (local.metros_cuadrados * gasto_mensual) / metros_total['metros_cuadrados__sum']
-						except Exception:						
+						except Exception:
 							gasto_mensual	= None
 							total 			= None
 					else:
-						factor 			= gasto_comun.moneda.moneda_historial_set.all().order_by('-id').first().valor
+						factor 			= gasto_comun[0].moneda.moneda_historial_set.all().order_by('-id').first().valor
 
-						valor 			= gasto_comun.valor
+						valor 			= gasto_comun[0].valor
 						gasto_mensual 	= None
 						prorrateo 		= False
 						total 			= valor * factor
-					
-
-				except Gasto_Comun.DoesNotExist:
+				else:
 					valor 			= None
 					gasto_mensual 	= None
 					prorrateo 		= False
 					total 			= None
 
+				
+				# try:
+				# 	gasto_comun = Gasto_Comun.objects.get(contrato=contrato, local=local)
+				# 	if gasto_comun.prorrateo == True:
+				# 		valor 		= None
+				# 		prorrateo 	= True
+				# 		try:
+				# 			gasto_mensual 	= Gasto_Mensual.objects.get(activo=local.activo, mes=fecha.month, anio=fecha.year).valor
+				# 			total 		 	= (local.metros_cuadrados * gasto_mensual) / metros_total['metros_cuadrados__sum']
+				# 		except Exception:
+				# 			gasto_mensual	= None
+				# 			total 			= None
+				# 	else:
+				# 		factor 			= gasto_comun.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+				# 		valor 			= gasto_comun.valor
+				# 		gasto_mensual 	= None
+				# 		prorrateo 		= False
+				# 		total 			= valor * factor
+
+				# except Gasto_Comun.DoesNotExist:
+				# 	valor 			= None
+				# 	gasto_mensual 	= None
+				# 	prorrateo 		= False
+				# 	total 			= None
 
 				Detalle_Gasto_Comun(
 					valor 			= valor,
