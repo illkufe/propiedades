@@ -870,7 +870,7 @@ def data_servicios_basicos(proceso):
 			'total'				: (item.valor_actual - item.valor_anterior) * item.valor if item.valor_anterior is not None and item.valor_actual is not None and item.valor is not None else '---',
 		})
 
-		total += (item.valor_actual - item.valor_anterior) * item.valor if item.valor_anterior is not None and item.valor_actual is not None else 0
+		total += (item.valor_actual - item.valor_anterior) * item.valor if item.valor_anterior is not None and item.valor_actual is not None and item.valor is not None else 0
 
 	
 	data['detalle'] = detalle
