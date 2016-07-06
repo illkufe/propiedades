@@ -507,6 +507,7 @@ function filtrar_contratos(){
 
 					if (data.length == 0) {
 						notification_toast('error', 'No Existen', 'contratos con estos filtros')
+						data_tabla_contratos([])
 					}else{
 						$('#form-proceso button#enviar-proceso').attr('disabled', true)
 						$('.checkbox-all').prop('checked', false)
