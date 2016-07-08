@@ -87,8 +87,7 @@
 							<div class="form-group col-sm-2">
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
 								<label>Conceptos:</label>
-								<select name="concepto" class="form-control">
-									<option value="">---------</option>
+								<select name="conceptos" class="form-control select2" multiple="multiple">
 									{% for concepto in conceptos %}
 									<option value="{{ concepto.id }}">{{ concepto.nombre }}</option>
 									{% endfor %}
@@ -113,7 +112,7 @@
 						<input type="hidden" name="contratos">
 						<input type="hidden" name="fecha_inicio">
 						<input type="hidden" name="fecha_termino">
-						<input type="hidden" name="concepto">
+						<input type="hidden" name="conceptos">
 
 						<div class="table-responsive">
 							<table id="tabla-contratos" class="table table-striped table-hover"></table>
@@ -314,7 +313,6 @@ function load_tabla_procesos(){
 	tabla_procesos = load_table('#tabla-procesos', columns, {})
 }
 
-
 function data_tabla_contratos(data){
 
 	tabla_contratos.clear().draw();
@@ -365,7 +363,7 @@ function data_tabla_procesos(){
 				row.id 			= data[i].id
 				row.fecha 		= data[i].fecha_creacion
 				row.periodo 	= data[i].fecha_inicio+' - '+data[i].fecha_termino
-				row.concepto 	= data[i].concepto.nombre
+				row.concepto 	= '---' // {falta: poner cliente}
 				row.cliente 	= '---' // {falta: poner cliente}
 				row.contratos 	= '---' // {falta: poner contratos}
 				row.monto 		= '---' // {falta: poner monto}
@@ -379,53 +377,7 @@ function data_tabla_procesos(){
 	})
 }
 
-
 function filtrar_contratos(){
-
-	$.validator.addMethod("requiere_luz", function (value, element) {
-		console.log(element)
-
-		concepto 	= parseInt($('#form-fitrar-contratos select[name="concepto"]').val())
-		valor 		= $('#form-fitrar-contratos input[name="valor_luz"]').val()
-
-		if (concepto == 4 && valor == '') {
-			return false;
-		}else{
-			return true;
-		}
-
-	}, 'Campo requerido');
-
-
-	$.validator.addMethod("requiere_agua", function (value, element) {
-		console.log(element)
-
-		concepto 	= parseInt($('#form-fitrar-contratos select[name="concepto"]').val())
-		valor 		= $('#form-fitrar-contratos input[name="valor_agua"]').val()
-
-		if (concepto == 4 && valor == '') {
-			return false;
-		}else{
-			return true;
-		}
-
-	}, 'Campo requerido');
-
-	$.validator.addMethod("requiere_gas", function (value, element) {
-		console.log(element)
-
-		concepto 	= parseInt($('#form-fitrar-contratos select[name="concepto"]').val())
-		valor 		= $('#form-fitrar-contratos input[name="valor_gas"]').val()
-
-		if (concepto == 4 && valor == '') {
-			return false;
-		}else{
-			return true;
-		}
-
-	}, 'Campo requerido');
-
-	
 
 	$.validator.addMethod("comparacion", function (value, element) {
 		ano_inicio 	= parseInt($('#form-fitrar-contratos input[name="ano_inicio"]').val())
@@ -470,17 +422,8 @@ function filtrar_contratos(){
 			activo: {
 				required: true,
 			},
-			concepto: {
+			conceptos: {
 				required: true,
-			},
-			valor_luz: {
-				requiere_luz: true,
-			},
-			valor_agua: {
-				requiere_agua: true,
-			},
-			valor_gas: {
-				requiere_gas: true,
 			},
 		},
 		messages: {
@@ -493,7 +436,7 @@ function filtrar_contratos(){
 			activo: {
 				required: "Campo requerido",
 			},
-			concepto: {
+			conceptos: {
 				required: "Campo requerido",
 			}
 		},
@@ -517,24 +460,16 @@ function filtrar_contratos(){
 						var mes_inicio 	= $('#form-fitrar-contratos select[name="mes_inicio"]').val()
 						var mes_termino = $('#form-fitrar-contratos select[name="mes_termino"]').val()
 
-						mes_inicio 	= mes_inicio <= 10 ? '0'+mes_inicio : mes_inicio
-						mes_termino = mes_termino <= 10 ? '0'+mes_termino : mes_termino
+						mes_inicio 	= mes_inicio < 10 ? '0'+mes_inicio : mes_inicio
+						mes_termino = mes_termino < 10 ? '0'+mes_termino : mes_termino
 
 						var ano_inicio 	= $('#form-fitrar-contratos input[name="ano_inicio"]').val()
 						var ano_termino = $('#form-fitrar-contratos input[name="ano_termino"]').val()
-						var concepto 	= $('#form-fitrar-contratos select[name="concepto"]').val()
-
-						var valor_luz 	= $('#form-fitrar-contratos input[name="valor_luz"]').val()
-						var valor_agua 	= $('#form-fitrar-contratos input[name="valor_agua"]').val()
-						var valor_gas 	= $('#form-fitrar-contratos input[name="valor_gas"]').val()
+						var concepto 	= $('#form-fitrar-contratos select[name="conceptos"]').val()
 
 						$('#form-proceso input[name="fecha_inicio"]').val('01/'+mes_inicio+'/'+ano_inicio)
 						$('#form-proceso input[name="fecha_termino"]').val('01/'+mes_termino+'/'+ano_termino)
-						$('#form-proceso input[name="concepto"]').val(concepto)
-
-						$('#form-proceso input[name="valor_luz"]').val(valor_luz)
-						$('#form-proceso input[name="valor_agua"]').val(valor_agua)
-						$('#form-proceso input[name="valor_gas"]').val(valor_gas)
+						$('#form-proceso input[name="conceptos"]').val(concepto)
 
 					}
 				}
@@ -542,7 +477,6 @@ function filtrar_contratos(){
 		}
 	}) 
 }
-
 
 function procesar_contratos(){
 	$("#form-proceso").validate({
@@ -591,11 +525,12 @@ function procesar_contratos(){
 			$('#form-proceso').ajaxSubmit({
 				dataType: 'json',
 				success: function(data){
+
 					data_tabla_procesos()
 
 					swal({
 						title: "Proceso <small>creado correctamente</small>",
-						text: "<a href='/propuesta/pdf/"+data[0].id+"'><span style='color:#F8BB86'>descargar archivo<span>",
+						text: "<a href='/propuesta/pdf/"+data.id+"'><span style='color:#F8BB86'>descargar archivo<span>",
 						type: "success",
 						html: true
 					});
@@ -605,7 +540,6 @@ function procesar_contratos(){
 		}
 	}) 
 }
-
 
 function seleccionar_uno(){
 	$('.checkbox-all').prop('checked', false)

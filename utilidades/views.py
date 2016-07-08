@@ -45,3 +45,15 @@ def sumar_meses(fecha, meses):
 	fecha 	= str(day)+'/'+str(month)+'/'+str(year)
 
 	return datetime.strptime(fecha, "%d/%m/%Y")
+
+def formato_moneda(valor):
+
+	moneda = '${:,.2f}'.format(valor)
+	
+	moneda = moneda.replace('.', '*')
+	moneda = moneda.replace(',', '.')
+	moneda = moneda.replace('*', ',')
+
+	return moneda
+
+

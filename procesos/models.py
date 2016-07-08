@@ -32,33 +32,11 @@ class Proceso(models.Model):
 
 	# relaciones
 	user 			= models.ForeignKey(User)
-	concepto 		= models.ForeignKey(Concepto)
 	proceso_estado 	= models.ForeignKey(Proceso_Estado)
-
-
-	def __str__(self):
-		return self.concepto.nombre
-
-# {falta: borrar este modelo y dejar separado en detalle_arriendo_minimo, detalle_arriendo_variable y detalle_gasto_comun}
-class Proceso_Detalle(models.Model):
-	
-	total 			= models.FloatField()
-	fecha_inicio 	= models.DateField()
-	fecha_termino 	= models.DateField()
-
-	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
-
-	# relaciones
-	proceso 	= models.ForeignKey(Proceso)
-	contrato 	= models.ForeignKey(Contrato)
-	
+	conceptos 		= models.ManyToManyField(Concepto)
 
 	def __str__(self):
-		return self.contrato.nombre_local
-
-
+		return self.user.first_name
 
 class Detalle_Arriendo_Minimo(models.Model):
 	
@@ -204,7 +182,6 @@ class Detalle_Cuota_Incorporacion(models.Model):
 
 	def __str__(self):
 		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
-
 
 class Detalle_Fondo_Promocion(models.Model):
 

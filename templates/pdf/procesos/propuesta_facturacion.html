@@ -1,0 +1,308 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <style>
+
+    table{
+        font-family: 'Courier';
+        font-size: 12px;
+    }
+    
+    table th,
+    table td{
+        margin-top: 5px;
+        padding: 2px 6px !important;
+        border: 1px solid #000 !important;;
+    }
+
+    p{
+        font-family: 'Courier';
+        font-size: 12px;
+    }
+
+    /* utilities */
+    .page{
+        font-family: 'Courier';
+        /*page-break-after: always;*/
+        /*padding-top: 25px;*/
+
+    }
+
+    .bold{
+        font-weight: bold;
+    }
+
+    .underline{
+        text-decoration: underline;
+    }
+
+    .uppercase{
+        text-transform: uppercase;
+    }
+
+    p.text{
+        line-height: normal;
+    }
+
+    .informacion-proceso{
+        margin: 30px 0 20px 0;
+    }
+
+    .informacion-proceso p span,
+    .concepto span{
+        display: inline-block;
+        width: 140px;
+    }
+    
+    </style>
+</head>
+<body>
+    <div class="page">
+        <h4 class="text-center">PROPUESTA DE FACTURACIÓN</h4>
+        <div class="informacion-proceso">
+
+            <p><span>Fecha Inicio</span>    : {{proceso.fecha_inicio|date:"d/m/Y"}}</p>
+            <p><span>Fecha Término</span>   : {{proceso.fecha_termino|date:"d/m/Y"}}</p>
+            <p><span>Usuario</span>         : {{proceso.user.first_name}} {{proceso.user.last_name}}</p>
+        </div>
+
+        {% for concepto in detalle %}
+        
+        <div class="concepto">
+            <p><span>Concepto Facturado</span><strong>: {{concepto.nombre}}</strong></p>
+        </div>
+
+        <!-- Arriendo Mínimo -->
+        {% if concepto.id == 1 %}        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width:10%">F.Inicio</th>
+                    <th style="width:10%">F.Termino</th>
+                    <th style="width:25%">Cliente</th>
+                    <th style="width:15%">Nº Contrato</th>
+                    <th style="width:22.5%">Marca Comercial</th>
+                    <th class="text-right" style="width:17.5%">Valor</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in concepto.detalle %}
+                <tr>
+                    <td>{{item.fecha_inicio}}</td>
+                    <td>{{item.fecha_termino}}</td>
+                    <td>{{item.cliente}}</td>
+                    <td>{{item.contrato}}</td>
+                    <td>{{item.nombre_local}}</td>
+                    <td class="text-right">{{item.total}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <thead>
+                <th colspan="5">Subtotal</th>
+                <th class="text-right">{{concepto.total}}</th>
+            </thead>
+        </table>
+        
+        <!-- Arriendo Variable -->
+        {% elif concepto.id == 2 %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width:10%">F.Inicio</th>
+                    <th style="width:10%">F.Termino</th>
+                    <th style="width:25%">Cliente</th>
+                    <th style="width:15%">Nº Contrato</th>
+                    <th style="width:22.5%">Marca Comercial</th>
+                    <th class="text-right" style="width:17.5%">Valor</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in concepto.detalle %}
+                <tr>
+                    <td>{{item.fecha_inicio}}</td>
+                    <td>{{item.fecha_termino}}</td>
+                    <td>{{item.cliente}}</td>
+                    <td>{{item.contrato}}</td>
+                    <td>{{item.nombre_local}}</td>
+                    <td class="text-right">{{item.total}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <thead>
+                <th colspan="5">Total</th>
+                <th class="text-right">{{concepto.total}}</th>
+            </thead>
+        </table>
+        
+        <!-- Gasto Común -->
+        {% elif concepto.id == 3 %}
+                <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width:10%">F.Inicio</th>
+                    <th style="width:10%">F.Termino</th>
+                    <th style="width:25%">Cliente</th>
+                    <th style="width:15%">Nº Contrato</th>
+                    <th style="width:22.5%">Local</th>
+                    <th class="text-right" style="width:17.5%">Valor</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in concepto.detalle %}
+                <tr>
+                    <td>{{item.fecha_inicio}}</td>
+                    <td>{{item.fecha_termino}}</td>
+                    <td>{{item.cliente}}</td>
+                    <td>{{item.contrato}}</td>
+                    <td>{{item.local}}</td>
+                    <td class="text-right">{{item.total}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <thead>
+                <th colspan="5">Total</th>
+                <th class="text-right">{{concepto.total}}</th>
+            </thead>
+        </table>
+
+        <!-- Servicios Básicos -->
+        {% elif concepto.id == 4 %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Termino</th>
+                    <th>Nº Contrato</th>
+                    <th>Local</th>
+                    <th>Medidor</th>
+                    <th>Lectura Anterior</th>
+                    <th>Lectura Actual</th>
+                    <th>Diferencia</th>
+                    <th>Valor</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in concepto.detalle %}
+                <tr>
+                    <td>{{item.fecha_inicio}}</td>
+                    <td>{{item.fecha_termino}}</td>
+                    <td>{{item.contrato}}</td>
+                    <td>{{item.local}}</td>
+                    <td>{{item.medidor}}</td>
+                    <td>{{item.lectura_anterior}}</td>
+                    <td>{{item.lectura_actual}}</td>
+                    <td>{{item.diferencia}}</td>
+                    <td>{{item.valor}}</td>
+                    <td>{{item.total}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <thead>
+                <th colspan="9">Total</th>
+                <th>{{concepto.total}}</th>
+            </thead>
+        </table>
+
+        <!-- Cuota Incorporación -->
+        {% elif concepto.id == 5 %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width:10%">F.Inicio</th>
+                    <th style="width:10%">F.Termino</th>
+                    <th style="width:25%">Cliente</th>
+                    <th style="width:15%">Nº Contrato</th>
+                    <th style="width:22.5%">Marca Comercial</th>
+                    <th class="text-right" style="width:17.5%">Valor</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in concepto.detalle %}
+                <tr>
+                    <td>{{item.fecha_inicio}}</td>
+                    <td>{{item.fecha_termino}}</td>
+                    <td>{{item.cliente}}</td>
+                    <td>{{item.contrato}}</td>
+                    <td>{{item.nombre_local}}</td>
+                    <td class="text-right">{{item.total}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <thead>
+                <th colspan="5">Total</th>
+                <th class="text-right">{{concepto.total}}</th>
+            </thead>
+        </table>
+
+        <!-- Fondo Promoción -->
+        {% elif concepto.id == 6 %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width:10%">F.Inicio</th>
+                    <th style="width:10%">F.Termino</th>
+                    <th style="width:25%">Cliente</th>
+                    <th style="width:15%">Nº Contrato</th>
+                    <th style="width:22.5%">Marca Comercial</th>
+                    <th class="text-right" style="width:17.5%">Valor</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in concepto.detalle %}
+                <tr>
+                    <td>{{item.fecha_inicio}}</td>
+                    <td>{{item.fecha_termino}}</td>
+                    <td>{{item.cliente}}</td>
+                    <td>{{item.contrato}}</td>
+                    <td>{{item.nombre_local}}</td>
+                    <td class="text-right">{{item.total}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <thead>
+                <th colspan="5">Total</th>
+                <th class="text-right">{{concepto.total}}</th>
+            </thead>
+        </table>
+        {% else %}
+        <p>----</p>
+        {% endif %}
+
+        <br>
+
+        {% endfor %}
+
+        <br>
+
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width:82.5%">Total</th>
+                    <th class="text-right" style="width:17.5%">{{total}}</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+
+</body>
+</html>

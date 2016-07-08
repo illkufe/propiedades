@@ -9,6 +9,7 @@
     <style>
 
     table{
+        font-family: 'Courier';
         font-size: 12px;
     }
     
@@ -19,11 +20,13 @@
     }
 
     p{
+        font-family: 'Courier';
         font-size: 12px;
     }
 
     /* utilities */
     .page{
+        font-family: 'Courier';
         page-break-after: always;
         padding-top: 25px;
 
@@ -69,6 +72,7 @@
                     <th>Locales</th>
                     <th>Valor</th>
                     <th>Ventas</th>
+                    <th>Arriendo Mínimo</th>
                     <th>Total</th>
                 </tr>
             </thead>
@@ -84,16 +88,17 @@
                         {% for local in item.locales %}
                         <li>{{local.nombre}}</li>
                         {% endfor %}
-                    </td>
-                    <td>{{item.valor}}</td>
+                    </td>                    
+                    <td>{{item.valor}}%</td>
                     <td>{{item.ventas}}</td>
+                    <td>{{item.arriendo_minimo}}</td>
                     <td>{{item.total}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
 
             <thead>
-                <th colspan="7">Total</th>
+                <th colspan="8">Total</th>
                 <th>{{total}}</th>
             </thead>
         </table>

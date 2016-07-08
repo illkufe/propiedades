@@ -13,7 +13,7 @@ from .models import Contrato_Tipo, Contrato, Arriendo, Arriendo_Variable, Gasto_
 from accounts.models import UserProfile
 from administrador.models import Empresa, Cliente
 from locales.models import Local
-from procesos.models import Proceso, Proceso_Detalle
+from procesos.models import Proceso
 
 from utilidades.views import meses_entre_fechas
 
