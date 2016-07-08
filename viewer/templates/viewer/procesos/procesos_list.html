@@ -297,6 +297,7 @@ function load_tabla_procesos(){
 		'width': '10%',
 		'data': 'monto',
 		'title': 'MONTO',
+		'visible': false,
 	},
 	{
 		'width': '10%',
@@ -360,12 +361,22 @@ function data_tabla_procesos(){
 
 				row = {}
 
+				var conceptos = ''
+				for (var j = 0; j < data[i].conceptos.length; j++) {
+					conceptos += '<p>'+data[i].conceptos[j].nombre+'</p>'
+				};
+
+				var contratos = ''
+				for (var j = 0; j < data[i].contratos.length; j++) {
+					contratos += '<p>'+data[i].contratos[j].numero+'</p>'
+				};
+
 				row.id 			= data[i].id
 				row.fecha 		= data[i].fecha_creacion
 				row.periodo 	= data[i].fecha_inicio+' - '+data[i].fecha_termino
-				row.concepto 	= '---' // {falta: poner cliente}
+				row.concepto 	= conceptos
 				row.cliente 	= '---' // {falta: poner cliente}
-				row.contratos 	= '---' // {falta: poner contratos}
+				row.contratos 	= contratos
 				row.monto 		= '---' // {falta: poner monto}
 				row.estado 		= data[i].estado
 				row.opciones 	= template

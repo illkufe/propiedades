@@ -131,46 +131,6 @@ class PROCESOS(View):
 
 		for proceso in self.object_list:
 
-			# detalles = []
-
-			# if proceso.concepto.id == 1:
-			# 	pass
-			# 	# print ('arriendo minimo')
-			# elif proceso.concepto.id == 2:
-			# 	pass
-			# 	# print ('arriendo variable')
-			# elif proceso.concepto.id == 3:
-			# 	pass
-			# 	# print ('gasto comun')
-			# elif proceso.concepto.id == 4:
-				
-			# 	detalles_luz 	= Detalle_Electricidad.objects.filter(proceso=proceso)
-			# 	detalles_agua 	= Detalle_Agua.objects.filter(proceso=proceso)
-			# 	detalles_gas 	= Detalle_Gas.objects.filter(proceso=proceso)
-
-			# 	for item in detalles_luz:
-			# 		detalles.append(item)
-
-			# 	for item in detalles_agua:
-			# 		detalles.append(item)
-
-			# 	for item in detalles_gas:
-			# 		detalles.append(item)
-
-			# elif proceso.concepto.id == 5:
-			# 	pass
-			# 	# print ('gasto comun')
-			# elif proceso.concepto.id == 6:
-			# 	pass
-			# 	# print ('gasto comun')
-			# else:
-			# 	print ('no existe')
-
-			# for detalle in detalles:
-			# 	pass
-			# 	# print (detalle.id)
-
-
 			# usuario
 			usuario = {
 				'id'		:proceso.user.id,
@@ -179,11 +139,42 @@ class PROCESOS(View):
 				'email'		:proceso.user.email,
 			}
 
-			# # concepto
-			# concepto = {
-			# 	'id'	:proceso.concepto.id,
-			# 	'nombre':proceso.concepto.nombre,
-			# }
+			# conceptos
+			conceptos 		= []
+			contratos_id 	= []
+
+			for concepto in proceso.conceptos.all():
+
+				conceptos.append({
+					'id'		: concepto.id,
+					'nombre' 	: concepto.nombre,
+					})
+
+				if concepto.id == 1:
+					contratos_id += Detalle_Arriendo_Minimo.objects.filter(proceso=proceso).values_list('contrato_id', flat=True).distinct().exclude(contrato_id__in=contratos_id)
+				elif concepto.id == 2:
+					contratos_id += Detalle_Arriendo_Variable.objects.filter(proceso=proceso).values_list('contrato_id', flat=True).distinct().exclude(contrato_id__in=contratos_id)
+				elif concepto.id == 3:
+					contratos_id += Detalle_Gasto_Comun.objects.filter(proceso=proceso).values_list('contrato_id', flat=True).distinct().exclude(contrato_id__in=contratos_id)
+				elif concepto.id == 4:
+					contratos_id += Detalle_Electricidad.objects.filter(proceso=proceso).values_list('contrato_id', flat=True).distinct().exclude(contrato_id__in=contratos_id)
+					contratos_id += Detalle_Agua.objects.filter(proceso=proceso).values_list('contrato_id', flat=True).distinct().exclude(contrato_id__in=contratos_id)
+					contratos_id += Detalle_Gas.objects.filter(proceso=proceso).values_list('contrato_id', flat=True).distinct().exclude(contrato_id__in=contratos_id)
+				elif concepto.id == 5:
+					contratos_id += Detalle_Cuota_Incorporacion.objects.filter(proceso=proceso).values_list('contrato_id', flat=True).distinct().exclude(contrato_id__in=contratos_id)
+				elif concepto.id == 6:
+					contratos_id += Detalle_Fondo_Promocion.objects.filter(proceso=proceso).values_list('contrato_id', flat=True).distinct().exclude(contrato_id__in=contratos_id)
+				else:
+					pass
+
+			contratos = []
+			for contrato_id in contratos_id:
+				contrato = Contrato.objects.get(id=contrato_id)
+				contratos.append({
+					'id'		: contrato.id,
+					'numero' 	: contrato.numero,
+					})
+
 
 			data.append({
 				'id'			: proceso.id,
@@ -192,7 +183,8 @@ class PROCESOS(View):
 				'fecha_termino'	: proceso.fecha_termino.strftime('%d/%m/%Y'),
 				'estado'		: proceso.proceso_estado.nombre,
 				'usuario'		: usuario,
-				# 'conceptos'		: conceptos,
+				'conceptos'		: conceptos,
+				'contratos'		: contratos,
 				})
 
 		return JsonResponse(data, safe=False)
