@@ -35,7 +35,7 @@
 									<div class="form-group col-sm-3">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_plazo.help_text }}" ></i>
 										<label for="">Periodicidad</label>
-										<select name="activo" class="form-control valid" aria-invalid="false">
+										<select name="periodicidad" class="form-control valid" aria-invalid="false">
 											<option value="">-------------</option>
 											<option value="1">Mensual</option>
 											<option value="2">Diaria</option>
@@ -54,7 +54,7 @@
 
 									<div class="form-group col-sm-2">
 										<p style="color:#fff; margin-bottom:6px">.</p>
-										<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" onclick="guardar_ventas()">SUBIR ARCHIVO</button>
+										<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">SUBIR ARCHIVO</button>
 									</div>
 
 								</div>
@@ -128,59 +128,147 @@ $(document).ready(function(){
 
 	$("#file").filestyle({buttonText: "Find file"});
 
+	guardar_ventas()
+
 });
 
+
+
 function guardar_ventas(){
-	$('#form-venta-new').ajaxSubmit({
-		dataType: 'json',
-		beforeSubmit: function(){
-			console.log('enviando')
+	$("#form-venta-new").validate({
+		rules: {
+			local: {
+				required: true,
+			},
+			periodicidad: {
+				required: true,
+			},
+			file: {
+				required: true,
+			},
 		},
-		success: function(data){
-			console.log(data)
-			if (data.estado == 'error') {
-				var template = ''
-				template += '<p>Error en los siguientes datos</p>'
-				template += '<table class="table table-striped table-bordered table-hover">'
-				template += '<thead>'
-				template += '<tr>'
-				template += '<th>fila</th>'
-				template += '<th>fecha inicio</th>'
-				template += '<th>fecha termino</th>'
-				template += '<th>valor</th>'
-				template += '</tr>'
-				template += '</thead>'
-				template += '<tbody>'
+		messages: {
+			local: {
+				required: "Campo requerido",
+			},
+			periodicidad: {
+				required: "Campo requerido",
+			},
+			file: {
+				required: "Campo requerido",
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group").find('.container-error'));
+		},
+		submitHandler: function(form) {
 
-				for (var i = 0; i < data.errors.length; i++) {
-					template += '<tr>'
-					template += '<td>'+data.errors[i].row+'</td>'
-					template += '<td>'+data.errors[i].fecha_inicio+'</td>'
-					template += '<td>'+data.errors[i].fecha_termino+'</td>'
-					template += '<td>'+data.errors[i].valor+'</td>'
-					template += '</tr>'
-				};
+			$('#form-venta-new').ajaxSubmit({
+				dataType: 'json',
+				beforeSubmit: function(){
+					console.log('enviando')
+				},
+				success: function(data){
+					console.log(data)
+					if (data.estado == 'error') {
+						var template = ''
+						template += '<p>Error en los siguientes datos</p>'
+						template += '<table class="table table-striped table-bordered table-hover">'
+						template += '<thead>'
+						template += '<tr>'
+						template += '<th>fila</th>'
+						template += '<th>fecha inicio</th>'
+						template += '<th>fecha termino</th>'
+						template += '<th>valor</th>'
+						template += '</tr>'
+						template += '</thead>'
+						template += '<tbody>'
 
-				template += '</tbody></table>'
-			}else{
-				template = 'OK'
-			}
+						for (var i = 0; i < data.errors.length; i++) {
+							template += '<tr>'
+							template += '<td>'+data.errors[i].row+'</td>'
+							template += '<td>'+data.errors[i].fecha_inicio+'</td>'
+							template += '<td>'+data.errors[i].fecha_termino+'</td>'
+							template += '<td>'+data.errors[i].valor+'</td>'
+							template += '</tr>'
+						};
+
+						template += '</tbody></table>'
+					}else{
+						template = 'OK'
+					}
 
 
-			swal({
-				title: "Archivo <small>cargado</small>",
-				text: template,
-				type: "success",
-				html: true
-			});
+					swal({
+						title: "Archivo <small>cargado</small>",
+						text: template,
+						type: "success",
+						html: true
+					});
 
-			load_tabla_ventas()
+					load_tabla_ventas()
 
-			//limpiar formulario
+					clear_form('#form-venta-new')
+					$("#file").filestyle('clear');
+
+				}
+			})
 
 		}
-	})
+	}) 
 }
+
+// function guardar_ventas(){
+// 	$('#form-venta-new').ajaxSubmit({
+// 		dataType: 'json',
+// 		beforeSubmit: function(){
+// 			console.log('enviando')
+// 		},
+// 		success: function(data){
+// 			console.log(data)
+// 			if (data.estado == 'error') {
+// 				var template = ''
+// 				template += '<p>Error en los siguientes datos</p>'
+// 				template += '<table class="table table-striped table-bordered table-hover">'
+// 				template += '<thead>'
+// 				template += '<tr>'
+// 				template += '<th>fila</th>'
+// 				template += '<th>fecha inicio</th>'
+// 				template += '<th>fecha termino</th>'
+// 				template += '<th>valor</th>'
+// 				template += '</tr>'
+// 				template += '</thead>'
+// 				template += '<tbody>'
+
+// 				for (var i = 0; i < data.errors.length; i++) {
+// 					template += '<tr>'
+// 					template += '<td>'+data.errors[i].row+'</td>'
+// 					template += '<td>'+data.errors[i].fecha_inicio+'</td>'
+// 					template += '<td>'+data.errors[i].fecha_termino+'</td>'
+// 					template += '<td>'+data.errors[i].valor+'</td>'
+// 					template += '</tr>'
+// 				};
+
+// 				template += '</tbody></table>'
+// 			}else{
+// 				template = 'OK'
+// 			}
+
+
+// 			swal({
+// 				title: "Archivo <small>cargado</small>",
+// 				text: template,
+// 				type: "success",
+// 				html: true
+// 			});
+
+// 			load_tabla_ventas()
+
+// 			//limpiar formulario
+
+// 		}
+// 	})
+// }
 
 function load_tabla_ventas(){
 

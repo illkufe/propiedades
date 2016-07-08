@@ -292,15 +292,21 @@ class VENTAS(View):
 			try:
 				fecha_inicio 	= datetime(*xlrd.xldate_as_tuple(i['Fecha Inicio'], 0))
 				fecha_termino 	= datetime(*xlrd.xldate_as_tuple(i['Fecha Termino'], 0))
-				valor = i['Total']
-				venta = Venta(
-					fecha_inicio		= fecha_inicio,
-					fecha_termino		= fecha_termino,
-					valor				= valor,
-					local_id 			= local,
-					periodicidad		= 3,
-					)
-				venta.save()
+				valor 			= i['Total']
+
+				if Venta.objects.filter(fecha_inicio=fecha_inicio, fecha_termino=fecha_termino, local_id=local).exists():
+					venta 		= Venta.objects.get(fecha_inicio=fecha_inicio, fecha_termino=fecha_termino, local_id=local)
+					venta.valor = valor
+					venta.save()
+				else:
+					venta = Venta(
+						fecha_inicio		= fecha_inicio,
+						fecha_termino		= fecha_termino,
+						valor				= valor,
+						local_id 			= local,
+						periodicidad		= 3,
+						)
+					venta.save()
 			except ValueError:
 				estado = 'error'
 
