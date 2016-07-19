@@ -387,7 +387,7 @@ def calculo_arriendo_variable(request, proceso, contratos, meses, fecha):
 						if fecha.month == venta['month'] and fecha.year == venta['year']:
 							ventas += venta['valor__sum']
 
-					if ((ventas * valor) / 100) >= arriendo_minimo:
+					if ((ventas * valor) / 100) >= arriendo_minimo and arriendo_minimo is not None:
 						total = ((ventas * valor) / 100) - arriendo_minimo
 					else:
 						total = 0
@@ -627,9 +627,88 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 		for item in contratos:
 
 			contrato = Contrato.objects.get(id=item)
+
+
+
+			locales 		= contrato.locales.all()
+			metros_total 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
+
+			try:
+				arriendo 	= Arriendo.objects.get(contrato=contrato)
+				existe 		= Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month).exists()
+
+				if existe is True:
+					detalle 		= Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month)
+					metro_cuadrado	= detalle[0].metro_cuadrado
+					
+					if metro_cuadrado is True:
+						factor = detalle[0].moneda.moneda_historial_set.all().order_by('-id').first().valor
+						metros = metros_total['metros_cuadrados__sum']
+					else:
+						factor = detalle[0].moneda.moneda_historial_set.all().order_by('-id').first().valor
+						metros = 1
+
+					valor = detalle[0].valor * factor * metros
+
+					if arriendo.reajuste is True and arriendo.por_meses is False and fecha >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
+						reajuste = True
+
+						if arriendo.moneda.id == 6:
+							reajuste_valor = (arriendo.valor/100)+1
+						else:
+							reajuste_valor = arriendo.valor * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+						arriendo_minimo = valor * reajuste_valor
+
+					elif arriendo.reajuste is True and arriendo.por_meses is True and fecha >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
+
+						reajuste_factor = int((meses_entre_fechas(arriendo.fecha_inicio, fecha) -1)/arriendo.meses)
+
+						if arriendo.moneda.id == 6:
+							reajuste_valor = ((arriendo.valor * reajuste_factor)/100)+1
+						else:
+							reajuste_valor = (arriendo.valor * reajuste_factor) * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+						arriendo_minimo = valor * reajuste_valor
+
+					else:
+						arriendo_minimo = valor
+
+				else:
+					arriendo_minimo = None
+
+			except Arriendo.DoesNotExist:
+				arriendo_minimo = None
+
+			try:
+				existe = Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
+				if existe is True:
+					detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
+					valor 			= detalle[0].valor
+					ventas 			= 0
+					ventas_local 	= Venta.objects.filter(local_id__in=locales).\
+					extra(select={'year': "EXTRACT(year FROM fecha_inicio)",'month': "EXTRACT(month FROM fecha_inicio)", 'id': "id"}).\
+					values('year', 'month', 'local_id').\
+					annotate(Sum('valor'))
+
+					for venta in ventas_local:
+						if fecha.month == venta['month'] and fecha.year == venta['year']:
+							ventas += venta['valor__sum']
+
+					if ((ventas * valor) / 100) >= arriendo_minimo and arriendo_minimo is not None:
+						arriendo_reajustable = ((ventas * valor) / 100)
+					elif arriendo_minimo is not None:
+						arriendo_reajustable = arriendo_minimo
+					else:
+						arriendo_reajustable = 0
+
+				else:
+					arriendo_reajustable 	= None
+
+			except Exception:
+				arriendo_reajustable = None
 			
 			try:
-
 				fondos_promocion = Fondo_Promocion.objects.filter(contrato=contrato)
 
 				for fondo_promocion in fondos_promocion:
@@ -703,6 +782,9 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 						valor 			= None
 						factor 			= None
 						total 			= None
+
+					if arriendo_reajustable is not None and valor is not None:
+						total = arriendo_reajustable * ((100+valor)/100)
 
 					Detalle_Fondo_Promocion(
 						valor 			= valor,

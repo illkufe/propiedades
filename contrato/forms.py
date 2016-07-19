@@ -327,7 +327,7 @@ class CuotaIncorporacionForm(forms.ModelForm):
 class FondoPromocionForm(forms.ModelForm):
 
 	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar desde')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5,6]), widget=forms.Select(attrs={'class': 'form-control'}))
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
