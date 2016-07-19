@@ -54,7 +54,6 @@
 							{% for form in formset_detalle %}
 							<tr>
 								<td>
-
 									<div class="form-group">
 										{{ form.mes_inicio }}
 										<div class="container-error">
@@ -63,7 +62,6 @@
 									</div>
 								</td>
 								<td>
-
 									<div class="form-group">
 										{{ form.mes_termino }}
 										<div class="container-error">
@@ -88,9 +86,7 @@
 									</div>
 								</td>
 								<td class="text-center">
-
 									<div class="form-group">
-
 										{{ form.metro_cuadrado }}
 										<div class="container-error">
 											{{ form.metro_cuadrado.errors }}
@@ -123,6 +119,15 @@
 						</div>
 
 						<div class="form-group col-sm-2">
+							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.por_meses.help_text }}" ></i>
+							{{ formset_arriendo.por_meses.label_tag }}
+							{{ formset_arriendo.por_meses }}
+							<div class="container-error">
+								{{ formset_arriendo.por_meses.errors }}
+							</div>
+						</div>
+
+						<div class="form-group col-sm-2">
 							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.meses.help_text }}" ></i>
 							{{ formset_arriendo.meses.label_tag }}
 							{{ formset_arriendo.meses }}
@@ -140,7 +145,7 @@
 							</div>
 						</div>
 
-						<div class="form-group col-sm-3">
+						<div class="form-group col-sm-2">
 							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.moneda.help_text }}" ></i>
 							{{ formset_arriendo.moneda.label_tag }}
 							{{ formset_arriendo.moneda }}
@@ -149,7 +154,7 @@
 							</div>
 						</div>
 
-						<div class="form-group col-sm-3">
+						<div class="form-group col-sm-2">
 							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.fecha_inicio.help_text }}" ></i>
 							{{ formset_arriendo.fecha_inicio.label_tag }}
 							<div class="input-group date">

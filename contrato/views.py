@@ -7,15 +7,15 @@ from django.core.urlresolvers import reverse_lazy
 from django.db.models import Sum
 from django.views.generic import View, ListView, FormView, CreateView, DeleteView, UpdateView
 
-from .forms import ContratoTipoForm, ContratoForm, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, GastoComunFormSet, ServicioBasicoFormSet, CuotaIncorporacionFormet, FondoPromocionForm
-from .models import Contrato_Tipo, Contrato, Arriendo, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from .forms import ContratoTipoForm, ContratoForm, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, GastoComunFormSet, ServicioBasicoFormSet, CuotaIncorporacionFormet, FondoPromocionForm, FondoPromocionFormSet
+from .models import Contrato_Tipo, Contrato, Contrato_Estado, Arriendo, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
 
 from accounts.models import UserProfile
 from administrador.models import Empresa, Cliente
 from locales.models import Local
 from procesos.models import Proceso
 
-from utilidades.views import meses_entre_fechas
+from utilidades.views import meses_entre_fechas, fecha_actual
 
 import base64
 import pdfkit
@@ -148,6 +148,13 @@ class ContratoMixin(object):
 		profile 		= UserProfile.objects.get(user=self.request.user)
 		obj 			= form.save(commit=False)
 		obj.empresa_id 	= profile.empresa_id
+
+		# comprobar si tiene estado
+		try:
+			obj.contrato_estado
+		except Exception:
+			obj.contrato_estado = Contrato_Estado.objects.get(id=1)
+
 		obj.save()
 		form.save_m2m()
 
@@ -230,11 +237,11 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 		queryset.fecha_inicio 		= queryset.fecha_inicio.strftime('%d/%m/%Y')
 		queryset.fecha_termino 		= queryset.fecha_termino.strftime('%d/%m/%Y')
 		queryset.fecha_habilitacion = queryset.fecha_habilitacion.strftime('%d/%m/%Y')
-		queryset.fecha_activacion 	= queryset.fecha_activacion.strftime('%d/%m/%Y')
 		queryset.fecha_renovacion 	= queryset.fecha_renovacion.strftime('%d/%m/%Y')
 		queryset.fecha_remodelacion = queryset.fecha_remodelacion.strftime('%d/%m/%Y')
 		queryset.fecha_aviso 		= queryset.fecha_aviso.strftime('%d/%m/%Y')
 		queryset.fecha_plazo 		= queryset.fecha_plazo.strftime('%d/%m/%Y')
+		queryset.fecha_salida 		= queryset.fecha_salida.strftime('%d/%m/%Y')
 
 		return queryset
 
@@ -322,7 +329,6 @@ class ContratoConceptoMixin(object):
 
 class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
-
 	def get_context_data(self, **kwargs):
 
 		context 				= super(ContratoConceptoNew, self).get_context_data(**kwargs)
@@ -376,12 +382,12 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 			except Exception:
 				context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(self.request.POST)
 
-			# fondo promocion
+			# fondo promoción
 			try:
-				fondo_promocion 				= Fondo_Promocion.objects.get(contrato_id=self.kwargs['contrato_id'])
-				context['form_fondo_promocion'] = FondoPromocionForm(self.request.POST, instance=fondo_promocion)
+				fondo_promocion 				= Fondo_Promocion.objects.filter(contrato_id=self.kwargs['contrato_id'])
+				context['form_fondo_promocion'] = FondoPromocionFormSet(self.request.POST, instance=contrato)
 			except Exception:
-				context['form_fondo_promocion'] = FondoPromocionForm(self.request.POST)
+				context['form_fondo_promocion'] = FondoPromocionFormSet(self.request.POST)
 
 		else:
 
@@ -428,13 +434,39 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
 			# fondo promoción
 			try:
-				fondo_promocion 				= Fondo_Promocion.objects.get(contrato=contrato)
-				fondo_promocion.fecha 			= fondo_promocion.fecha.strftime('%d/%m/%Y')
-				context['form_fondo_promocion'] = FondoPromocionForm(instance=fondo_promocion, contrato=contrato)
+				fondo_promocion 				= Fondo_Promocion.objects.filter(contrato_id=contrato_id)
+				context['form_fondo_promocion'] = FondoPromocionFormSet(instance=contrato, form_kwargs={'contrato': contrato})
 			except Exception:
-				context['form_fondo_promocion'] = FondoPromocionForm(contrato=contrato)
+				context['form_fondo_promocion'] = FondoPromocionFormSet(form_kwargs={'contrato': contrato})
 
 		return context
+
+
+
+class ContratosInactivosList(ListView):
+
+	model 			= Contrato
+	template_name 	= 'viewer/contratos/contratos_inactivos_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ContratosInactivosList, self).get_context_data(**kwargs)
+		context['title'] 	= 'Contratos'
+		context['subtitle'] = 'Contrato Incativos'
+		context['name'] 	= 'Lista'
+		context['href'] 	= 'contratos/inactivos'
+
+		return context
+
+	def get_queryset(self):
+
+		queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True, fecha_activacion=None)
+
+		for item in queryset:
+			item.fecha_inicio  	= item.fecha_inicio.strftime('%d/%m/%Y')
+			item.fecha_termino 	= item.fecha_termino.strftime('%d/%m/%Y')
+
+		return queryset
 
 
 
@@ -488,17 +520,16 @@ class CONTRATO(View):
 				'numero' 				: contrato.numero,
 				'fecha_contrato' 		: contrato.fecha_contrato,
 				'nombre_local' 			: contrato.nombre_local,
-				'fecha_inicio' 			: contrato.fecha_inicio,
-				'fecha_termino' 		: contrato.fecha_termino,
-				'fecha_habilitacion' 	: contrato.fecha_habilitacion,
-				'fecha_activacion' 		: contrato.fecha_activacion,
-				'fecha_renovacion' 		: contrato.fecha_renovacion,
-				'fecha_remodelacion' 	: contrato.fecha_remodelacion,
-				'fecha_aviso' 			: contrato.fecha_aviso,
-				'fecha_plazo' 			: contrato.fecha_plazo,
+				'fecha_inicio' 			: contrato.fecha_inicio.strftime('%d/%m/%Y'),
+				'fecha_termino' 		: contrato.fecha_termino.strftime('%d/%m/%Y'),
+				'fecha_habilitacion' 	: contrato.fecha_habilitacion.strftime('%d/%m/%Y'),
+				'fecha_activacion' 		: contrato.fecha_activacion.strftime('%d/%m/%Y') if contrato.fecha_activacion is not None else None,
+				'fecha_renovacion' 		: contrato.fecha_renovacion.strftime('%d/%m/%Y'),
+				'fecha_remodelacion' 	: contrato.fecha_remodelacion.strftime('%d/%m/%Y'),
+				'fecha_aviso' 			: contrato.fecha_aviso.strftime('%d/%m/%Y'),
+				'fecha_plazo' 			: contrato.fecha_plazo.strftime('%d/%m/%Y'),
 				'bodega' 				: contrato.bodega,
 				'metros_bodega' 		: contrato.metros_bodega,
-				'comentario' 			: contrato.comentario,
 				'tipo' 					: {'id': contrato.contrato_tipo.id, 'nombre': contrato.contrato_tipo.nombre},
 				'estado' 				: {'id': contrato.contrato_estado.id, 'nombre': contrato.contrato_estado.nombre},
 				'cliente' 				: {'id': contrato.cliente.id, 'nombre': contrato.cliente.nombre},
@@ -510,6 +541,20 @@ class CONTRATO(View):
 
 
 # Funciones -----------------------------
+def contrato_activar(request, contrato_id):
+
+	try:
+		data 		= {'estado': 'ok'}
+		contrato 	= Contrato.objects.get(id=contrato_id)
+		contrato.fecha_activacion 	= fecha_actual()
+		contrato.contrato_estado 	= Contrato_Estado.objects.get(id=2)
+		contrato.save()
+		
+	except Exception:
+		data = {'estado': 'error'}
+
+	return JsonResponse(data, safe=False)
+
 def contrato_pdf(request, contrato_id):
 
 	contrato 		= Contrato.objects.get(id=contrato_id)

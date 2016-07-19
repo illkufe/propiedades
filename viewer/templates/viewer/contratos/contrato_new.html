@@ -47,15 +47,6 @@
 								</div>
 
 								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.contrato_estado.help_text }}" ></i>
-									{{ form.contrato_estado.label_tag }}
-									{{ form.contrato_estado }}
-									<div class="container-error">
-										{{ form.contrato_estado.errors|striptags }}
-									</div>
-								</div>
-
-								<div class="form-group col-sm-3">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cliente.help_text }}" ></i>
 									{{ form.cliente.label_tag }}
 									<div class="input-group">
@@ -118,7 +109,6 @@
 						<div class="row">
 							<div class="col-sm-12">
 
-
 								<div class="form-group col-sm-3">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_contrato.help_text }}" ></i>
 									{{ form.fecha_contrato.label_tag }}
@@ -169,6 +159,15 @@
 									</div>
 								</div>
 
+								<div class="form-group col-sm-2">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.meses.help_text }}" ></i>
+									{{ form.meses.label_tag }}
+									{{ form.meses }}
+									<div class="container-error">
+										{{ form.meses.errors|striptags }}
+									</div>
+								</div>
+
 								<div class="form-group col-sm-3 date" id="fecha_habilitacion">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_habilitacion.help_text }}" ></i>
 									{{ form.fecha_habilitacion.label_tag }}
@@ -181,21 +180,6 @@
 
 									<div class="container-error">
 										{{ form.fecha_habilitacion.errors|striptags }}
-									</div>
-								</div>
-
-								<div class="form-group col-sm-3 date" id="data_2">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_activacion.help_text }}" ></i>
-									{{ form.fecha_activacion.label_tag }}
-									<div class="input-group date">
-										{{ form.fecha_activacion }}
-										<span class="input-group-addon">
-											<i class="fa fa-calendar"></i>
-										</span>
-									</div>
-
-									<div class="container-error">
-										{{ form.fecha_activacion.errors|striptags }}
 									</div>
 								</div>
 
@@ -252,6 +236,29 @@
 									</div>
 									<div class="container-error">
 										{{ form.fecha_plazo.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3 date" id="data_2">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_salida.help_text }}" ></i>
+									{{ form.fecha_salida.label_tag }}
+									<div class="input-group date">
+										{{ form.fecha_salida }}
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+									<div class="container-error">
+										{{ form.fecha_salida.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-2">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.dias_salida.help_text }}" ></i>
+									{{ form.dias_salida.label_tag }}
+									{{ form.dias_salida }}
+									<div class="container-error">
+										{{ form.dias_salida.errors|striptags }}
 									</div>
 								</div>
 
@@ -549,6 +556,66 @@ $(document).ready(function(){
 
 });
 
+function initialize(){
+
+	var fecha = new Date();
+
+	$('#form-lectura-medidor select[name="mes"]').val(fecha.getMonth() + 1)
+	$('#form-lectura-medidor input[name="anio"]').val(fecha.getFullYear())
+
+	if ($('#id_bodega').is(':checked')) {
+		$("#id_metros_bodega").attr('disabled', false)
+	}
+
+	// cambio en fecha inicio
+	$('input[name="fecha_inicio"]').change(function(){
+		var fecha_inicio = $(this).val().split('/')
+		if ($('input[name="fecha_termino"]').val() != '') {
+
+			var fecha_termino 	= $('input[name="fecha_termino"]').val().split('/')
+			fecha_inicio 		= new Date(parseInt(fecha_inicio[2]), parseInt(fecha_inicio[1]-1), parseInt(fecha_inicio[0]));
+			fecha_termino 		= new Date(parseInt(fecha_termino[2]), parseInt(fecha_termino[1]-1), parseInt(fecha_termino[0]));
+
+			var meses = diferencia_entre_meses(fecha_inicio, fecha_termino)
+			$('input[name="meses"]').val(meses)
+		}
+	})
+
+	// cambio en fecha término
+	$('input[name="fecha_termino"]').change(function(){
+		var fecha_termino = $(this).val().split('/')
+		if ($('input[name="fecha_inicio"]').val() != '') {
+
+			var fecha_inicio 	= $('input[name="fecha_inicio"]').val().split('/')
+			fecha_inicio 		= new Date(parseInt(fecha_inicio[2]), parseInt(fecha_inicio[1]-1), parseInt(fecha_inicio[0]));
+			fecha_termino 		= new Date(parseInt(fecha_termino[2]), parseInt(fecha_termino[1]-1), parseInt(fecha_termino[0]));
+
+			var meses = diferencia_entre_meses(fecha_inicio, fecha_termino)
+			$('input[name="meses"]').val(meses)
+		}
+	})
+
+	// cambio en los meses
+	$('input[name="meses"]').change(function(){
+		var meses =  $(this).val()
+		if ($('input[name="fecha_inicio"]').val() != '') {
+
+			var fecha 	= $('input[name="fecha_inicio"]').val().split('/')
+			fecha 		= new Date(parseInt(fecha[2]), parseInt(fecha[1]-1), parseInt(fecha[0]));
+			fecha.setMonth(fecha.getMonth() + parseInt(meses));
+
+			var dia  = fecha.getDate() < 10 ? '0'+fecha.getDate() : fecha.getDate()
+			var mes  = fecha.getMonth()+1 < 10 ? '0'+(fecha.getMonth()+1) : fecha.getMonth()+1
+			var anio = fecha.getFullYear()
+
+			$('input[name="fecha_termino"]').val(dia+'/'+mes+'/'+anio)
+		}
+	})
+
+}
+
+
+
 
 function open_form_cliente(){
 	$('#m-cliente-new').modal('show')
@@ -566,12 +633,6 @@ function open_tabla_locales(){
 	})
 }
 
-function initialize(){
-
-	if ($('#id_bodega').is(':checked')) {
-		$("#id_metros_bodega").attr('disabled', false)
-	}
-}
 
 function load_tabla_locales(){
 	var configuracion = {

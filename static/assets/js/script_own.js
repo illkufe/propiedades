@@ -326,3 +326,13 @@ function agregar_fila(tabla, entidad){
 
 }
 
+function diferencia_entre_meses(d1, d2) {
+    var months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth() + 1;
+    months += d2.getMonth() + 1;
+    return months <= 0 ? 0 : months;
+}
+
+
+

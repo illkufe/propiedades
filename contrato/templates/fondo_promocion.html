@@ -13,6 +13,195 @@
 			<div class="row">
 				<div class="col-sm-12">
 
+					{{ form_fondo_promocion.management_form }}
+					{% for form in form_fondo_promocion %}
+					{% for hidden in form.hidden_fields %}
+					{{ hidden }}
+					{% endfor %}
+					{% endfor %}
+
+					<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-fondo-promocion', 'fondo_promocion')"><i class="fa fa-plus"></i> nuevo fondo de promoción</button>
+					<table id="tabla-fondo-promocion" class="table">
+						<thead>
+
+							{% for form in form_fondo_promocion %}
+							{% if forloop.first %}
+							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.periodicidad.help_text }}" ></i>
+								{{ form.periodicidad.label_tag }}
+							</th>
+							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.concepto.help_text }}" ></i>
+								{{ form.concepto.label_tag }}
+							</th>
+							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha.help_text }}" ></i>
+								{{ form.fecha.label_tag }}
+							</th>
+							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+								{{ form.valor.label_tag }}
+							</th>
+							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+								{{ form.moneda.label_tag }}
+							</th>
+							<th></th>
+							{% endif %}
+							{% endfor %}
+						</thead>
+						<tbody>
+							{% for form in form_fondo_promocion %}
+							<tr>
+
+								<td>
+									<div class="form-group">
+										{{ form.periodicidad }}
+										<div class="container-error">
+											{{ form.periodicidad.errors }}
+										</div>
+									</div>
+								</td>
+
+								<td>
+									<div class="form-group">
+										{{ form.concepto }}
+										<div class="container-error">
+											{{ form.concepto.errors }}
+										</div>
+									</div>
+								</td>
+
+								<td style="width:20%">
+									<div class="form-group">
+										<div class="input-group date">
+											<input class="form-control format-date" id="id_fondo_promocion_set-{{forloop.counter0}}-fecha" name="fondo_promocion_set-{{forloop.counter0}}-fecha" type="text" value='{{ form.fecha.value|date:"d/m/Y" }}'>
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+									</div>
+								</td>
+
+<!-- 								<td class="text-center">
+									<div class="form-group">
+										{{ form.fecha }}
+										<div class="container-error">
+											{{ form.fecha.errors }}
+										</div>
+									</div>
+								</td> -->
+
+								<td class="text-center">
+									<div class="form-group">
+										{{ form.valor }}
+										<div class="container-error">
+											{{ form.valor.errors }}
+										</div>
+									</div>
+								</td>
+
+								<td class="text-center">
+									<div class="form-group">
+										{{ form.moneda }}
+										<div class="container-error">
+											{{ form.moneda.errors }}
+										</div>
+									</div>
+								</td>
+
+								<td class="text-center delete">
+									<div class="form-group text-center">
+										{{ form.DELETE }}
+										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Cuota')"><i class="fa fa-trash"></i></a>
+									</div>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<br>
+			<a href="/contratos/list">
+				<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
+			</a>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-new', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+<div class="panel panel-default">
+
+	<div class="panel-heading" role="tab" id="heading-6">
+		<h4 class="panel-title">
+			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-6" aria-controls="collapse-6" aria-expanded="false">
+				Fondo de Promoción
+			</a>
+		</h4>
+	</div>
+
+	<div id="collapse-6" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-3">
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-sm-12">
+
 					<div class="row">
 
 						<div class="form-group col-sm-3">
@@ -76,4 +265,4 @@
 			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-new', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
 		</div>
 	</div>
-</div>
+</div> -->

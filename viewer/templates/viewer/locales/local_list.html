@@ -39,6 +39,7 @@
 									<td>{{ item.local_tipo }}</td>
 									<td>{{ item.sector }}</td>
 									<td>{{ item.nivel }}</td>
+									<td>{{ item.metros_cuadrados }}</td>
 									<td class="text-center">
 										<a class="btn btn-edit btn-bitbucket" href='/activos/{{item.activo.id}}/locales/update/{{item.id}}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'locales', 'tabla-locales', 'Local')"><i class="fa fa-trash"></i></a>
@@ -94,6 +95,11 @@ $(document).ready(function(){
 		'width': '15%',
 		'data': 'nivel',
 		'title': 'Nivel',
+	},
+	{
+		'width': '5%',
+		'data': 'metros_cuadrados',
+		'title': 'm²',
 	},
 	{
 		'width': '15%',

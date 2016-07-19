@@ -1072,7 +1072,7 @@ url(r'^lectura-medidores/update/(?P<pk>\d+)$', views.LecturaMedidorUpdate.as_vie
 
 class LecturaMedidorForm(forms.ModelForm):
 
-	fecha = forms.DateField(input_formats=['%d/%m/%Y'], widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido.', 'invalid': 'campo invalido'})
+	fecha = forms.DateField(input_formats=['%d/%m/%Y'], widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
 
 	class Meta:
 
@@ -1087,7 +1087,7 @@ class LecturaMedidorForm(forms.ModelForm):
 		}
 
 		error_messages = {
-		'valor' 		: {'required': 'campo requerido.'},
+		'valor' 		: {'required': 'campo requerido'},
 		}
 
 		labels = {
@@ -2106,10 +2106,10 @@ class ServicioBasicoForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'tipo'			: {'required': 'campo requerido.'},
-			'mes_inicio'	: {'required': 'campo requerido.'},
-			'mes_termino'	: {'required': 'campo requerido.'},
-			'valor'			: {'required': 'campo requerido.'},
+			'tipo'			: {'required': 'campo requerido'},
+			'mes_inicio'	: {'required': 'campo requerido'},
+			'mes_termino'	: {'required': 'campo requerido'},
+			'valor'			: {'required': 'campo requerido'},
 		}
 
 		labels = {

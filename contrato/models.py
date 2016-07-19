@@ -44,12 +44,15 @@ class Contrato(models.Model):
 	nombre_local 		= models.CharField(max_length=250)
 	fecha_inicio 		= models.DateField()
 	fecha_termino 		= models.DateField()
+	meses 				= models.IntegerField()
 	fecha_habilitacion 	= models.DateField()
-	fecha_activacion 	= models.DateField()
+	fecha_activacion 	= models.DateField(null=True, blank=True)
 	fecha_renovacion 	= models.DateField()
 	fecha_remodelacion 	= models.DateField()
 	fecha_aviso 		= models.DateField()
 	fecha_plazo 		= models.DateField()
+	dias_salida			= models.IntegerField()
+	fecha_salida		= models.DateField()
 	bodega 				= models.BooleanField(default=False)
 	metros_bodega		= models.FloatField(default=0, null=True, blank=True)
 	destino_comercial 	= models.TextField(blank=True)
@@ -73,6 +76,7 @@ class Arriendo(models.Model):
 
 	# atributos (generales
 	reajuste 		= models.BooleanField(default=False)
+	por_meses 		= models.BooleanField(default=False)
 	meses 			= models.IntegerField(default=0)
 	valor			= models.FloatField(default=0)
 	fecha_inicio 	= models.DateField()
@@ -139,20 +143,22 @@ class Arriendo_Variable(models.Model):
 		(12, 'DICIEMBRE'),
 	)
 
-	PERIODICIDAD = (
-		(0, 'ANUAL'),
-		(1, 'SEMESTRAL'),
-		(2, 'TRIMESTRAL'),
-		(3, 'MENSUAL'),
-		(4, 'QUINCENAL'),
-		(5, 'SEMANAL'),
-		(6, 'DIARIA'),
-	)
+	# PERIODICIDAD = (
+	# 	(0, 'ANUAL'),
+	# 	(1, 'SEMESTRAL'),
+	# 	(2, 'TRIMESTRAL'),
+	# 	(3, 'MENSUAL'),
+	# 	(4, 'QUINCENAL'),
+	# 	(5, 'SEMANAL'),
+	# 	(6, 'DIARIA'),
+	# )
 
 	# atributos (generales
 	mes_inicio 		= models.IntegerField(choices=MESES)
 	mes_termino		= models.IntegerField(choices=MESES)
-	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
+	anio_inicio		= models.IntegerField()
+	anio_termino 	= models.IntegerField()
+	# periodicidad	= models.IntegerField(choices=PERIODICIDAD)
 	valor			= models.FloatField()
 
 	# atributos (por defecto)
@@ -205,8 +211,9 @@ class Servicio_Basico(models.Model):
 class Cuota_Incorporacion(models.Model):
 
 	# atributos (generales)
-	fecha 		= models.DateField()
-	valor		= models.FloatField()
+	fecha 			= models.DateField()
+	valor			= models.FloatField()
+	metro_cuadrado 	= models.BooleanField(default=False)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)

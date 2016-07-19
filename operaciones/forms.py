@@ -19,10 +19,10 @@ class LecturaElectricidadForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'medidor_electricidad' 	: {'required': 'campo requerido.'},
-			'valor' 				: {'required': 'campo requerido.'},
-			'mes' 					: {'required': 'campo requerido.'},
-			'anio' 					: {'required': 'campo requerido.'},
+			'medidor_electricidad' 	: {'required': 'campo requerido'},
+			'valor' 				: {'required': 'campo requerido'},
+			'mes' 					: {'required': 'campo requerido'},
+			'anio' 					: {'required': 'campo requerido'},
 		}
 
 		labels = {
@@ -53,10 +53,10 @@ class LecturaAguaForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'medidor_agua' 	: {'required': 'campo requerido.'},
-			'valor' 		: {'required': 'campo requerido.'},
-			'mes' 			: {'required': 'campo requerido.'},
-			'anio' 			: {'required': 'campo requerido.'},
+			'medidor_agua' 	: {'required': 'campo requerido'},
+			'valor' 		: {'required': 'campo requerido'},
+			'mes' 			: {'required': 'campo requerido'},
+			'anio' 			: {'required': 'campo requerido'},
 		}
 
 		labels = {
@@ -87,10 +87,10 @@ class LecturaGasForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'medidor_gas' 	: {'required': 'campo requerido.'},
-			'valor' 		: {'required': 'campo requerido.'},
-			'mes' 			: {'required': 'campo requerido.'},
-			'anio' 			: {'required': 'campo requerido.'},
+			'medidor_gas' 	: {'required': 'campo requerido'},
+			'valor' 		: {'required': 'campo requerido'},
+			'mes' 			: {'required': 'campo requerido'},
+			'anio' 			: {'required': 'campo requerido'},
 		}
 
 		labels = {

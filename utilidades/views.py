@@ -1,7 +1,10 @@
 from django.shortcuts import render
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 import calendar
+
+def fecha_actual():
+	return datetime.now()
 
 
 def primer_dia(fecha):
@@ -25,6 +28,7 @@ def ultimo_dia(fecha):
 	return fecha
 
 def meses_entre_fechas(f_inicio, f_termino):
+
 	delta = 0
 	while True:
 
@@ -38,13 +42,14 @@ def meses_entre_fechas(f_inicio, f_termino):
 	return delta + 1
 
 def sumar_meses(fecha, meses):
+
 	month 	= fecha.month - 1 + meses
 	year 	= int(fecha.year + month / 12 )
 	month 	= month % 12 + 1
 	day 	= min(fecha.day,calendar.monthrange(year,month)[1])
 	fecha 	= str(day)+'/'+str(month)+'/'+str(year)
 
-	return datetime.strptime(fecha, "%d/%m/%Y")
+	return datetime.strptime(fecha, "%d/%m/%Y").date()
 
 def formato_moneda(valor):
 

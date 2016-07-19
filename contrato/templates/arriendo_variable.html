@@ -30,12 +30,16 @@
 								{{ form.mes_inicio.label_tag }}
 							</th>
 							<th>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.anio_inicio.help_text }}" ></i>
+								{{ form.anio_inicio.label_tag }}
+							</th>
+							<th>
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
 								{{ form.mes_termino.label_tag }}
 							</th>
 							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-								{{ form.periodicidad.label_tag }}
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.anio_termino.help_text }}" ></i>
+								{{ form.anio_termino.label_tag }}
 							</th>
 							<th>
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
@@ -53,7 +57,6 @@
 							{% for form in form_arriendo_variable %}
 							<tr>
 								<td>
-
 									<div class="form-group">
 										{{ form.mes_inicio }}
 										<div class="container-error">
@@ -62,7 +65,14 @@
 									</div>
 								</td>
 								<td>
-
+									<div class="form-group">
+										{{ form.anio_inicio }}
+										<div class="container-error">
+											{{ form.anio_inicio.errors }}
+										</div>
+									</div>
+								</td>
+								<td>
 									<div class="form-group">
 										{{ form.mes_termino }}
 										<div class="container-error">
@@ -71,19 +81,16 @@
 									</div>
 								</td>
 								<td>
-
 									<div class="form-group">
-
-										{{ form.periodicidad }}
+										{{ form.anio_termino }}
 										<div class="container-error">
-											{{ form.periodicidad.errors }}
+											{{ form.anio_termino.errors }}
 										</div>
 									</div>
 								</td>
+
 								<td>
-
 									<div class="form-group">
-
 										{{ form.valor }}
 										<div class="container-error">
 											{{ form.valor.errors }}
@@ -91,9 +98,7 @@
 									</div>
 								</td>
 								<td class="text-center">
-
 									<div class="form-group">
-
 										{{ form.moneda }}
 										<div class="container-error">
 											{{ form.moneda.errors }}
@@ -101,7 +106,6 @@
 									</div>
 								</td>
 								<td class="text-center delete">
-
 									<div class="form-group text-center">
 										{{ form.DELETE }}
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Periodo')"><i class="fa fa-trash"></i></a>
@@ -115,9 +119,7 @@
 			</div>
 
 			<br>
-			<a href="/contratos/list">
-				<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
-			</a>
+			<a href="/contratos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
 			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-new', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
 		</div>

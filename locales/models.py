@@ -11,6 +11,7 @@ class Local_Tipo(models.Model):
 	# atributos (generales)
 	nombre  	= models.CharField(max_length=250)
 	descripcion = models.TextField(blank=True)
+	prorrateo 	= models.BooleanField(default=False)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)

@@ -12,12 +12,17 @@
         font-family: 'Courier';
         font-size: 12px;
     }
-    
+
     table th,
     table td{
         margin-top: 5px;
+        margin-bottom: 0px !important;
         padding: 2px 6px !important;
         border: 1px solid #000 !important;;
+    }
+
+    table, tr, td, th, tbody, thead{
+        page-break-inside: avoid !important;
     }
 
     p{
@@ -58,6 +63,10 @@
         display: inline-block;
         width: 140px;
     }
+
+    table.tabla-subtotal{
+        margin-top: -21px !important;
+    }
     
     </style>
 </head>
@@ -90,7 +99,6 @@
                     <th class="text-right" style="width:17.5%">Valor</th>
                 </tr>
             </thead>
-
             <tbody>
                 {% for item in concepto.detalle %}
                 <tr>
@@ -103,11 +111,15 @@
                 </tr>
                 {% endfor %}
             </tbody>
+        </table>
 
-            <thead>
-                <th colspan="5">Subtotal</th>
-                <th class="text-right">{{concepto.total}}</th>
-            </thead>
+        <table class="table table-bordered tabla-subtotal">
+            <tfoot>
+                <th>
+                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
+                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
+                </th>
+            </tfoot>
         </table>
         
         <!-- Arriendo Variable -->
@@ -123,7 +135,6 @@
                     <th class="text-right" style="width:17.5%">Valor</th>
                 </tr>
             </thead>
-
             <tbody>
                 {% for item in concepto.detalle %}
                 <tr>
@@ -136,16 +147,20 @@
                 </tr>
                 {% endfor %}
             </tbody>
+        </table>
 
-            <thead>
-                <th colspan="5">Total</th>
-                <th class="text-right">{{concepto.total}}</th>
-            </thead>
+        <table class="table table-bordered tabla-subtotal">
+            <tfoot>
+                <th>
+                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
+                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
+                </th>
+            </tfoot>
         </table>
         
         <!-- Gasto Común -->
         {% elif concepto.id == 3 %}
-                <table class="table table-bordered">
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th style="width:10%">F.Inicio</th>
@@ -156,7 +171,6 @@
                     <th class="text-right" style="width:17.5%">Valor</th>
                 </tr>
             </thead>
-
             <tbody>
                 {% for item in concepto.detalle %}
                 <tr>
@@ -169,11 +183,15 @@
                 </tr>
                 {% endfor %}
             </tbody>
+        </table>
 
-            <thead>
-                <th colspan="5">Total</th>
-                <th class="text-right">{{concepto.total}}</th>
-            </thead>
+        <table class="table table-bordered tabla-subtotal">
+            <tfoot>
+                <th>
+                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
+                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
+                </th>
+            </tfoot>
         </table>
 
         <!-- Servicios Básicos -->
@@ -210,11 +228,15 @@
                 </tr>
                 {% endfor %}
             </tbody>
+        </table>
 
-            <thead>
-                <th colspan="9">Total</th>
-                <th>{{concepto.total}}</th>
-            </thead>
+        <table class="table table-bordered tabla-subtotal">
+            <tfoot>
+                <th>
+                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
+                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
+                </th>
+            </tfoot>
         </table>
 
         <!-- Cuota Incorporación -->
@@ -243,11 +265,15 @@
                 </tr>
                 {% endfor %}
             </tbody>
+        </table>
 
-            <thead>
-                <th colspan="5">Total</th>
-                <th class="text-right">{{concepto.total}}</th>
-            </thead>
+        <table class="table table-bordered tabla-subtotal">
+            <tfoot>
+                <th>
+                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
+                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
+                </th>
+            </tfoot>
         </table>
 
         <!-- Fondo Promoción -->
@@ -276,22 +302,23 @@
                 </tr>
                 {% endfor %}
             </tbody>
+        </table>
 
-            <thead>
-                <th colspan="5">Total</th>
-                <th class="text-right">{{concepto.total}}</th>
-            </thead>
+        <table class="table table-bordered tabla-subtotal">
+            <tfoot>
+                <th>
+                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
+                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
+                </th>
+            </tfoot>
         </table>
         {% else %}
         <p>----</p>
         {% endif %}
 
         <br>
-
         {% endfor %}
-
         <br>
-
 
         <table class="table table-bordered">
             <thead>
