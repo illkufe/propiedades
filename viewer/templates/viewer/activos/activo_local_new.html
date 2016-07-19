@@ -71,7 +71,7 @@
 								<div class="row">
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.unidad_negocio.help_text }}" ></i>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_cuadrados.help_text }}" ></i>
 										{{ form.metros_cuadrados.label_tag }}
 										{{ form.metros_cuadrados }}
 										<div class="container-error">
@@ -80,7 +80,7 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.direccion.help_text }}" ></i>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_lineales.help_text }}" ></i>
 										{{ form.metros_lineales.label_tag }}
 										{{ form.metros_lineales }}
 										<div class="container-error">
@@ -89,11 +89,24 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.comuna.help_text }}" ></i>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_compartidos.help_text }}" ></i>
 										{{ form.metros_compartidos.label_tag }}
 										{{ form.metros_compartidos }}
 										<div class="container-error">
 											{{ form.metros_compartidos.errors|striptags }}
+										</div>
+									</div>
+
+
+									<div class="form-group col-sm-2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.prorrateo.help_text }}" ></i>
+										{{ form.prorrateo.label_tag }}
+										<div class="checkbox checkbox-primary">
+											{{ form.prorrateo }}
+											<label for="checkbox2"></label>
+										</div>
+										<div class="container-error">
+											{{ form.prorrateo.errors|striptags }}
 										</div>
 									</div>
 

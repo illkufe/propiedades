@@ -228,7 +228,7 @@ class ArriendoVariableForm(forms.ModelForm):
 
 class GastoComunForm(forms.ModelForm):
 
-	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,5]), widget=forms.Select(attrs={'class': 'form-control moneda'}))
+	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[4,5,6]), widget=forms.Select(attrs={'class': 'form-control moneda'}))
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)

@@ -28,6 +28,7 @@ class Local(models.Model):
 	# atributos (generales)
 	nombre  			= models.CharField(max_length=250)
 	codigo  			= models.CharField(max_length=250)
+	prorrateo 			= models.BooleanField(default=False)
 	metros_cuadrados 	= models.FloatField()
 	metros_lineales 	= models.FloatField(null=True, blank=True)
 	metros_compartidos 	= models.FloatField(null=True, blank=True)

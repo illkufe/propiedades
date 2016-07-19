@@ -426,25 +426,24 @@ def calculo_gasto_comun(request, proceso, contratos, meses, fecha):
 			locales 		= contrato.locales.all()
 						
 			activos 		= contrato.locales.all().values_list('activo_id', flat=True)
-			# metros_total 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
-			metros_total   	= Local.objects.filter(activo__in=activos).aggregate(Sum('metros_cuadrados'))
+			metros_total   	= Local.objects.filter(activo__in=activos, prorrateo=True).aggregate(Sum('metros_cuadrados'))
 
 			for local in locales:
 
 				if Gasto_Comun.objects.filter(contrato=contrato, local=local).exists():
 					gasto_comun = Gasto_Comun.objects.filter(contrato=contrato, local=local)
 					if gasto_comun[0].prorrateo == True:
-						valor 		= None
+						valor 		= gasto_comun[0].valor
 						prorrateo 	= True
 						try:
 							gasto_mensual 	= Gasto_Mensual.objects.get(activo=local.activo, mes=fecha.month, anio=fecha.year).valor
-							total 		 	= (local.metros_cuadrados * gasto_mensual) / metros_total['metros_cuadrados__sum']
+							total 		 	= ((local.metros_cuadrados * gasto_mensual) / metros_total['metros_cuadrados__sum'])*((100+valor))/100
+
 						except Exception:
 							gasto_mensual	= None
 							total 			= None
 					else:
 						factor 			= gasto_comun[0].moneda.moneda_historial_set.all().order_by('-id').first().valor
-
 						valor 			= gasto_comun[0].valor
 						gasto_mensual 	= None
 						prorrateo 		= False

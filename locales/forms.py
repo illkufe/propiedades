@@ -82,8 +82,7 @@ class LocalForm(forms.ModelForm):
 			'sector'				: forms.Select(attrs={'class': 'select2 form-control'}),
 			'nivel'					: forms.Select(attrs={'class': 'select2 form-control'}),
 			'local_tipo'			: forms.Select(attrs={'class': 'select2 form-control'}),
-			# 'local_tipo'			: forms.Select(attrs={'class': 'select2 form-control'}),
-			# 'medidores'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			'prorrateo'				: forms.CheckboxInput(attrs={'class': 'form-control prorrateo'}),
 		}
 
 		error_messages = {
@@ -107,7 +106,6 @@ class LocalForm(forms.ModelForm):
 			'sector'				: '...',
 			'nivel'					: '...',
 			'local_tipo'			: '...',
-			# 'medidores'				: '...',
 		}
 
 		labels = {
