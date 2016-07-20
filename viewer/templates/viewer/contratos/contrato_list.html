@@ -117,14 +117,13 @@ function alerta_contrato_sin_conceptos(id){
 		title: 'Contrato sin conceptos',
 		type: 'info',
 		showCancelButton: true,
-		confirmButtonColor: '#FCC491',
+		confirmButtonColor: '#5BAAD3',
+		cancelButtonColor: '#D0D0D0',
 		confirmButtonText: 'Editar Contrato',
 		cancelButtonText: 'Salir',
-		closeOnConfirm: true 
-	}, function(){
+	}).then(function() {
 		window.location.href = '/contratos/update/'+id
 	})
-
 }
 
 

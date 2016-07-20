@@ -119,6 +119,7 @@ $(document).ready(function(){
 });
 
 function guardar_usuario(){
+
 	$("#form-usuario-new").validate({
 		focusInvalid: false,
 		rules: {
@@ -165,7 +166,6 @@ function guardar_usuario(){
 			error.appendTo(element.closest(".form-group").find('.container-error'));
 		},
 		submitHandler: function(form) {
-
 			$('#form-usuario-new').ajaxSubmit({
 				dataType: 'json',
 				success: function(data){
@@ -184,31 +184,31 @@ function guardar_usuario(){
 					swal({
 						title: title,
 						text: template,
-						type: "success",
+						type: 'success',
 						showCancelButton: true,
-						confirmButtonColor: "#8CD4F5",
+						confirmButtonColor: '#8CD4F5',
+						cancelButtonColor: '#D0D0D0',
 						confirmButtonText: data.tipo == 'create' ? "Nuevo Usuario" : "Seguir Editando",
-						cancelButtonText: "Ver Usuarios",
-						closeOnConfirm: true,
-						closeOnCancel: true,
-						html: true,
-					}, function(isConfirm){
-						if (isConfirm) {
-							if (data.tipo == 'create') {
-								clear_form('#form-usuario-new')
-							}
-						} else {
+						cancelButtonText: 'Ver Usuarios',
+					}).then(function() {
+						console.log('then')
+						if (data.tipo == 'create') {
+							window.location.href = "/usuarios/new";
+						}
+					}, function(dismiss) {
+						console.log(dismiss)
+						console.log('1')
+						if (dismiss === 'cancel') {
+							console.log('2')
 							window.location.href = "/usuarios/list";
 						}
-					});
-
+					})
 				},
 				error: function(data, textStatus, jqXHR) {
-					console.log(data)
 				}
 			});
-		}
-	}) 
+		},
+	})
 }
 
 </script>

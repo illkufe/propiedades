@@ -177,10 +177,11 @@ function open_modal_delete(obj, id, model, tabla, text){
 		type: 'warning',
 		showCancelButton: true,
 		confirmButtonColor: '#F68793',
+		cancelButtonColor: '#D0D0D0',
 		confirmButtonText: 'Si, eliminar',
 		cancelButtonText: 'Cancelar',
-		closeOnConfirm: true 
-	}, function(){
+		closeOnConfirm: true,
+	}).then(function() {
 		$.ajax({
 			url: '/'+model+'/delete/'+id,
 			type: 'POST',
@@ -194,7 +195,7 @@ function open_modal_delete(obj, id, model, tabla, text){
 				notification_toast('error', 'Error', 'no se puedo eliminar')
 			}
 		})
-	});
+	})
 }
 
 
@@ -206,10 +207,11 @@ function open_modal_delete_child(obj, text){
 		type: 'warning',
 		showCancelButton: true,
 		confirmButtonColor: '#F68793',
+		cancelButtonColor: '#D0D0D0',
 		confirmButtonText: 'Si, eliminar',
 		cancelButtonText: 'Cancelar',
-		closeOnConfirm: true 
-	}, function(){
+		closeOnConfirm: true,
+	}).then(function() {
 		$(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
 		$(obj).closest('tr').addClass('hide')
 	});	
@@ -217,8 +219,6 @@ function open_modal_delete_child(obj, text){
 
 
 function guardar_formulario_final(accion, entidad){
-	console.log(entidad)
-	console.log(accion)
 
 	$.ajax({
 		type: 'post',

@@ -3,14 +3,13 @@ $('td.delete input[type=checkbox]').hide()
 $('.format-rut').rut({
 	formatOn: 'keyup',
 	validateOn: 'blur'
-	}).on('rutInvalido', function(){
-		error_msg = $("<li /> ").addClass("errorlist").text('Rut invalido');
-		$(this).closest('.form-group').find('.container-error').text('')
-		$(this).closest('.form-group').find('.container-error').append(error_msg)
-		$(this).val('')
-	}).on('rutValido', function(){
-		$(this).closest('.form-group').find('.container-error').text('')
-	});
+}).on('rutInvalido', function(){
+	$(this).closest('.form-group').find('.container-error').text('')
+	$(this).closest('.form-group').find('.container-error').append('Rut invalido')
+	$(this).val('')
+}).on('rutValido', function(){
+	$(this).closest('.form-group').find('.container-error').text('')
+});
 
 $('.format-date').datepicker({
 	todayBtn: 'linked',
@@ -78,18 +77,12 @@ function getCookie(name){
 
 function apply_errors_form(errors){
 	$.each(errors, function(index, value) {
-		console.log(index)
-		console.log(value)
-		// if (index === "__all__") {
-		// 	console.log('caca')
-		// 	django_message(value[0], "error");
-		// } else {
-			// console.log('pipi')
-			var input = $("#id_" + index),
-			container = $("#div_id_" + index),
-			error_msg = $("<li /> ").addClass("errorlist").text(value[0]);
-			$("#id_" + index).closest('.form-group').find('.container-error').append(error_msg)
-		// }
+		
+		// var input = $("#id_" + index),
+		// container = $("#div_id_" + index),
+		error_msg = value[0]
+		$("#id_" + index).closest('.form-group').find('.container-error').append(error_msg)
+		
 	});
 }
 
@@ -99,7 +92,8 @@ function clear_errors_form(form){
 
 function clear_form(form){
 	// inputs y selects normales
-	$(form +' '+ '.form-group input').val('')
+	$(form +' '+ '.form-group input[type="number"]').val('')
+	$(form +' '+ '.form-group input[type="text"]').val('')
 	$(form +' '+ '.form-group textarea').val('')
 	$(form +' '+ 'select option:first-child').prop('selected', true);
 	// inputs y selects formularios hijos
@@ -186,7 +180,7 @@ function open_modal_delete(obj, id, model, tabla, text){
 		confirmButtonText: 'Si, eliminar',
 		cancelButtonText: 'Cancelar',
 		closeOnConfirm: true 
-	}, function(){
+	}).then(function() {
 		$.ajax({
 			url: '/'+model+'/delete/'+id,
 			type: 'POST',
@@ -200,11 +194,49 @@ function open_modal_delete(obj, id, model, tabla, text){
 				notification_toast('error', 'Error', 'no se puedo eliminar')
 			}
 		})
-	});
+	})
+
+
+
+
+
+
+
+
+
+
+
+
+	// swal({
+	// 	title: '¿ Eliminar '+text+' ?',
+	// 	text: '',
+	// 	type: 'warning',
+	// 	showCancelButton: true,
+	// 	confirmButtonColor: '#F68793',
+	// 	confirmButtonText: 'Si, eliminar',
+	// 	cancelButtonText: 'Cancelar',
+	// 	closeOnConfirm: true 
+	// }, function(){
+	// 	console.log('asd--')
+	// 	$.ajax({
+	// 		url: '/'+model+'/delete/'+id,
+	// 		type: 'POST',
+	// 		data: {csrfmiddlewaretoken: getCookie('csrftoken')},
+	// 		success: function(data){
+	// 			var table = $('#'+tabla).DataTable();
+	// 			table.row($(col)).remove().draw();
+	// 			notification_toast('success', 'Exito', 'eliminado correctamente')
+	// 		},
+	// 		error:function(data){
+	// 			notification_toast('error', 'Error', 'no se puedo eliminar')
+	// 		}
+	// 	})
+	// });
 }
 
 
 function open_modal_delete_child(obj, text){
+	console.log('eliminar')
 
 	swal({
 		title: '¿ Eliminar '+text+' ?',
@@ -223,6 +255,8 @@ function open_modal_delete_child(obj, text){
 
 
 function guardar_formulario_final(accion, entidad){
+	console.log(entidad)
+	console.log(accion)
 
 	$.ajax({
 		type: 'post',
@@ -329,4 +363,14 @@ function agregar_fila(tabla, entidad){
 	$('#id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
 
 }
+
+function diferencia_entre_meses(d1, d2) {
+    var months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth() + 1;
+    months += d2.getMonth() + 1;
+    return months <= 0 ? 0 : months;
+}
+
+
 

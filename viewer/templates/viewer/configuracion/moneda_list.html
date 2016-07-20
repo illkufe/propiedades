@@ -128,43 +128,6 @@ $(document).ready(function(){
 	});
 });
 
-
-function modal_delete_moneda(id, obj){
-	var col = $(obj).closest('tr')
-	swal({
-		title: "¿ Eliminar Moneda ?",
-		text: "",
-		type: "warning",
-		showCancelButton: true,
-		confirmButtonColor: "#DD6B55",
-		confirmButtonText: "Si, Eliminar",
-		cancelButtonText: "Cancelar",
-		closeOnConfirm: true 
-	}, function(){
-		delete_moneda(id, col)
-	});
-}
-
-
-function delete_moneda(id, col){
-	$.ajax({
-		url: "/monedas/delete/"+id,
-		type: 'POST',
-		data: {csrfmiddlewaretoken: getCookie('csrftoken')},
-		success: function(data){
-
-			var table = $('#tabla-moneda').DataTable();
-			table.row($(col)).remove().draw();
-
-			notification_toast('success', 'Exito', 'Eliminada correctamente.')
-		},
-		error:function(data){
-			notification_toast('error', 'Error', 'No se puedo eliminar.')
-		}
-	})
-}
-
-
 </script>
 
 {% endblock scripts %}

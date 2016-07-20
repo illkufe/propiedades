@@ -123,13 +123,14 @@ function activar_contrato(id){
 
 	swal({
 		title: 'Activar Contrato',
-		type: 'info',
+		type: 'warning',
 		showCancelButton: true,
 		confirmButtonColor: '#FCC491',
+		cancelButtonColor: '#D0D0D0',
 		confirmButtonText: 'Si',
 		cancelButtonText: 'No',
 		closeOnConfirm: true 
-	}, function(){
+	}).then(function() {
 		$.ajax({
 			url: '/contratos/'+id+'/activar',
 			type: 'POST',
@@ -142,8 +143,7 @@ function activar_contrato(id){
 				notification_toast('error', 'Error', 'no se puedo eliminar')
 			}
 		})
-	})
-
+	})	
 }
 
 

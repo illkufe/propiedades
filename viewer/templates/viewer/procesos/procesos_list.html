@@ -485,8 +485,8 @@ function filtrar_contratos(){
 					}
 				}
 			});
-		}
-	}) 
+}
+}) 
 }
 
 function procesar_contratos(){
@@ -540,12 +540,15 @@ function procesar_contratos(){
 					data_tabla_procesos()
 
 					swal({
-						title: "Proceso <small>creado correctamente</small>",
-						text: "<a href='/propuesta/pdf/"+data.id+"'><span style='color:#F8BB86'>descargar archivo<span>",
-						type: "success",
-						html: true
+						title: 'Propuesta <small>ejecutada correctamente</small>',
+						text: '',
+						type: 'success',
+						showCancelButton: true,
+						confirmButtonColor: '#FCC491',
+						confirmButtonText: '<a href="/propuesta/pdf/'+data.id+'"><span style="color:#FFF">Descargar PDF<span>',
+						cancelButtonText: 'Cancelar',						
+						closeOnConfirm: true,
 					});
-
 				}
 			});
 		}

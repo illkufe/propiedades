@@ -104,10 +104,10 @@ i.info-label{
 
 
 .html5buttons .btn-default{
-	/*margin-bottom: 0px;*/
+	/*margin-bottom: 0px;*/    
 }
 
-.html5buttons a{
+.html5buttons a{ 
 	/*border-bottom: 0px;*/
 }
 
@@ -206,13 +206,6 @@ td.delete input[type=checkbox] {
 	display: none !important;
 }
 
-
-#tabla-contratos_filter,
-#tabla-contratos_length{
-	display: none;
-}
-
-
 .buttons-form button.margin{
 	margin-right: 15px;
 }
@@ -234,6 +227,10 @@ td.delete input[type=checkbox] {
 
 select#id_locales {
 	position: absolute;
+}
+
+form#form-conceptos-new .select2.select2-container.select2-container--default{
+	width: 100% !important;
 }
 
 .ads .select2.select2-container.select2-container--default{

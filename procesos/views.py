@@ -273,6 +273,7 @@ def calculo_arriendo_minimo(request, proceso, contratos, meses, fecha):
 							reajuste_valor = (arriendo.valor * reajuste_factor) * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
 						total = valor * reajuste_valor
+						reajuste = True
 
 					else:
 						reajuste 		= False
@@ -372,10 +373,54 @@ def calculo_arriendo_variable(request, proceso, contratos, meses, fecha):
 			except Arriendo.DoesNotExist:
 				arriendo_minimo = None
 
+
+
+
+
+
+			# try:
+
+			# 	arriendos = Arriendo_Variable.objects.filter(contrato=contrato)
+
+			# 	for arriendo_variable in arriendos:
+
+			# 		mes_inicio 		= arriendo_variable.mes_inicio if arriendo_variable.mes_inicio > 9 else '0'+str(arriendo_variable.mes_inicio)
+			# 		mes_termino 	= arriendo_variable.mes_termino if arriendo_variable.mes_termino > 9 else '0'+str(arriendo_variable.mes_termino)
+			# 		anio_inicio 	= arriendo_variable.anio_inicio
+			# 		anio_termino 	= arriendo_variable.anio_termino
+
+			# 		fecha_inicio 	= primer_dia(datetime.strptime('01/'+str(mes_inicio)+'/'+str(anio_inicio), "%d/%m/%Y")).date()
+			# 		fecha_termino 	= ultimo_dia(datetime.strptime('01/'+str(mes_termino)+'/'+str(anio_termino), "%d/%m/%Y")).date()
+				
+			# 		if fecha >= fecha_inicio and fecha <= fecha_termino
+
+				
+
+			# except Exception:
+			# 	print ('exception')
+			# 	pass
+			# 	# valor 	= None
+			# 	# ventas 	= None
+			# 	# total 	= None
+
+
+			
+
+
 			try:
+
+				# print (fecha.month)
+				# print (fecha.year)
 				existe = Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
+
+
+				existe = Arriendo_Variable.objects.filter(contrato=contrato, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
+
+				# print (existe)
+
 				if existe is True:
-					detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
+					# detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
+					detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
 					valor 			= detalle[0].valor
 					ventas 			= 0
 					ventas_local 	= Venta.objects.filter(local_id__in=locales).\
@@ -627,8 +672,6 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 
 			contrato = Contrato.objects.get(id=item)
 
-
-
 			locales 		= contrato.locales.all()
 			metros_total 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
 
@@ -680,9 +723,11 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 				arriendo_minimo = None
 
 			try:
-				existe = Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
+				# existe = Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
+				existe = Arriendo_Variable.objects.filter(contrato=contrato, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
 				if existe is True:
-					detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
+					# detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
+					detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
 					valor 			= detalle[0].valor
 					ventas 			= 0
 					ventas_local 	= Venta.objects.filter(local_id__in=locales).\
@@ -706,7 +751,7 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 
 			except Exception:
 				arriendo_reajustable = None
-			
+
 			try:
 				fondos_promocion = Fondo_Promocion.objects.filter(contrato=contrato)
 
@@ -782,8 +827,11 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 						factor 			= None
 						total 			= None
 
+
 					if arriendo_reajustable is not None and valor is not None:
-						total = arriendo_reajustable * ((100+valor)/100)
+						total = (arriendo_reajustable * valor) / 100
+					else:
+						total = None
 
 					Detalle_Fondo_Promocion(
 						valor 			= valor,
