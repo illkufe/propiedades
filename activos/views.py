@@ -4,9 +4,9 @@ from django.views.generic import View, ListView, FormView, UpdateView, DeleteVie
 from django.contrib.auth.models import User
 
 from accounts.models import UserProfile
-from locales.models import Local, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
+from locales.models import Local, Medidor_Electricidad, Medidor_Agua, Medidor_Gas, Gasto_Servicio
 
-from .forms import ActivoForm, SectorFormSet, NivelFormSet, GastoMensualForm, LocalForm, ElectricidadFormSet, AguaFormSet, GasFormSet
+from .forms import ActivoForm, SectorFormSet, NivelFormSet, GastoMensualForm, LocalForm, ElectricidadFormSet, AguaFormSet, GasFormSet, GastoServicioForm
 from .models import Activo, Sector, Nivel, Gasto_Mensual
 
 
@@ -199,7 +199,7 @@ class GastoMensualNew(GastoMensualMixin, FormView):
 
 		context = super(GastoMensualNew, self).get_context_data(**kwargs)
 		context['title'] = 'Activos'
-		context['subtitle'] = 'Gasto Mensual'
+		context['subtitle'] = 'Gasto Común'
 		context['name'] = 'Nuevo'
 		context['href'] = 'gastos-mensual'
 		context['accion'] = 'create'
@@ -234,7 +234,7 @@ class GastoMensualList(ListView):
 		return queryset
 
 class GastoMensualDelete(DeleteView):
-	model = Activo
+	model = Gasto_Mensual
 	success_url = reverse_lazy('/gastos-mensual/list')
 
 	def delete(self, request, *args, **kwargs):
@@ -267,6 +267,117 @@ class GastoMensualUpdate(GastoMensualMixin, UpdateView):
 
 		return context
 
+
+
+class GastoServicioMixin(object):
+
+	template_name = 'viewer/activos/gasto_servicio_new.html'
+	form_class = GastoServicioForm
+	success_url = '/gastos-servicios/list'
+
+	def get_form_kwargs(self):
+		kwargs = super(GastoServicioMixin, self).get_form_kwargs()
+		kwargs['request'] = self.request
+		return kwargs
+
+	def form_invalid(self, form):
+		response = super(GastoServicioMixin, self).form_invalid(form)
+		if self.request.is_ajax():
+			return JsonResponse(form.errors, status=400)
+		else:
+			return response
+
+	def form_valid(self, form):
+		profile 	= UserProfile.objects.get(user=self.request.user)
+		obj 		= form.save(commit=False)
+		obj.user 	= self.request.user
+
+		obj.save()
+		form.save_m2m()
+
+		response = super(GastoServicioMixin, self).form_valid(form)
+		if self.request.is_ajax():
+			data = {
+				'pk': 'self.object.pk',
+			}
+			return JsonResponse(data)
+		else:
+			return response
+
+class GastoServicioNew(GastoServicioMixin, FormView):
+
+	def get_context_data(self, **kwargs):
+
+		context = super(GastoServicioNew, self).get_context_data(**kwargs)
+		context['title'] 	= 'Activos'
+		context['subtitle'] = 'Servicios Varios'
+		context['name'] 	= 'Nuevo'
+		context['href'] 	= 'gastos-servicios'
+		context['accion'] 	= 'create'
+
+		return context
+
+class GastoServicioList(ListView):
+	model = Gasto_Servicio
+	template_name = 'viewer/activos/gasto_servicio_list.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(GastoServicioList, self).get_context_data(**kwargs)
+		context['title'] 	= 'Activos'
+		context['subtitle'] = 'Servicios Varios'
+		context['name'] 	= 'Lista'
+		context['href'] 	= 'gastos-servicios'
+		
+		return context
+
+	def get_queryset(self):
+
+		meses 		= ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE']
+		user 		= User.objects.get(pk=self.request.user.pk)
+		profile 	= UserProfile.objects.get(user=user)
+		activos   	= Activo.objects.values_list('id', flat=True).filter(empresa=profile.empresa)
+		locales 	= Local.objects.filter(activo_id__in=activos)
+		queryset 	= Gasto_Servicio.objects.filter(visible=True, locales__in=locales).distinct()
+
+		for item in queryset:
+			item.mes 		= meses[int(item.mes)-1]
+			item.creado_en 	= item.creado_en.strftime('%d/%m/%Y')
+
+		return queryset
+
+class GastoServicioDelete(DeleteView):
+	model = Gasto_Servicio
+	success_url = reverse_lazy('/gastos-servicios/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object = self.get_object()
+		self.object.visible = False
+		self.object.save()
+		payload = {'delete': 'ok'}
+
+		return JsonResponse(payload, safe=False)
+
+class GastoServicioUpdate(GastoServicioMixin, UpdateView):
+
+	model = Gasto_Servicio
+	form_class = GastoServicioForm
+	template_name = 'viewer/activos/gasto_servicio_new.html'
+	success_url = '/gastos-servicios/list'
+
+
+	def get_context_data(self, **kwargs):
+
+		context = super(GastoServicioUpdate, self).get_context_data(**kwargs)
+
+		context['title'] 	= 'Activos'
+		context['subtitle'] = 'Servicios Varios'
+		context['name'] 	= 'Editar'
+		context['href'] 	= 'gastos-servicios'
+		context['accion'] 	= 'update'
+
+
+		return context
 
 
 
@@ -380,6 +491,9 @@ class ActivoLocalUpdate(ActivoLocaleMixin, UpdateView):
 
 
 
+
+
+# API -----------------
 class ACTIVOS(View):
 
 	http_method_names =  ['get']

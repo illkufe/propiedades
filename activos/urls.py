@@ -17,6 +17,11 @@ urlpatterns = [
 	url(r'^gastos-mensual/delete/(?P<pk>\d+)$', views.GastoMensualDelete.as_view(), name='gasto_mensual_delete'),
 	url(r'^gastos-mensual/update/(?P<pk>\d+)$', views.GastoMensualUpdate.as_view(), name='gasto_mensual_update'),
 
+	url(r'^gastos-servicios/list$', views.GastoServicioList.as_view(), name='gasto_servicio_list'),
+	url(r'^gastos-servicios/new$', views.GastoServicioNew.as_view(), name='gasto_servicio_new'),
+	url(r'^gastos-servicios/delete/(?P<pk>\d+)$', views.GastoServicioDelete.as_view(), name='gasto_servicio_delete'),
+	url(r'^gastos-servicios/update/(?P<pk>\d+)$', views.GastoServicioUpdate.as_view(), name='gasto_servicio_update'),
+
 	url(r'^activos/(?P<activo_id>\d+)/locales/new$', views.ActivoLocalNew.as_view(), name='activo_local_new'),
 	url(r'^activos/(?P<activo_id>\d+)/locales/update/(?P<pk>\d+)$', views.ActivoLocalUpdate.as_view(), name='activo_local_update'),
 

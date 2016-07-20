@@ -46,12 +46,10 @@ class ContratoForm(forms.ModelForm):
 	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
 	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
 	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
-	fecha_remodelacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
-	fecha_plazo			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
+	fecha_remodelacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False)
+	fecha_plazo			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False)
 	fecha_aviso			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, label='Fecha aviso comercial')
-	fecha_salida		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
 	conceptos 			= forms.ModelMultipleChoiceField(queryset=Concepto.objects.all(),required=False,widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}))
-	# contrato_estado 	= forms.ModelChoiceField(queryset=Contrato_Estado.objects.all(),initial="Borrador",widget=forms.Select(attrs={'class': 'form-control'}))
 
 	def __init__(self, *args, **kwargs):
 
@@ -91,7 +89,7 @@ class ContratoForm(forms.ModelForm):
 			'destino_comercial'	: {'required': 'campo requerido'},
 			'meses'				: {'required': 'campo requerido'},
 			'dias_salida'		: {'required': 'campo requerido'},
-			'fecha_salida'		: {'required': 'campo requerido'},
+			# 'fecha_salida'		: {'required': 'campo requerido'},
 			'contrato_tipo'		: {'required': 'campo requerido'},
 			'cliente'			: {'required': 'campo requerido'},
 			'locales'			: {'required': 'campo requerido'},
@@ -182,14 +180,11 @@ class ArriendoDetalleForm(forms.ModelForm):
 			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
 			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
 			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			# '_DELETE_'		: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
 class ArriendoVariableForm(forms.ModelForm):
-
-	# fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
-	# fecha_termino 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
-	moneda 			= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
+	
+	moneda = forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
 
 	class Meta:
 		model 	= Arriendo_Variable
@@ -199,29 +194,20 @@ class ArriendoVariableForm(forms.ModelForm):
 		widgets = {
 			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
 			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
-			# 'periodicidad'	: forms.Select(attrs={'class': 'form-control'}),
 			'anio_inicio'	: forms.NumberInput(attrs={'class': 'form-control'}),
 			'anio_termino'	: forms.NumberInput(attrs={'class': 'form-control'}),
 			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
-			# 'fecha_inicio'	: {'required': 'campo requerido'},
-			# 'fecha_termino'	: {'required': 'campo requerido'},
-			# 'periodicidad'	: {'required': 'campo requerido'},
 			'valor'			: {'required': 'campo requerido'},
 			'moneda'		: {'required': 'campo requerido'},
 		}
 
 		labels = {
-			# 'fecha_inicio'	: 'Fecha Inicio',
-			# 'fecha_termino'	: 'Fecha Término',
 		}
 
 		help_texts = {
-			# 'fecha_inicio' 	: 'fecha inicio',
-			# 'fecha_termino' : 'fecha termino',
-			# 'periodicidad' 	: 'periodicidad',
 			'valor' 		: 'valor',
 			'moneda' 		: 'moneda',
 		}

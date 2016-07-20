@@ -48,11 +48,10 @@ class Contrato(models.Model):
 	fecha_habilitacion 	= models.DateField()
 	fecha_activacion 	= models.DateField(null=True, blank=True)
 	fecha_renovacion 	= models.DateField()
-	fecha_remodelacion 	= models.DateField()
+	fecha_remodelacion 	= models.DateField(null=True, blank=True)
 	fecha_aviso 		= models.DateField()
-	fecha_plazo 		= models.DateField()
+	fecha_plazo 		= models.DateField(null=True, blank=True)
 	dias_salida			= models.IntegerField()
-	fecha_salida		= models.DateField()
 	bodega 				= models.BooleanField(default=False)
 	metros_bodega		= models.FloatField(default=0, null=True, blank=True)
 	destino_comercial 	= models.TextField(blank=True)
@@ -126,6 +125,32 @@ class Arriendo_Detalle(models.Model):
 	def __str__(self):
 		return self.mes_inicio
 
+class Arriendo_Bodega(models.Model):
+
+	PERIODICIDAD = (
+		(0, 'ANUAL'),
+		(1, 'SEMESTRAL'),
+		(2, 'TRIMESTRAL'),
+		(3, 'MENSUAL'),
+	)
+
+	# atributos (generales
+	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
+	valor			= models.FloatField()
+	fecha_inicio 	= models.DateField()
+	metro_cuadrado 	= models.BooleanField(default=False)
+	
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	contrato 	= models.ForeignKey(Contrato)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.contrato.nombre_local
+
 class Arriendo_Variable(models.Model):
 
 	MESES = (
@@ -143,22 +168,11 @@ class Arriendo_Variable(models.Model):
 		(12, 'DICIEMBRE'),
 	)
 
-	# PERIODICIDAD = (
-	# 	(0, 'ANUAL'),
-	# 	(1, 'SEMESTRAL'),
-	# 	(2, 'TRIMESTRAL'),
-	# 	(3, 'MENSUAL'),
-	# 	(4, 'QUINCENAL'),
-	# 	(5, 'SEMANAL'),
-	# 	(6, 'DIARIA'),
-	# )
-
 	# atributos (generales
 	mes_inicio 		= models.IntegerField(choices=MESES)
 	mes_termino		= models.IntegerField(choices=MESES)
 	anio_inicio		= models.IntegerField()
 	anio_termino 	= models.IntegerField()
-	# periodicidad	= models.IntegerField(choices=PERIODICIDAD)
 	valor			= models.FloatField()
 
 	# atributos (por defecto)

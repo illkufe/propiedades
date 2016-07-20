@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 
 from accounts.models import UserProfile
 from administrador.models import Empresa
-from locales.models import Local, Local_Tipo, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
+from locales.models import Local, Local_Tipo, Medidor_Electricidad, Medidor_Agua, Medidor_Gas, Gasto_Servicio
 
 from .models import Activo, Sector, Nivel, Gasto_Mensual
 
@@ -60,11 +60,11 @@ class ActivoForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 			: {'required': 'Este campo es requerido'},
-			'codigo' 			: {'required': 'Este campo es requerido'},
-			'propietario' 		: {'required': 'Este campo es requerido'},
-			'rut_propietario' 	: {'required': 'Este campo es requerido'},
-			'tasacion_fiscal' 	: {'required': 'Este campo es requerido'},
+			'nombre' 			: {'required': 'campo es requerido'},
+			'codigo' 			: {'required': 'campo es requerido'},
+			'propietario' 		: {'required': 'campo es requerido'},
+			'rut_propietario' 	: {'required': 'campo es requerido'},
+			'tasacion_fiscal' 	: {'required': 'campo es requerido'},
 		}
 
 		labels = {
@@ -129,8 +129,8 @@ class NivelForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' : {'required': 'Este campo es requerido'},
-			'codigo' : {'required': 'Este campo es requerido'},
+			'nombre' : {'required': 'campo es requerido'},
+			'codigo' : {'required': 'campo es requerido'},
 		}
 
 class GastoMensualForm(forms.ModelForm):
@@ -158,10 +158,10 @@ class GastoMensualForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'activo' 	: {'required': 'Este Campo es requerido'},
-			'valor' 	: {'required': 'Este Campo es requerido'},
-			'mes' 		: {'required': 'Este Campo es requerido'},
-			'anio' 		: {'required': 'Este Campo es requerido'},
+			'activo' 	: {'required': 'campo es requerido'},
+			'valor' 	: {'required': 'campo es requerido'},
+			'mes' 		: {'required': 'campo es requerido'},
+			'anio' 		: {'required': 'campo es requerido'},
 		}
 
 		labels = {
@@ -172,7 +172,50 @@ class GastoMensualForm(forms.ModelForm):
 			'valor'			: '...',
 		}
 
+class GastoServicioForm(forms.ModelForm):
 
+	def __init__(self, *args, **kwargs):
+
+		self.request 	= kwargs.pop('request')
+		user 			= User.objects.get(pk=self.request.user.pk)
+		profile 		= UserProfile.objects.get(user=user)
+		activos 		= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
+
+		super(GastoServicioForm, self).__init__(*args, **kwargs)
+
+		self.fields['locales'].queryset = Local.objects.filter(activo__in=activos, visible=True)
+
+	class Meta:
+
+		model 	= Gasto_Servicio
+		fields 	= '__all__'
+		exclude = [ 'visible', 'creado_en', 'user', 'imagen_type', 'imagen_size']
+
+		widgets = {
+			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'valor'	 		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'mes'	 		: forms.Select(attrs={'class': 'form-control'}),
+			'anio' 			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'imagen_file' 	: forms.FileInput(attrs={'class': 'file-format'}),
+			'locales'		: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+		}
+
+		error_messages = {
+			'nombre' 	: {'required': 'campo es requerido'},
+			'valor' 	: {'required': 'campo es requerido'},
+			'mes' 		: {'required': 'campo es requerido'},
+			'anio' 		: {'required': 'campo es requerido'},
+			'locales' 	: {'required': 'campo es requerido'},
+		}
+
+		labels = {
+			'anio'			: 'Año',
+			'imagen_file'	: 'Archivo',
+		}
+
+		help_texts = {
+			'valor'			: '...',
+		}
 
 class ElectricidadForm(forms.ModelForm):
 
@@ -191,8 +234,8 @@ class ElectricidadForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 		: {'required': 'Este campo es requerido'},
-			'numero_rotulo' : {'required': 'Este campo es requerido'},
+			'nombre' 		: {'required': 'campo es requerido'},
+			'numero_rotulo' : {'required': 'campo es requerido'},
 		}
 
 		help_texts = {
@@ -225,8 +268,8 @@ class AguaForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 		: {'required': 'Este campo es requerido'},
-			'numero_rotulo' : {'required': 'Este campo es requerido'},
+			'nombre' 		: {'required': 'campo es requerido'},
+			'numero_rotulo' : {'required': 'campo es requerido'},
 		}
 
 		help_texts = {
@@ -257,8 +300,8 @@ class GasForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 		: {'required': 'Este campo es requerido'},
-			'numero_rotulo' : {'required': 'Este campo es requerido'},
+			'nombre' 		: {'required': 'campo es requerido'},
+			'numero_rotulo' : {'required': 'campo es requerido'},
 		}
 
 		help_texts = {
@@ -312,12 +355,12 @@ class LocalForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 			: {'required': 'Este campo es requerido'},
-			'codigo' 			: {'required': 'Este campo es requerido'},
-			'sector' 			: {'required': 'Este campo es requerido'},
-			'nivel' 			: {'required': 'Este campo es requerido'},
-			'local_tipo' 		: {'required': 'Este campo es requerido'},
-			'metros_cuadrados' 	: {'required': 'Este campo es requerido'},
+			'nombre' 			: {'required': 'campo es requerido'},
+			'codigo' 			: {'required': 'campo es requerido'},
+			'sector' 			: {'required': 'campo es requerido'},
+			'nivel' 			: {'required': 'campo es requerido'},
+			'local_tipo' 		: {'required': 'campo es requerido'},
+			'metros_cuadrados' 	: {'required': 'campo es requerido'},
 		}
 
 		help_texts = {

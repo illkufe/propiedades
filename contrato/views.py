@@ -238,10 +238,9 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 		queryset.fecha_termino 		= queryset.fecha_termino.strftime('%d/%m/%Y')
 		queryset.fecha_habilitacion = queryset.fecha_habilitacion.strftime('%d/%m/%Y')
 		queryset.fecha_renovacion 	= queryset.fecha_renovacion.strftime('%d/%m/%Y')
-		queryset.fecha_remodelacion = queryset.fecha_remodelacion.strftime('%d/%m/%Y')
+		queryset.fecha_remodelacion = queryset.fecha_remodelacion.strftime('%d/%m/%Y') if queryset.fecha_remodelacion is not None else ''
+		queryset.fecha_plazo 		= queryset.fecha_plazo.strftime('%d/%m/%Y') if queryset.fecha_plazo is not None else ''
 		queryset.fecha_aviso 		= queryset.fecha_aviso.strftime('%d/%m/%Y')
-		queryset.fecha_plazo 		= queryset.fecha_plazo.strftime('%d/%m/%Y')
-		queryset.fecha_salida 		= queryset.fecha_salida.strftime('%d/%m/%Y')
 
 		return queryset
 
@@ -525,9 +524,9 @@ class CONTRATO(View):
 				'fecha_habilitacion' 	: contrato.fecha_habilitacion.strftime('%d/%m/%Y'),
 				'fecha_activacion' 		: contrato.fecha_activacion.strftime('%d/%m/%Y') if contrato.fecha_activacion is not None else None,
 				'fecha_renovacion' 		: contrato.fecha_renovacion.strftime('%d/%m/%Y'),
-				'fecha_remodelacion' 	: contrato.fecha_remodelacion.strftime('%d/%m/%Y'),
+				'fecha_remodelacion' 	: contrato.fecha_remodelacion.strftime('%d/%m/%Y') if contrato.fecha_remodelacion is not None else None,
 				'fecha_aviso' 			: contrato.fecha_aviso.strftime('%d/%m/%Y'),
-				'fecha_plazo' 			: contrato.fecha_plazo.strftime('%d/%m/%Y'),
+				'fecha_plazo' 			: contrato.fecha_plazo.strftime('%d/%m/%Y') if contrato.fecha_plazo is not None else None,
 				'bodega' 				: contrato.bodega,
 				'metros_bodega' 		: contrato.metros_bodega,
 				'tipo' 					: {'id': contrato.contrato_tipo.id, 'nombre': contrato.contrato_tipo.nombre},
