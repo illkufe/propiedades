@@ -7,8 +7,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.db.models import Sum
 from django.views.generic import View, ListView, FormView, CreateView, DeleteView, UpdateView
 
-from .forms import ContratoTipoForm, ContratoForm, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, ArriendoBodegaFormSet, GastoComunFormSet, ServicioBasicoFormSet, CuotaIncorporacionFormet, FondoPromocionForm, FondoPromocionFormSet
-from .models import Contrato_Tipo, Contrato, Contrato_Estado, Arriendo, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from .forms import ContratoTipoForm, ContratoForm, GarantiaFormSet, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, ArriendoBodegaFormSet, GastoComunFormSet, ServicioBasicoFormSet, CuotaIncorporacionFormet, FondoPromocionForm, FondoPromocionFormSet
+from .models import Contrato_Tipo, Contrato_Estado, Contrato, Garantia, Arriendo, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
 
 from accounts.models import UserProfile
 from administrador.models import Empresa, Cliente
@@ -146,6 +146,10 @@ class ContratoMixin(object):
 	def form_valid(self, form):
 
 		profile 		= UserProfile.objects.get(user=self.request.user)
+
+		context 		= self.get_context_data()
+		form_garantia 	= context['form_garantia']
+
 		obj 			= form.save(commit=False)
 		obj.empresa_id 	= profile.empresa_id
 
@@ -157,6 +161,11 @@ class ContratoMixin(object):
 
 		obj.save()
 		form.save_m2m()
+
+		if form_garantia.is_valid():
+			self.object = form.save(commit=False)
+			form_garantia.instance = self.object
+			form_garantia.save()
 
 		response = super(ContratoMixin, self).form_valid(form)
 
@@ -178,6 +187,11 @@ class ContratoNew(ContratoMixin, FormView):
 		context['name'] 	= 'Nuevo'
 		context['href'] 	= 'contratos'
 		context['accion'] 	= 'create'
+
+		if self.request.POST:
+			context['form_garantia'] = GarantiaFormSet(self.request.POST)
+		else:
+			context['form_garantia'] = GarantiaFormSet()
 		
 		return context
 
@@ -252,6 +266,13 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 		context['name'] 	= 'Editar'
 		context['href'] 	= 'contratos'
 		context['accion'] 	= 'update'
+
+		if self.request.POST:
+			context['form_garantia'] = GarantiaFormSet(self.request.POST, instance=self.object)
+		else:
+			context['form_garantia'] = GarantiaFormSet(instance=self.object)
+
+		return context
 
 		return context
 

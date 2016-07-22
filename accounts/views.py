@@ -91,9 +91,10 @@ class UsuarioNewMixin(object):
 
 		if form_profile.is_valid():
 
-			try:
-				# send_mail('HOLA CTM', 'QEWA', 'jmieres@informat.cl', ['juan.mieres.s@gmail.com'], fail_silently=False)
-			except Exception as error:
+			# try:
+			# 	# send_mail('HOLA CTM', 'QEWA', 'jmieres@informat.cl', ['juan.mieres.s@gmail.com'], fail_silently=False)
+			# except Exception as error:
+			# 	pass
 
 			self.object             = form.save(commit=False)
 			form_profile.instance   = self.object

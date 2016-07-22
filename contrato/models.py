@@ -71,6 +71,24 @@ class Contrato(models.Model):
 	def __str__(self):
 		return self.nombre_local
 
+class Garantia(models.Model):
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+	valor		= models.FloatField(default=0)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	contrato 	= models.ForeignKey(Contrato)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.local.nombre
+
+
 class Arriendo(models.Model):
 
 	# atributos (generales

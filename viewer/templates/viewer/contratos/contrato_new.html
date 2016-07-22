@@ -250,14 +250,16 @@
 					</div>
 
 					<div class="ibox-title">
+						
 						<h5>OTRAS SUPERFICIES</h5>
 					</div>
 
 					<div class="ibox-content">
 						<div class="row">
-							<div class="col-sm-12">
 
-								<div class="form-group col-sm-2">
+							<div class="col-xs-12 col-sm-6">
+
+								<div class="form-group col-sm-6">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.bodega.help_text }}" ></i>
 									{{ form.bodega.label_tag }}
 									<div class="checkbox checkbox-primary">
@@ -269,7 +271,7 @@
 									</div>
 								</div>
 
-								<div class="form-group col-sm-3">
+								<div class="form-group col-sm-6">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_bodega.help_text }}" ></i>
 									{{ form.metros_bodega.label_tag }}
 									{{ form.metros_bodega }}
@@ -278,6 +280,56 @@
 									</div>
 								</div>
 							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>GARANTÍAS</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-xs-12 col-sm-7">
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-garantias', 'garantia')"><i class="fa fa-plus"></i> Nueva Garantía</button>
+
+								<br>
+								<br>
+								
+								{{ form_garantia.management_form }}
+
+								{% for form in form_garantia %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+								<table id="tabla-garantias" class="table">
+									<thead>
+										<tr>
+											<th>Nombre</th>
+											<th>Valor</th>
+											<th>Moneda</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for form in form_garantia %}
+										<tr>
+											<td>{{ form.nombre }}</td>
+											<td>{{ form.valor }}</td>
+											<td>{{ form.moneda }}</td>
+											<td class="text-center delete">
+												{{ form.DELETE }}
+												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Garantía')">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+
 						</div>
 						<br>
 						<br>

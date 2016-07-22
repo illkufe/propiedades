@@ -9,7 +9,7 @@ from activos.models import Activo
 from locales.models import Local
 from conceptos.models import Concepto
 
-from .models import Contrato_Tipo, Contrato_Estado, Contrato, Arriendo, Arriendo_Detalle, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from .models import Contrato_Tipo, Contrato_Estado, Contrato, Garantia, Arriendo, Arriendo_Detalle, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
 
 class ContratoTipoForm(forms.ModelForm):
 	class Meta:
@@ -107,6 +107,20 @@ class ContratoForm(forms.ModelForm):
 			'numero'			: 'numero',			
 			'nombre_local' 		: 'nombre local',
 			'destino_comercial' : 'Destino Comercial',
+		}
+
+class GarantiaForm(forms.ModelForm):
+
+	moneda = forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
+
+	class Meta:
+		model 	= Garantia
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en']
+
+		widgets = {
+			'nombre' 	: forms.TextInput(attrs={'class': 'form-control'}),
+			'valor'		: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
 class InformacionForm(forms.ModelForm):
@@ -391,7 +405,7 @@ class FondoPromocionForm(forms.ModelForm):
 
 
 
-
+GarantiaFormSet 			= inlineformset_factory(Contrato, Garantia, form=GarantiaForm, extra=1, can_delete=True)
 ArriendoDetalleFormSet 		= inlineformset_factory(Arriendo, Arriendo_Detalle, form=ArriendoDetalleForm, extra=1, can_delete=True)
 ArriendoVariableFormSet 	= inlineformset_factory(Contrato, Arriendo_Variable, form=ArriendoVariableForm, extra=1, can_delete=True)
 ArriendoBodegaFormSet 		= inlineformset_factory(Contrato, Arriendo_Bodega, form=ArriendoBodegaForm, extra=1, can_delete=True)

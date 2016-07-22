@@ -912,11 +912,12 @@ def calculo_arriendo_bodega(request, proceso, contratos, meses, fecha):
 
 					elif arriendo_bodega.periodicidad == 2:
 
-						mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 3)
-						mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 7)
-						mes_3 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+						mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 2)
+						mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
+						mes_3 = sumar_meses(arriendo_bodega.fecha_inicio, 7)
+						mes_4 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
 
-						if fecha.month == mes_1.month or fecha.month==mes_2.month or fecha.month==mes_3.month:
+						if fecha.month == mes_1.month or fecha.month==mes_2.month or fecha.month==mes_3.month or fecha.month==mes_4.month:
 							valor 	= arriendo_bodega.valor
 							factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
