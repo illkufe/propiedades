@@ -264,7 +264,6 @@ class GastoMensualUpdate(GastoMensualMixin, UpdateView):
 		context['href'] = 'activos'
 		context['accion'] = 'update'
 
-
 		return context
 
 

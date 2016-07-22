@@ -758,7 +758,7 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 						mes_1 = sumar_meses(fondo_promocion.fecha, 11)
 
 						try:
-							if fecha.month == mes_1.month:
+							if fecha.month == mes_1.month and fecha.month >= fondo_promocion.fecha.month and fecha.year >= fondo_promocion.fecha.year:
 								valor 	= fondo_promocion.valor
 								factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
 								total 	= valor * factor
@@ -778,7 +778,7 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 						mes_2 = sumar_meses(fondo_promocion.fecha, 11)
 
 						try:
-							if fecha.month == mes_1.month or fecha.month==mes_2.month:
+							if (fecha.month == mes_1.month or fecha.month==mes_2.month) and fecha.month >= fondo_promocion.fecha.month and fecha.year >= fondo_promocion.fecha.year:
 								valor 	= fondo_promocion.valor
 								factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
 								total 	= valor * factor
@@ -794,12 +794,13 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 
 					elif fondo_promocion.periodicidad == 2:
 
-						mes_1 = sumar_meses(fondo_promocion.fecha, 3)
-						mes_2 = sumar_meses(fondo_promocion.fecha, 7)
-						mes_3 = sumar_meses(fondo_promocion.fecha, 11)
+						mes_1 = sumar_meses(fondo_promocion.fecha, 2)
+						mes_2 = sumar_meses(fondo_promocion.fecha, 5)
+						mes_3 = sumar_meses(fondo_promocion.fecha, 8)
+						mes_4 = sumar_meses(fondo_promocion.fecha, 11)
 
 						try:
-							if fecha.month == mes_1.month or fecha.month==mes_2.month or fecha.month==mes_3.month:
+							if (fecha.month == mes_1.month or fecha.month==mes_2.month or fecha.month==mes_3.month or fecha.month==mes_4.month) and fecha.month >= fondo_promocion.fecha.month and fecha.year >= fondo_promocion.fecha.year:
 								valor 	= fondo_promocion.valor
 								factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
 								total 	= valor * factor
@@ -812,7 +813,7 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 							factor 	= None
 							total 	= None
 
-					elif fondo_promocion.periodicidad == 3:
+					elif fondo_promocion.periodicidad == 3 and fecha.month >= fondo_promocion.fecha.month and fecha.year >= fondo_promocion.fecha.year:
 
 						valor 	= fondo_promocion.valor
 						factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
@@ -894,7 +895,7 @@ def calculo_arriendo_bodega(request, proceso, contratos, meses, fecha):
 						mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
 						mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
 
-						if fecha.month == mes_1.month or fecha.month==mes_2.month:
+						if (fecha.month == mes_1.month or fecha.month==mes_2.month) and fecha.month >= arriendo_bodega.fecha_inicio.month and fecha.year >= arriendo_bodega.fecha_inicio.year:
 							valor 	= arriendo_bodega.valor
 							factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
@@ -914,10 +915,10 @@ def calculo_arriendo_bodega(request, proceso, contratos, meses, fecha):
 
 						mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 2)
 						mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
-						mes_3 = sumar_meses(arriendo_bodega.fecha_inicio, 7)
+						mes_3 = sumar_meses(arriendo_bodega.fecha_inicio, 8)
 						mes_4 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
 
-						if fecha.month == mes_1.month or fecha.month==mes_2.month or fecha.month==mes_3.month or fecha.month==mes_4.month:
+						if (fecha.month == mes_1.month or fecha.month==mes_2.month or fecha.month==mes_3.month or fecha.month==mes_4.month) and fecha.month >= arriendo_bodega.fecha_inicio.month and fecha.year >= arriendo_bodega.fecha_inicio.year:
 							valor 	= arriendo_bodega.valor
 							factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
