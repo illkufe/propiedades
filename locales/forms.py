@@ -43,7 +43,6 @@ class LocalForm(forms.ModelForm):
 		# contrato = kwargs.pop('activo', None)
 		super(LocalForm, self).__init__(*args, **kwargs)
 		asd = kwargs.pop('activo')
-		print (asd)
 		# user 		= User.objects.get(pk=self.request.user.pk)
 		# profile 	= UserProfile.objects.get(user=user)
 		# if contrato is not None:

@@ -68,7 +68,7 @@
 	"fields": {
 		"nombre": "Cuota de Incorporación",
 		"codigo": "CUO-INC",
-		"orden": 4,
+		"orden": 5,
 		"template": "cuota_incorporacion",
 		"descripcion": "Descripción Cuota de Incorporación",
 		"visible": true,
@@ -84,7 +84,7 @@
 	"fields": {
 		"nombre": "Fondo de Promoción",
 		"codigo": "FON-PRO",
-		"orden": 4,
+		"orden": 6,
 		"template": "fondo_promocion",
 		"descripcion": "Descripción Fondo de Promoción",
 		"visible": true,
@@ -92,5 +92,37 @@
 		"empresa_id": 1,
 		"moneda_id": 5,
 		"concepto_tipo": 4
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 7,
+	"fields": {
+		"nombre": "Arriendo Bodega",
+		"codigo": "ARR-BOD",
+		"orden": 7,
+		"template": "arriendo_bodega",
+		"descripcion": "Descripción Arriendo Bodega",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 3
+	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 8,
+	"fields": {
+		"nombre": "Servicios Varios",
+		"codigo": "SER-VAR",
+		"orden": 8,
+		"template": null,
+		"descripcion": "Descripción Servicios Varios",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 3
 	}
 }]

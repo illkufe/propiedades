@@ -11,11 +11,11 @@ from django.views.generic import View, ListView, FormView, DeleteView, UpdateVie
 
 from administrador.models import Empresa, Cliente, Moneda, Moneda_Historial
 from accounts.models import UserProfile
-from locales.models import Local, Venta, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
+from locales.models import Local, Venta, Medidor_Electricidad, Medidor_Agua, Medidor_Gas, Gasto_Servicio
 from activos.models import Activo, Gasto_Mensual
 from conceptos.models import Concepto
-from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
-from procesos.models import Proceso, Detalle_Arriendo_Minimo, Detalle_Arriendo_Variable, Detalle_Gasto_Comun, Detalle_Electricidad, Detalle_Agua, Detalle_Gas, Detalle_Cuota_Incorporacion, Detalle_Fondo_Promocion
+from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Arriendo_Bodega, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from procesos.models import Proceso, Detalle_Arriendo_Minimo, Detalle_Arriendo_Variable, Detalle_Gasto_Comun, Detalle_Electricidad, Detalle_Agua, Detalle_Gas, Detalle_Cuota_Incorporacion, Detalle_Fondo_Promocion, Detalle_Arriendo_Bodega, Detalle_Gasto_Servicio
 from operaciones.models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas
 
 from django.db.models import Sum, Q
@@ -119,6 +119,10 @@ class PROCESOS(View):
 				detalle = calculo_cuota_incorporacion(request, proceso, contratos, meses, fecha)
 			elif concepto.id == 6:
 				detalle = calculo_fondo_promocion(request, proceso, contratos, meses, fecha)
+			elif concepto.id == 7:
+				detalle = calculo_arriendo_bodega(request, proceso, contratos, meses, fecha)
+			elif concepto.id == 8:
+				detalle = calculo_servicios_varios(request, proceso, contratos, meses, fecha)
 			else:
 				detalle = []
 
@@ -397,7 +401,6 @@ def calculo_arriendo_variable(request, proceso, contratos, meses, fecha):
 				
 
 			# except Exception:
-			# 	print ('exception')
 			# 	pass
 			# 	# valor 	= None
 			# 	# ventas 	= None
@@ -408,15 +411,8 @@ def calculo_arriendo_variable(request, proceso, contratos, meses, fecha):
 
 
 			try:
-
-				# print (fecha.month)
-				# print (fecha.year)
 				existe = Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
-
-
-				existe = Arriendo_Variable.objects.filter(contrato=contrato, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
-
-				# print (existe)
+				# existe = Arriendo_Variable.objects.filter(contrato=contrato, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
 
 				if existe is True:
 					# detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
@@ -859,6 +855,151 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 
 	return 'ok'
 
+def calculo_arriendo_bodega(request, proceso, contratos, meses, fecha):
+
+	for x in range(meses):
+			
+		for item in contratos:
+
+			contrato = Contrato.objects.get(id=item)
+
+			try:
+				arriendo_bodegas 	= Arriendo_Bodega.objects.filter(contrato=contrato)
+				total 				= 0
+
+				for arriendo_bodega in arriendo_bodegas:
+					
+					if arriendo_bodega.periodicidad == 0 and fecha.month >= arriendo_bodega.fecha_inicio.month and fecha.year >= arriendo_bodega.fecha_inicio.year:
+
+						mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+						
+						if fecha.month == mes_1.month:
+							valor 	= arriendo_bodega.valor
+							factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+							if arriendo_bodega.metro_cuadrado == True:
+								if contrato.bodega is True:
+									metros = contrato.metros_bodega
+								else:
+									metros = 0
+							else:
+								metros = 1
+
+							total += valor * factor * metros
+						else:
+							total += 0
+
+					elif arriendo_bodega.periodicidad == 1:
+
+						mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
+						mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+
+						if fecha.month == mes_1.month or fecha.month==mes_2.month:
+							valor 	= arriendo_bodega.valor
+							factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+							if arriendo_bodega.metro_cuadrado == True:
+								if contrato.bodega is True:
+									metros = contrato.metros_bodega
+								else:
+									metros = 0
+							else:
+								metros = 1
+
+							total += valor * factor * metros
+						else:
+							total += 0
+
+					elif arriendo_bodega.periodicidad == 2:
+
+						mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 3)
+						mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 7)
+						mes_3 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+
+						if fecha.month == mes_1.month or fecha.month==mes_2.month or fecha.month==mes_3.month:
+							valor 	= arriendo_bodega.valor
+							factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+							if arriendo_bodega.metro_cuadrado == True:
+								if contrato.bodega is True:
+									metros = contrato.metros_bodega
+								else:
+									metros = 0
+							else:
+								metros = 1
+
+							total += valor * factor * metros
+						else:
+							total += 0
+
+					elif arriendo_bodega.periodicidad == 3:
+
+						if fecha.month >= arriendo_bodega.fecha_inicio.month and fecha.year >= arriendo_bodega.fecha_inicio.year:
+							valor 	= arriendo_bodega.valor
+							factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+							if arriendo_bodega.metro_cuadrado == True:
+								if contrato.bodega is True:
+									metros = contrato.metros_bodega
+								else:
+									metros = 0
+							else:
+								metros = 1
+
+							total += valor * factor * metros
+						else:
+							total += 0
+
+					else:
+						total += 0
+
+			except Arriendo_Bodega.DoesNotExist:
+				total = None
+
+			
+			Detalle_Arriendo_Bodega(
+				total 			= total,
+				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+				proceso 		= proceso,
+				contrato 		= contrato,
+			).save()
+
+
+		fecha = sumar_meses(fecha, 1)
+
+	return 'ok'
+
+def calculo_servicios_varios(request, proceso, contratos, meses, fecha):
+
+	for x in range(meses):
+		for item in contratos:
+
+			contrato 		= Contrato.objects.get(id=item)
+			locales 		= contrato.locales.all()
+
+			for local in locales:
+				
+				if local.gasto_servicio_set.all().filter(mes=fecha.month, anio=fecha.year).exists():
+					total = 0
+					servicios = local.gasto_servicio_set.all().filter(mes=fecha.month, anio=fecha.year)
+					for servicio in servicios:
+						cantidad_locales = servicio.locales.all().count()
+						total 			+= servicio.valor / cantidad_locales
+				else:
+					total = None
+
+				Detalle_Gasto_Servicio(
+					total 			= total,
+					fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+					fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+					proceso 		= proceso,
+					contrato 		= contrato,
+					local 			= local,
+				).save()
+
+		fecha = sumar_meses(fecha, 1)
+
 
 
 def data_arriendo_minimo(proceso):
@@ -1069,6 +1210,58 @@ def data_fondo_promocion(proceso):
 	return data
 
 
+
+def data_arriendo_bodega(proceso):
+
+	data 			= {}
+	detalle 		= []
+	total			= 0
+
+	detalles = Detalle_Arriendo_Bodega.objects.filter(proceso=proceso)
+
+	for item in detalles:
+		detalle.append({
+			'total' 			: formato_moneda(item.total) if item.total is not None else '---',
+			'fecha_inicio'		: item.fecha_inicio.strftime('%d/%m/%Y'),
+			'fecha_termino'		: item.fecha_termino.strftime('%d/%m/%Y'),
+			'contrato'			: item.contrato.numero,
+			'cliente'			: item.contrato.cliente.nombre,
+			'nombre_local'		: item.contrato.nombre_local,
+		})
+
+		total += item.total if item.total is not None else 0
+
+	data['detalle'] = detalle
+	data['total'] 	= total
+
+	return data
+
+def data_servicios_varios(proceso):
+
+	data 			= {}
+	detalle 		= []
+	total			= 0
+
+	detalles = Detalle_Gasto_Servicio.objects.filter(proceso=proceso)
+
+	for item in detalles:
+		detalle.append({
+			'total' 			: formato_moneda(item.total) if item.total is not None else '---',
+			'fecha_inicio'		: item.fecha_inicio.strftime('%d/%m/%Y'),
+			'fecha_termino'		: item.fecha_termino.strftime('%d/%m/%Y'),
+			'contrato'			: item.contrato.numero,
+			'cliente'			: item.contrato.cliente.nombre,
+			'nombre_local'		: item.contrato.nombre_local,
+			'local'				: item.local.nombre,
+		})
+
+		total += item.total if item.total is not None else 0
+
+	data['detalle'] = detalle
+	data['total'] 	= total
+
+	return data
+
 # funciones globales
 
 def arriendo_minimo_reajustable(contratos, meses, fecha):
@@ -1210,6 +1403,14 @@ def propuesta_pdf(proceso, pk=None):
 
 		elif concepto.id == 6:
 			data = data_fondo_promocion(proceso)
+			item = {'id': concepto.id, 'nombre': concepto.nombre, 'detalle': data['detalle'], 'total': formato_moneda(data['total'])}
+
+		elif concepto.id == 7:
+			data = data_arriendo_bodega(proceso)
+			item = {'id': concepto.id, 'nombre': concepto.nombre, 'detalle': data['detalle'], 'total': formato_moneda(data['total'])}
+
+		elif concepto.id == 8:
+			data = data_servicios_varios(proceso)
 			item = {'id': concepto.id, 'nombre': concepto.nombre, 'detalle': data['detalle'], 'total': formato_moneda(data['total'])}
 
 		else:

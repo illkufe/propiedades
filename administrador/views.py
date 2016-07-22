@@ -107,8 +107,7 @@ class ClienteMixin(object):
 	success_url 	= '/clientes/list'
 
 	def form_invalid(self, form):
-		print(form)
-		print ("invalido")
+
 		response = super(ClienteMixin, self).form_invalid(form)
 		if self.request.is_ajax():
 			return JsonResponse(form.errors, status=400)
@@ -116,7 +115,6 @@ class ClienteMixin(object):
 			return response
 
 	def form_valid(self, form):
-		print ('valido')
 
 		user 	= User.objects.get(pk=self.request.user.pk)
 		profile = UserProfile.objects.get(user=user)

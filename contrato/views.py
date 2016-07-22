@@ -7,8 +7,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.db.models import Sum
 from django.views.generic import View, ListView, FormView, CreateView, DeleteView, UpdateView
 
-from .forms import ContratoTipoForm, ContratoForm, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, GastoComunFormSet, ServicioBasicoFormSet, CuotaIncorporacionFormet, FondoPromocionForm, FondoPromocionFormSet
-from .models import Contrato_Tipo, Contrato, Contrato_Estado, Arriendo, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from .forms import ContratoTipoForm, ContratoForm, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, ArriendoBodegaFormSet, GastoComunFormSet, ServicioBasicoFormSet, CuotaIncorporacionFormet, FondoPromocionForm, FondoPromocionFormSet
+from .models import Contrato_Tipo, Contrato, Contrato_Estado, Arriendo, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
 
 from accounts.models import UserProfile
 from administrador.models import Empresa, Cliente
@@ -278,11 +278,13 @@ class ContratoConceptoMixin(object):
 
 		formset_arriendo 			= context['formset_arriendo']
 		formset_detalle 			= context['formset_detalle']
+		form_arriendo_bodega 		= context['form_arriendo_bodega']
 		form_arriendo_variable 		= context['form_arriendo_variable']
 		formset_gasto_comun			= context['form_gasto_comun']
 		formset_servicios_basicos	= context['form_servicios_basicos']
 		formset_cuota_incorporacion	= context['form_cuota_incorporacion']
 		formset_fondo_promocion		= context['form_fondo_promocion']
+
 		conceptos 					= Contrato.objects.get(id=self.kwargs['contrato_id']).conceptos.all()
 
 		for concepto in conceptos:
@@ -313,6 +315,10 @@ class ContratoConceptoMixin(object):
 			elif concepto.id == 6:
 				if formset_fondo_promocion.is_valid():
 					formset_fondo_promocion.save()
+
+			elif concepto.id == 7:
+				if form_arriendo_bodega.is_valid():
+					form_arriendo_bodega.save()
 
 			else:
 				pass
@@ -352,12 +358,18 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 				context['formset_arriendo'] = ArriendoForm(self.request.POST)
 				context['formset_detalle'] 	= ArriendoDetalleFormSet(self.request.POST)
 
+			# arriendo bodega
+			try:
+				arriendo_bodega 					= Arriendo_Bodega.objects.filter(contrato_id=self.kwargs['contrato_id'])
+				context['form_arriendo_bodega'] 	= ArriendoBodegaFormSet(self.request.POST, instance=contrato)
+			except Exception:
+				context['form_arriendo_bodega'] 	= ArriendoBodegaFormSet(self.request.POST)			
+
 			# arriendo variable
 			try:
 				arriendo_variable 					= Arriendo_Variable.objects.filter(contrato_id=self.kwargs['contrato_id'])
 				context['form_arriendo_variable'] 	= ArriendoVariableFormSet(self.request.POST, instance=contrato)
 			except Exception:
-				
 				context['form_arriendo_variable'] 	= ArriendoVariableFormSet(self.request.POST)
 
 			# gasto común
@@ -402,6 +414,13 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 			except Exception:
 				context['formset_arriendo'] 	= ArriendoForm(contrato=contrato)
 				context['formset_detalle'] 		= ArriendoDetalleFormSet()
+
+			# arriendo bodega
+			try:
+				arriendo_bodega 				= Arriendo_Bodega.objects.filter(contrato_id=contrato_id)
+				context['form_arriendo_bodega'] = ArriendoBodegaFormSet(instance=contrato)
+			except Exception:
+				context['form_arriendo_bodega'] = ArriendoBodegaFormSet()
 
 			# arriendo variable
 			try:

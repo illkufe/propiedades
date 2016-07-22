@@ -80,6 +80,41 @@ class Detalle_Arriendo_Variable(models.Model):
 	def __str__(self):
 		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
 
+class Detalle_Arriendo_Bodega(models.Model):
+	
+	fecha_inicio 	= models.DateField()
+	fecha_termino 	= models.DateField()
+	total 			= models.FloatField(null=True, blank=True)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	proceso 	= models.ForeignKey(Proceso)
+	contrato 	= models.ForeignKey(Contrato)
+
+	def __str__(self):
+		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+
+class Detalle_Gasto_Servicio(models.Model):
+
+	fecha_inicio 	= models.DateField()
+	fecha_termino 	= models.DateField()
+	total 			= models.FloatField(null=True, blank=True)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	proceso 	= models.ForeignKey(Proceso)
+	contrato 	= models.ForeignKey(Contrato)
+	local 		= models.ForeignKey(Local)
+
+	def __str__(self):
+		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+
 class Detalle_Gasto_Comun(models.Model):
 
 	valor 			= models.FloatField(null=True, blank=True)

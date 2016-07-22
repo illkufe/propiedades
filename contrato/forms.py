@@ -9,7 +9,7 @@ from activos.models import Activo
 from locales.models import Local
 from conceptos.models import Concepto
 
-from .models import Contrato_Tipo, Contrato_Estado, Contrato, Arriendo, Arriendo_Detalle, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from .models import Contrato_Tipo, Contrato_Estado, Contrato, Arriendo, Arriendo_Detalle, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
 
 class ContratoTipoForm(forms.ModelForm):
 	class Meta:
@@ -182,6 +182,54 @@ class ArriendoDetalleForm(forms.ModelForm):
 			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
+class ArriendoBodegaForm(forms.ModelForm):
+
+	fecha_inicio = forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
+
+	def __init__(self, *args, **kwargs):
+		contrato = kwargs.pop('contrato', None)
+		super(ArriendoBodegaForm, self).__init__(*args, **kwargs)
+
+		if contrato is not None:
+			self.fields['fecha_inicio'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
+			
+
+	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
+
+	class Meta:
+		model 	= Arriendo_Bodega
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en']
+
+		widgets = {
+			'metro_cuadrado'	: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'periodicidad'		: forms.Select(attrs={'class': 'form-control'}),
+			'valor'				: forms.NumberInput(attrs={'class': 'form-control'}),
+			'fecha_inicio'		: forms.TextInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'meses'			: {'required': 'campo requerido'},
+			'valor'			: {'required': 'campo requerido'},
+			'moneda'		: {'required': 'campo requerido'},
+			'fecha_inicio'	: {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'meses'			: 'Meses',
+			'por_meses' 	: 'Por Meses',
+			'fecha_inicio'	: 'Fecha Inicio',
+		}
+
+		help_texts = {
+			'reajuste' 		: 'Reajuste',
+			'por_meses'		: 'Por Meses',
+			'meses' 		: 'Cada Cuantos',
+			'valor' 		: 'Valor',
+			'moneda' 		: 'Moneda',
+			'fecha_inicio' 	: 'Fecha Inicio',
+		}
+
 class ArriendoVariableForm(forms.ModelForm):
 	
 	moneda = forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
@@ -243,8 +291,6 @@ class GastoComunForm(forms.ModelForm):
 			'prorrateo' : 'prorrateo',
 		}
 
-
-
 class ServicioBasicoForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
@@ -277,7 +323,6 @@ class ServicioBasicoForm(forms.ModelForm):
 			'valor_agua' 			: 'Valor Agua',
 			'valor_gas' 			: 'Valor Gas',
 			}
-
 
 class CuotaIncorporacionForm(forms.ModelForm):
 
@@ -344,12 +389,15 @@ class FondoPromocionForm(forms.ModelForm):
 			'periodicidad'	: 'periodicidad',
 		}
 
+
+
+
 ArriendoDetalleFormSet 		= inlineformset_factory(Arriendo, Arriendo_Detalle, form=ArriendoDetalleForm, extra=1, can_delete=True)
 ArriendoVariableFormSet 	= inlineformset_factory(Contrato, Arriendo_Variable, form=ArriendoVariableForm, extra=1, can_delete=True)
+ArriendoBodegaFormSet 		= inlineformset_factory(Contrato, Arriendo_Bodega, form=ArriendoBodegaForm, extra=1, can_delete=True)
 GastoComunFormSet 			= inlineformset_factory(Contrato, Gasto_Comun, form=GastoComunForm, extra=1, can_delete=True)
 ServicioBasicoFormSet 		= inlineformset_factory(Contrato, Servicio_Basico, form=ServicioBasicoForm, extra=1, can_delete=True)
 CuotaIncorporacionFormet 	= inlineformset_factory(Contrato, Cuota_Incorporacion, form=CuotaIncorporacionForm, extra=1, can_delete=True)
 FondoPromocionFormSet 		= inlineformset_factory(Contrato, Fondo_Promocion, form=FondoPromocionForm, extra=1, can_delete=True)
-
 
 

@@ -2537,7 +2537,7 @@ def calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos):
 			except Arriendo.DoesNotExist:
 				arriendo_minimo = None
 
-			print (arriendo_minimo)
+			
 
 			try:
 				existe = Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month).exists()
@@ -2554,13 +2554,13 @@ def calculo_arriendo_variable(request, fecha_inicio, fecha_termino, contratos):
 						if fecha.month == venta['month'] and fecha.year == venta['year']:
 							ventas += venta['valor__sum']
 
-					print ((ventas * valor) / 100)
+					
 
 					if ((ventas * valor) / 100) >= arriendo_minimo:
-						print ('es mayor')
+						
 						total = ((ventas * valor) / 100) - arriendo_minimo
 					else:
-						print ('es menor')
+						
 						total = 0
 
 				else:
@@ -3042,7 +3042,7 @@ def propuesta_pdf(proceso, pk=None):
 		template 	= get_template('pdf/procesos/propuesta_fondo_promocion.html')
 
 	else:
-		print ('error: concepto sin template ni data')
+		
 
 	context = Context({
 		'proceso' 	: proceso,

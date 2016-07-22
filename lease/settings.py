@@ -123,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Configuracion CRON
 CRONJOBS = [
-    ('0 * * * *', 'lease.cron.update_currency')
+    ('0 * * * *', 'lease.cron.update_currency'),
 ]
 
 

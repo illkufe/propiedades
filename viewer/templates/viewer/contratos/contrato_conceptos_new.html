@@ -15,9 +15,13 @@
 
 						{% for concepto in conceptos %}
 
+						{% if concepto.template != None %}
+						
 						{% with ""|add:concepto.template|add:".html" as template %}
 						{% include template %}
 						{% endwith %}
+
+						{% endif %}
 
 						{% endfor %}
 
