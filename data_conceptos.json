@@ -125,4 +125,20 @@
 		"moneda_id": 5,
 		"concepto_tipo": 3
 	}
+},
+{
+	"model": "conceptos.concepto",
+	"pk": 9,
+	"fields": {
+		"nombre": "Multas",
+		"codigo": "MULTAS",
+		"orden": 9,
+		"template": null,
+		"descripcion": "Descripción Multas",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00",
+		"empresa_id": 1,
+		"moneda_id": 5,
+		"concepto_tipo": 3
+	}
 }]

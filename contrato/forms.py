@@ -9,7 +9,7 @@ from activos.models import Activo
 from locales.models import Local
 from conceptos.models import Concepto
 
-from .models import Contrato_Tipo, Contrato_Estado, Contrato, Garantia, Arriendo, Arriendo_Detalle, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from .models import Contrato_Tipo, Contrato_Estado, Contrato, Multa, Garantia, Arriendo, Arriendo_Detalle, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
 
 class ContratoTipoForm(forms.ModelForm):
 	class Meta:
@@ -122,6 +122,54 @@ class GarantiaForm(forms.ModelForm):
 			'nombre' 	: forms.TextInput(attrs={'class': 'form-control'}),
 			'valor'		: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
+
+class ContratoMultaForm(forms.ModelForm):
+
+	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+
+	def __init__(self, *args, **kwargs):
+
+		self.request 	= kwargs.pop('request')
+		user 			= User.objects.get(pk=self.request.user.pk)
+		profile 		= UserProfile.objects.get(user=user)
+		activos 		= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
+
+		super(ContratoMultaForm, self).__init__(*args, **kwargs)
+
+		# self.fields['locales'].queryset = Local.objects.filter(activo__in=activos, visible=True)
+
+	class Meta:
+
+		model 	= Multa
+		fields 	= '__all__'
+		exclude = [ 'visible', 'creado_en', 'user', 'imagen_type', 'imagen_size']
+
+		widgets = {
+			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'valor'	 		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'mes'	 		: forms.Select(attrs={'class': 'form-control'}),
+			'anio' 			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'contrato'		: forms.Select(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'nombre' 	: {'required': 'campo es requerido'},
+			'valor' 	: {'required': 'campo es requerido'},
+			'mes' 		: {'required': 'campo es requerido'},
+			'anio' 		: {'required': 'campo es requerido'},
+			'contrato' 	: {'required': 'campo es requerido'},
+			'moneda' 	: {'required': 'campo es requerido'},
+		}
+
+		labels = {
+			'anio'			: 'Año',
+			'imagen_file'	: 'Archivo',
+		}
+
+		help_texts = {
+			'valor'			: '...',
+		}
+
 
 class InformacionForm(forms.ModelForm):
 

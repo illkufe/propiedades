@@ -20,6 +20,11 @@ urlpatterns = [
 	url(r'^contratos-tipo/delete/(?P<pk>\d+)$', views.ContratoTipoDelete.as_view(), name='contrato_tipo_delete'),
 	url(r'^contratos-tipo/update/(?P<pk>\d+)$', views.ContratoTipoUpdate.as_view(), name='contrato_tipo_update'),
 
+	url(r'^contratos-multas/list$',views.ContratoMultaList.as_view(), name='contratos_multas_list'),
+	url(r'^contratos-multas/new$', views.ContratoMultaNew.as_view(), name='contratos_multas_new'),
+	url(r'^contratos-multas/delete/(?P<pk>\d+)$',views.ContratoMultaDelete.as_view(), name='contratos_multas_delete'),
+	url(r'^contratos-multas/update/(?P<pk>\d+)$',views.ContratoMultaUpdate.as_view(), name='contratos_multas_update'),
+
 	url(r'^contratos/inactivos/list$', views.ContratosInactivosList.as_view(), name='contratos_inactivos_list'),
 
 	# funciones

@@ -824,7 +824,6 @@ def calculo_fondo_promocion(request, proceso, contratos, meses, fecha):
 						factor 			= None
 						total 			= None
 
-
 					if arriendo_reajustable is not None and valor is not None:
 						total = (arriendo_reajustable * valor) / 100
 					else:

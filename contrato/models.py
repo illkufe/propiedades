@@ -71,6 +71,41 @@ class Contrato(models.Model):
 	def __str__(self):
 		return self.nombre_local
 
+
+class Multa(models.Model):
+
+	MESES = (
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
+	)
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+	valor		= models.FloatField()
+	mes 		= models.IntegerField(choices=MESES)
+	anio		= models.IntegerField()
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	contrato 	= models.ForeignKey(Contrato)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.local.nombre
+
 class Garantia(models.Model):
 
 	# atributos (generales)
@@ -86,7 +121,7 @@ class Garantia(models.Model):
 	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
-		return self.local.nombre
+		return self.nombre
 
 
 class Arriendo(models.Model):
