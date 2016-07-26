@@ -104,7 +104,7 @@ class Multa(models.Model):
 	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
-		return self.local.nombre
+		return self.nombre
 
 class Garantia(models.Model):
 

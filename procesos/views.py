@@ -14,8 +14,8 @@ from accounts.models import UserProfile
 from locales.models import Local, Venta, Medidor_Electricidad, Medidor_Agua, Medidor_Gas, Gasto_Servicio
 from activos.models import Activo, Gasto_Mensual
 from conceptos.models import Concepto
-from contrato.models import Contrato, Contrato_Tipo, Arriendo, Arriendo_Detalle, Arriendo_Variable, Arriendo_Bodega, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
-from procesos.models import Proceso, Detalle_Arriendo_Minimo, Detalle_Arriendo_Variable, Detalle_Gasto_Comun, Detalle_Electricidad, Detalle_Agua, Detalle_Gas, Detalle_Cuota_Incorporacion, Detalle_Fondo_Promocion, Detalle_Arriendo_Bodega, Detalle_Gasto_Servicio
+from contrato.models import Contrato, Contrato_Tipo, Multa, Arriendo, Arriendo_Detalle, Arriendo_Variable, Arriendo_Bodega, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from procesos.models import Proceso, Detalle_Arriendo_Minimo, Detalle_Arriendo_Variable, Detalle_Gasto_Comun, Detalle_Electricidad, Detalle_Agua, Detalle_Gas, Detalle_Cuota_Incorporacion, Detalle_Fondo_Promocion, Detalle_Arriendo_Bodega, Detalle_Gasto_Servicio, Detalle_Multa
 from operaciones.models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas
 
 from django.db.models import Sum, Q
@@ -123,6 +123,8 @@ class PROCESOS(View):
 				detalle = calculo_arriendo_bodega(request, proceso, contratos, meses, fecha)
 			elif concepto.id == 8:
 				detalle = calculo_servicios_varios(request, proceso, contratos, meses, fecha)
+			elif concepto.id == 9:
+				detalle = calculo_multas(request, proceso, contratos, meses, fecha)
 			else:
 				detalle = []
 
@@ -1001,6 +1003,31 @@ def calculo_servicios_varios(request, proceso, contratos, meses, fecha):
 
 		fecha = sumar_meses(fecha, 1)
 
+def calculo_multas(request, proceso, contratos, meses, fecha):
+
+	for x in range(meses):
+		for item in contratos:
+
+			contrato = Contrato.objects.get(id=item)
+
+			if Multa.objects.filter(contrato=contrato, mes=fecha.month, anio=fecha.year).exists():
+				multas 	= Multa.objects.filter(contrato=contrato, mes=fecha.month, anio=fecha.year)
+				total 	= 0
+				for multa in multas:
+					total += multa.valor * multa.moneda.moneda_historial_set.all().order_by('-id').first().valor
+			else:
+				total = None
+
+			Detalle_Multa(
+				total 			= total,
+				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+				proceso 		= proceso,
+				contrato 		= contrato,
+			).save()
+
+		fecha = sumar_meses(fecha, 1)
+
 
 
 def data_arriendo_minimo(proceso):
@@ -1210,8 +1237,6 @@ def data_fondo_promocion(proceso):
 
 	return data
 
-
-
 def data_arriendo_bodega(proceso):
 
 	data 			= {}
@@ -1262,6 +1287,32 @@ def data_servicios_varios(proceso):
 	data['total'] 	= total
 
 	return data
+
+def data_multas(proceso):
+
+	data 			= {}
+	detalle 		= []
+	total			= 0
+
+	detalles = Detalle_Multa.objects.filter(proceso=proceso)
+
+	for item in detalles:
+		detalle.append({
+			'total' 			: formato_moneda(item.total) if item.total is not None else '---',
+			'fecha_inicio'		: item.fecha_inicio.strftime('%d/%m/%Y'),
+			'fecha_termino'		: item.fecha_termino.strftime('%d/%m/%Y'),
+			'contrato'			: item.contrato.numero,
+			'cliente'			: item.contrato.cliente.nombre,
+			'nombre_local'		: item.contrato.nombre_local,
+		})
+
+		total += item.total if item.total is not None else 0
+
+	data['detalle'] = detalle
+	data['total'] 	= total
+
+	return data
+
 
 # funciones globales
 
@@ -1359,7 +1410,6 @@ def arriendo_minimo_reajustable(contratos, meses, fecha):
 
 	return data
 
-
 def propuesta_pdf(proceso, pk=None):
 
 	if pk is not None:
@@ -1412,6 +1462,10 @@ def propuesta_pdf(proceso, pk=None):
 
 		elif concepto.id == 8:
 			data = data_servicios_varios(proceso)
+			item = {'id': concepto.id, 'nombre': concepto.nombre, 'detalle': data['detalle'], 'total': formato_moneda(data['total'])}
+
+		elif concepto.id == 9:
+			data = data_multas(proceso)
 			item = {'id': concepto.id, 'nombre': concepto.nombre, 'detalle': data['detalle'], 'total': formato_moneda(data['total'])}
 
 		else:

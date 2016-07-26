@@ -389,6 +389,44 @@
             </tfoot>
         </table>
 
+
+        <!-- Multas -->
+        {% elif concepto.id == 9 %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width:10%">F.Inicio</th>
+                    <th style="width:10%">F.Termino</th>
+                    <th style="width:30%">Cliente</th>
+                    <th style="width:10%">Nº Contrato</th>
+                    <th style="width:22.5%">Marca Comercial</th>
+                    <th class="text-right" style="width:17.5%">Valor</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in concepto.detalle %}
+                <tr>
+                    <td>{{item.fecha_inicio}}</td>
+                    <td>{{item.fecha_termino}}</td>
+                    <td>{{item.cliente}}</td>
+                    <td>{{item.contrato}}</td>
+                    <td>{{item.nombre_local}}</td>
+                    <td class="text-right">{{item.total}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <table class="table table-bordered tabla-subtotal">
+            <tfoot>
+                <th>
+                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
+                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
+                </th>
+            </tfoot>
+        </table>
+
         {% else %}
         <p>----</p>
 
