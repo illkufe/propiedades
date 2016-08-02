@@ -90,7 +90,6 @@ class ConceptoDelete(DeleteView):
 
 		return JsonResponse(payload, safe=False)
 
-
 class ConceptoUpdate(UpdateView):
 
 	model = Concepto

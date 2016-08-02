@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% block section %}
+{% load extra_tags %}
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
@@ -11,7 +12,7 @@
 				<div class="ibox-title">
 					<h5>Multas</h5>
 					<div class="ibox-tools">
-						<a href="/contratos-multas/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i>  Multa</button></a>
+						<a href="/contratos-multas/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nueva multa</button></a>
 					</div>
 				</div>
 				<div class="ibox-content">
@@ -24,9 +25,9 @@
 									<td>{{ item.id }}</td>
 									<td>{{ item.nombre }}</td>
 									<td>{{ item.contrato.nombre_local }}</td>
-									<td>{{ item.mes }}</td>
-									<td>{{ item.anio }}</td>
-									<td>{{ item.valor }}</td>
+									<td class="text-right">{{ item.mes }}</td>
+									<td class="text-right">{{ item.anio }}</td>
+									<td class="text-right">{{ item.valor|formato_moneda }}</td>
 									<td class="text-center">
 										<a class="btn btn-edit btn-bitbucket" href='/contratos-multas/update/{{item.id}}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'gastos-servicios', 'tabla-gastos-servicios', 'Multa')"><i class="fa fa-trash"></i></a>
@@ -92,7 +93,7 @@ function load_tabla_lecturas(){
 		'width': '10%',
 		'data': 'options',
 		'orderable': false,
-		'title': 'Opciones'
+		'title': '<div class="text-center">Opciones</div>',
 	}];
 
 	tabla_lecturas = load_table('#tabla-gastos-servicios', columns, {})

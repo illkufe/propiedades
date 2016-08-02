@@ -8,8 +8,10 @@ from django.core.urlresolvers import reverse_lazy
 from django.core.mail import send_mail
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
+from notificaciones.models import Alerta, Alerta_Miembro
 from .models import UserProfile
 from .forms import UserForm, UserProfileForm, UserProfileFormSet, UpdateUserProfileForm, UpdatePasswordForm, UpdatePasswordAdminForm
+from datetime import datetime
 
 import string
 import random
@@ -216,7 +218,6 @@ def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/')
 
-
 def password_random(size):
 
 	chars       = string.ascii_letters + string.digits
@@ -225,11 +226,33 @@ def password_random(size):
 	return password
 
 def profile(request):
+	data_alert 	= list()
+	alertas 	= Alerta.objects.all()
+	date 		= datetime.now()
+
+	for alerta in alertas:
+
+		if date >= alerta.fecha:
+
+			alerta_miembros = alerta.alerta_miembro_set.all()
+
+			for alerta_miembro in alerta_miembros:
+				if alerta_miembro.user == request.user:
+					
+					# crear alerta firebase
+					data_alert.append({
+						"mensaje"		: alerta.nombre,
+						"descripcion"	: alerta.descripcion,
+						"emisor"		: alerta.creador.first_name
+						})
+
+
 
 	form_profile    = UpdateUserProfileForm(user=request.user)
 	form_password   = UpdatePasswordForm(user=request.user)
 
 	return render(request, 'viewer/accounts/profile.html', {
+		'alertas': data_alert,
 		'form_profile': form_profile,
 		'form_password': form_password,
 		'title' : 'Perfil',

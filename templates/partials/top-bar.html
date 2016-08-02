@@ -5,6 +5,21 @@
 			<a class="navbar-minimalize minimalize-styl-2 btn btn-primary"><i class="fa fa-bars"></i> </a>
 		</div>
 		<ul class="nav navbar-top-links navbar-right">
+			<li class="dropdown c-alertas">
+				<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+					<i class="fa fa-bell"></i>  <span class="label label-primary">0</span>
+				</a>
+				<ul class="dropdown-menu dropdown-alerts">
+					<li>
+						<div class="text-center link-block">
+							<a>
+								<strong>Ver todas las alertas</strong>
+								<i class="fa fa-angle-right"></i>
+							</a>
+						</div>
+					</li>
+				</ul>
+			</li>
 			<li>
 				<a href="{% url "accounts:logout" %}">
 					<i class="fa fa-sign-out"></i> Salir

@@ -1,8 +1,8 @@
 {% extends 'index.html' %}
 {% block section %}
+{% load extra_tags %}
 
 {% include 'partials/breadcrumbs-bar.html' %}
-
 
 <div class="wrapper wrapper-content">
 	<div class="row">
@@ -27,10 +27,10 @@
 									<td>{{ item.activo }}</td>
 									<td>{{ item.local }}</td>
 									<td>{{ item.tipo }}</td>
-									<td>{{ item.mes }}</td>
-									<td>{{ item.anio }}</td>
-									<td>{{ item.creado_en }}</td>
-									<td>{{ item.valor }}</td>
+									<td class="text-right">{{ item.mes }}</td>
+									<td class="text-right">{{ item.anio }}</td>
+									<td class="text-right">{{ item.creado_en }}</td>
+									<td class="text-right">{{ item.valor|formato_numero }}</td>
 									<td class="text-center">
 										<a class="btn btn-edit btn-bitbucket" href='/lectura-{{item.url}}/update/{{item.id}}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'lectura-{{item.url}}', 'tabla-lecturas', 'Lectura')"><i class="fa fa-trash"></i></a>

@@ -153,12 +153,12 @@ class ContratoMultaForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 	: {'required': 'campo es requerido'},
-			'valor' 	: {'required': 'campo es requerido'},
-			'mes' 		: {'required': 'campo es requerido'},
-			'anio' 		: {'required': 'campo es requerido'},
-			'contrato' 	: {'required': 'campo es requerido'},
-			'moneda' 	: {'required': 'campo es requerido'},
+			'nombre' 	: {'required': 'campo requerido'},
+			'valor' 	: {'required': 'campo requerido'},
+			'mes' 		: {'required': 'campo requerido'},
+			'anio' 		: {'required': 'campo requerido'},
+			'contrato' 	: {'required': 'campo requerido'},
+			'moneda' 	: {'required': 'campo requerido'},
 		}
 
 		labels = {

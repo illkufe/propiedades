@@ -279,15 +279,6 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 
 
 
-
-
-
-
-
-
-
-
-
 class ContratoMultaMixin(object):
 
 	template_name = 'viewer/contratos/contrato_multas_new.html'
@@ -358,14 +349,11 @@ class ContratoMultaList(ListView):
 
 		user 		= User.objects.get(pk=self.request.user.pk)
 		profile 	= UserProfile.objects.get(user=user)
-		# activos   	= Activo.objects.values_list('id', flat=True).filter(empresa=profile.empresa)
-		# locales 	= Local.objects.filter(activo_id__in=activos)
-		# queryset 	= Multa.objects.filter(visible=True, locales__in=locales).distinct()
-		queryset 	= Multa.objects.all()
+		queryset 	= Multa.objects.all() #{fata: traer las multas de los contratos de la empresa}
 
-		# for item in queryset:
-		# 	item.mes 		= meses[int(item.mes)-1]
-		# 	item.creado_en 	= item.creado_en.strftime('%d/%m/%Y')
+		for item in queryset:
+			item.mes 		= meses[int(item.mes)-1]
+			item.creado_en 	= item.creado_en.strftime('%d/%m/%Y')
 
 		return queryset
 

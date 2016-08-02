@@ -457,7 +457,7 @@ function filtrar_contratos(){
 		submitHandler: function(form) {
 			$('#form-fitrar-contratos').ajaxSubmit({
 				dataType: 'json',
-				success: function(data){				
+				success: function(data){
 
 					if (data.length == 0) {
 						notification_toast('error', 'No Existen', 'contratos con estos filtros')

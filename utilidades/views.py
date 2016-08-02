@@ -1,12 +1,29 @@
 from django.shortcuts import render
+from django import forms
 from datetime import date, datetime, timedelta
 
 import calendar
 
+def variables_globales(request):
+
+	try:
+		user 			= request.user
+		empresa 		= user.userprofile.empresa
+		configuracion 	= empresa.configuracion
+
+		return {
+		'lease_user_id' 	: user.id,
+		'lease_symbol' 		: configuracion.moneda.simbolo,
+		'lease_format_dec' 	: ',' if configuracion.formato_decimales == 1 else '.', 
+		'lease_format_mil' 	: '.' if configuracion.formato_decimales == 1 else ',',
+		'lease_decimales' 	: configuracion.cantidad_decimales,
+		}
+	except Exception:
+		return {'estado':'error'}
+
 def fecha_actual():
 
 	return datetime.now()
-
 
 def primer_dia(fecha):
 
@@ -62,4 +79,23 @@ def formato_moneda(valor):
 
 	return moneda
 
+def formato_numero(valor):
 
+	moneda = '{:,.2f}'.format(valor)
+	
+	moneda = moneda.replace('.', '*')
+	moneda = moneda.replace(',', '.')
+	moneda = moneda.replace('*', ',')
+
+	return moneda
+
+
+# CLASES
+
+class NumberField(forms.Field):
+	def to_python(self, value):
+		print ('--------')
+		print (value)
+		print ('--------')
+		if value is not '' and value is not None:
+			return value.replace(".", "").replace(",", ".")

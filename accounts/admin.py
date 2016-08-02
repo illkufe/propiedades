@@ -3,7 +3,7 @@ from .models import UserProfile
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin
 
-# Register your models here.
+# Modelos
 
 class UserProfileInline(admin.StackedInline):
 	model = UserProfile

@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% block section %}
+{% load extra_tags %}
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
@@ -10,9 +11,7 @@
 				<div class="ibox-title">
 					<h5>Lista de Activos</h5>
 					<div class="ibox-tools">
-						<a href="/activos/new">
-							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Nuevo Activo</button>
-						</a>
+						<a href="/activos/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo activo</button></a>
 					</div>
 				</div>
 				<div class="ibox-content">
@@ -27,10 +26,9 @@
 									<td>{{ item.codigo }}</td>
 									<td>{{ item.nombre }}</td>
 									<td>{{ item.propietario }}</td>
-									<td>{{ item.rut_propietario }}</td>
-									<td>{{ item.tasacion_fiscal }}</td>
+									<td class="text-right">{{ item.rut_propietario }}</td>
+									<td class="text-right">{{ item.tasacion_fiscal|formato_moneda }} </td>
 									<td class="text-center">
-										<!-- <a class="btn btn-config btn-bitbucket" href="/activos/{{ item.id }}/medidores/new"><i class="fa fa-cog"></i></a> -->
 										<a class="btn btn-edit btn-bitbucket" href='{% url "activo_update" item.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'activos', 'tabla-activos', 'Activo')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
@@ -67,7 +65,7 @@ function load_tabla_activos(){
 		'visible':false,
 	},
 	{
-		'width': '15%',
+		'width': '12.5%',
 		'data': 'codigo',
 		'title': 'Código',
 	},
@@ -82,19 +80,20 @@ function load_tabla_activos(){
 		'title': 'Propietario',
 	},
 	{
-		'width': '10%',
+		'width': '12.5%',
 		'data': 'rut_propietario',
 		'title': 'Rut Propietario',
 	},
 	{
-		'width': '10%',
+		'width': '12.5%',
 		'data': 'tasacion_fiscal',
 		'title': 'Tasación Fiscal',
 	},
 	{
-		'width': '15%',
+		'width': '12.5%',
 		'data': 'options',
 		'orderable': false,
+		'title': '<div class="text-center">Opciones</div>',
 	}]
 
 	table_activo = load_table('#tabla-activos', columns, {})

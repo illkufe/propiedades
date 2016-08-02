@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% block section %}
+{% load extra_tags %}
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
@@ -118,9 +119,10 @@ $(document).ready(function(){
 		'title': 'Total',
 	},
 	{
-		'width': '10%',
+		'width': '5%',
 		'data': 'options',
 		'orderable': false,
+		'title': '<div class="text-center">Opciones</div>',
 	}]
 
 	tabla_ventas = load_table('#tabla-ventas', columns, {})
@@ -228,6 +230,7 @@ function load_tabla_ventas(){
 			for (var i = 0; i < data.length; i++) {
 
 				row = {}
+
 				row.id 		= 1
 				row.local 	= data[i].local_nombre
 				row.mes 	= data[i].mes

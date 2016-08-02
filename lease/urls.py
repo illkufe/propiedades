@@ -31,5 +31,6 @@ urlpatterns = [
     url(r'^', include('conceptos.urls')),
     url(r'^', include('procesos.urls')),
     url(r'^', include('operaciones.urls')),
+    url(r'^', include('notificaciones.urls')),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

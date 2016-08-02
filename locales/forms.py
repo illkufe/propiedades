@@ -20,8 +20,8 @@ class LocalTipoForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 		: {'required': 'campo es requerido'},
-			'descripcion' 	: {'required': 'campo es requerido'}
+			'nombre' 		: {'required': 'campo requerido'},
+			'descripcion' 	: {'required': 'campo requerido'}
 		}
 
 		labels = {
@@ -85,12 +85,12 @@ class LocalForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' 		: {'required': 'campo es requerido'},
-			'codigo' 		: {'required': 'campo es requerido'},
-			'activo' 		: {'required': 'campo es requerido'},
-			'sector' 		: {'required': 'campo es requerido'},
-			'nivel' 		: {'required': 'campo es requerido'},
-			'local_tipo' 	: {'required': 'campo es requerido'},
+			'nombre' 		: {'required': 'campo requerido'},
+			'codigo' 		: {'required': 'campo requerido'},
+			'activo' 		: {'required': 'campo requerido'},
+			'sector' 		: {'required': 'campo requerido'},
+			'nivel' 		: {'required': 'campo requerido'},
+			'local_tipo' 	: {'required': 'campo requerido'},
 		}
 
 		help_texts = {

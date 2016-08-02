@@ -1,8 +1,7 @@
 from __future__ import unicode_literals
-
 from django.db import models
 
-# Create your models here.
+# Modelos
 class Region(models.Model):
 
 	# atributos (generales)
@@ -60,7 +59,6 @@ class Estado_Civil(models.Model):
 	def __str__(self):
 		return self.nombre
 
-
 class Tarifa_Electricidad(models.Model):
 
 	# atributos (generales)
@@ -75,27 +73,6 @@ class Tarifa_Electricidad(models.Model):
 
 	def __str__(self):
 		return self.codigo
-
-class Empresa(models.Model):
-
-	# atributos (generales)
-	nombre      				= models.CharField(max_length=250)
-	rut         				= models.CharField(max_length=250)
-	cuidad 						= models.CharField(max_length=250)
-	comuna 						= models.CharField(max_length=250)
-	direccion 					= models.CharField(max_length=250)
-	representante 				= models.CharField(max_length=250)
-	representante_rut 			= models.CharField(max_length=250)
-	representante_profesion 	= models.CharField(max_length=250)
-	representante_nacionalidad 	= models.CharField(max_length=250)
-	descripcion 				= models.TextField(blank=True)
-
-	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
-
-	def __str__(self):
-		return self.nombre
 
 class Moneda(models.Model):
 
@@ -123,6 +100,27 @@ class Moneda_Historial(models.Model):
 
 	def __str__(self):
 		return self.moneda.nombre
+
+class Empresa(models.Model):
+
+	# atributos (generales)
+	nombre 						= models.CharField(max_length=250)
+	rut 						= models.CharField(max_length=250)
+	cuidad 						= models.CharField(max_length=250)
+	comuna 						= models.CharField(max_length=250)
+	direccion 					= models.CharField(max_length=250)
+	representante 				= models.CharField(max_length=250)
+	representante_rut 			= models.CharField(max_length=250)
+	representante_profesion 	= models.CharField(max_length=250)
+	representante_nacionalidad 	= models.CharField(max_length=250)
+	descripcion 				= models.TextField(blank=True)
+
+	# atributos (por defecto)
+	visible     = models.BooleanField(default=True)
+	creado_en   = models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.nombre
 
 class Cliente(models.Model):
 
@@ -168,3 +166,20 @@ class Representante(models.Model):
 	def __str__(self):
 		return self.nombre
 
+class Configuracion(models.Model):
+
+	FORMATO_DECIMAL = (
+		(1, ','),
+		(2, '.'),
+	)
+
+	# atributos (generales)
+	formato_decimales	= models.IntegerField(choices=FORMATO_DECIMAL)
+	cantidad_decimales	= models.IntegerField()
+
+	# relaciones
+	empresa = models.OneToOneField(Empresa)
+	moneda 	= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.empresa.nombre

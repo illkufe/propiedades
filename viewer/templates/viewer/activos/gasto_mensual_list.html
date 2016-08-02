@@ -1,8 +1,8 @@
 {% extends 'index.html' %}
 {% block section %}
+{% load extra_tags %}
 
 {% include 'partials/breadcrumbs-bar.html' %}
-
 
 <div class="wrapper wrapper-content">
 	<div class="row">
@@ -11,7 +11,7 @@
 				<div class="ibox-title">
 					<h5>Gastos Comunes</h5>
 					<div class="ibox-tools">
-						<a href="/gastos-mensual/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Gasto Mensual</button></a>
+						<a href="/gastos-mensual/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo gasto mensual</button></a>
 					</div>
 				</div>
 				<div class="ibox-content">
@@ -23,11 +23,11 @@
 								<tr>
 									<td>{{ item.id }}</td>
 									<td>{{ item.activo }}</td>
-									<td>{{ item.mes }}</td>
-									<td>{{ item.anio }}</td>
-									<td>{{ item.creado_en }}</td>
-									<td>{{ item.user.first_name }}</td>
-									<td>{{ item.valor }}</td>
+									<td class="text-right">{{ item.mes }}</td>
+									<td class="text-right">{{ item.anio }}</td>
+									<td class="text-right">{{ item.creado_en }}</td>
+									<td class="text-center">{{ item.user.first_name }}</td>
+									<td class="text-right">{{ item.valor|formato_moneda }}</td>
 									<td class="text-center">
 										<a class="btn btn-edit btn-bitbucket" href='/gastos-mensual/update/{{item.id}}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'gastos-mensual', 'tabla-gastos-mensuales', 'Gasto Mensual')"><i class="fa fa-trash"></i></a>
@@ -98,7 +98,7 @@ function load_tabla_lecturas(){
 		'width': '10%',
 		'data': 'options',
 		'orderable': false,
-		'title': 'Opciones'
+		'title': '<div class="text-center">Opciones</div>',
 	}];
 
 	tabla_lecturas = load_table('#tabla-gastos-mensuales', columns, {})

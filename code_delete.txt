@@ -254,9 +254,9 @@ class MedidorForm(forms.ModelForm):
 		}
 
 		error_messages = {
-		'nombre' 		: {'required': 'campo es requerido'},
-		'numero_rotulo' : {'required': 'campo es requerido'},
-		'medidor_tipo' 	: {'required': 'campo es requerido'},
+		'nombre' 		: {'required': 'campo requerido'},
+		'numero_rotulo' : {'required': 'campo requerido'},
+		'medidor_tipo' 	: {'required': 'campo requerido'},
 		}
 
 		help_texts = {
@@ -658,8 +658,8 @@ class UnidadNegocioForm(forms.ModelForm):
 		}
 
 		error_messages = {
-		'nombre' : {'required': 'campo es requerido'},
-		'codigo' : {'required': 'campo es requerido'},
+		'nombre' : {'required': 'campo requerido'},
+		'codigo' : {'required': 'campo requerido'},
 		}
 
 

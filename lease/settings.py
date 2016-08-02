@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'conceptos',
     'procesos',
     'operaciones',
+    'notificaciones',
 
 ]
 
@@ -80,6 +81,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'utilidades.views.variables_globales',
             ],
         },
     },
@@ -103,7 +105,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
@@ -125,6 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Configuracion CRON
 CRONJOBS = [
     ('0 * * * *', 'lease.cron.update_currency'),
+    ('*/1 * * * *', 'lease.cron.update_alert'),
 ]
 
 

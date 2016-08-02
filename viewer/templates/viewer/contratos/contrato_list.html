@@ -10,7 +10,7 @@
 				<div class="ibox-title">
 					<h5>Lista de Contratos</h5>
 					<div class="ibox-tools">
-						<a href="/contratos/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> CONTRATO</button></a>
+						<a href="/contratos/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo contrato</button></a>
 					</div>
 				</div>
 				<div class="ibox-content">
@@ -25,8 +25,8 @@
 									<td>{{ item.numero }}</td>
 									<td>{{ item.nombre_local }}</td>
 									<td>{{ item.contrato_tipo }}</td>
-									<td>{{ item.fecha_inicio }}</td>
-									<td>{{ item.fecha_termino }}</td>
+									<td class="text-right">{{ item.fecha_inicio }}</td>
+									<td class="text-right">{{ item.fecha_termino }}</td>
 									<td>{{ item.contrato_estado }}</td>
 									<td class="text-center">
 										{% if item.cantidad == 0 %}
@@ -103,8 +103,8 @@ function load_tabla_contratos(){
 	{
 		'width': '20%',
 		'data': 'options',
-		'title': '<div class="text-center">Opciones</div>',
 		'orderable': false,
+		'title': '<div class="text-center">Opciones</div>',
 	}];
 
 	tabla_contratos = load_table('#tabla-contratos', columns, {})

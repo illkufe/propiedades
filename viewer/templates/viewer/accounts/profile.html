@@ -40,10 +40,11 @@
 				</div>
 			</div>
 		</div>
+
 		<div class="col-md-8">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>Actualizar Información General</h5>
+					<h5>Alertas</h5>
 					<div class="ibox-tools">
 						<a class="collapse-link">
 							<i class="fa fa-chevron-up"></i>
@@ -51,6 +52,28 @@
 					</div>
 				</div>
 				<div class="ibox-content">
+					{% for alerta in alertas %}
+					<div class="alert alert-info">
+						{{alerta.mensaje}} : {{alerta.descripcion}}<a class="alert-link pull-right">{{alerta.emisor}}</a>.
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+
+		<div class="col-md-8">
+			<div class="ibox float-e-margins border-bottom">
+
+				<div class="ibox-title">
+					<h5>Actualizar Información General</h5>
+					<div class="ibox-tools">
+						<a class="collapse-link">
+							<i class="fa fa-chevron-down"></i>
+						</a>
+					</div>
+				</div>
+				<div class="ibox-content" style="display: none;">
 					<form id="form-update-profile" action="update-profile" role="form" method="post">
 						{% csrf_token %}
 
@@ -132,18 +155,19 @@
 				</div>
 			</div>
 		</div>
+
 		<div class="col-md-8">
-			<div class="ibox float-e-margins">
+			<div class="ibox float-e-margins border-bottom">
 				<div class="ibox-title">
 					<h5>Actualizar Contraseña</h5>
 					<div class="ibox-tools">
 						<a class="collapse-link">
-							<i class="fa fa-chevron-up"></i>
+							<i class="fa fa-chevron-down"></i>
 						</a>
 					</div>
 				</div>
-				<div class="ibox-content">
-					
+
+				<div class="ibox-content" style="display: none;">					
 					<form id="form-update-password" action="update-password" role="form" method="post">
 						{% csrf_token %}
 						<div class="row">

@@ -1,5 +1,11 @@
 $('td.delete input[type=checkbox]').hide()
 
+$('.format-number').autoNumeric("init",{
+	aSep: LEASE_CURRENCY_THOUSANDS,
+	aDec: LEASE_CURRENCY_DECIMALS,
+	mDec: LEASE_CURRENCY_FORMAT,
+})
+
 $('.format-rut').rut({
 	formatOn: 'keyup',
 	validateOn: 'blur'
@@ -20,6 +26,10 @@ $('.format-date').datepicker({
 	format: 'dd/mm/yyyy',
 });
 
+$('.format-datetime').datetimepicker({
+	format: 'DD/MM/YYYY HH:mm'
+});
+
 $('#date_range .input-daterange').datepicker({
 	keyboardNavigation: false,
 	forceParse: false,
@@ -32,7 +42,6 @@ $(".file-format").filestyle({
 	placeholder: "Seleccionar Archivo",
 	buttonText: ""
 });
-
 
 var language = {
 	'emptyTable': 'Sin Datos',
@@ -108,7 +117,36 @@ function search_column_table(obj, table_entidad){
 	$(table_entidad).DataTable().column(index).search(value).draw()
 }
 
+
+
+function notification_toast_final(configuracion){
+
+	toastr.options = {
+		"closeButton": true,
+		"debug": false,
+		"progressBar": true,
+		"preventDuplicates": false,
+		"positionClass": configuracion.positionClass == null ? "toast-top-right" : configuracion.positionClass,
+		"onclick": null,
+		"showDuration": "400",
+		"hideDuration": "1000",
+		"timeOut": "3000",
+		"extendedTimeOut": "1000",
+		"showEasing": "swing",
+		"hideEasing": "linear",
+		"showMethod": "fadeIn",
+		"hideMethod": "fadeOut"
+	}
+
+	toastr[configuracion.toast_type](configuracion.toast_text, configuracion.toast_title)
+}
+
+
+
 function notification_toast(toast_type, toast_title, toast_text){
+
+
+
 	toastr.options = {
 		"closeButton": true,
 		"debug": false,
