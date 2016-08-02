@@ -108,7 +108,7 @@
 <body>
 
     <div class="page">
-        
+
         <div class='container-title text-center'>
             <p class='title'>CONTRATO DE ARRENDAMIENTO</span></p>
             <p><span class='uppercase'>{{empresa.nombre}}</p>
@@ -137,6 +137,7 @@
                 </tr>
 
                 {% for representante in representantes %}
+                {% if forloop.first %}
                 <tr>
                     <td class="bold" style="width: 30%">Representante Legal {{forloop.counter}}</td>
                     <td colspan="3">{{representante.nombre}}</td>
@@ -161,6 +162,8 @@
                     <td class="bold" style="width: 30%">Domicilio {{forloop.counter}}</td>
                     <td colspan="3">{{representante.domicilio}}</td>
                 </tr>
+
+                {% endif %}
                 {% endfor %}
 
             </tbody>
@@ -179,8 +182,8 @@
                     <td colspan="2" class="bold" style="width:25%">C.1) Bien dado en arrendamiento</td>
                     <td colspan="6" style="width:75%">
                         {% for local in locales %}
-                            {{local.nombre}} del {{local.nivel.nombre}}, {{local.sector.nombre}} del {{local.activo.nombre}}
-                            <br>
+                        {{local.nombre}} del {{local.nivel.nombre}}, {{local.sector.nombre}} del {{local.activo.nombre}}
+                        <br>
                         {% endfor %}
                     </td>
                 </tr>
@@ -188,51 +191,149 @@
                     <td colspan="4" class="bold" style="width:50%" >C.2) Superficie bruta aproximadamente del local</td>
                     <td colspan="1" style="width:12.5%">{{metros}} m2</td>
                     <td colspan="2" class="bold" style="width:25%" >C.2.1) Otras superficies</td>
-                    <td colspan="1" style="width:12.5%">{{contrato.metros_bodega}} m2</td>
+                    <td colspan="1" style="width:12.5%">
+                        {% if contrato.bodega == None %}
+                        {{contrato.metros_bodega}}m2
+                        {% else %}
+                        No aplica
+                        {% endif %}
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold">C.3) Plazo del contrato</td>
-                    <td colspan="1">{{plazo}} meses</td>
+                    <td colspan="1">{{contrato.meses}} meses</td>
                     <td colspan="4" class="bold">C.4) Renovación de plazo por períodos de</td>
-                    <td colspan="1"><span class='data'>-------</span></td>
+                    <td colspan="1"><span>{{renovacion}}</span></td>
                 </tr>
                 <tr>
                     <td colspan="7" class="bold">C.5) Anticipación del aviso por ambas partes en caso de no desear renovar contrato</td>
-                    <td colspan="1"><span class='data'>-------</span></td>
+                    <td colspan="1"><span >6 meses</span></td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold">C.6) Arriendo Mínimo Local</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
+                    <td colspan="2">
+                        <span>
+                            {% if arriendo_detalle != None %}
+
+                            {% for item in arriendo_detalle %}
+                            {{item.valor}} UF el m2,
+                            {% endfor %}
+
+                            {% else %}
+                            No aplica
+                            {% endif %}
+                        </span>
+                    </td>
                     <td colspan="2" class="bold">C.6.1) Arriendo Mínimo Otras superficies</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
+                    <td colspan="2">
+                        <span>
+                            {% if arriendo_bodega != None %}
+
+                            {% for item in arriendo_bodega %}
+                            {{item.valor}} UF el m2
+                            {% endfor %}  
+
+                            {% else %}
+                            No aplica
+
+                            {% endif %}
+                            
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold">C.7) Arriendo porcentual</td>
-                    <td colspan="6"><span class='data'>-------</span></td>
+                    <td colspan="6">
+                        <span>
+                            {% if arriendo_variable != None %}
+
+                            {% for item in arriendo_variable %}
+                            {{item.mes_inicio}} de {{item.anio_inicio}} al {{item.mes_termino}} de {{item.anio_termino}} : {{item.valor}} UF
+                            {% endfor %}  
+
+                            {% else %}
+                            No aplica
+
+                            {% endif %}
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="4" class="bold">C.8) Reajuste de la renta de arrendamiento</td>
-                    <td colspan="4"><span class='data'>-------</span></td>
+                    <td colspan="4">
+                        <span>
+                            {% if arriendo != None %}
+                            {{arriendo.valor}} % cada {{arriendo.meses}} meses
+                            {% else %}
+                            No aplica
+                            {% endif %}
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold">C.9) Fondo de Promoción</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
+                    <td colspan="2">
+                        <span>
+                            {% if fondo != None %}
+
+                            {% for item in fondo %}
+                            {{item.valor}} % del arriendo mínimo,
+                            {% endfor %}  
+
+                            {% else %}
+                            No aplica
+
+                            {% endif %}
+                        </span>
+                    </td>
                     <td colspan="2" class="bold">C.10) Cuota incorporación al fondo de promoción</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
+                    <td colspan="2">
+                        <span>
+                            {% if cuota != None %}
+
+                            {% for item in cuota %}
+                            {{item.fecha}}: {{item.valor}} UF el mt2,
+                            {% endfor %}
+                            
+                            {% else %}
+                            No aplica
+                            {% endif %}
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold">C.11) Arriendo mes de Diciembte</td>
-                    <td colspan="6"><span class='data'>-------</span></td>
+                    <td colspan="6"><span>Doble</span></td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold">C.12) Inicio Renta</td>
-                    <td colspan="6"><span class='data'>-------</span></td>
+                    <td colspan="6">
+                        <span>
+                            {% if arriendo != None %}
+                            Junto con la apertura del local o a más tardar {{contrato.fecha_habilitacion}}, lo que ocurra primero
+                            {% else %}
+                            No aplica
+                            {% endif %}
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold">C.13) Gasto común Local</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
-                    <td colspan="2" class="bold">C.13.1) Gasto común otras superficies</td>
-                    <td colspan="2"><span class='data'>-------</span></td>
+                    <td colspan="6">
+                        <span>
+                            {% if gasto_comun != None %}
+
+                            {% for item in gasto_comun %}
+                            Local {{item.local.nombre}}: {{item.valor}} prorrateo el mt2,
+                            {% endfor %}
+                            
+                            {% else %}
+                            No aplica
+                            {% endif %}
+                            
+                        </span>
+                    </td>
+                    
                 </tr>
             </tbody>
         </table>
@@ -254,10 +355,10 @@
         <table class="table table-bordered">
             <tbody>
                 <tr>
-                    <td colspan="2" class="bold" style="width:25%">C.14) Reajuste gasto común</td>
-                    <td colspan="2" style="width:25%"><span class='data'>-------</span></td>
+                    <!-- <td colspan="2" class="bold" style="width:25%">C.14) Reajuste gasto común</td>
+                    <td colspan="2" style="width:25%"><span class='data'>-</span></td> -->
                     <td colspan="2" class="bold" style="width:25%">C.15) Garantía</td>
-                    <td colspan="2" style="width:25%"><span class='data'>-------</span></td>
+                    <td colspan="2" style="width:75%"><span>${{garantias_total}}</span></td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold" style="width:25%" >C.16) Destino Comercial</td>
@@ -269,18 +370,19 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="bold" style="width:25%" >C.18) Entrega de local</td>
-                    <td colspan="6" style="width:75%"><span class='data'>-------</span></td>
+                    <td colspan="6" style="width:75%"><span>{{contrato.fecha_habilitacion}}</span></td>
                 </tr>
+                <!--
                 <tr>
                     <td colspan="2" class="bold" style="width:25%">C.19) Renta de Habilitación</td>
-                    <td colspan="2" style="width:25%"><span class='data'>-------</span></td>
+                    <td colspan="2" style="width:25%"><span class='data'>-</span></td>
                     <td colspan="3" class="bold" style="width:37.5%">C.20) Revisión Arquitectura</td>
-                    <td colspan="1" style="width:12.5%"><span class='data'>-------</span></td>
+                    <td colspan="1" style="width:12.5%"><span class='data'>-</span></td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bold" style="width:25%" >C.21) Anexos</td>
-                    <td colspan="6" style="width:75%"><span class='data'>-------</span></td>
-                </tr>
+                    <td colspan="6" style="width:75%"><span class='data'>-</span></td>
+                </tr> -->
             </tbody>
         </table>
 

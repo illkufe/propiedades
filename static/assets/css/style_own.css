@@ -1,10 +1,15 @@
 .btn-config,
 .btn-edit,
 .btn-delete,
-.btn-view{
+.btn-view,
+.btn-none{
 	color: #FFF;
 	border: 1px solid #e7eaec;
 	padding: 4px 8px;
+}
+
+.btn-config{
+	background: #FCC491;
 }
 
 .btn-edit{
@@ -19,14 +24,15 @@
 	background: #59D7D7;
 }
 
-.btn-config{
-	background: #FCC491;
+.btn-none{
+	background: #C1C1C1;	
 }
 
 .btn-config:hover,
 .btn-edit:hover,
 .btn-delete:hover,
-.btn-view:hover{
+.btn-view:hover
+.btn-none:hover{
 	color: #EBEBEB;
 }
 

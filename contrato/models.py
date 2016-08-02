@@ -176,7 +176,7 @@ class Arriendo_Detalle(models.Model):
 	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
-		return self.mes_inicio
+		return self.arriendo.contrato.nombre_local
 
 class Arriendo_Bodega(models.Model):
 

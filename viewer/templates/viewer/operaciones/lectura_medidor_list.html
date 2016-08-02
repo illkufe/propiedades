@@ -34,7 +34,11 @@
 									<td class="text-center">
 										<a class="btn btn-edit btn-bitbucket" href='/lectura-{{item.url}}/update/{{item.id}}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'lectura-{{item.url}}', 'tabla-lecturas', 'Lectura')"><i class="fa fa-trash"></i></a>
+										{% if item.imagen_file != '' %}
 										<a class="btn btn-view btn-bitbucket" href="/media/{{item.imagen_file}}" download><i class="fa fa-eye"></i></a>
+										{% else %}
+										<a class="btn btn-none btn-bitbucket"><i class="fa fa-eye"></i></a>
+										{% endif %}
 									</td>
 								</tr>
 								{% endfor %}
@@ -112,7 +116,7 @@ function load_tabla_lecturas(){
 		'width': '15%',
 		'data': 'options',
 		'orderable': false,
-		'title': 'Opciones'
+		'title': '<div class="text-center">Opciones</div>',
 	}];
 
 	tabla_lecturas = load_table('#tabla-lecturas', columns, configuration)

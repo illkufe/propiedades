@@ -16,10 +16,8 @@
 					</div>
 				</div>
 				<div class="ibox-content">
-
-					<br>
 					<div class="table-responsive">
-						<table id="tabla-alertas" class="table table-striped table-bordered table-hover dataTables-example" >
+						<table id="tabla-alertas" class="table table-striped table-bordered table-hover">
 							<thead></thead>
 							<tbody>
 								{% for item in object_list %}
@@ -64,7 +62,7 @@ function load_tabla_contratos(){
 	} 
 
 	var columns = [
-	{		
+	{
 		'data': 'id',
 		'title': 'ID',
 		'visible': false,
@@ -82,7 +80,7 @@ function load_tabla_contratos(){
 	{
 		'width': '15%',
 		'data': 'Fecha',
-		'title': 'NOMBRE',
+		'title': 'Fecha',
 	},
 	{
 		'width': '15%',
@@ -96,5 +94,3 @@ function load_tabla_contratos(){
 </script>
 
 {% endblock scripts %}
-
-

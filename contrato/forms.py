@@ -2,6 +2,7 @@
 from django import forms
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User
+from utilidades.views import NumberField
 
 from accounts.models import UserProfile
 from administrador.models import Cliente, Moneda
@@ -51,6 +52,8 @@ class ContratoForm(forms.ModelForm):
 	fecha_aviso			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, label='Fecha aviso comercial')
 	conceptos 			= forms.ModelMultipleChoiceField(queryset=Concepto.objects.all(),required=False,widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}))
 
+	metros_bodega 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'disabled': 'disabled'}))
+
 	def __init__(self, *args, **kwargs):
 
 		self.request 	= kwargs.pop('request')
@@ -75,7 +78,7 @@ class ContratoForm(forms.ModelForm):
 			'numero'			: forms.NumberInput(attrs={'class': 'form-control'}),
 			'meses'				: forms.NumberInput(attrs={'class': 'form-control'}),
 			'dias_salida'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'metros_bodega'		: forms.NumberInput(attrs={'class': 'form-control', 'disabled': 'disabled'}),
+			# 'metros_bodega'		: forms.NumberInput(attrs={'class': 'form-control', 'disabled': 'disabled'}),
 			'nombre_local'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'destino_comercial'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
 			'contrato_tipo' 	: forms.Select(attrs={'class': 'form-control'}),
@@ -89,7 +92,6 @@ class ContratoForm(forms.ModelForm):
 			'destino_comercial'	: {'required': 'campo requerido'},
 			'meses'				: {'required': 'campo requerido'},
 			'dias_salida'		: {'required': 'campo requerido'},
-			# 'fecha_salida'		: {'required': 'campo requerido'},
 			'contrato_tipo'		: {'required': 'campo requerido'},
 			'cliente'			: {'required': 'campo requerido'},
 			'locales'			: {'required': 'campo requerido'},
@@ -111,7 +113,8 @@ class ContratoForm(forms.ModelForm):
 
 class GarantiaForm(forms.ModelForm):
 
-	moneda = forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
 
 	class Meta:
 		model 	= Garantia
@@ -120,12 +123,12 @@ class GarantiaForm(forms.ModelForm):
 
 		widgets = {
 			'nombre' 	: forms.TextInput(attrs={'class': 'form-control'}),
-			'valor'		: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
 class ContratoMultaForm(forms.ModelForm):
 
-	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
 
 	def __init__(self, *args, **kwargs):
 
@@ -136,7 +139,7 @@ class ContratoMultaForm(forms.ModelForm):
 
 		super(ContratoMultaForm, self).__init__(*args, **kwargs)
 
-		# self.fields['locales'].queryset = Local.objects.filter(activo__in=activos, visible=True)
+		self.fields['contrato'].queryset = Contrato.objects.filter(visible=True) #{falta: traer los contratos de la empresa}
 
 	class Meta:
 
@@ -146,7 +149,6 @@ class ContratoMultaForm(forms.ModelForm):
 
 		widgets = {
 			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'valor'	 		: forms.NumberInput(attrs={'class': 'form-control'}),
 			'mes'	 		: forms.Select(attrs={'class': 'form-control'}),
 			'anio' 			: forms.NumberInput(attrs={'class': 'form-control'}),
 			'contrato'		: forms.Select(attrs={'class': 'form-control'}),
@@ -154,7 +156,6 @@ class ContratoMultaForm(forms.ModelForm):
 
 		error_messages = {
 			'nombre' 	: {'required': 'campo requerido'},
-			'valor' 	: {'required': 'campo requerido'},
 			'mes' 		: {'required': 'campo requerido'},
 			'anio' 		: {'required': 'campo requerido'},
 			'contrato' 	: {'required': 'campo requerido'},
@@ -162,14 +163,12 @@ class ContratoMultaForm(forms.ModelForm):
 		}
 
 		labels = {
-			'anio'			: 'Año',
-			'imagen_file'	: 'Archivo',
+			'anio'		: 'Año',
 		}
 
 		help_texts = {
-			'valor'			: '...',
+			'nombre'	: '...',
 		}
-
 
 class InformacionForm(forms.ModelForm):
 
@@ -179,7 +178,9 @@ class InformacionForm(forms.ModelForm):
 
 class ArriendoForm(forms.ModelForm):
 
-	fecha_inicio = forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,6]), initial='6',widget=forms.Select(attrs={'class': 'form-control'}))
+	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
@@ -187,9 +188,6 @@ class ArriendoForm(forms.ModelForm):
 
 		if contrato is not None:
 			self.fields['fecha_inicio'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
-			
-
-	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,6]), initial='6',widget=forms.Select(attrs={'class': 'form-control'}))
 
 	class Meta:
 		model 	= Arriendo
@@ -200,13 +198,11 @@ class ArriendoForm(forms.ModelForm):
 			'reajuste'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
 			'por_meses'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
 			'meses'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
 			'fecha_inicio'	: forms.TextInput(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
 			'meses'			: {'required': 'campo requerido'},
-			'valor'			: {'required': 'campo requerido'},
 			'moneda'		: {'required': 'campo requerido'},
 			'fecha_inicio'	: {'required': 'campo requerido'},
 		}
@@ -221,18 +217,14 @@ class ArriendoForm(forms.ModelForm):
 			'reajuste' 		: 'Reajuste',
 			'por_meses'		: 'Por Meses',
 			'meses' 		: 'Cada Cuantos',
-			'valor' 		: 'Valor',
 			'moneda' 		: 'Moneda',
 			'fecha_inicio' 	: 'Fecha Inicio',
 		}
 
 class ArriendoDetalleForm(forms.ModelForm):
 
-
-	moneda = forms.ModelChoiceField(
-		queryset = Moneda.objects.filter(id__in=[3,5]),
-		widget 	= forms.Select(attrs={'class': 'form-control'})
-		)
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
 
 	class Meta:
 		model 	= Arriendo_Detalle
@@ -241,12 +233,13 @@ class ArriendoDetalleForm(forms.ModelForm):
 		widgets = {
 			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
 			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
-			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
 class ArriendoBodegaForm(forms.ModelForm):
 
-	fecha_inicio = forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
+	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
@@ -254,9 +247,6 @@ class ArriendoBodegaForm(forms.ModelForm):
 
 		if contrato is not None:
 			self.fields['fecha_inicio'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
-			
-
-	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
 
 	class Meta:
 		model 	= Arriendo_Bodega
@@ -266,13 +256,11 @@ class ArriendoBodegaForm(forms.ModelForm):
 		widgets = {
 			'metro_cuadrado'	: forms.CheckboxInput(attrs={'class': 'form-control'}),
 			'periodicidad'		: forms.Select(attrs={'class': 'form-control'}),
-			'valor'				: forms.NumberInput(attrs={'class': 'form-control'}),
 			'fecha_inicio'		: forms.TextInput(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
 			'meses'			: {'required': 'campo requerido'},
-			'valor'			: {'required': 'campo requerido'},
 			'moneda'		: {'required': 'campo requerido'},
 			'fecha_inicio'	: {'required': 'campo requerido'},
 		}
@@ -287,14 +275,14 @@ class ArriendoBodegaForm(forms.ModelForm):
 			'reajuste' 		: 'Reajuste',
 			'por_meses'		: 'Por Meses',
 			'meses' 		: 'Cada Cuantos',
-			'valor' 		: 'Valor',
 			'moneda' 		: 'Moneda',
 			'fecha_inicio' 	: 'Fecha Inicio',
 		}
 
 class ArriendoVariableForm(forms.ModelForm):
-	
-	moneda = forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
 
 	class Meta:
 		model 	= Arriendo_Variable
@@ -306,25 +294,25 @@ class ArriendoVariableForm(forms.ModelForm):
 			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
 			'anio_inicio'	: forms.NumberInput(attrs={'class': 'form-control'}),
 			'anio_termino'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
-			'valor'			: {'required': 'campo requerido'},
 			'moneda'		: {'required': 'campo requerido'},
 		}
 
 		labels = {
+			'anio_inicio' 	: 'Año inicio',
+			'anio_termino' 	: 'Año término',
 		}
 
 		help_texts = {
-			'valor' 		: 'valor',
 			'moneda' 		: 'moneda',
 		}
 
 class GastoComunForm(forms.ModelForm):
 
-	moneda = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[4,5,6]), widget=forms.Select(attrs={'class': 'form-control moneda'}))
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[4,5,6]), widget=forms.Select(attrs={'class': 'form-control moneda'}))
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
@@ -340,20 +328,22 @@ class GastoComunForm(forms.ModelForm):
 
 		widgets = {
 			'local' 	: forms.Select(attrs={'class': 'form-control'}),
-			'valor'		: forms.NumberInput(attrs={'class': 'form-control valor_no_prorrateo'}),
 			'prorrateo'	: forms.CheckboxInput(attrs={'class': 'form-control prorrateo'}),
 		}
 
 		error_messages = {
-			'valor'		: {'required': 'campo requerido'},
+			'local'		: {'required': 'campo requerido'},
 		}
 
 		help_texts = {
-			'valor' 	: 'valor',
 			'prorrateo' : 'prorrateo',
 		}
 
 class ServicioBasicoForm(forms.ModelForm):
+
+	valor_electricidad 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	valor_agua 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	valor_gas 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
@@ -368,27 +358,20 @@ class ServicioBasicoForm(forms.ModelForm):
 		exclude = ['visible', 'creado_en']
 
 		widgets = {
-			'locales'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
-			'valor_electricidad' 	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'valor_agua' 			: forms.NumberInput(attrs={'class': 'form-control'}),
-			'valor_gas' 			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'locales'	: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 			}
 
 		error_messages = {
-			'valor_electricidad' 	: {'required': 'campo requerido'},
-			'valor_agua' 			: {'required': 'campo requerido'},
-			'valor_gas' 			: {'required': 'campo requerido'},
+			'locales' 	: {'required': 'campo requerido'},		
 			}
 
 		help_texts = {
-			'valor_electricidad' 	: 'Valor Electricidad',
-			'valor_agua' 			: 'Valor Agua',
-			'valor_gas' 			: 'Valor Gas',
+			'locales' 	: 'Locales',
 			}
 
 class CuotaIncorporacionForm(forms.ModelForm):
 
-
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
 	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
 
@@ -405,20 +388,10 @@ class CuotaIncorporacionForm(forms.ModelForm):
 		fields 	= '__all__'
 		exclude = ['visible', 'creado_en']
 
-		widgets = {
-			'valor'		: forms.NumberInput(attrs={'class': 'form-control'}),
-		}
-
-		error_messages = {
-			'valor'		: {'required': 'campo requerido'},
-		}
-
-		help_texts = {
-			'valor' 	: 'valor',
-		}
 
 class FondoPromocionForm(forms.ModelForm):
 
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
 	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar desde')
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
 
@@ -436,18 +409,15 @@ class FondoPromocionForm(forms.ModelForm):
 		exclude = ['visible', 'creado_en']
 
 		widgets = {
-			'valor'			: forms.NumberInput(attrs={'class': 'form-control'}),
 			'periodicidad'	: forms.Select(attrs={'class': 'form-control'}),
 			'concepto'		: forms.Select(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
-			'valor'			: {'required': 'campo requerido'},
 			'periodicidad'	: {'required': 'campo requerido'},
 		}
 
 		help_texts = {
-			'valor' 		: 'valor',
 			'periodicidad'	: 'periodicidad',
 		}
 

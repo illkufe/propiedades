@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.views.generic import View, ListView, FormView, CreateView, DeleteView, UpdateView
 
 from .forms import ContratoTipoForm, ContratoForm, ContratoMultaForm, GarantiaFormSet, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, ArriendoBodegaFormSet, GastoComunFormSet, ServicioBasicoFormSet, CuotaIncorporacionFormet, FondoPromocionForm, FondoPromocionFormSet
-from .models import Contrato_Tipo, Contrato_Estado, Contrato, Multa, Garantia, Arriendo, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from .models import Contrato_Tipo, Contrato_Estado, Contrato, Multa, Garantia, Arriendo, Arriendo_Detalle, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
 
 from accounts.models import UserProfile
 from administrador.models import Empresa, Cliente
@@ -393,19 +393,6 @@ class ContratoMultaUpdate(ContratoMultaMixin, UpdateView):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 class ContratoConceptoMixin(object):
 
 	template_name 	= 'viewer/contratos/contrato_conceptos_new.html'
@@ -730,8 +717,58 @@ def contrato_pdf(request, contrato_id):
 	representantes 	= cliente.representante_set.all()
 	empresa 		= Empresa.objects.get(id=cliente.empresa_id)
 	metros 			= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
-	plazo 			= meses_entre_fechas(contrato.fecha_inicio, contrato.fecha_termino)
 	meses 			= ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+	renovacion 		= meses_entre_fechas(contrato.fecha_renovacion, contrato.fecha_termino)
+
+	# arrienfo
+	try:
+		arriendo 			= Arriendo.objects.get(contrato=contrato)
+		arriendo_detalle 	= Arriendo_Detalle.objects.filter(arriendo=arriendo)
+		print ('----------')
+		print (arriendo_detalle)
+	except Exception:
+		arriendo 			= None
+		arriendo_detalle 	= None
+
+	# arrienfo bodega
+	try:
+		arriendo_bodega 	= Arriendo_Bodega.objects.filter(contrato=contrato)
+	except Exception:
+		arriendo_bodega 	= None
+
+	# gasto comun
+	try:
+		gasto_comun = Gasto_Comun.objects.filter(contrato=contrato)
+	except Exception:
+		gasto_comun = None
+
+	# cuota
+	try:
+		cuota = Cuota_Incorporacion.objects.filter(contrato=contrato)
+	except Exception:
+		cuota = None
+
+	# cuota
+	try:
+		arriendo_variable = Arriendo_Variable.objects.filter(contrato=contrato)
+	except Exception:
+		arriendo_variable = None
+
+	# fondo
+	try:
+		fondo = Fondo_Promocion.objects.filter(contrato=contrato)
+	except Exception:
+		fondo = None
+
+
+	garantias_total = 0
+	garantias = Garantia.objects.filter(contrato=contrato)
+	for garantia in garantias:
+		garantias_total += garantia.valor * garantia.moneda.moneda_historial_set.all().order_by('-id').first().valor
+	
+	# print ('----------')
+	# print (arriendo_variable)
+
 
 	options = {
 		'margin-top': '0.75in',
@@ -755,9 +792,17 @@ def contrato_pdf(request, contrato_id):
 		'contrato'			: contrato,
 		'locales'			: locales,
 		'metros'			: metros['metros_cuadrados__sum'],
-		'plazo'				: plazo,
 		'cliente'			: cliente,
 		'representantes' 	: representantes,
+		'renovacion'		: renovacion,
+		'garantias_total'   : garantias_total,
+		'arriendo' 			: arriendo,
+		'arriendo_detalle'  : arriendo_detalle,
+		'gasto_comun' 		: gasto_comun,
+		'cuota'				: cuota,
+		'arriendo_variable' : arriendo_variable,
+		'arriendo_bodega'	: arriendo_bodega,
+		'fondo' 			: fondo,
 	})
 
 	html 		= template.render(context)

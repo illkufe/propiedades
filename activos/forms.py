@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.forms import BaseModelFormSet
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User, Group
 from utilidades.views import NumberField
@@ -168,11 +167,11 @@ class GastoMensualForm(forms.ModelForm):
 		}
 
 		labels = {
-			'anio'			: 'Año',
+			'anio'		: 'Año',
 		}
 
 		help_texts = {
-			'anio'			: '...',
+			'anio'		: '...',
 		}
 
 class GastoServicioForm(forms.ModelForm):
@@ -222,9 +221,9 @@ class GastoServicioForm(forms.ModelForm):
 
 class ElectricidadForm(forms.ModelForm):
 
-	# potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	# potencia_presente 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	# potencia_fuera 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	potencia_presente 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	potencia_fuera 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
 
 	class Meta:
 		model 	= Medidor_Electricidad
@@ -234,9 +233,6 @@ class ElectricidadForm(forms.ModelForm):
 		widgets = {
 			'nombre'				: forms.TextInput(attrs={'class': 'form-control'}),
 			'numero_rotulo'			: forms.TextInput(attrs={'class': 'form-control'}),
-			'potencia'				: forms.NumberInput(attrs={'class': 'form-control'}),
-			'potencia_presente'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'potencia_fuera'		: forms.NumberInput(attrs={'class': 'form-control'}),
 			'tarifa_electricidad'	: forms.Select(attrs={'class': 'form-control'}),
 		}
 
@@ -248,9 +244,6 @@ class ElectricidadForm(forms.ModelForm):
 		help_texts = {
 			'nombre'				: '...',
 			'numero_rotulo'			: '...',
-			# 'potencia'				: '...',
-			# 'potencia_presente'		: '...',
-			# 'potencia_fuera'		: '...',
 			'tarifa_electricidad'	: '...',
 		}
 
@@ -261,9 +254,7 @@ class ElectricidadForm(forms.ModelForm):
 
 class AguaForm(forms.ModelForm):
 
-	# potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	# potencia_presente 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	# potencia_fuera 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
 
 	class Meta:
 		model 	= Medidor_Agua
@@ -271,11 +262,8 @@ class AguaForm(forms.ModelForm):
 		exclude = ['creado_en', 'visible', 'local']
 
 		widgets = {
-			'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
-			'numero_rotulo'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'potencia'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			'potencia_presente'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'potencia_fuera'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'numero_rotulo'	: forms.TextInput(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
@@ -286,9 +274,6 @@ class AguaForm(forms.ModelForm):
 		help_texts = {
 			'nombre'			: '...',
 			'numero_rotulo'		: '...',
-			# 'potencia'			: '...',
-			# 'potencia_presente'	: '...',
-			# 'potencia_fuera'	: '...',
 		}
 
 		labels = {
@@ -296,6 +281,8 @@ class AguaForm(forms.ModelForm):
 		}
 
 class GasForm(forms.ModelForm):
+
+	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
 
 	class Meta:
 		model 	= Medidor_Gas
@@ -305,9 +292,6 @@ class GasForm(forms.ModelForm):
 		widgets = {
 			'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
 			'numero_rotulo'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'potencia'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			'potencia_presente'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'potencia_fuera'	: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
@@ -318,9 +302,6 @@ class GasForm(forms.ModelForm):
 		help_texts = {
 			'nombre'			: '...',
 			'numero_rotulo'		: '...',
-			'potencia'			: '...',
-			'potencia_presente'	: '...',
-			'potencia_fuera'	: '...',
 		}
 
 		labels = {
@@ -357,17 +338,10 @@ class LocalForm(forms.ModelForm):
 		widgets = {
 			'nombre'					: forms.TextInput(attrs={'class': 'form-control'}),
 			'codigo'					: forms.TextInput(attrs={'class': 'form-control'}),
-			# 'metros_cuadrados'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			# 'metros_lineales'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			# 'metros_compartidos'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			# 'metros_bodega'				: forms.NumberInput(attrs={'class': 'form-control'}),
 			'descripcion'				: forms.TextInput(attrs={'class': 'form-control'}),
 			'sector'					: forms.Select(attrs={'class': 'form-control'}),
 			'nivel'						: forms.Select(attrs={'class': 'form-control'}),
 			'local_tipo'				: forms.Select(attrs={'class': 'form-control'}),
-			# 'medidores_electricidad'	: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
-			# 'medidores_agua'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
-			# 'medidores_gas'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 		}
 
 		error_messages = {
@@ -376,16 +350,11 @@ class LocalForm(forms.ModelForm):
 			'sector' 			: {'required': 'campo requerido'},
 			'nivel' 			: {'required': 'campo requerido'},
 			'local_tipo' 		: {'required': 'campo requerido'},
-			# 'metros_cuadrados' 	: {'required': 'campo requerido'},
 		}
 
 		help_texts = {
 			'nombre'			: '...',
 			'codigo'			: '...',
-			# 'metros_cuadrados'	: '...',
-			# 'metros_lineales'	: '...',
-			# 'metros_compartidos': '...',
-			# 'metros_bodega'		: '...',
 			'descripcion'		: '...',
 			'sector'			: '...',
 			'nivel'				: '...',
