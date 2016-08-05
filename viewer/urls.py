@@ -12,5 +12,5 @@ urlpatterns = [
 	url(r'^flag_currencies/$', views.flag_currencies, name='flag_currencies'),
 	url(r'^flag_commercial/$', views.flag_commercial, name='flag_commercial'),
 
-	
+	url(r'^dashboard/vacancia/$', views.chart_vacancia, name='chart_vacancia'),
 ]

@@ -72,7 +72,7 @@ def sumar_meses(fecha, meses):
 def formato_moneda(valor):
 
 	moneda = '${:,.2f}'.format(valor)
-	
+
 	moneda = moneda.replace('.', '*')
 	moneda = moneda.replace(',', '.')
 	moneda = moneda.replace('*', ',')
@@ -82,7 +82,7 @@ def formato_moneda(valor):
 def formato_numero(valor):
 
 	moneda = '{:,.2f}'.format(valor)
-	
+
 	moneda = moneda.replace('.', '*')
 	moneda = moneda.replace(',', '.')
 	moneda = moneda.replace('*', ',')
@@ -94,8 +94,5 @@ def formato_numero(valor):
 
 class NumberField(forms.Field):
 	def to_python(self, value):
-		print ('--------')
-		print (value)
-		print ('--------')
 		if value is not '' and value is not None:
 			return value.replace(".", "").replace(",", ".")

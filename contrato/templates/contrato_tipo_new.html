@@ -1,0 +1,72 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Nuevo Tipo de Contrato</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+						<div class="col-sm-12">
+
+							<form id="form-contrato-tipo" role="form" action="" method="post">
+								{% csrf_token %}
+
+								<div class="row">
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+										{{ form.nombre.label_tag }}
+										{{ form.nombre }}
+										<div class="container-error">
+											{{ form.nombre.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.codigo.help_text }}" ></i>
+										{{ form.codigo.label_tag }}
+										{{ form.codigo }}
+										<div class="container-error">
+											{{ form.codigo.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-6">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
+										{{ form.descripcion.label_tag }}
+										{{ form.descripcion }}
+										<div class="container-error">
+											{{ form.descripcion.errors|striptags }}
+										</div>
+									</div>
+									
+								</div>
+								<br>
+								<a href="/contrato-tipo/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-contrato-tipo')">GUARDAR Y SEGUIR</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+});
+
+</script>
+{% endblock scripts %}

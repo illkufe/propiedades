@@ -1,5 +1,6 @@
 {% load static %}
 {% load avatar_tags %}
+
 <nav class="navbar-default navbar-static-side" role="navigation">
 	<div class="sidebar-collapse">
 		<ul class="nav metismenu" id="side-menu">
@@ -58,11 +59,12 @@
 			</li>
 
 			<li>
-				<a href="index.html"><i class="fa fa-legal"></i> <span class="nav-label">Contrato</span> <span class="fa arrow"></span></a>
+				<a><i class="fa fa-legal"></i> <span class="nav-label">Contrato</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
-					<li><a href="/contratos-tipo/list">Tipos</a></li>
-					<li><a href="/contratos/list">Contratos</a></li>
-					<li><a href="/contratos-multas/list">Multas</a></li>
+					<li><a href="/contrato-tipo/list">Tipo de Contratos</a></li>
+					<li><a href="/contrato-multa-tipo/list">Tipo de Multas</a></li>
+					<li><a href="/contrato/list">Contratos</a></li>
+					<li><a href="/contrato-multa/list">Multas</a></li>
 				</ul>
 			</li>
 
@@ -82,6 +84,10 @@
 					<li><a href="/lectura-medidores/list">Lectura Medidores</a></li>
 					<li><a href="/contratos/inactivos/list">Activar Contratos</a></li>
 				</ul>
+			</li>
+
+			<li>
+				<a href="/reporteria"><i class="fa fa-folder-open-o"></i> <span class="nav-label">Reporteria</span></a>
 			</li>
 
 			<li>

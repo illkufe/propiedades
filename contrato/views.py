@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import Context, loader
 from django.template.loader import get_template 
 from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Sum
-from django.contrib.auth.models import User
 from django.views.generic import View, ListView, FormView, CreateView, DeleteView, UpdateView
 
-from .forms import ContratoTipoForm, ContratoForm, ContratoMultaForm, GarantiaFormSet, InformacionForm, ArriendoForm, ArriendoDetalleFormSet, ArriendoVariableForm, ArriendoVariableFormSet, ArriendoBodegaFormSet, GastoComunFormSet, ServicioBasicoFormSet, CuotaIncorporacionFormet, FondoPromocionForm, FondoPromocionFormSet
-from .models import Contrato_Tipo, Contrato_Estado, Contrato, Multa, Garantia, Arriendo, Arriendo_Detalle, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
-
-from accounts.models import UserProfile
 from administrador.models import Empresa, Cliente
 from locales.models import Local
 from procesos.models import Proceso
 
-from utilidades.views import meses_entre_fechas, fecha_actual
+from .forms import *
+from .models import *
+
+from utilidades.views import *
 
 import base64
 import pdfkit
@@ -24,11 +22,16 @@ import json
 import os
 
 
+# VARIABLES
+modulo 	= 'Contrato'
+
+
+# CONTRATO_TIPO
 class ContratoTipoMixin(object):
 
-	template_name 	= 'viewer/contratos/contrato_tipo_new.html'
+	template_name 	= 'contrato_tipo_new.html'
 	form_class 		= ContratoTipoForm
-	success_url 	= '/contratos-tipo/list'
+	success_url 	= '/contrato-tipo/list'
 
 	def form_invalid(self, form):
 		response = super(ContratoTipoMixin, self).form_invalid(form)
@@ -39,9 +42,8 @@ class ContratoTipoMixin(object):
 
 	def form_valid(self, form):
 
-		profile 		= UserProfile.objects.get(user=self.request.user)
-		obj 			= form.save(commit=False)
-		obj.empresa_id 	= profile.empresa_id
+		obj 		= form.save(commit=False)
+		obj.empresa = self.request.user.userprofile.empresa
 
 		obj.save()
 
@@ -57,13 +59,13 @@ class ContratoTipoMixin(object):
 
 class ContratoTipoNew(ContratoTipoMixin, FormView):
 
-	def get_context_data(self, **kwargs):
+	def get_context_data(self, **kwargs): 
 		
 		context 			= super(ContratoTipoNew, self).get_context_data(**kwargs)
-		context['title'] 	= 'Contratos'
+		context['title'] 	= modulo
 		context['subtitle'] = 'Tipo de Contrato'
-		context['name'] 	= 'Nueva'
-		context['href'] 	= 'contratos-tipo'
+		context['name'] 	= 'Nuevo'
+		context['href'] 	= 'contrato-tipo'
 		context['accion'] 	= 'create'
 
 		return context
@@ -71,15 +73,15 @@ class ContratoTipoNew(ContratoTipoMixin, FormView):
 class ContratoTipoList(ListView):
 
 	model 			= Contrato_Tipo
-	template_name 	= 'viewer/contratos/contrato_tipo_list.html'
+	template_name 	= 'contrato_tipo_list.html'
 
 	def get_context_data(self, **kwargs):
 
 		context 			= super(ContratoTipoList, self).get_context_data(**kwargs)
-		context['title'] 	= 'Contratos'
-		context['subtitle'] = 'Tipo de Contrato'
+		context['title'] 	= modulo
+		context['subtitle'] = 'Tipos de Contratos'
 		context['name'] 	= 'Lista'
-		context['href'] 	= 'contratos-tipo'
+		context['href'] 	= 'contrato-tipo'
 		
 		return context
 
@@ -92,7 +94,7 @@ class ContratoTipoList(ListView):
 class ContratoTipoDelete(DeleteView):
 
 	model 		= Contrato_Tipo
-	success_url = reverse_lazy('/contratos-tipo/list')
+	success_url = reverse_lazy('/contrato-tipo/list')
 
 	def delete(self, request, *args, **kwargs):
 		self.object 		= self.get_object()
@@ -107,13 +109,13 @@ class ContratoTipoUpdate(UpdateView):
 
 	model 			= Contrato_Tipo
 	form_class 		= ContratoTipoForm
-	template_name 	= 'viewer/contratos/contrato_tipo_new.html'
-	success_url 	= '/contratos-tipo/list'
+	template_name 	= 'contrato_tipo_new.html'
+	success_url 	= '/contrato-tipo/list'
 
 	def get_context_data(self, **kwargs):
 		
 		context 			= super(ContratoTipoUpdate, self).get_context_data(**kwargs)
-		context['title'] 	= 'Contratos'
+		context['title'] 	= modulo
 		context['subtitle'] = 'Tipo de Contrato'
 		context['name'] 	= 'Editar'
 		context['href'] 	= 'contratos-tipo'
@@ -123,11 +125,12 @@ class ContratoTipoUpdate(UpdateView):
 
 
 
+# CONTRATO
 class ContratoMixin(object):
 
-	template_name 	= 'viewer/contratos/contrato_new.html'
+	template_name 	= 'contrato_new.html'
 	form_class 		= ContratoForm
-	success_url 	= '/contratos/list'
+	success_url 	= '/contrato/list'
 
 	def get_form_kwargs(self):
 
@@ -146,13 +149,11 @@ class ContratoMixin(object):
 
 	def form_valid(self, form):
 
-		profile 		= UserProfile.objects.get(user=self.request.user)
-
 		context 		= self.get_context_data()
 		form_garantia 	= context['form_garantia']
 
 		obj 			= form.save(commit=False)
-		obj.empresa_id 	= profile.empresa_id
+		obj.empresa 	= self.request.user.userprofile.empresa
 
 		# comprobar si tiene estado
 		try:
@@ -183,10 +184,10 @@ class ContratoNew(ContratoMixin, FormView):
 	def get_context_data(self, **kwargs):
 		
 		context 			= super(ContratoNew, self).get_context_data(**kwargs)
-		context['title'] 	= 'Contratos'
+		context['title'] 	= modulo
 		context['subtitle'] = 'Contrato'
 		context['name'] 	= 'Nuevo'
-		context['href'] 	= 'contratos'
+		context['href'] 	= 'contrato'
 		context['accion'] 	= 'create'
 
 		if self.request.POST:
@@ -199,15 +200,15 @@ class ContratoNew(ContratoMixin, FormView):
 class ContratoList(ListView):
 
 	model 			= Contrato
-	template_name 	= 'viewer/contratos/contrato_list.html'
+	template_name 	= 'contrato_list.html'
 
 	def get_context_data(self, **kwargs):
 
 		context 			= super(ContratoList, self).get_context_data(**kwargs)
-		context['title'] 	= 'Contratos'
+		context['title'] 	= modulo
 		context['subtitle'] = 'Contrato'
 		context['name'] 	= 'Lista'
-		context['href'] 	= 'contratos'
+		context['href'] 	= 'contrato'
 
 		return context
 
@@ -218,14 +219,14 @@ class ContratoList(ListView):
 		for item in queryset:
 			item.fecha_inicio  	= item.fecha_inicio.strftime('%d/%m/%Y')
 			item.fecha_termino 	= item.fecha_termino.strftime('%d/%m/%Y')
-			item.cantidad 		= len(item.conceptos.all()) # cantidad de conceptos
+			item.cantidad 		= len(item.conceptos.all()) # {cantidad de conceptos}
 
 		return queryset
 
 class ContratoDelete(DeleteView):
 
 	model 		= Contrato
-	success_url = reverse_lazy('/contratos/list')
+	success_url = reverse_lazy('/contrato/list')
 
 	def delete(self, request, *args, **kwargs):
 
@@ -241,8 +242,8 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 
 	model 			= Contrato
 	form_class 		= ContratoForm
-	template_name 	= 'viewer/contratos/contrato_new.html'
-	success_url 	= '/contratos/list'
+	template_name 	= 'contrato_new.html'
+	success_url 	= '/contrato/list'
 
 	def get_object(self, queryset=None):
 
@@ -262,10 +263,10 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 	def get_context_data(self, **kwargs):
 		
 		context 			= super(ContratoUpdate, self).get_context_data(**kwargs)
-		context['title'] 	= 'Contratos'
+		context['title'] 	= modulo
 		context['subtitle'] = 'Contrato'
 		context['name'] 	= 'Editar'
-		context['href'] 	= 'contratos'
+		context['href'] 	= 'contrato'
 		context['accion'] 	= 'update'
 
 		if self.request.POST:
@@ -279,11 +280,110 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 
 
 
+# MULTA_TIPO
+class ContratoMultaTipoMixin(object):
+
+	template_name 	= 'contrato_multa_tipo_new.html'
+	form_class 		= ContratoMultaTipoForm
+	success_url 	= '/contrato-multa-tipo/list'
+
+	def form_invalid(self, form):
+
+		response = super(ContratoMultaTipoMixin, self).form_invalid(form)
+		if self.request.is_ajax():
+			return JsonResponse(form.errors, status=400)
+		else:
+			return response
+
+	def form_valid(self, form):
+
+		obj 		= form.save(commit=False)
+		obj.empresa = self.request.user.userprofile.empresa
+		obj.save()
+
+		response = super(ContratoMultaTipoMixin, self).form_valid(form)
+		if self.request.is_ajax():
+			data = {
+				'save': 'ok',
+			}
+			return JsonResponse(data)
+		else:
+			return response
+
+class ContratoMultaTipoNew(ContratoMultaTipoMixin, FormView):
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ContratoMultaTipoNew, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Tipo de Multa'
+		context['name'] 	= 'Nuevo'
+		context['href'] 	= 'contrato-multa-tipo'
+		context['accion'] 	= 'create'
+
+		return context
+
+class ContratoMultaTipoList(ListView):
+
+	model 			= Multa
+	template_name 	= 'contrato_multa_tipo_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ContratoMultaTipoList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Tipo de Multas'
+		context['name'] 	= 'Lista'
+		context['href'] 	= 'contrato-multa-tipo'
+		
+		return context
+
+	def get_queryset(self):
+		
+		queryset = Multa_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		return queryset
+
+class ContratoMultaTipoDelete(DeleteView):
+	model 		= Multa_Tipo
+	success_url = reverse_lazy('/contrato-multa-tipo/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object 		= self.get_object()
+		self.object.visible = False
+		self.object.save()
+		payload = {'delete': 'ok'}
+
+		return JsonResponse(payload, safe=False)
+
+class ContratoMultaTipoUpdate(ContratoMultaTipoMixin, UpdateView):
+
+	model 			= Multa_Tipo
+	form_class 		= ContratoMultaTipoForm
+	template_name 	= 'contrato_multa_tipo_new.html'
+	success_url		= '/contrato-multa-tipo/list'
+
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ContratoMultaTipoUpdate, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Tipo de Multa'
+		context['name'] 	= 'Editar'
+		context['href'] 	= 'contrato-multa-tipo'
+		context['accion'] 	= 'update'
+
+		return context
+
+
+
+# MULTA
 class ContratoMultaMixin(object):
 
-	template_name = 'viewer/contratos/contrato_multas_new.html'
-	form_class = ContratoMultaForm
-	success_url = '/contratos-multas/list'
+	template_name 	= 'contrato_multa_new.html'
+	form_class 		= ContratoMultaForm
+	success_url 	= '/contrato-multa/list'
 
 	def get_form_kwargs(self):
 		kwargs = super(ContratoMultaMixin, self).get_form_kwargs()
@@ -291,7 +391,7 @@ class ContratoMultaMixin(object):
 		return kwargs
 
 	def form_invalid(self, form):
-		print ('form  invalido')
+
 		response = super(ContratoMultaMixin, self).form_invalid(form)
 		if self.request.is_ajax():
 			return JsonResponse(form.errors, status=400)
@@ -299,18 +399,16 @@ class ContratoMultaMixin(object):
 			return response
 
 	def form_valid(self, form):
-		print ('form  valido')
-		profile 	= UserProfile.objects.get(user=self.request.user)
+
 		obj 		= form.save(commit=False)
-		# obj.user 	= self.request.user
+		obj.empresa = self.request.user.userprofile.empresa
 
 		obj.save()
-		# form.save_m2m()
 
 		response = super(ContratoMultaMixin, self).form_valid(form)
 		if self.request.is_ajax():
 			data = {
-				'pk': 'self.object.pk',
+				'save': 'ok',
 			}
 			return JsonResponse(data)
 		else:
@@ -321,9 +419,9 @@ class ContratoMultaNew(ContratoMultaMixin, FormView):
 	def get_context_data(self, **kwargs):
 
 		context = super(ContratoMultaNew, self).get_context_data(**kwargs)
-		context['title'] 	= 'Contrato'
-		context['subtitle'] = 'Multas'
-		context['name'] 	= 'Nuevo'
+		context['title'] 	= modulo
+		context['subtitle'] = 'Multa'
+		context['name'] 	= 'Nueva'
 		context['href'] 	= 'contratos-multas'
 		context['accion'] 	= 'create'
 
@@ -331,39 +429,36 @@ class ContratoMultaNew(ContratoMultaMixin, FormView):
 
 class ContratoMultaList(ListView):
 
-	model = Multa
-	template_name = 'viewer/contratos/contrato_multas_list.html'
+	model 			= Multa
+	template_name 	= 'contrato_multa_list.html'
 
 	def get_context_data(self, **kwargs):
-		context = super(ContratoMultaList, self).get_context_data(**kwargs)
-		context['title'] 	= 'Contrato'
+
+		context 			= super(ContratoMultaList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
 		context['subtitle'] = 'Multas'
 		context['name'] 	= 'Lista'
 		context['href'] 	= 'contratos-multas'
-		
+
 		return context
 
 	def get_queryset(self):
 
-		meses 		= ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE']	
-
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profile 	= UserProfile.objects.get(user=user)
-		queryset 	= Multa.objects.all() #{fata: traer las multas de los contratos de la empresa}
+		queryset = Multa.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 
 		for item in queryset:
-			item.mes 		= meses[int(item.mes)-1]
-			item.creado_en 	= item.creado_en.strftime('%d/%m/%Y')
+			item.valor = item.valor * item.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
 		return queryset
 
 class ContratoMultaDelete(DeleteView):
-	model = Multa
-	success_url = reverse_lazy('/contratos-multas/list')
+
+	model 		= Multa
+	success_url = reverse_lazy('/contrato-multa/list')
 
 	def delete(self, request, *args, **kwargs):
 
-		self.object = self.get_object()
+		self.object 		= self.get_object()
 		self.object.visible = False
 		self.object.save()
 		payload = {'delete': 'ok'}
@@ -372,32 +467,30 @@ class ContratoMultaDelete(DeleteView):
 
 class ContratoMultaUpdate(ContratoMultaMixin, UpdateView):
 
-	model = Multa
-	form_class = ContratoMultaForm
-	template_name = 'viewer/contratos/contrato_multas_new.html'
-	success_url = '/contratos-multas/list'
-
+	model 			= Multa
+	form_class 		= ContratoMultaForm
+	template_name 	= 'contrato_multa_new.html'
+	success_url 	= '/contrato-multa/list'
 
 	def get_context_data(self, **kwargs):
 
-		context = super(ContratoMultaUpdate, self).get_context_data(**kwargs)
-
-		context['title'] 	= 'Contratos'
-		context['subtitle'] = 'Multas'
+		context 			= super(ContratoMultaUpdate, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Multa'
 		context['name'] 	= 'Editar'
-		context['href'] 	= 'contratos-multas'
+		context['href'] 	= 'contrato-multa'
 		context['accion'] 	= 'update'
-
 
 		return context
 
 
 
+# CONTRATO_CONCEPTO
 class ContratoConceptoMixin(object):
 
-	template_name 	= 'viewer/contratos/contrato_conceptos_new.html'
+	template_name 	= 'contrato_concepto_new.html'
 	form_class 		= InformacionForm
-	success_url 	= '/contratos/list'
+	success_url 	= '/contrato/list'
 
 	def form_invalid(self, form):
 
@@ -455,14 +548,13 @@ class ContratoConceptoMixin(object):
 			elif concepto.id == 7:
 				if form_arriendo_bodega.is_valid():
 					form_arriendo_bodega.save()
-
 			else:
 				pass
 
 		response = super(ContratoConceptoMixin, self).form_valid(form)
 		if self.request.is_ajax():
 			data = {
-				'estado': 'ok',
+				'save': 'ok',
 			}
 			return JsonResponse(data)
 		else:
@@ -597,6 +689,8 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
 
 
+# CONTRATO_INCATIVOS
+
 class ContratosInactivosList(ListView):
 
 	model 			= Contrato
@@ -605,7 +699,7 @@ class ContratosInactivosList(ListView):
 	def get_context_data(self, **kwargs):
 
 		context 			= super(ContratosInactivosList, self).get_context_data(**kwargs)
-		context['title'] 	= 'Contratos'
+		context['title'] 	= modulo
 		context['subtitle'] = 'Contrato Incativos'
 		context['name'] 	= 'Lista'
 		context['href'] 	= 'contratos/inactivos'
@@ -624,17 +718,14 @@ class ContratosInactivosList(ListView):
 
 
 
-# API -----------------
+# API
 class CONTRATO(View):
 	http_method_names = ['get']
 	
 	def get(self, request, id=None):
 
-		profile = UserProfile.objects.get(user=self.request.user)
-		empresa = Empresa.objects.get(id=profile.empresa_id)
-
 		if id == None:
-			self.object_list = Contrato.objects.filter(empresa=empresa, visible=True)
+			self.object_list = Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		else:
 			self.object_list = Contrato.objects.filter(pk=id)
 
@@ -694,7 +785,8 @@ class CONTRATO(View):
 		return JsonResponse(data, safe=False)
 
 
-# Funciones -----------------------------
+
+# FUNCIONES
 def contrato_activar(request, contrato_id):
 
 	try:
@@ -720,21 +812,21 @@ def contrato_pdf(request, contrato_id):
 	meses 			= ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 	renovacion 		= meses_entre_fechas(contrato.fecha_renovacion, contrato.fecha_termino)
 
-	# arrienfo
+	# arriendo
 	try:
 		arriendo 			= Arriendo.objects.get(contrato=contrato)
 		arriendo_detalle 	= Arriendo_Detalle.objects.filter(arriendo=arriendo)
-		print ('----------')
-		print (arriendo_detalle)
 	except Exception:
 		arriendo 			= None
 		arriendo_detalle 	= None
 
-	# arrienfo bodega
+	# arriendo bodega
 	try:
-		arriendo_bodega 	= Arriendo_Bodega.objects.filter(contrato=contrato)
+		arriendo_bodega = Arriendo_Bodega.objects.filter(contrato=contrato)	
+		if len(arriendo_bodega) == 0:
+			arriendo_bodega = None
 	except Exception:
-		arriendo_bodega 	= None
+		arriendo_bodega = None
 
 	# gasto comun
 	try:
@@ -745,12 +837,16 @@ def contrato_pdf(request, contrato_id):
 	# cuota
 	try:
 		cuota = Cuota_Incorporacion.objects.filter(contrato=contrato)
+		if len(cuota) == 0:
+			cuota = None
 	except Exception:
 		cuota = None
 
-	# cuota
+	# arriendo variable
 	try:
 		arriendo_variable = Arriendo_Variable.objects.filter(contrato=contrato)
+		if len(arriendo_variable) == 0:
+			arriendo_variable = None
 	except Exception:
 		arriendo_variable = None
 
@@ -760,14 +856,11 @@ def contrato_pdf(request, contrato_id):
 	except Exception:
 		fondo = None
 
-
+	# garantía
 	garantias_total = 0
 	garantias = Garantia.objects.filter(contrato=contrato)
 	for garantia in garantias:
 		garantias_total += garantia.valor * garantia.moneda.moneda_historial_set.all().order_by('-id').first().valor
-	
-	# print ('----------')
-	# print (arriendo_variable)
 
 
 	options = {

@@ -10,7 +10,7 @@ from activos.models import Activo
 from locales.models import Local
 from conceptos.models import Concepto
 
-from .models import Contrato_Tipo, Contrato_Estado, Contrato, Multa, Garantia, Arriendo, Arriendo_Detalle, Arriendo_Bodega, Arriendo_Variable, Gasto_Comun, Servicio_Basico, Cuota_Incorporacion, Fondo_Promocion
+from .models import *
 
 class ContratoTipoForm(forms.ModelForm):
 	class Meta:
@@ -25,8 +25,7 @@ class ContratoTipoForm(forms.ModelForm):
 		}
 
 		error_messages = {
-			'nombre' : {'required': 'campo requerido'},
-			'codigo' : {'required': 'campo requerido'},
+			'nombre' 		: {'required': 'campo requerido'},
 		}
 
 		labels = {
@@ -35,9 +34,9 @@ class ContratoTipoForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'nombre'		: '...',
-			'codigo'		: '...',
-			'descripcion'	: '...',
+			'nombre' 		: 'nombre del tipo de contrato',
+			'codigo' 		: 'código del tipo de contrato',
+			'descripcion' 	: 'descripción del tipo de contrato',
 		}
 
 class ContratoForm(forms.ModelForm):
@@ -63,7 +62,7 @@ class ContratoForm(forms.ModelForm):
 
 		super(ContratoForm, self).__init__(*args, **kwargs)
 
-		self.fields['locales'].queryset 		= Local.objects.filter(activo__in=activos, visible=True)
+		self.fields['locales'].queryset 		= Local.objects.filter(activo__in=activos, visible=True) #{falta :  mostrar solo los locales que no esta ocupados}
 		self.fields['cliente'].queryset 		= Cliente.objects.filter(empresa=profile.empresa, visible=True)
 		self.fields['contrato_tipo'].queryset 	= Contrato_Tipo.objects.filter(empresa=profile.empresa, visible=True)
 		self.fields['contrato_estado'].required = False
@@ -125,49 +124,81 @@ class GarantiaForm(forms.ModelForm):
 			'nombre' 	: forms.TextInput(attrs={'class': 'form-control'}),
 		}
 
+class ContratoMultaTipoForm(forms.ModelForm):
+	
+	class Meta:
+
+		model 	= Multa_Tipo
+		fields 	= '__all__'
+		exclude = [ 'visible', 'creado_en', 'empresa']
+
+		widgets = {
+			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'codigo'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'descripcion'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
+		}
+
+		error_messages = {
+			'nombre' 		: {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'codigo' 		: 'Código',
+			'descripcion' 	: 'Descripción',
+		}
+
+		help_texts = {
+			'nombre' 		: 'nombre del tipo de multa',
+			'codigo' 		: 'código del tipo de multa',
+			'descripcion' 	: 'descripción del tipo de multa',
+		}
+
 class ContratoMultaForm(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), label='Valor Multa', error_messages={'required': 'campo requerido'})
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
 
 	def __init__(self, *args, **kwargs):
 
-		self.request 	= kwargs.pop('request')
-		user 			= User.objects.get(pk=self.request.user.pk)
-		profile 		= UserProfile.objects.get(user=user)
-		activos 		= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
+		self.request = kwargs.pop('request')
 
 		super(ContratoMultaForm, self).__init__(*args, **kwargs)
 
-		self.fields['contrato'].queryset = Contrato.objects.filter(visible=True) #{falta: traer los contratos de la empresa}
+		self.fields['multa_tipo'].queryset 	= Multa_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		self.fields['contrato'].queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 
 	class Meta:
 
 		model 	= Multa
 		fields 	= '__all__'
-		exclude = [ 'visible', 'creado_en', 'user', 'imagen_type', 'imagen_size']
+		exclude = [ 'visible', 'creado_en', 'empresa']
 
 		widgets = {
-			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'mes'	 		: forms.Select(attrs={'class': 'form-control'}),
 			'anio' 			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'descripcion'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
+			'multa_tipo'	: forms.Select(attrs={'class': 'form-control'}),
 			'contrato'		: forms.Select(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
-			'nombre' 	: {'required': 'campo requerido'},
-			'mes' 		: {'required': 'campo requerido'},
-			'anio' 		: {'required': 'campo requerido'},
-			'contrato' 	: {'required': 'campo requerido'},
-			'moneda' 	: {'required': 'campo requerido'},
+			'mes' 			: {'required': 'campo requerido'},
+			'anio' 			: {'required': 'campo requerido'},
+			'contrato' 		: {'required': 'campo requerido'},
+			'multa_tipo' 	: {'required': 'campo requerido'},
+			'moneda' 		: {'required': 'campo requerido'},
 		}
 
 		labels = {
-			'anio'		: 'Año',
+			'anio'			: 'Año',
+			'multa_tipo' 	: 'Tipo de Multa',
 		}
 
 		help_texts = {
-			'nombre'	: '...',
+			'mes'			: '',
+			'anio'			: '',
+			'contrato'		: '',
+			'multa_tipo' 	: '',
 		}
 
 class InformacionForm(forms.ModelForm):
@@ -387,7 +418,6 @@ class CuotaIncorporacionForm(forms.ModelForm):
 		model 	= Cuota_Incorporacion
 		fields 	= '__all__'
 		exclude = ['visible', 'creado_en']
-
 
 class FondoPromocionForm(forms.ModelForm):
 

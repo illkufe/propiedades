@@ -17,7 +17,7 @@
 
 						{% if concepto.template != None %}
 						
-						{% with ""|add:concepto.template|add:".html" as template %}
+						{% with "conceptos/"|add:concepto.template|add:".html" as template %}
 						{% include template %}
 						{% endwith %}
 
@@ -51,24 +51,6 @@ function initialize(){
 	$('#accordion .panel-heading a').attr('aria-expanded', true)
 	$('#accordion .panel-collapse').first().addClass('in')
 
-	// $('.prorrateo').on('click', function(){
-
-	// 	if ($(this).closest('tr').find('.valor_no_prorrateo').attr('readonly')=='readonly') {
-	// 		console.log('poner false')
-	// 		$(this).closest('tr').find('.valor_no_prorrateo').attr('readonly', false)
-	// 	}else{
-	// 		console.log('poner true')
-	// 		$(this).closest('tr').find('.valor_no_prorrateo').attr('readonly', true)
-	// 	}
-	// })
-
-
-	// $('.prorrateo').each(function( index ) {
-	// 	if ($(this).is(':checked')) {
-	// 		$(this).closest('tr').find('.valor_no_prorrateo').attr('readonly', true)
-	// 	}
-	// })
-
 }
 
 
@@ -79,7 +61,7 @@ function guardar_formulario_conceptos(form, id){
 		url: $('#'+form).attr('action'),
 		data: $('#'+form).serialize(),
 		success: function(response) {
-			window.location.href = '/contratos/'+id+'/conceptos'
+			window.location.href = '/contrato-concepto/'+id
 		},
 		error: function(data, textStatus, jqXHR) {
 			clear_errors_form('#'+form)

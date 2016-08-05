@@ -216,7 +216,7 @@
                             {% if arriendo_detalle != None %}
 
                             {% for item in arriendo_detalle %}
-                            {{item.valor}} UF el m2,
+                            de {{item.mes_inicio}} a {{item.mes_termino}}, {{item.valor}} UF el m2,
                             {% endfor %}
 
                             {% else %}
@@ -227,7 +227,7 @@
                     <td colspan="2" class="bold">C.6.1) Arriendo Mínimo Otras superficies</td>
                     <td colspan="2">
                         <span>
-                            {% if arriendo_bodega != None %}
+                            {% if arriendo_bodega != None%}
 
                             {% for item in arriendo_bodega %}
                             {{item.valor}} UF el m2
