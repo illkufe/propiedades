@@ -1,105 +1,6 @@
 from __future__ import unicode_literals
 from django.db import models
-
-# Modelos
-class Region(models.Model):
-
-	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
-	ordinal     = models.CharField(max_length=250)
-
-	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
-
-	def __str__(self):
-		return self.nombre
-
-class Provincia(models.Model):
-
-	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
-
-	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
-
-	# relaciones
-	region = models.ForeignKey(Region)
-
-	def __str__(self):
-		return self.nombre
-
-class Comuna(models.Model):
-
-	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
-
-	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
-
-	# relaciones
-	provincia = models.ForeignKey(Provincia)
-
-	def __str__(self):
-		return self.nombre
-
-class Estado_Civil(models.Model):
-
-	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
-	codigo     	= models.CharField(max_length=250)
-	descripcion = models.TextField(blank=True)
-
-	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
-
-	def __str__(self):
-		return self.nombre
-
-class Tarifa_Electricidad(models.Model):
-
-	# atributos (generales)
-	nombre 		= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=250)
-	valor		= models.FloatField()
-	descripcion = models.TextField(blank=True)
-
-	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
-
-	def __str__(self):
-		return self.codigo
-
-class Moneda(models.Model):
-
-	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
-	simbolo     = models.CharField(max_length=250)
-	abrev       = models.CharField(max_length=250)
-	descripcion = models.TextField(blank=True)
-
-	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
-
-	def __str__(self):
-		return self.abrev
-
-class Moneda_Historial(models.Model):
-
-	# atributos (generales)
-	valor   = models.FloatField()
-	fecha   = models.DateTimeField(auto_now=True)
-
-	# relaciones
-	moneda = models.ForeignKey(Moneda)
-
-	def __str__(self):
-		return self.moneda.nombre
+from utilidades.models import Estado_Civil
 
 class Empresa(models.Model):
 
@@ -122,6 +23,10 @@ class Empresa(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	class Meta:
+		verbose_name 		= "Empresa"
+		verbose_name_plural = "Empresas"
+
 class Cliente(models.Model):
 
 	# atributos (generales)
@@ -134,6 +39,12 @@ class Cliente(models.Model):
 	direccion       = models.CharField(max_length=250)
 	telefono        = models.CharField(max_length=250)
 	cliente_tipo    = models.IntegerField()
+
+	# atributos (conexión)
+	codigo_1 	= models.CharField(max_length=100, null=True, blank=True) # cuenta contable
+	codigo_2 	= models.CharField(max_length=100, null=True, blank=True) # area
+	codigo_3 	= models.CharField(max_length=100, null=True, blank=True) # centro de costo
+	codigo_4 	= models.CharField(max_length=100, null=True, blank=True) # item
 
 	# atributos (por defecto)
 	visible     = models.BooleanField(default=True)
@@ -161,7 +72,10 @@ class Representante(models.Model):
 	# relaciones
 	cliente 		= models.ForeignKey(Cliente)
 	estado_civil 	= models.ForeignKey(Estado_Civil)
-	
+
+	class Meta:
+		verbose_name 		= "Representante"
+		verbose_name_plural = "Representantes"
 
 	def __str__(self):
 		return self.nombre
@@ -179,7 +93,37 @@ class Configuracion(models.Model):
 
 	# relaciones
 	empresa = models.OneToOneField(Empresa)
-	moneda 	= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return self.empresa.nombre
+
+	class Meta:
+		verbose_name 		= "Configuración de Empresa"
+		verbose_name_plural = "Configuración de Empresa"
+
+class Conexion(models.Model):
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=100)
+	codigo 		= models.CharField(max_length=100)
+	codigo_1 	= models.CharField(max_length=100, null=True, blank=True) # cuenta contable
+	codigo_2 	= models.CharField(max_length=100, null=True, blank=True) # area
+	codigo_3 	= models.CharField(max_length=100, null=True, blank=True) # centro de costo
+	codigo_4 	= models.CharField(max_length=100, null=True, blank=True) # item
+	eliminar	= models.BooleanField(default=True)
+	descripcion = models.TextField(blank=True)
+
+	# atributos (por defecto)
+	visible     = models.BooleanField(default=True)
+	creado_en   = models.DateTimeField(auto_now=True)
+
+	# relaciones
+	empresa 	= models.ForeignKey(Empresa)
+
+	def __str__(self):
+		return self.nombre
+
+	class Meta:
+		verbose_name 		= "Parametro de Conexion"
+		verbose_name_plural = "Parametros de Conexion"
+

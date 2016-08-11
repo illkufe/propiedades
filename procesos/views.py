@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
-from administrador.models import Empresa, Cliente, Moneda, Moneda_Historial
+from administrador.models import Empresa, Cliente
 from accounts.models import UserProfile
 from locales.models import Local, Venta, Medidor_Electricidad, Medidor_Agua, Medidor_Gas, Gasto_Servicio
 from activos.models import Activo, Gasto_Mensual

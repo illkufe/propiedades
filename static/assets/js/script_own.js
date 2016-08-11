@@ -1,7 +1,6 @@
-    $("span.pie").peity("pie", {
-        fill: ['#1ab394', '#d7d7d7', '#ffffff']
-    })
-
+$("span.pie").peity("pie", {
+	fill: ['#1ab394', '#d7d7d7', '#ffffff']
+})
 
 $('td.delete input[type=checkbox]').hide()
 
@@ -240,6 +239,7 @@ function open_modal_delete(obj, id, model, tabla, text){
 		})
 	})
 }
+
 
 
 function open_modal_delete_child(obj, text){

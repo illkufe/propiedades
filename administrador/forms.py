@@ -3,31 +3,7 @@ from django import forms
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User, Group
 
-from .models import Moneda, Empresa, Cliente, Representante
-
-class MonedaForm(forms.ModelForm):
-
-	class Meta:
-		model 	= Moneda
-		fields 	= ['nombre', 'descripcion']
-
-		widgets = {
-			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'descripcion'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
-		}
-
-		error_messages = {
-			'nombre' : {'required': 'campo requerido'},		
-		}
-
-		labels = {
-			'descripcion': 'Descripción',
-		}
-
-		help_texts = {
-			'nombre'		: '...',
-			'descripcion'	: '...',
-		}
+from .models import Empresa, Cliente, Representante
 
 class ClienteForm(forms.ModelForm):
 

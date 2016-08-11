@@ -1,0 +1,282 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Configuración de Parametros</h5>
+					<div class="ibox-tools">
+						<button type="button" class="btn btn-primary btn-xs" onclick="agregar_parametro()"><i class="fa fa-plus"></i> nuevo parametro</button>
+					</div>
+				</div>
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table id="tabla-parametros" class="table table-striped table-hover" style="width:100%;"></table>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-12">
+							<button type="button" class="btn btn-primary btn-sm btn-w-m pull-right" onclick="actualizar_parametros()">Actualizar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+var tabla_parametros;
+
+$(document).ready(function(){
+
+	load_tabla_parametros()
+	data_tabla_parametros()
+
+});
+
+
+function load_tabla_parametros(){
+
+	var configuracion = {
+		'paginate': false,
+		'bLengthChange': false,
+		'bInfo': false,
+		'searching': false,
+		'buttons': [],
+	} 
+
+	var columns = [
+	{		
+		'data': 'id',
+		'visible': false,
+	},
+	{
+		'width': '10%',
+		'data': 'codigo',
+		'title': 'Código',
+	},
+	{
+		'width': '15%',
+		'data': 'nombre',
+		'title': 'Nombre',
+	},
+	{
+		'width': '10%',
+		'data': 'codigo_1',
+		'title': 'Código',
+		'orderable': false,
+	},
+	{
+		'width': '10%',
+		'data': 'codigo_2',
+		'title': 'Código',
+		'orderable': false,
+	},
+	{
+		'width': '10%',
+		'data': 'codigo_3',
+		'title': 'Código',
+		'orderable': false,
+	},
+	{
+		'width': '10%',
+		'data': 'codigo_4',
+		'title': 'Código',
+		'orderable': false,
+	},
+	{
+		'width': '5%',
+		'data': 'opciones',
+		'title': 'Opciones',
+		'orderable': false,
+		'title': '<div class="text-center">Opciones</div>',
+	}
+	];
+
+	tabla_parametros = load_table('#tabla-parametros', columns, configuracion)
+}
+
+function data_tabla_parametros(){
+
+	tabla_parametros.clear().draw();
+
+	$.ajax({
+		url: '/conexion-parametro',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			rows = [];
+
+			for (var i = 0; i < data.length; i++) {
+
+				var row 		= {}
+				var opciones 	= ''
+
+				opciones += '<div class="text-center">'
+				opciones += '<a class="btn btn-@button btn-bitbucket" onclick="eliminar_parametro(this, @permiso)">'
+				opciones += '<i class="fa fa-trash"></i>'
+				opciones += '<input class="eliminar" type="hidden" value="@eliminar">'
+				opciones += '<input class="parametro-id" type="hidden" value="@id">'
+				
+				opciones += '</a>'
+				opciones += '</div>'
+
+				opciones = opciones.replace(/@id/g, data[i].id);
+				opciones = opciones.replace(/@eliminar/g, false);
+				opciones = opciones.replace(/@permiso/g, data[i].eliminar);
+				
+
+				if (data[i].eliminar == true) {
+					opciones 	= opciones.replace(/@button/g, 'delete');
+					row.codigo	= '<input style="width:90%" class="codigo" type="text" value="'+data[i].codigo+'">' 
+					row.nombre	= '<input style="width:95%" class="nombre" type="text" value="'+data[i].nombre+'">' 
+				}
+				else{
+					opciones 	= opciones.replace(/@button/g, 'none');
+					row.codigo	= '<input style="width:90%" class="codigo" type="text" value="'+data[i].codigo+'" readonly>' 
+					row.nombre	= '<input style="width:95%" class="nombre" type="text" value="'+data[i].nombre+'" readonly>' 
+				}
+
+				row.id 			= '<input style="width:95%" class="parametro-id" "type="hidden" value="'+data[i].id+'">'
+				row.codigo_1	= '<input style="width:95%" class="codigo-1" "type="text" value="'+data[i].codigo_1+'">'
+				row.codigo_2	= '<input style="width:95%" class="codigo-2" "type="text" value="'+data[i].codigo_2+'">'
+				row.codigo_3	= '<input style="width:95%" class="codigo-3" "type="text" value="'+data[i].codigo_3+'">'
+				row.codigo_4	= '<input style="width:95%" class="codigo-4" "type="text" value="'+data[i].codigo_4+'">'
+				row.opciones 	= opciones
+
+				rows.push(row)
+			}
+			tabla_parametros.rows.add(rows).draw();
+		}
+	})
+}
+
+function actualizar_parametros(){
+
+	var data = []
+
+	var rows = $("#tabla-parametros").dataTable().fnGetNodes();
+
+	for(var i=0; i<rows.length; i++){
+
+		var item = {}
+
+		item.id 		= $(rows[i]).find('.parametro-id').val()
+		item.codigo 	= $(rows[i]).find('.codigo').val()
+		item.nombre 	= $(rows[i]).find('.nombre').val()
+		item.codigo_1 	= $(rows[i]).find('.codigo-1').val()
+		item.codigo_2 	= $(rows[i]).find('.codigo-2').val()
+		item.codigo_3 	= $(rows[i]).find('.codigo-3').val()
+		item.codigo_4 	= $(rows[i]).find('.codigo-4').val()
+		item.eliminar 	= $(rows[i]).find('.eliminar').val()
+
+		data.push(item)
+
+	}
+
+	$.ajax({
+		url: '/conexion-parametro',
+		type: 'post',
+		dataType: 'json',
+		data:{
+			parametros : JSON.stringify(data),
+			csrfmiddlewaretoken : getCookie('csrftoken'),
+		},
+		success: function(data){
+
+			if (data.estado == true ) {
+				var configuracion = {
+					'toast_type'	: 'success',
+					'toast_text' 	: 'Guardado correctamente',
+					'toast_title' 	: 'ÉXITO',
+				}
+			}else{
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'No se pudo actualizar',
+					'toast_title' 	: 'Error',
+				}
+			}
+
+			notification_toast_final(configuracion)
+			data_tabla_parametros()
+		}
+	})
+}
+
+function agregar_parametro(){
+
+	var row 		= {}
+	var opciones 	= ''
+
+	opciones += '<div class="text-center">'
+	opciones += '<a class="btn btn-@button btn-bitbucket" onclick="eliminar_parametro(this, @permiso)">'
+	opciones += '<i class="fa fa-trash"></i>'
+	opciones += '<input class="eliminar" type="hidden" value="@eliminar">'
+	opciones += '<input class="parametro-id" type="hidden">'
+
+	opciones += '</a>'
+	opciones += '</div>'
+
+	opciones = opciones.replace(/@eliminar/g, false);
+	opciones = opciones.replace(/@permiso/g, true);
+	opciones = opciones.replace(/@button/g, 'delete');
+
+	row.id 			= ''
+	row.codigo		= '<input style="width:90%" class="codigo" type="text">' 
+	row.nombre		= '<input style="width:95%" class="nombre" type="text">' 
+	row.codigo_1	= '<input style="width:95%" class="codigo-1" "type="text">'
+	row.codigo_2	= '<input style="width:95%" class="codigo-2" "type="text">'
+	row.codigo_3	= '<input style="width:95%" class="codigo-3" "type="text">'
+	row.codigo_4	= '<input style="width:95%" class="codigo-4" "type="text">'
+	row.opciones 	= opciones
+
+	tabla_parametros.row.add(row).draw();
+}
+
+function eliminar_parametro(obj, permiso){
+
+	if (permiso == true) {
+		swal({
+			title: '¿ Eliminar Parametro ?',
+			text: '',
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#F8BB86',
+			cancelButtonColor: '#D0D0D0',
+			confirmButtonText: 'Si, eliminar',
+			cancelButtonText: 'Cancelar',
+			closeOnConfirm: true,
+		}).then(function() {
+			$(obj).closest('tr').find('.eliminar').val('true')
+			$(obj).closest('tr').addClass('hide')
+		});
+	}else{
+		var configuracion = {
+			'toast_type'	: 'error',
+			'toast_text' 	: 'No tiene permiso para eliminar este parametro',
+			'toast_title' 	: 'Error',
+		}
+		notification_toast_final(configuracion)
+	}
+}
+
+</script>
+
+
+
+
+{% endblock scripts %}
+
+

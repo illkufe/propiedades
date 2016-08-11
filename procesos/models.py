@@ -6,7 +6,7 @@ from contrato.models import Contrato
 from locales.models import Local, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 
 
-# Create your models here.
+# Modelos
 class Proceso_Estado(models.Model):
 
 	# atributos (generales)
@@ -58,7 +58,7 @@ class Detalle_Arriendo_Minimo(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 
 	def __str__(self):
-		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+		return str(self.fecha_inicio)+' - '+str(self.fecha_termino)+' - '+ str(self.contrato.numero)
 
 class Detalle_Arriendo_Variable(models.Model):
 	
@@ -78,7 +78,7 @@ class Detalle_Arriendo_Variable(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 
 	def __str__(self):
-		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+		return str(self.fecha_inicio)+' - '+str(self.fecha_termino)+' - '+ str(self.contrato.numero)
 
 class Detalle_Arriendo_Bodega(models.Model):
 	
@@ -95,7 +95,7 @@ class Detalle_Arriendo_Bodega(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 
 	def __str__(self):
-		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+		return str(self.fecha_inicio)+' - '+str(self.fecha_termino)+' - '+ str(self.contrato.numero)
 
 class Detalle_Gasto_Servicio(models.Model):
 
@@ -113,7 +113,7 @@ class Detalle_Gasto_Servicio(models.Model):
 	local 		= models.ForeignKey(Local)
 
 	def __str__(self):
-		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+		return str(self.contrato.numero)
 
 class Detalle_Gasto_Comun(models.Model):
 
@@ -136,7 +136,7 @@ class Detalle_Gasto_Comun(models.Model):
 	local 		= models.ForeignKey(Local)
 
 	def __str__(self):
-		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+		return str(self.contrato.numero)
 
 class Detalle_Electricidad(models.Model):
 
@@ -216,7 +216,7 @@ class Detalle_Cuota_Incorporacion(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 
 	def __str__(self):
-		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+		return str(self.fecha_inicio)+' - '+str(self.fecha_termino)+' - '+ str(self.contrato.numero)
 
 class Detalle_Fondo_Promocion(models.Model):
 
@@ -236,12 +236,12 @@ class Detalle_Fondo_Promocion(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 
 	def __str__(self):
-		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+		return str(self.fecha_inicio)+' - '+str(self.fecha_termino)+' - '+ str(self.contrato.numero)
 
 
 class Detalle_Multa(models.Model):
 
-	total 		 	= models.FloatField(null=True, blank=True)
+	total = models.FloatField(null=True, blank=True)
 
 	fecha_inicio 	= models.DateField()
 	fecha_termino 	= models.DateField()
@@ -255,6 +255,6 @@ class Detalle_Multa(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 
 	def __str__(self):
-		return str(self.contrato.numero)+' - '+self.proceso.concepto.nombre
+		return str(self.fecha_inicio)+' - '+str(self.fecha_termino)+' - '+ str(self.contrato.numero)
 
 

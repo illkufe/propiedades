@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from administrador.models import Empresa, Cliente, Moneda
+from administrador.models import Empresa, Cliente
 from locales.models import Local
 from conceptos.models import Concepto
+from utilidades.models import Moneda
 
 # Modelos
 class Contrato_Tipo(models.Model):
@@ -23,6 +24,10 @@ class Contrato_Tipo(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	class Meta:
+		verbose_name 		= "Tipo de Contrato"
+		verbose_name_plural = "Tipos de Contratos"
+
 class Contrato_Estado(models.Model):
 
 	# atributos (generales)
@@ -35,6 +40,10 @@ class Contrato_Estado(models.Model):
 
 	def __str__(self):
 		return self.nombre
+
+	class Meta:
+		verbose_name 		= "Estado de Contrato"
+		verbose_name_plural = "Estados de Contratos"
 
 class Contrato(models.Model):
 
@@ -70,6 +79,11 @@ class Contrato(models.Model):
 
 	def __str__(self):
 		return self.nombre_local
+
+	class Meta:
+		verbose_name 		= "Contrato"
+		verbose_name_plural = "Contratos"
+
 
 class Multa_Tipo(models.Model):
 

@@ -146,7 +146,7 @@ class GastoMensualForm(forms.ModelForm):
 
 		super(GastoMensualForm, self).__init__(*args, **kwargs)
 
-		self.fields['activo'].queryset = Activo.objects.filter(empresa=profile.empresa, visible=True)		
+		self.fields['activo'].queryset = Activo.objects.filter(empresa=profile.empresa, visible=True)
 
 	class Meta:
 

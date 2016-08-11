@@ -1,0 +1,221 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Crear Reporte</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+						{% for tipo in tipos %}
+						<div class="col-sm-6 col-md-3" data-toggle="modal" data-target="#myModal">
+							<div class="widget widget-report" style="background-color:{{tipo.color}}; color:#fff">
+								<div class="row">
+									<div class="col-xs-4">
+										<i class="{{ tipo.icono }} fa-3x"></i>
+									</div>
+									<div class="col-xs-8 text-right">
+										<span>{{ tipo.nombre }}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Reportes Creados</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table id="tabla-reportes" class="table table-striped table-bordered table-hover" style="width:100%"></table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<form id="form-reporte-1" role="form" action="/reportes" method="POST">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+
+						<div class="form-group col-sm-3">
+							<input type="text" class="form-control" name="nombre">
+							<input type="hidden" class="form-control" name="tipo" value="1">
+						</div>
+					</div>
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+					<button type="submit" class="btn btn-primary">Aceptar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+var tabla_reportes = []
+
+$(document).ready(function(){
+
+	load_tabla_reportes()
+	data_tabla_procesos()
+
+	procesar_contratos()
+
+});
+
+function load_tabla_reportes(){
+
+	var configuracion = {
+		'order': [[1, 'asc']],
+	} 
+
+	var columns = [
+	{
+		'data': 'id',
+		'visible': false,
+	},
+	{
+		'width': '5%',
+		'data': 'numero',
+		'title': '<div class="text-center">#</div>',
+	},
+	{
+		'width': '30%',
+		'data': 'nombre',
+		'title': 'Nombre',
+	},
+	{
+		'width': '25%',
+		'data': 'tipo',
+		'title': 'Tipo de Reporte',
+	},
+	{
+		'width': '10%',
+		'data': 'fecha',
+		'title': 'Fecha',
+	},
+	{
+		'width': '15%',
+		'data': 'usuario',
+		'title': 'Usuario',
+	},
+	{
+		'width': '15%',
+		'data': 'opciones',
+		'orderable': false,
+		'title': '<div class="text-center">Opciones</div>',
+	}];
+
+	tabla_reportes = load_table('#tabla-reportes', columns, configuracion)
+}
+
+function data_tabla_procesos(){
+
+	tabla_reportes.clear().draw();
+
+	$.ajax({
+		url: '/reportes',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			rows = [];
+
+			for (var i = 0; i < data.length; i++) {
+
+				var row 		= {}
+				var opciones 	= ''
+				var tipo 		= ''
+
+				tipo += '<i class="@icono" style="color:@color;"></i><span> @nombre</span>'
+				tipo = tipo.replace(/@icono/g, data[i].tipo.icono)
+				tipo = tipo.replace(/@color/g, data[i].tipo.color)
+				tipo = tipo.replace(/@nombre/g, data[i].tipo.nombre)
+
+				opciones += '<div class="text-center">'
+				opciones += '<a class="btn btn-delete btn-bitbucket"><i class="fa fa-trash"></i></a>&nbsp;'
+				opciones += '<a class="btn btn-view btn-bitbucket" href="/media/reportes/@nombre_pdf.pdf" target="_blank"><i class="fa fa-eye"></i></a>'
+				opciones += '</div>'
+				opciones = opciones.replace(/@nombre_pdf/g, data[i].nombre_pdf)
+
+				row.numero 		= '<div class="text-center">'+(i+1)+'</div>'
+				row.id 			= data[i].id
+				row.nombre 		= data[i].nombre
+				row.tipo 		= tipo
+				row.fecha 		= data[i].fecha
+				row.usuario 	= data[i].usuario.first_name+' '+data[i].usuario.last_name
+				row.opciones 	= opciones
+
+				rows.push(row)
+			}
+			tabla_reportes.rows.add(rows).draw();
+		}
+	})
+}
+
+
+function procesar_contratos(){
+	$("#form-reporte-1").validate({
+		rules: {
+			nombre: {
+				required: true,
+			},
+		},
+		messages: {
+			nombre: {
+				required: "campo requerido",
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group"));
+		},
+		submitHandler: function(form) {
+
+			$('#form-reporte-1').ajaxSubmit({
+				dataType: 'json',
+				success: function(data){
+					// cerrar modal
+
+					if (data.estado == true) {
+						// actualizar tabla
+						data_tabla_procesos()
+					}else{
+						// mostrar mensaje de error
+					}
+				}
+			});
+		}
+	}) 
+}
+
+
+</script>
+{% endblock scripts %}

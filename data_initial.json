@@ -1,6 +1,113 @@
-[
+[{
+	"model": "conceptos.concepto_tipo",
+	"pk": 1,
+	"fields": {
+		"nombre": "Arriendo Mínimo",
+		"codigo": "ARR-MIN",
+		"template": "arriendo_minimo",
+		"descripcion": "Descripción Arriendo Mínimo",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "conceptos.concepto_tipo",
+	"pk": 2,
+	"fields": {
+		"nombre": "Arriendo Variable",
+		"codigo": "ARR-VAR",
+		"template": "arriendo_variable",
+		"descripcion": "Descripción Arriendo Variable",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 3,
+	"fields": {
+		"nombre": "Gasto Común",
+		"codigo": "GAS-COM",
+		"template": "gasto_comun",
+		"descripcion": "Descripción Gasto Común",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 4,
+	"fields": {
+		"nombre": "Servicios Básicos",
+		"codigo": "SER-BAS",
+		"template": "servicio_basico",
+		"descripcion": "Descripción Servicios Básicos",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 5,
+	"fields": {
+		"nombre": "Cuota de Incorporación",
+		"codigo": "CUO-INC",
+		"template": "cuota_incorporacion",
+		"descripcion": "Descripción Cuota de Incorporación",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 6,
+	"fields": {
+		"nombre": "Fondo de Promoción",
+		"codigo": "FON-PRO",
+		"template": "fondo_promocion",
+		"descripcion": "Descripción Fondo de Promoción",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 7,
+	"fields": {
+		"nombre": "Arriendo Bodega",
+		"codigo": "ARR-BOD",
+		"template": "arriendo_bodega",
+		"descripcion": "Descripción Arriendo Bodega",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 8,
+	"fields": {
+		"nombre": "Servicios Varios",
+		"codigo": "SER-VAR",
+		"template": null,
+		"descripcion": "Descripción Servicios Varios",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 9,
+	"fields": {
+		"nombre": "Multas",
+		"codigo": "MULTAS",
+		"template": null,
+		"descripcion": "Descripción Multas",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 1,
 	"fields": {
 		"nombre": "Baja Tensión 1",
@@ -11,7 +118,7 @@
 	}
 },
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 2,
 	"fields": {
 		"nombre": "Baja Tensión 2",
@@ -22,7 +129,7 @@
 	}
 },
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 3,
 	"fields": {
 		"nombre": "Baja Tensión 3",
@@ -33,7 +140,7 @@
 	}
 },
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 4,
 	"fields": {
 		"nombre": "Baja Tensión 4.1",
@@ -44,7 +151,7 @@
 	}
 },
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 5,
 	"fields": {
 		"nombre": "Baja Tensión 4.2",
@@ -55,7 +162,7 @@
 	}
 },
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 6,
 	"fields": {
 		"nombre": "Baja Tensión 4.3",
@@ -66,7 +173,7 @@
 	}
 },
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 7,
 	"fields": {
 		"nombre": "Alta Tensión 2",
@@ -77,7 +184,7 @@
 	}
 },
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 8,
 	"fields": {
 		"nombre": "Alta Tensión 3",
@@ -88,7 +195,7 @@
 	}
 },
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 9,
 	"fields": {
 		"nombre": "Alta Tensión 4.1",
@@ -99,7 +206,7 @@
 	}
 },
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 10,
 	"fields": {
 		"nombre": "Alta Tensión 4.2",
@@ -110,7 +217,7 @@
 	}
 },
 {
-	"model": "administrador.tarifa_electricidad",
+	"model": "utilidades.tarifa_electricidad",
 	"pk": 11,
 	"fields": {
 		"nombre": "Alta Tensión 4.3",
@@ -122,7 +229,7 @@
 },
 
 {
-	"model": "administrador.moneda",
+	"model": "utilidades.moneda",
 	"pk": 1,
 	"fields": {
 		"nombre": "Dolar EE UU",
@@ -133,7 +240,7 @@
 	}
 },
 {
-	"model": "administrador.moneda",
+	"model": "utilidades.moneda",
 	"pk": 2,
 	"fields": {
 		"nombre": "EURO",
@@ -144,7 +251,7 @@
 	}
 },
 {
-	"model": "administrador.moneda",
+	"model": "utilidades.moneda",
 	"pk": 3,
 	"fields": {
 		"nombre": "UNIDAD DE FOMENTO",
@@ -155,7 +262,7 @@
 	}
 },
 {
-	"model": "administrador.moneda",
+	"model": "utilidades.moneda",
 	"pk": 4,
 	"fields": {
 		"nombre": "UNIDAD TRIBUTARIA",
@@ -166,7 +273,7 @@
 	}
 },
 {
-	"model": "administrador.moneda",
+	"model": "utilidades.moneda",
 	"pk": 5,
 	"fields": {
 		"nombre": "PESO",
@@ -177,7 +284,7 @@
 	}
 },
 {
-	"model": "administrador.moneda",
+	"model": "utilidades.moneda",
 	"pk": 6,
 	"fields": {
 		"nombre": "PORCENTAJE",
@@ -188,7 +295,7 @@
 	}
 },
 {
-	"model": "administrador.moneda_historial",
+	"model": "utilidades.moneda_historial",
 	"pk": 1,
 	"fields": {
 		"valor": 691.32,
@@ -197,7 +304,7 @@
 	}
 },
 {
-	"model": "administrador.moneda_historial",
+	"model": "utilidades.moneda_historial",
 	"pk": 2,
 	"fields": {
 		"valor": 776.24,
@@ -206,7 +313,7 @@
 	}
 },
 {
-	"model": "administrador.moneda_historial",
+	"model": "utilidades.moneda_historial",
 	"pk": 3,
 	"fields": {
 		"valor": 25962.93,
@@ -215,7 +322,7 @@
 	}
 },
 {
-	"model": "administrador.moneda_historial",
+	"model": "utilidades.moneda_historial",
 	"pk": 4,
 	"fields": {
 		"valor": 45497,
@@ -224,7 +331,7 @@
 	}
 },
 {
-	"model": "administrador.moneda_historial",
+	"model": "utilidades.moneda_historial",
 	"pk": 5,
 	"fields": {
 		"valor": 1,
@@ -233,7 +340,7 @@
 	}
 },
 {
-	"model": "administrador.moneda_historial",
+	"model": "utilidades.moneda_historial",
 	"pk": 6,
 	"fields": {
 		"valor": 1,
@@ -242,7 +349,7 @@
 	}
 },
 {
-	"model": "administrador.estado_civil",
+	"model": "utilidades.estado_civil",
 	"pk": 1,
 	"fields": {
 		"nombre": "Hijo/Hija",
@@ -251,7 +358,7 @@
 	}
 },
 {
-	"model": "administrador.estado_civil",
+	"model": "utilidades.estado_civil",
 	"pk": 2,
 	"fields": {
 		"nombre": "Padre/Madre",
@@ -260,7 +367,7 @@
 	}
 },
 {
-	"model": "administrador.estado_civil",
+	"model": "utilidades.estado_civil",
 	"pk": 3,
 	"fields": {
 		"nombre": "Soltero/a",
@@ -269,7 +376,7 @@
 	}
 },
 {
-	"model": "administrador.estado_civil",
+	"model": "utilidades.estado_civil",
 	"pk": 4,
 	"fields": {
 		"nombre": "Casado(a)",
@@ -278,7 +385,7 @@
 	}
 },
 {
-	"model": "administrador.estado_civil",
+	"model": "utilidades.estado_civil",
 	"pk": 5,
 	"fields": {
 		"nombre": "Viudo(a)",
@@ -287,7 +394,7 @@
 	}
 },
 {
-	"model": "administrador.estado_civil",
+	"model": "utilidades.estado_civil",
 	"pk": 6,
 	"fields": {
 		"nombre": "Divorciado(a)",
@@ -296,43 +403,11 @@
 	}
 },
 {
-	"model": "administrador.estado_civil",
+	"model": "utilidades.estado_civil",
 	"pk": 7,
 	"fields": {
 		"nombre": "Conviviente Civil",
 		"descripcion": "Descripcion de Conviviente Civil",
-		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
-	"model": "conceptos.concepto_tipo",
-	"pk": 1,
-	"fields": {
-		"nombre": "Arriendo",
-		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
-	"model": "conceptos.concepto_tipo",
-	"pk": 2,
-	"fields": {
-		"nombre": "Gastos Comunes",
-		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
-	"model": "conceptos.concepto_tipo",
-	"pk": 3,
-	"fields": {
-		"nombre": "Servicios Básicos",
-		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
-	"model": "conceptos.concepto_tipo",
-	"pk": 4,
-	"fields": {
-		"nombre": "Otros",
 		"creado_en": "2016-01-01 00:00:00"
 	}
 },
@@ -424,42 +499,6 @@
 		"nombre": "Estado 4",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
-	"model": "contrato.contrato_tipo",
-	"pk": 1,
-	"fields": {
-		"nombre": "Contrato Local Menor",
-		"codigo": "LOCAL-MENOR",
-		"descripcion": "Descripción local menor",
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"empresa_id": 1
-	}
-},
-{
-	"model": "contrato.contrato_tipo",
-	"pk": 2,
-	"fields": {
-		"nombre": "Contrato Bodega",
-		"codigo": "BODEGA",
-		"descripcion": "Descripción bodega",
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"empresa_id": 1
-	}
-},
-{
-	"model": "contrato.contrato_tipo",
-	"pk": 3,
-	"fields": {
-		"nombre": "Contrato Módulo",
-		"codigo": "MODULO",
-		"descripcion": "Descripción módulo",
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00",
-		"empresa_id": 1
 	}
 }
 ]

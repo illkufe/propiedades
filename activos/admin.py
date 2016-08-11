@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Activo, Sector, Nivel
+from .models import *
 
-# Modelos Disponibles en Admin
+# Modelos
 admin.site.register(Activo)
 admin.site.register(Sector)
 admin.site.register(Nivel)
+admin.site.register(Gasto_Mensual)

@@ -30,3 +30,12 @@ def formato_numero(valor):
 	moneda = moneda.replace('*', ',')
 
 	return moneda
+
+
+@register.filter
+def formato_boolean(valor):
+
+	if valor is True:
+		return 'Si'
+	else:
+		return 'No'

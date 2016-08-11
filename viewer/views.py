@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from accounts.models import UserProfile
-from administrador.models import Moneda, Moneda_Historial
+# from administrador.models import Moneda, Moneda_Historial
 from activos.models import Activo
 from locales.models import Local, Local_Tipo
 from contrato.models import Contrato
@@ -80,15 +80,15 @@ def flag_currencies(request):
 
 	for currency in currencies:
 
-		moneda 		= Moneda.objects.get(id=int(currency['id']))
-		historial 	= Moneda_Historial.objects.filter(moneda=moneda).last()
+		# moneda 		= Moneda.objects.get(id=int(currency['id']))
+		# historial 	= Moneda_Historial.objects.filter(moneda=moneda).last()
 
 		data.append({
-			'id'		: moneda.id,
-			'nombre'	: moneda.nombre,
-			'abrev'		: moneda.abrev,
-			'simbolo'	: moneda.simbolo,
-			'value'		: historial.valor,
+			'id'		: 'moneda.id',# {falta : arreglar}
+			'nombre'	: 'moneda.nombre',# {falta : arreglar}
+			'abrev'		: 'moneda.abrev',# {falta : arreglar}
+			'simbolo'	: 'moneda.simbolo',# {falta : arreglar}
+			'value'		: 'historial.valor',# {falta : arreglar}
 			})
 
 	return JsonResponse(data, safe=False)

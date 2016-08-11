@@ -3,8 +3,9 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
-from administrador.models import Empresa, Tarifa_Electricidad
+from administrador.models import Empresa
 from activos.models import Activo, Sector, Nivel
+from utilidades.models import Tarifa_Electricidad
 
 # Modelos
 class Local_Tipo(models.Model):

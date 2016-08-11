@@ -1,9 +1,14 @@
 from django.shortcuts import render
+from django.template import Context, loader
+from django.template.loader import get_template 
 from django import forms
 from datetime import date, datetime, timedelta
 
+import pdfkit
 import calendar
 
+
+# variables globales
 def variables_globales(request):
 
 	try:
@@ -21,6 +26,8 @@ def variables_globales(request):
 	except Exception:
 		return {'estado':'error'}
 
+
+# funciones globales (fechas)
 def fecha_actual():
 
 	return datetime.now()
@@ -45,14 +52,14 @@ def ultimo_dia(fecha):
 
 	return fecha
 
-def meses_entre_fechas(f_inicio, f_termino):
+def meses_entre_fechas(fecha_inicio, fecha_termino):
 
 	delta = 0
 	while True:
 
-		dias = calendar.monthrange(f_inicio.year, f_inicio.month)[1]
-		f_inicio += timedelta(days=dias)
-		if f_inicio <= f_termino:
+		dias = calendar.monthrange(fecha_inicio.year, fecha_inicio.month)[1]
+		fecha_inicio += timedelta(days=dias)
+		if fecha_inicio <= fecha_termino:
 			delta += 1
 		else:
 			break
@@ -69,6 +76,8 @@ def sumar_meses(fecha, meses):
 
 	return datetime.strptime(fecha, "%d/%m/%Y").date()
 
+
+# funciones globales (numeros)
 def formato_moneda(valor):
 
 	moneda = '${:,.2f}'.format(valor)
@@ -90,8 +99,36 @@ def formato_numero(valor):
 	return moneda
 
 
-# CLASES
+# funciones globales (pdf)
+def generar_pdf(configuration, data):
 
+	options = {
+		'margin-top': '0.75in',
+		'margin-right': '0.75in',
+		'margin-bottom': '0.55in',
+		'margin-left': '0.75in',
+		'encoding': "UTF-8",
+		'no-outline': None,
+		}
+
+	css = ['static/assets/css/bootstrap.min.css']
+
+	try:
+		template = get_template(configuration['html'])
+	except Exception as asd:
+		template = get_template(configuration['default'])
+
+	context = Context({
+		'data' : data,
+	})
+
+	html = template.render(context)
+	pdfkit.from_string(html, configuration['destination']+''+configuration['nombre_pdf']+'.pdf', options=options, css=css)
+
+	return True
+
+
+# CLASES
 class NumberField(forms.Field):
 	def to_python(self, value):
 		if value is not '' and value is not None:

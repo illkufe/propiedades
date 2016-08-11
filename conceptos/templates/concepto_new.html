@@ -18,7 +18,7 @@
 								{% csrf_token %}
 
 								<div class="row">
-									<div class="form-group col-sm-4">
+									<div class="form-group col-sm-3">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
 										{{ form.nombre.label_tag }}
 										{{ form.nombre }}
@@ -37,39 +37,27 @@
 									</div>
 
 									<div class="form-group col-sm-2">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.orden.help_text }}" ></i>
-										{{ form.orden.label_tag }}
-										{{ form.orden }}
-										<div class="container-error">
-											{{ form.orden.errors|striptags }}
-										</div>
-									</div>
-
-									<div class="form-group col-sm-4">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
-										{{ form.descripcion.label_tag }}
-										{{ form.descripcion }}
-									</div>
-								</div>
-
-								<div class="row">
-
-									<div class="form-group col-sm-4">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
-										{{ form.moneda.label_tag }}
-										{{ form.moneda }}
-										<div class="container-error">
-											{{ form.moneda.errors|striptags }}
-										</div>
-									</div>
-
-									<div class="form-group col-sm-4">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.concepto_tipo.help_text }}" ></i>
 										{{ form.concepto_tipo.label_tag }}
 										{{ form.concepto_tipo }}
 										<div class="container-error">
 											{{ form.concepto_tipo.errors|striptags }}
 										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.iva.help_text }}" ></i>
+										{{ form.iva.label_tag }}
+										{{ form.iva }}
+										<div class="container-error">
+											{{ form.iva.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
+										{{ form.descripcion.label_tag }}
+										{{ form.descripcion }}
 									</div>
 								</div>
 
@@ -94,7 +82,6 @@
 <script>
 
 $(document).ready(function(){
-
 });
 
 </script>

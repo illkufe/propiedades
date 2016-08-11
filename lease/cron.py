@@ -1,11 +1,10 @@
 from urllib.request import urlopen
 from datetime import datetime
-from administrador.models import Moneda, Moneda_Historial
+from utilidades.models import Moneda, Moneda_Historial
 from notificaciones.models import Alerta, Alerta_Miembro
 
 import json
 import pyrebase
-# import datetime
 
 def update_currency():
 

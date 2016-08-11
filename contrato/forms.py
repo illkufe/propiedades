@@ -5,10 +5,11 @@ from django.contrib.auth.models import User
 from utilidades.views import NumberField
 
 from accounts.models import UserProfile
-from administrador.models import Cliente, Moneda
+from administrador.models import Cliente
 from activos.models import Activo
 from locales.models import Local
 from conceptos.models import Concepto
+from utilidades.models import Moneda
 
 from .models import *
 
@@ -259,7 +260,8 @@ class ArriendoDetalleForm(forms.ModelForm):
 
 	class Meta:
 		model 	= Arriendo_Detalle
-		fields 	= ['mes_inicio', 'mes_termino', 'valor', 'moneda', 'metro_cuadrado']
+		# fields 	= ['mes_inicio', 'mes_termino', 'valor', 'moneda', 'metro_cuadrado']
+		fields 	= ['mes_inicio', 'mes_termino', 'valor', 'metro_cuadrado']
 
 		widgets = {
 			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),

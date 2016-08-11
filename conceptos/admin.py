@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Concepto_Tipo, Concepto
+from .models import *
 
-# Register your models here.
+# Modelos
 admin.site.register(Concepto_Tipo)
 admin.site.register(Concepto)

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'procesos',
     'operaciones',
     'notificaciones',
+    'reporteria',
 
 ]
 

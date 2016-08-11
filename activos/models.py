@@ -35,8 +35,7 @@ class Activo(models.Model):
 	servicio_fojas 		= models.CharField(max_length=250, blank=True)	# Servicio Bienes Raices
 	fecha_servicio 		= models.DateField(null=True, blank=True)		# Servicio Bienes Raices
 
-	# atributos (datos economicos)	
-
+	# atributos (datos economicos)
 	fecha_adquisicion 	= models.DateField(null=True, blank=True)
 	tasacion_fiscal 	= models.FloatField()
 	avaluo_comercial 	= models.FloatField(null=True, blank=True)
@@ -58,6 +57,10 @@ class Activo(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	class Meta:
+		verbose_name 		= "Activo"
+		verbose_name_plural = "Activos"
+
 class Sector(models.Model):
 
 	# atributos (generales)
@@ -75,6 +78,10 @@ class Sector(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	class Meta:
+		verbose_name 		= "Sector"
+		verbose_name_plural = "Sectores"
+
 class Nivel(models.Model):
 
 	# atributos (generales)
@@ -91,6 +98,10 @@ class Nivel(models.Model):
 
 	def __str__(self):
 		return self.nombre
+
+	class Meta:
+		verbose_name 		= "Nivel"
+		verbose_name_plural = "Niveles"
 
 class Gasto_Mensual(models.Model):
 
@@ -122,4 +133,12 @@ class Gasto_Mensual(models.Model):
 	activo 	= models.ForeignKey(Activo)
 
 	def __str__(self):
-		return self.activo.nombre
+		return self.activo.nombre+' - '+str(self.mes)+' - '+str(self.anio)
+
+	class Meta:
+		verbose_name 		= "Gasto Mensual"
+		verbose_name_plural = "Gastos Mensuales"
+
+
+
+

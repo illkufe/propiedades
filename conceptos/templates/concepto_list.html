@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% block section %}
+{% load extra_tags %}
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
@@ -8,7 +9,7 @@
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>Lista de Conceptos</h5>
+					<h5>{{name}} de {{subtitle}}</h5>
 					<div class="ibox-tools">
 						<a href="/conceptos/new">
 							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Nuevo Concepto</button>
@@ -16,8 +17,6 @@
 					</div>
 				</div>
 				<div class="ibox-content">
-
-					<br>
 					<div class="table-responsive">
 						<table id="tabla-conceptos" class="table table-striped table-bordered table-hover dataTables-example" >
 							<thead></thead>
@@ -25,16 +24,14 @@
 								{% for item in object_list %}
 								<tr>
 									<td>{{ item.id }}</td>
-									<td>{{ item.orden }}</td>
 									<td>{{ item.codigo }}</td>
 									<td>{{ item.nombre }}</td>
 									<td>{{ item.concepto_tipo }}</td>
-									<td>{{ item.moneda }}</td>
+									<td>{{ item.iva|formato_boolean }}</td>
 									<td>{{ item.descripcion }}</td>
 									<td class="text-center">
 										<a class="btn btn-edit btn-bitbucket" href='{% url "concepto_update" item.id %}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'conceptos', 'tabla-conceptos', 'Concepto')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'conceptos', 'tabla-conceptos', 'Concepto')"><i class="fa fa-trash"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -59,7 +56,6 @@ $(document).ready(function(){
 
 });
 
-
 function load_tabla_contratos(){
 
 	var configuracion = {
@@ -69,43 +65,38 @@ function load_tabla_contratos(){
 	var columns = [
 	{		
 		'data': 'id',
-		'title': 'ID',
 		'visible': false,
 	},
 	{
-		'width': '5%',
-		'data': 'orden',
-		'title': 'ORDEN',
-	},
-	{
-		'width': '15%',
+		'width': '10%',
 		'data': 'codigo',
-		'title': 'CÓDIGO',
+		'title': 'Código',
 	},
 	{
 		'width': '30%',
 		'data': 'nombre',
-		'title': 'NOMBRE',
+		'title': 'Nombre',
 	},
 	{
-		'width': '20%',
+		'width': '30%',
 		'data': 'tipo',
-		'title': 'TIPO',
+		'title': 'Tipo',
 	},
 	{
-		'width': '15%',
-		'data': 'moneda',
-		'title': 'MONEDA',
+		'width': '10%',
+		'data': 'iva',
+		'title': 'Con iva',
 	},
 	{
 		'data': 'descripcion',
-		'title': 'DESCRIPCIÓN',
+		'title': 'Descripción',
 		'visible': false,
 	},
 	{
-		'width': '15%',
+		'width': '10%',
 		'data': 'options',
 		'orderable': false,
+		'title': '<div class="text-center">Opciones</div>',
 	}];
 
 	tabla_contrato = load_table('#tabla-conceptos', columns, configuracion)
