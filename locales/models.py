@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.db import models
@@ -25,6 +24,10 @@ class Local_Tipo(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	class Meta:
+		verbose_name 		= "Tipo de Local"
+		verbose_name_plural = "Tipos de Locales"
+
 class Local(models.Model):
 
 	# atributos (generales)
@@ -48,6 +51,10 @@ class Local(models.Model):
 
 	def __str__(self):
 		return self.nombre
+
+	class Meta:
+		verbose_name 		= "Local"
+		verbose_name_plural = "Locales"
 
 class Venta(models.Model):
 
@@ -77,6 +84,10 @@ class Venta(models.Model):
 	def __str__(self):
 		return self.local.nombre
 
+	class Meta:
+		verbose_name 		= "Venta"
+		verbose_name_plural = "Ventas"
+
 class Medidor_Electricidad(models.Model):
 
 	# atributos (generales)
@@ -97,6 +108,10 @@ class Medidor_Electricidad(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	class Meta:
+		verbose_name 		= "Medidor de Electricidad"
+		verbose_name_plural = "Medidores de Electricidad"
+
 class Medidor_Agua(models.Model):
 
 	# atributos (generales)
@@ -114,6 +129,10 @@ class Medidor_Agua(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	class Meta:
+		verbose_name 		= "Medidor de Agua"
+		verbose_name_plural = "Medidores de Agua"
+
 class Medidor_Gas(models.Model):
 
 	# atributos (generales)
@@ -130,6 +149,10 @@ class Medidor_Gas(models.Model):
 
 	def __str__(self):
 		return self.nombre
+
+	class Meta:
+		verbose_name 		= "Medidor de Gas"
+		verbose_name_plural = "Medidores de Gas"
 
 class Gasto_Servicio(models.Model):
 
@@ -166,4 +189,8 @@ class Gasto_Servicio(models.Model):
 
 	def __str__(self):
 		return self.nombre
+
+	class Meta:
+		verbose_name 		= "Gasto de Servicio"
+		verbose_name_plural = "Gastos de Servicios"
 

@@ -15,7 +15,7 @@
 
 						{% for concepto in conceptos %}
 
-						{% if concepto.template != None and concepto.template !='' %}
+						{% if concepto.template != None and concepto.template != "" %}
 						
 						{% with "conceptos/"|add:concepto.template|add:".html" as template %}
 						{% include template %}

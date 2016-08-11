@@ -84,6 +84,22 @@ class Contrato(models.Model):
 		verbose_name 		= "Contrato"
 		verbose_name_plural = "Contratos"
 
+class Garantia(models.Model):
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+	valor		= models.FloatField(default=0)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	contrato 	= models.ForeignKey(Contrato)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.nombre
 
 class Multa_Tipo(models.Model):
 
@@ -102,6 +118,7 @@ class Multa_Tipo(models.Model):
 	def __str__(self):
 		return self.nombre
 
+# Modelos (conceptos)
 class Multa(models.Model):
 
 	MESES = (
@@ -137,23 +154,6 @@ class Multa(models.Model):
 
 	def __str__(self):
 		return self.contrato.nombre_local
-
-class Garantia(models.Model):
-
-	# atributos (generales)
-	nombre 		= models.CharField(max_length=250)
-	valor		= models.FloatField(default=0)
-
-	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
-
-	# relaciones
-	contrato 	= models.ForeignKey(Contrato)
-	moneda 		= models.ForeignKey(Moneda)
-
-	def __str__(self):
-		return self.nombre
 
 class Arriendo(models.Model):
 

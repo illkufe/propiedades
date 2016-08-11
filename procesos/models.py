@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 from django.db import models
 from django.contrib.auth.models import User, Group
 from conceptos.models import Concepto
@@ -20,6 +21,10 @@ class Proceso_Estado(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	class Meta:
+		verbose_name 		= "Estado de Proceso"
+		verbose_name_plural = "Estados de Proceso"
+
 class Proceso(models.Model):
 
 	# atributos (generales)
@@ -38,6 +43,11 @@ class Proceso(models.Model):
 	def __str__(self):
 		return self.user.first_name
 
+	class Meta:
+		verbose_name 		= "Proceso"
+		verbose_name_plural = "Procesos"
+
+# Modelos (detalle conceptos)
 class Detalle_Arriendo_Minimo(models.Model):
 	
 	fecha_inicio 	= models.DateField()
@@ -237,7 +247,6 @@ class Detalle_Fondo_Promocion(models.Model):
 
 	def __str__(self):
 		return str(self.fecha_inicio)+' - '+str(self.fecha_termino)+' - '+ str(self.contrato.numero)
-
 
 class Detalle_Multa(models.Model):
 

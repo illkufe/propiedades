@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from administrador.models import Empresa
 
-# Create your models here.
+# Modelos
 class UserProfile(models.Model):
 	TIPO = (
 		(1, 'NORMAL'),
@@ -32,3 +32,7 @@ class UserProfile(models.Model):
 
 	def __str__(self):
 		return self.user.username
+
+	class Meta:
+		verbose_name 		= "Perfil"
+		verbose_name_plural = "Perfil"

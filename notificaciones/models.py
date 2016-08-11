@@ -20,6 +20,10 @@ class Alerta(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	class Meta:
+		verbose_name 		= "Alerta"
+		verbose_name_plural = "Alertas"
+
 class Alerta_Miembro(models.Model):
 
 	# atributos (generales)
@@ -28,3 +32,10 @@ class Alerta_Miembro(models.Model):
 	# relaciones
 	user 	= models.ForeignKey(User)
 	alerta 	= models.ForeignKey(Alerta)
+
+	def __str__(self):
+		return self.alerta.nombre+' - '+user.firt_name
+
+	class Meta:
+		verbose_name 		= "Miembro de Alerta "
+		verbose_name_plural = "Miembros de Alertas"

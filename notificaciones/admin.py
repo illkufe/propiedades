@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import *
 
-# Register your models here.
+# Modelos
+admin.site.register(Alerta)
+admin.site.register(Alerta_Miembro)
+

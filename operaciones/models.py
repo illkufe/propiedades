@@ -40,6 +40,10 @@ class Lectura_Electricidad(models.Model):
 	def __str__(self):
 		return self.medidor_electricidad.nombre
 
+	class Meta:
+		verbose_name 		= "Lectura de Electricidad"
+		verbose_name_plural = "Lecturas de Electricidad"
+
 class Lectura_Agua(models.Model):
 
 	MESES = (
@@ -74,6 +78,10 @@ class Lectura_Agua(models.Model):
 
 	def __str__(self):
 		return self.medidor_agua.nombre
+
+	class Meta:
+		verbose_name 		= "Lectura de Agua"
+		verbose_name_plural = "Lecturas de Agua"
 
 class Lectura_Gas(models.Model):
 
@@ -110,3 +118,6 @@ class Lectura_Gas(models.Model):
 	def __str__(self):
 		return self.medidor_gas.nombre
 
+	class Meta:
+		verbose_name 		= "Lectura de Gas"
+		verbose_name_plural = "Lecturas de Gas"

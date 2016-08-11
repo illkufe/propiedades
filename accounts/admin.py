@@ -1,10 +1,9 @@
 from django.contrib import admin
-from .models import UserProfile
+from .models import *
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin
 
 # Modelos
-
 class UserProfileInline(admin.StackedInline):
 	model = UserProfile
 

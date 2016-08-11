@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from accounts.models import UserProfile
-# from administrador.models import Moneda, Moneda_Historial
+from utilidades.models import Moneda, Moneda_Historial
 from activos.models import Activo
 from locales.models import Local, Local_Tipo
 from contrato.models import Contrato
@@ -19,7 +19,6 @@ from django.db.models import Sum, Q
 
 @login_required
 def dashboard(request):
-
 
 	# configuración firebase
 	# config = {
@@ -80,15 +79,15 @@ def flag_currencies(request):
 
 	for currency in currencies:
 
-		# moneda 		= Moneda.objects.get(id=int(currency['id']))
-		# historial 	= Moneda_Historial.objects.filter(moneda=moneda).last()
+		moneda 		= Moneda.objects.get(id=int(currency['id']))
+		historial 	= Moneda_Historial.objects.filter(moneda=moneda).last()
 
 		data.append({
-			'id'		: 'moneda.id',# {falta : arreglar}
-			'nombre'	: 'moneda.nombre',# {falta : arreglar}
-			'abrev'		: 'moneda.abrev',# {falta : arreglar}
-			'simbolo'	: 'moneda.simbolo',# {falta : arreglar}
-			'value'		: 'historial.valor',# {falta : arreglar}
+			'id'		: moneda.id,
+			'nombre'	: moneda.nombre,
+			'abrev'		: moneda.abrev,
+			'simbolo'	: moneda.simbolo,
+			'value'		: historial.valor,
 			})
 
 	return JsonResponse(data, safe=False)
@@ -137,7 +136,6 @@ def chart_vacancia(request):
 		disponible 	= (metros_disponibles * 100)/metros_total
 
 	data['chart'] = {'data': [['ocupado', ocupado], ['disponible', disponible]]}
-	
 
 	# table
 	tipos 					= Local_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
@@ -153,9 +151,6 @@ def chart_vacancia(request):
 		metros_disponibles 	= metros_total - metros_ocupados
 
 		data['table']['data'].append({'nombre':tipo.nombre, 'metros_totales':metros_total, 'metros_ocupados':metros_ocupados, 'metros_disponibles':metros_disponibles})
-
-
-
 
 	return JsonResponse(data, safe=False)
 
