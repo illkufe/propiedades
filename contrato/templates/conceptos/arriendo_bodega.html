@@ -1,122 +1,127 @@
 <div class="panel panel-default">
 
-	<div class="panel-heading" role="tab" id="heading-7">
+	<div class="panel-heading" role="tab" id="heading-{{forloop.counter}}">
 		<h4 class="panel-title">
-			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-7" aria-controls="collapse-7" aria-expanded="false">
-				Arriendo Bodega
+			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{forloop.counter}}" aria-controls="collapse-{{forloop.counter}}" aria-expanded="false">
+				{{formulario.concepto.nombre}}
 			</a>
 		</h4>
 	</div>
 
-	<div id="collapse-7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-7">
+	<div id="collapse-{{forloop.counter}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-{{forloop.counter}}">
 		<div class="panel-body">
-			<div class="row">
-				<div class="col-sm-12">
+			<form id="form-conceptos-{{forloop.counter}}" role="form" action="" method="post">
+				<input type="hidden" name="concepto_id" value="{{formulario.concepto.id}}">
+				
+				{% csrf_token %}
 
-					{{ form_arriendo_bodega.management_form }}
-					{% for form in form_arriendo_bodega %}
-					{% for hidden in form.hidden_fields %}
-					{{ hidden }}
-					{% endfor %}
-					{% endfor %}
+				<div class="row">
+					<div class="col-sm-12">
 
-					<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-arriendo-variable', 'arriendo_variable')"><i class="fa fa-plus"></i> Nuevo Periodo</button>
-					<table id="tabla-arriendo-variable" class="table">
-						<thead>
-							{% for form in form_arriendo_bodega %}
-							{% if forloop.first %}
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.periodicidad.help_text }}" ></i>
-								{{ form.periodicidad.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-								{{ form.valor.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
-								{{ form.moneda.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
-								{{ form.metro_cuadrado.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_inicio.help_text }}" ></i>
-								{{ form.fecha_inicio.label_tag }}
-							</th>
-							<th></th>
-							{% endif %}
-							{% endfor %}
-						</thead>
-						<tbody>
-							{% for form in form_arriendo_bodega %}
-							<tr>
-								<td>
-									<div class="form-group">
-										{{ form.periodicidad }}
-										<div class="container-error">
-											{{ form.periodicidad.errors }}
+						{{ formulario.fomulario.management_form }}
+						{% for form in formulario.fomulario %}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
+						{% endfor %}
+
+						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('arriendo-bodega-{{forloop.counter}}', 'arriendo_bodega')"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+						<table id="arriendo-bodega-{{forloop.counter}}" class="table">
+							<thead>
+								{% for form in formulario.fomulario %}
+								{% if forloop.first %}
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.periodicidad.help_text }}" ></i>
+									{{ form.periodicidad.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+									{{ form.valor.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+									{{ form.moneda.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+									{{ form.metro_cuadrado.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_inicio.help_text }}" ></i>
+									{{ form.fecha_inicio.label_tag }}
+								</th>
+								<th></th>
+								{% endif %}
+								{% endfor %}
+							</thead>
+							<tbody>
+								{% for form in formulario.fomulario %}
+								<tr>
+									<td>
+										<div class="form-group">
+											{{ form.periodicidad }}
+											<div class="container-error">
+												{{ form.periodicidad.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td>
-									<div class="form-group">
-										{{ form.valor }}
-										<div class="container-error">
-											{{ form.valor.errors }}
+									<td>
+										<div class="form-group">
+											{{ form.valor }}
+											<div class="container-error">
+												{{ form.valor.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td class="text-center">
-									<div class="form-group">
-										{{ form.moneda }}
-										<div class="container-error">
-											{{ form.moneda.errors }}
+									<td class="text-center">
+										<div class="form-group">
+											{{ form.moneda }}
+											<div class="container-error">
+												{{ form.moneda.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td class="text-center">
-									<div class="form-group">
-										{{ form.metro_cuadrado }}
-										<div class="container-error">
-											{{ form.metro_cuadrado.errors }}
+									<td class="text-center">
+										<div class="form-group">
+											{{ form.metro_cuadrado }}
+											<div class="container-error">
+												{{ form.metro_cuadrado.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
 
-								<td style="width:20%">
-									<div class="form-group">
-										<div class="input-group date">
-											<input class="form-control format-date" id="id_arriendo_bodega_set-{{forloop.counter0}}-fecha_inicio" name="arriendo_bodega_set-{{forloop.counter0}}-fecha_inicio" type="text" value='{{ form.fecha_inicio.value|date:"d/m/Y" }}'>
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
+									<td style="width:20%">
+										<div class="form-group">
+											<div class="input-group date">
+												<input class="form-control format-date" id="id_arriendo_bodega_set-{{forloop.counter0}}-fecha_inicio" name="arriendo_bodega_set-{{forloop.counter0}}-fecha_inicio" type="text" value='{{ form.fecha_inicio.value|date:"d/m/Y" }}'>
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td class="text-center delete">
-									<div class="form-group text-center">
-										{{ form.DELETE }}
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Periodo')"><i class="fa fa-trash"></i></a>
-									</div>
-								</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
+									<td class="text-center delete">
+										<div class="form-group text-center">
+											{{ form.DELETE }}
+											<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Periodo')"><i class="fa fa-trash"></i></a>
+										</div>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
 				</div>
-			</div>
+			</form>
 
 			<br>
 			<a href="/contratos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
-			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-new', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
 		</div>
 	</div>
 </div>

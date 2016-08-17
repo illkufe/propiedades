@@ -89,11 +89,13 @@ function getCookie(name){
 }
 
 function apply_errors_form(errors){
+	console.log('acaca')
 	$.each(errors, function(index, value) {
 		
 		// var input = $("#id_" + index),
 		// container = $("#div_id_" + index),
 		error_msg = value[0]
+		console.log(error_msg)
 		$("#id_" + index).closest('.form-group').find('.container-error').append(error_msg)
 		
 	});
@@ -295,11 +297,13 @@ function guardar_formulario_final(accion, entidad){
 
 function guardar_formulario(accion, form){
 
+	console.log($('#'+form).attr('action'))
 	$.ajax({
 		type: 'post',
 		url: $('#'+form).attr('action'),
 		data: $('#'+form).serialize(),
 		success: function(response) {
+			console.log('ok')
 			if (accion == 'create') {
 				clear_form('#'+form)
 			}

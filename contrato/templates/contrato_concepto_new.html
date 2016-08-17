@@ -7,26 +7,21 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
-				<form id="form-conceptos-new" role="form" action="" method="post">
+				<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-					{% csrf_token %}
+					{% for formulario in formularios %}
 
-					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+					{% if formulario.concepto.concepto_tipo.template != None and formulario.concepto.concepto_tipo.template != "" %}
 
-						{% for concepto in conceptos %}
+					{% with "conceptos/"|add:formulario.concepto.concepto_tipo.template|add:".html" as template %}
+					{% include template %}
+					{% endwith %}
 
-						{% if concepto.template != None and concepto.template != "" %}
-						
-						{% with "conceptos/"|add:concepto.template|add:".html" as template %}
-						{% include template %}
-						{% endwith %}
+					{% endif %}
 
-						{% endif %}
+					{% endfor %}
 
-						{% endfor %}
-
-					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -61,11 +56,14 @@ function guardar_formulario_conceptos(form, id){
 		url: $('#'+form).attr('action'),
 		data: $('#'+form).serialize(),
 		success: function(response) {
+			// alert('guardado CTM')
 			window.location.href = '/contrato-concepto/'+id
 		},
 		error: function(data, textStatus, jqXHR) {
+			alert('no se guardo CTM')
 			clear_errors_form('#'+form)
 			var errors = $.parseJSON(data.responseText)
+			console.log(errors)
 			apply_errors_form(errors)
 		}
 	});

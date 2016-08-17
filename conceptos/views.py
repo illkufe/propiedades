@@ -94,10 +94,10 @@ class ConceptoDelete(DeleteView):
 
 class ConceptoUpdate(ConceptoMixin, UpdateView):
 
-	model = Concepto
-	form_class = ConceptoForm
-	template_name = 'concepto_new.html'
-	success_url = '/conceptos/list'
+	model 			= Concepto
+	form_class 		= ConceptoForm
+	template_name 	= 'concepto_new.html'
+	success_url 	= '/conceptos/list'
 
 	def get_context_data(self, **kwargs):
 		

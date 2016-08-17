@@ -18,7 +18,6 @@ def variables_globales(request):
 
 		return {
 		'lease_user_id' 	: user.id,
-		'lease_symbol' 		: configuracion.moneda.simbolo,
 		'lease_format_dec' 	: ',' if configuracion.formato_decimales == 1 else '.', 
 		'lease_format_mil' 	: '.' if configuracion.formato_decimales == 1 else ',',
 		'lease_decimales' 	: configuracion.cantidad_decimales,

@@ -1,108 +1,112 @@
 <div class="panel panel-default">
 
-	<div class="panel-heading" role="tab" id="heading-4">
+	<div class="panel-heading" role="tab" id="heading-{{forloop.counter}}">
 		<h4 class="panel-title">
-			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-4" aria-controls="collapse-4" aria-expanded="false">
-				Servicios Básicos
+			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{forloop.counter}}" aria-controls="collapse-{{forloop.counter}}" aria-expanded="false">
+				{{formulario.concepto.nombre}}
 			</a>
 		</h4>
 	</div>
 
-	<div id="collapse-4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-3">
+	<div id="collapse-{{forloop.counter}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-{{forloop.counter}}">
 		<div class="panel-body">
-			<div class="row">
+			<form id="form-conceptos-{{forloop.counter}}" role="form" action="" method="post">
+				<input type="hidden" name="concepto_id" value="{{formulario.concepto.id}}">
+				
+				{% csrf_token %}
 
-				<div class="col-sm-12">
+				<div class="row">
+					<div class="col-sm-12">
 
-					{{ form_servicios_basicos.management_form }}
-					{% for form in form_servicios_basicos %}
-					{% for hidden in form.hidden_fields %}
-					{{ hidden }}
-					{% endfor %}
-					{% endfor %}
+						{{ formulario.fomulario.management_form }}
+						{% for form in formulario.fomulario %}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
+						{% endfor %}
 
-					<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-servicios-basico', 'servicio_basico')"><i class="fa fa-plus"></i> Nuevo Periodo</button>
-					<table id="tabla-servicios-basico" class="table">
-						<thead>
+						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-servicios-basico', 'servicio_basico')"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+						<table id="tabla-servicios-basico" class="table">
+							<thead>
 
-							{% for form in form_servicios_basicos %}
-							{% if forloop.first %}
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.locales.help_text }}" ></i>
-								{{ form.locales.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_electricidad.help_text }}" ></i>
-								{{ form.valor_electricidad.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_agua.help_text }}" ></i>
-								{{ form.valor_agua.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_gas.help_text }}" ></i>
-								{{ form.valor_gas.label_tag }}
-							</th>
-							<th></th>
-							{% endif %}
-							{% endfor %}
-						</thead>
-						<tbody>
-							{% for form in form_servicios_basicos %}
-							<tr>
-								<td style="width:35%">
-									<div class="form-group">
-										{{ form.locales }}
-										<div class="container-error">
-											{{ form.locales.errors }}
+								{% for form in formulario.fomulario %}
+								{% if forloop.first %}
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.locales.help_text }}" ></i>
+									{{ form.locales.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_electricidad.help_text }}" ></i>
+									{{ form.valor_electricidad.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_agua.help_text }}" ></i>
+									{{ form.valor_agua.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_gas.help_text }}" ></i>
+									{{ form.valor_gas.label_tag }}
+								</th>
+								<th></th>
+								{% endif %}
+								{% endfor %}
+							</thead>
+							<tbody>
+								{% for form in formulario.fomulario %}
+								<tr>
+									<td style="width:35%">
+										<div class="form-group">
+											{{ form.locales }}
+											<div class="container-error">
+												{{ form.locales.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td>
-									<div class="form-group">
-										{{ form.valor_electricidad }}
-										<div class="container-error">
-											{{ form.valor_electricidad.errors }}
+									<td>
+										<div class="form-group">
+											{{ form.valor_electricidad }}
+											<div class="container-error">
+												{{ form.valor_electricidad.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td>
-									<div class="form-group">
-										{{ form.valor_agua }}
-										<div class="container-error">
-											{{ form.valor_agua.errors }}
+									<td>
+										<div class="form-group">
+											{{ form.valor_agua }}
+											<div class="container-error">
+												{{ form.valor_agua.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td class="text-center">
-									<div class="form-group">
-										{{ form.valor_gas }}
-										<div class="container-error">
-											{{ form.valor_gas.errors }}
+									<td class="text-center">
+										<div class="form-group">
+											{{ form.valor_gas }}
+											<div class="container-error">
+												{{ form.valor_gas.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
-								<td class="text-center delete">
-									<div class="form-group text-center">
-										{{ form.DELETE }}
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Servicio')"><i class="fa fa-trash"></i></a>
-									</div>
-								</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
+									</td>
+									<td class="text-center delete">
+										<div class="form-group text-center">
+											{{ form.DELETE }}
+											<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Servicio')"><i class="fa fa-trash"></i></a>
+										</div>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
 				</div>
-			</div>
+			</form>
 
 			<br>
 
 			<a href="/contratos/list" class="btn btn-w-m btn-sm btn-default" >CANCELAR</a>
-			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-new', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
 		</div>
 	</div>
 </div>

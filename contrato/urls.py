@@ -38,8 +38,6 @@ urlpatterns = [
 	# contrato_concepto
 	url(r'^contrato-concepto/(?P<contrato_id>\d+)$', views.ContratoConceptoNew.as_view(), name='contrato_concepto_new'),
 
-	
-
 	# funciones
 	url(r'^contratos/inactivos/list$', views.ContratosInactivosList.as_view(), name='contratos_inactivos_list'),
 	url(r'^contratos/(?P<contrato_id>\d+)/pdf$', views.contrato_pdf, name='contrato_pdf'),

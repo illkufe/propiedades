@@ -1,183 +1,186 @@
 <div class="panel panel-default">
 
-	<div class="panel-heading" role="tab" id="heading-1">
+	<div class="panel-heading" role="tab" id="heading-{{forloop.counter}}">
 		<h4 class="panel-title">
-			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-1" aria-controls="collapse-1" aria-expanded="false">
-				Arriendo Mínimo
+			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{forloop.counter}}" aria-controls="collapse-{{forloop.counter}}" aria-expanded="false">
+				{{formulario.concepto.nombre}}
 			</a>
 		</h4>
 	</div>
 
-	<div id="collapse-1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-1">
+	<div id="collapse-{{forloop.counter}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-{{forloop.counter}}">
 		<div class="panel-body">
-			<div class="row">
-				<div class="col-sm-12">
+			<form id="form-conceptos-{{forloop.counter}}" role="form" action="" method="post">
+				<input type="hidden" name="concepto_id" value="{{formulario.concepto.id}}">
+				
+				{% csrf_token %}
 
-					{{ formset_detalle.management_form }}
-					{% for form in formset_detalle %}
-					{% for hidden in form.hidden_fields %}
-					{{ hidden }}
-					{% endfor %}
-					{% endfor %}
+				<div class="row">
+					<div class="col-sm-12">
 
-					<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-arriendo-detalle', 'arriendo_detalle')"><i class="fa fa-plus"></i> Nuevo Periodo</button>
-					<table id="tabla-arriendo-detalle" class="table">
-						<thead>
-							{% for form in formset_detalle %}
-							{% if forloop.first %}
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
-								{{ form.mes_inicio.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
-								{{ form.mes_termino.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-								{{ form.valor.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
-								{{ form.moneda.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
-								{{ form.metro_cuadrado.label_tag }}
-							</th>
+						{{ formulario.fomulario_detalle.management_form }}
+						{% for form in formulario.fomulario_detalle %}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
+						{% endfor %}
 
-							<th></th>
-							{% endif %}
-							{% endfor %}
-						</thead>
-						<tbody>
-							{% for form in formset_detalle %}
-							<tr>
-								<td>
-									<div class="form-group">
-										{{ form.mes_inicio }}
-										<div class="container-error">
-											{{ form.mes_inicio.errors }}
+						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-arriendo-detalle-{{forloop.counter}}', 'arriendo_detalle')"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+						<table id="tabla-arriendo-detalle-{{forloop.counter}}" class="table">
+							<thead>
+								{% for form in formulario.fomulario_detalle %}
+								{% if forloop.first %}
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+									{{ form.mes_inicio.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+									{{ form.mes_termino.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+									{{ form.valor.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+									{{ form.moneda.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+									{{ form.metro_cuadrado.label_tag }}
+								</th>
+
+								<th></th>
+								{% endif %}
+								{% endfor %}
+							</thead>
+							<tbody>
+								{% for form in formulario.fomulario_detalle %}
+								<tr>
+									<td>
+										<div class="form-group">
+											{{ form.mes_inicio }}
+											<div class="container-error">
+												{{ form.mes_inicio.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
-								<td>
-									<div class="form-group">
-										{{ form.mes_termino }}
-										<div class="container-error">
-											{{ form.mes_termino.errors }}
+									</td>
+									<td>
+										<div class="form-group">
+											{{ form.mes_termino }}
+											<div class="container-error">
+												{{ form.mes_termino.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
-								<td>
-									<div class="form-group">
-										{{ form.valor }}
-										<div class="container-error">
-											{{ form.valor.errors }}
+									</td>
+									<td>
+										<div class="form-group">
+											{{ form.valor }}
+											<div class="container-error">
+												{{ form.valor.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
-								<td>
-									<div class="form-group">
-										{{ form.moneda }}
-										<div class="container-error">
-											{{ form.moneda.errors }}
+									</td>
+									<td>
+										<div class="form-group">
+											{{ form.moneda }}
+											<div class="container-error">
+												{{ form.moneda.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
-								<td class="text-center">
-									<div class="form-group">
-										{{ form.metro_cuadrado }}
-										<div class="container-error">
-											{{ form.metro_cuadrado.errors }}
+									</td>
+									<td class="text-center">
+										<div class="form-group">
+											{{ form.metro_cuadrado }}
+											<div class="container-error">
+												{{ form.metro_cuadrado.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
-								<td class="text-center delete">
+									</td>
+									<td class="text-center delete">
 
-									<div class="form-group text-center">
-										{{ form.DELETE }}
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Periodo')"><i class="fa fa-trash"></i></a>
-									</div>
-								</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
+										<div class="form-group text-center">
+											{{ form.DELETE }}
+											<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Periodo')"><i class="fa fa-trash"></i></a>
+										</div>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
 
-					<div class="row">
+						<div class="row">
 
-						<input type="hidden" id="id_contrato" name="contrato" value="{{contrato_id}}">
+							<input type="hidden" id="id_contrato" name="contrato" value="{{contrato_id}}">
 
-						<div class="form-group col-sm-2">
-							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.reajuste.help_text }}" ></i>
-							{{ formset_arriendo.reajuste.label_tag }}
-							{{ formset_arriendo.reajuste }}
-							<div class="container-error">
-								{{ formset_arriendo.reajuste.errors }}
+							<div class="form-group col-sm-2">
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formulario.fomulario.reajuste.help_text }}" ></i>
+								{{ formulario.fomulario.reajuste.label_tag }}
+								{{ formulario.fomulario.reajuste }}
+								<div class="container-error">
+									{{ formulario.fomulario.reajuste.errors }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formulario.fomulario.por_meses.help_text }}" ></i>
+								{{ formulario.fomulario.por_meses.label_tag }}
+								{{ formulario.fomulario.por_meses }}
+								<div class="container-error">
+									{{ formulario.fomulario.por_meses.errors }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formulario.fomulario.meses.help_text }}" ></i>
+								{{ formulario.fomulario.meses.label_tag }}
+								{{ formulario.fomulario.meses }}
+								<div class="container-error">
+									{{ formulario.fomulario.meses.errors }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formulario.fomulario.valor.help_text }}" ></i>
+								{{ formulario.fomulario.valor.label_tag }}
+								{{ formulario.fomulario.valor }}
+								<div class="container-error">
+									{{ formulario.fomulario.valor.errors }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formulario.fomulario.moneda.help_text }}" ></i>
+								{{ formulario.fomulario.moneda.label_tag }}
+								{{ formulario.fomulario.moneda }}
+								<div class="container-error">
+									{{ formulario.fomulario.moneda.errors }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formulario.fomulario.fecha_inicio.help_text }}" ></i>
+								{{ formulario.fomulario.fecha_inicio.label_tag }}
+								<div class="input-group date">
+									{{ formulario.fomulario.fecha_inicio }}
+									<span class="input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+
+								<div class="container-error">
+									{{ formulario.fomulario.fecha_inicio.errors }}
+								</div>
 							</div>
 						</div>
 
-						<div class="form-group col-sm-2">
-							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.por_meses.help_text }}" ></i>
-							{{ formset_arriendo.por_meses.label_tag }}
-							{{ formset_arriendo.por_meses }}
-							<div class="container-error">
-								{{ formset_arriendo.por_meses.errors }}
-							</div>
-						</div>
-
-						<div class="form-group col-sm-2">
-							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.meses.help_text }}" ></i>
-							{{ formset_arriendo.meses.label_tag }}
-							{{ formset_arriendo.meses }}
-							<div class="container-error">
-								{{ formset_arriendo.meses.errors }}
-							</div>
-						</div>
-
-						<div class="form-group col-sm-2">
-							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.valor.help_text }}" ></i>
-							{{ formset_arriendo.valor.label_tag }}
-							{{ formset_arriendo.valor }}
-							<div class="container-error">
-								{{ formset_arriendo.valor.errors }}
-							</div>
-						</div>
-
-						<div class="form-group col-sm-2">
-							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.moneda.help_text }}" ></i>
-							{{ formset_arriendo.moneda.label_tag }}
-							{{ formset_arriendo.moneda }}
-							<div class="container-error">
-								{{ formset_arriendo.moneda.errors }}
-							</div>
-						</div>
-
-						<div class="form-group col-sm-2">
-							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ formset_arriendo.fecha_inicio.help_text }}" ></i>
-							{{ formset_arriendo.fecha_inicio.label_tag }}
-							<div class="input-group date">
-								{{ formset_arriendo.fecha_inicio }}
-								<span class="input-group-addon">
-									<i class="fa fa-calendar"></i>
-								</span>
-							</div>
-
-							<div class="container-error">
-								{{ formset_arriendo.fecha_inicio.errors }}
-							</div>
-						</div>
 					</div>
-
 				</div>
-			</div>
+			</form>
 			<br>
-			<a href="/contratos/list">
-				<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
-			</a>
-			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-new', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
+			<a href="/contratos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
 		</div>
 	</div>
 </div>

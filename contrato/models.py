@@ -170,6 +170,7 @@ class Arriendo(models.Model):
 
 	# relaciones
 	contrato 	= models.ForeignKey(Contrato)
+	concepto 	= models.ForeignKey(Concepto)
 	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
@@ -230,6 +231,7 @@ class Arriendo_Bodega(models.Model):
 
 	# relaciones
 	contrato 	= models.ForeignKey(Contrato)
+	concepto 	= models.ForeignKey(Concepto)
 	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
@@ -266,6 +268,7 @@ class Arriendo_Variable(models.Model):
 	# relaciones
 	contrato 	= models.ForeignKey(Contrato)
 	moneda 		= models.ForeignKey(Moneda)
+	concepto 	= models.ForeignKey(Concepto)
 
 	def __str__(self):
 		return self.contrato.nombre_local
@@ -284,6 +287,7 @@ class Gasto_Comun(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 	local 		= models.ForeignKey(Local)
 	moneda 		= models.ForeignKey(Moneda)
+	concepto 	= models.ForeignKey(Concepto)
 
 	def __str__(self):
 		return self.local.nombre
@@ -302,6 +306,7 @@ class Servicio_Basico(models.Model):
 	# relaciones
 	contrato 	= models.ForeignKey(Contrato)
 	locales 	= models.ManyToManyField(Local)
+	concepto 	= models.ForeignKey(Concepto)
 
 	def __str__(self):
 		return self.contrato.nombre_local
@@ -320,6 +325,7 @@ class Cuota_Incorporacion(models.Model):
 	# relaciones
 	contrato 	= models.ForeignKey(Contrato)
 	moneda 		= models.ForeignKey(Moneda)
+	concepto 	= models.ForeignKey(Concepto)
 
 	def __str__(self):
 		return self.contrato.nombre_local
@@ -346,7 +352,7 @@ class Fondo_Promocion(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 	concepto 	= models.ForeignKey(Concepto)
 	moneda 		= models.ForeignKey(Moneda)
+	vinculo 	= models.ForeignKey(Concepto, related_name='vinculo')
 
 	def __str__(self):
 		return self.contrato.nombre_local
-

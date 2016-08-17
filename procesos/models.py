@@ -47,6 +47,24 @@ class Proceso(models.Model):
 		verbose_name 		= "Proceso"
 		verbose_name_plural = "Procesos"
 
+class Proceso_Detalle(models.Model):
+	
+	fecha_inicio 	= models.DateField()
+	fecha_termino 	= models.DateField()
+	total 			= models.FloatField(null=True, blank=True)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	proceso 	= models.ForeignKey(Proceso)
+	contrato 	= models.ForeignKey(Contrato)
+	concepto 	= models.ForeignKey(Concepto)
+
+	def __str__(self):
+		return str(self.contrato.numero)+' '+str(self.concepto.nombre)
+
 # Modelos (detalle conceptos)
 class Detalle_Arriendo_Minimo(models.Model):
 	
@@ -66,6 +84,7 @@ class Detalle_Arriendo_Minimo(models.Model):
 	# relaciones
 	proceso 	= models.ForeignKey(Proceso)
 	contrato 	= models.ForeignKey(Contrato)
+	# concepto 	= models.ForeignKey(Concepto)
 
 	def __str__(self):
 		return str(self.fecha_inicio)+' - '+str(self.fecha_termino)+' - '+ str(self.contrato.numero)

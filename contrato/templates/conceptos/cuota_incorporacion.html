@@ -1,112 +1,115 @@
 <div class="panel panel-default">
 
-	<div class="panel-heading" role="tab" id="heading-5">
+	<div class="panel-heading" role="tab" id="heading-{{forloop.counter}}">
 		<h4 class="panel-title">
-			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-5" aria-controls="collapse-5" aria-expanded="false">
-				Cuota de Incorporación
+			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{forloop.counter}}" aria-controls="collapse-{{forloop.counter}}" aria-expanded="false">
+				{{formulario.concepto.nombre}}
 			</a>
 		</h4>
 	</div>
 
-	<div id="collapse-5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-3">
+	<div id="collapse-{{forloop.counter}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-{{forloop.counter}}">
 		<div class="panel-body">
-			<div class="row">
-				<div class="col-sm-12">
+			<form id="form-conceptos-{{forloop.counter}}" role="form" action="" method="post">
+				<input type="hidden" name="concepto_id" value="{{formulario.concepto.id}}">
+				
+				{% csrf_token %}
 
-					{{ form_cuota_incorporacion.management_form }}
-					{% for form in form_cuota_incorporacion %}
-					{% for hidden in form.hidden_fields %}
-					{{ hidden }}
-					{% endfor %}
-					{% endfor %}
+				<div class="row">
+					<div class="col-sm-12">
 
-					<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-cuota-incorporacion', 'cuota_incorporacion')"><i class="fa fa-plus"></i> Nueva Cuota</button>
-					<table id="tabla-cuota-incorporacion" class="table">
-						<thead>
+						{{ formulario.fomulario.management_form }}
+						{% for form in formulario.fomulario %}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
+						{% endfor %}
 
-							{% for form in form_cuota_incorporacion %}
-							{% if forloop.first %}
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha.help_text }}" ></i>
-								{{ form.fecha.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-								{{ form.valor.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
-								{{ form.moneda.label_tag }}
-							</th>
-							<th>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
-								{{ form.metro_cuadrado.label_tag }}
-							</th>
+						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-cuota-incorporacion', 'cuota_incorporacion')"><i class="fa fa-plus"></i> Nueva Cuota</button>
+						<table id="tabla-cuota-incorporacion" class="table">
+							<thead>
 
-							<th></th>
-							{% endif %}
-							{% endfor %}
-						</thead>
-						<tbody>
-							{% for form in form_cuota_incorporacion %}
-							<tr>
-								<td  style="width:25%">
-									<div class="form-group">
-										<div class="input-group date">
-											<input class="form-control format-date" id="id_cuota_incorporacion_set-{{forloop.counter0}}-fecha" name="cuota_incorporacion_set-{{forloop.counter0}}-fecha" type="text" value='{{ form.fecha.value|date:"d/m/Y" }}'>
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
+								{% for form in formulario.fomulario %}
+								{% if forloop.first %}
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha.help_text }}" ></i>
+									{{ form.fecha.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+									{{ form.valor.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+									{{ form.moneda.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+									{{ form.metro_cuadrado.label_tag }}
+								</th>
+
+								<th></th>
+								{% endif %}
+								{% endfor %}
+							</thead>
+							<tbody>
+								{% for form in formulario.fomulario %}
+								<tr>
+									<td  style="width:25%">
+										<div class="form-group">
+											<div class="input-group date">
+												<input class="form-control format-date" id="id_cuota_incorporacion_set-{{forloop.counter0}}-fecha" name="cuota_incorporacion_set-{{forloop.counter0}}-fecha" type="text" value='{{ form.fecha.value|date:"d/m/Y" }}'>
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td style="width:20%">
-									<div class="form-group">
-										{{ form.valor }}
-										<div class="container-error">
-											{{ form.valor.errors }}
+									<td style="width:20%">
+										<div class="form-group">
+											{{ form.valor }}
+											<div class="container-error">
+												{{ form.valor.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td style="width:25%">
-									<div class="form-group">
-										{{ form.moneda }}
-										<div class="container-error">
-											{{ form.moneda.errors }}
+									<td style="width:25%">
+										<div class="form-group">
+											{{ form.moneda }}
+											<div class="container-error">
+												{{ form.moneda.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td style="width:20%" class="text-center">
-									<div class="form-group">
-										{{ form.metro_cuadrado }}
-										<div class="container-error">
-											{{ form.metro_cuadrado.errors }}
+									<td style="width:20%" class="text-center">
+										<div class="form-group">
+											{{ form.metro_cuadrado }}
+											<div class="container-error">
+												{{ form.metro_cuadrado.errors }}
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td class="text-center delete">
-									<div class="form-group text-center">
-										{{ form.DELETE }}
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Cuota')"><i class="fa fa-trash"></i></a>
-									</div>
-								</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
+									<td class="text-center delete">
+										<div class="form-group text-center">
+											{{ form.DELETE }}
+											<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Cuota')"><i class="fa fa-trash"></i></a>
+										</div>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
 				</div>
-			</div>
+			</form>
 
 			<br>
-			<a href="/contratos/list">
-				<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
-			</a>
-			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-new', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
+			<a href="/contratos/list" class="btn btn-w-m btn-sm btn-default" >CANCELAR</a>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
 		</div>
 	</div>
 </div>

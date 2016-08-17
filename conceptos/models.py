@@ -54,5 +54,3 @@ class Concepto(models.Model):
 	class Meta:
 		verbose_name 		= "Concepto"
 		verbose_name_plural = "Conceptos"
-
-

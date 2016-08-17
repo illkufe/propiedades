@@ -270,13 +270,13 @@ def update_profile(request):
 
 	if form.is_valid():
 
-		user.first_name     = form.cleaned_data['first_name']
-		user.last_name      = form.cleaned_data['last_name']
-		profile.rut         = form.cleaned_data['rut']
-		profile.cargo       = form.cleaned_data['cargo']
-		profile.ciudad      = form.cleaned_data['ciudad']
-		profile.comuna      = form.cleaned_data['comuna']
-		profile.direccion   = form.cleaned_data['direccion']
+		user.first_name 	= form.cleaned_data['first_name']
+		user.last_name 		= form.cleaned_data['last_name']
+		profile.rut 		= form.cleaned_data['rut']
+		profile.cargo 		= form.cleaned_data['cargo']
+		profile.ciudad 		= form.cleaned_data['ciudad']
+		profile.comuna 		= form.cleaned_data['comuna']
+		profile.direccion 	= form.cleaned_data['direccion']
 		profile.descripcion = form.cleaned_data['descripcion']
 
 		user.save()
