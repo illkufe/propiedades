@@ -1,0 +1,122 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Propuestas de Facturación</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table id="tabla-propuestas" class="table table-striped table-hover" style="width:100%"></table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+var tabla_contratos;
+var tabla_procesos;
+
+$(document).ready(function(){
+
+	initializar_datos()
+	
+	load_tabla_propuestas()
+	data_tabla_propuestas()
+
+});
+
+function initializar_datos(){
+}
+
+function load_tabla_propuestas(){
+
+	var columns = [
+	{
+		'data': 'id',
+		'visible': false,
+	},
+	{
+		'width': '10%',
+		'data': 'fecha',
+		'title': 'Fecha',
+	},
+	{
+		'width': '20%',
+		'data': 'periodo',
+		'title': 'Periodo',
+	},
+	{
+		'width': '40%',
+		'data': 'nombre',
+		'title': 'Nombre',
+	},
+	{
+		'width': '15%',
+		'data': 'estado',
+		'title': 'Estado',
+	},
+	{
+		'width': '15%',
+		'data': 'opciones',
+		'orderable': false,
+		'title': '<div class="text-center">Opciones</div>',
+	}];
+
+	tabla_procesos = load_table('#tabla-propuestas', columns, {})
+}
+
+function data_tabla_propuestas(){
+
+	tabla_procesos.clear().draw();
+
+	$.ajax({
+		url: '/procesos/contratos/propuesta',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			rows = [];
+
+			for (var i = 0; i < data.length; i++) {
+
+				var template = ''
+				template += '<div class="text-center">'
+
+				template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>'
+				template += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].id+',\'procesos\', \'tabla-propuestas\', \'Proceso\')"><i class="fa fa-trash"></i></a>'
+				template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-edit btn-bitbucket"><i class="fa fa-paper-plane"></i></a>'
+				template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-config btn-bitbucket"><i class="fa fa-comment"></i></a>'
+
+				row = {}
+
+				row.id 			= data[i].id
+				row.fecha 		= data[i].fecha_creacion
+				row.periodo 	= data[i].fecha_inicio+' - '+data[i].fecha_termino
+				row.nombre 		= data[i].nombre
+				row.estado 		= data[i].estado
+				row.opciones 	= template
+
+				rows.push(row)
+			}
+			tabla_procesos.rows.add(rows).draw();
+		}
+	})
+}
+
+</script>
+
+{% endblock scripts %}
+
+

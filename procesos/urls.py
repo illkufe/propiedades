@@ -6,7 +6,16 @@ from django.views.decorators.csrf import csrf_exempt
 from . import views
 
 urlpatterns = [
+
+	# url(r'^procesos/propuesta$', csrf_exempt(views.PROPUESTA.as_view()),name='procesos'),
+	# url(r'^procesos/propuesta/(?P<id>\d+)$', csrf_exempt(views.PROPUESTA.as_view()),name='procesos'),
+
+
+	url(r'^propuesta/generar/list$', views.PropuestaGenerarList.as_view(), name='propuesta_generar_list'),
+	url(r'^propuesta/procesar/list$', views.PropuestaProcesarList.as_view(), name='propuesta_procesar_list'),
 	
+
+
 	url(r'^procesos/contratos/propuesta$', csrf_exempt(views.PROCESOS.as_view()),name='procesos'),
 	url(r'^procesos/contratos/propuesta/(?P<id>\d+)$', csrf_exempt(views.PROCESOS.as_view()),name='procesos_con_id'),
 

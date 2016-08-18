@@ -17,8 +17,25 @@ import pyrebase
 
 from django.db.models import Sum, Q
 
+
+
+
+
+
+
+
+# FIN PRUEBA
+
+
 @login_required
 def dashboard(request):
+
+	
+
+
+
+
+
 
 	# configuración firebase
 	# config = {

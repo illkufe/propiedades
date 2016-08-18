@@ -27,6 +27,49 @@ import pdfkit
 from utilidades.views import primer_dia, ultimo_dia, meses_entre_fechas, sumar_meses, formato_moneda
 
 
+
+class PropuestaGenerarList(ListView):
+
+	model 			= Proceso
+	template_name 	= 'propuesta_generar_list.html'
+
+	def get_context_data(self, **kwargs):		
+		context = super(PropuestaGenerarList, self).get_context_data(**kwargs)
+		context['title'] 		= 'Proceso de Facturación'
+		context['subtitle'] 	= 'propuestas de facturación'
+		context['name'] 		= 'lista'
+		context['href'] 		= 'procesos'
+
+		context['conceptos'] 	= Concepto.objects.all()
+		context['activos'] 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		
+		return context
+
+
+class PropuestaProcesarList(ListView):
+
+	model 			= Proceso
+	template_name 	= 'propuesta_procesar_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context = super(PropuestaProcesarList, self).get_context_data(**kwargs)
+		context['title'] 		= 'Proceso de Facturación'
+		context['subtitle'] 	= 'propuestas de facturación'
+		context['name'] 		= 'lista'
+		context['href'] 		= 'propuesta/procesar'
+
+		context['conceptos'] 	= Concepto.objects.all()
+		context['activos'] 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		
+		return context
+
+
+
+
+
+
+
 class ProcesoList(ListView):
 	model = Proceso
 	template_name = 'viewer/procesos/procesos_list.html'
@@ -56,6 +99,23 @@ class ProcesoDelete(DeleteView):
 
 
 # API -----------------
+class PROPUESTA_PROCESAR(View):
+
+	http_method_names =  ['post']
+
+	def post(self, request):
+
+		data 		= list()
+		var_post 	= request.POST.copy()
+		proceso 	= Proceso.objects.get(id=var_post.get('proceso_id'))
+
+		for detalle in proceso.proceso_detalle_set.all():
+
+			data.append(enviar_detalle_propuesta(detalle.id))
+
+		return JsonResponse({'response': data}, safe=False)
+
+
 class PROCESOS(View):
 
 	http_method_names =  ['get', 'post']
@@ -181,6 +241,7 @@ class PROCESOS(View):
 
 			data.append({
 				'id'			: proceso.id,
+				'nombre'		: proceso.nombre,
 				'fecha_creacion': proceso.creado_en.strftime('%d/%m/%Y'),
 				'fecha_inicio'	: proceso.fecha_inicio.strftime('%d/%m/%Y'),
 				'fecha_termino'	: proceso.fecha_termino.strftime('%d/%m/%Y'),
@@ -194,7 +255,15 @@ class PROCESOS(View):
 
 
 
-# Funciones ---------------------
+# Funciones ----------------------------
+def enviar_detalle_propuesta(detalle_id):
+
+	data 	= list()
+	detalle = Proceso_Detalle.objects.get(id=detalle_id)
+
+	return data
+
+
 def filtrar_contratos(request):
 
 	data 		= list()

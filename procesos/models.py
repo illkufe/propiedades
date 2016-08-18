@@ -28,6 +28,7 @@ class Proceso_Estado(models.Model):
 class Proceso(models.Model):
 
 	# atributos (generales)
+	nombre 				= models.CharField(max_length=250)
 	fecha_inicio 		= models.DateField()
 	fecha_termino 		= models.DateField()
 
