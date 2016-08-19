@@ -13,6 +13,9 @@ urlpatterns = [
 
 	url(r'^propuesta/generar/list$', views.PropuestaGenerarList.as_view(), name='propuesta_generar_list'),
 	url(r'^propuesta/procesar/list$', views.PropuestaProcesarList.as_view(), name='propuesta_procesar_list'),
+
+
+	url(r'^procesos/procesar/propuesta$', csrf_exempt(views.PROPUESTA_PROCESAR.as_view()),name='procesos_con_id'),
 	
 
 

@@ -26,6 +26,9 @@ import pdfkit
 
 from utilidades.views import primer_dia, ultimo_dia, meses_entre_fechas, sumar_meses, formato_moneda
 
+from suds.client import Client
+
+import xml.etree.ElementTree as ET
 
 
 class PropuestaGenerarList(ListView):
@@ -45,7 +48,6 @@ class PropuestaGenerarList(ListView):
 		
 		return context
 
-
 class PropuestaProcesarList(ListView):
 
 	model 			= Proceso
@@ -63,6 +65,7 @@ class PropuestaProcesarList(ListView):
 		context['activos'] 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		
 		return context
+
 
 
 
@@ -107,10 +110,9 @@ class PROPUESTA_PROCESAR(View):
 
 		data 		= list()
 		var_post 	= request.POST.copy()
-		proceso 	= Proceso.objects.get(id=var_post.get('proceso_id'))
+		proceso 	= Proceso.objects.get(id=var_post.get('id'))
 
 		for detalle in proceso.proceso_detalle_set.all():
-
 			data.append(enviar_detalle_propuesta(detalle.id))
 
 		return JsonResponse({'response': data}, safe=False)
@@ -245,7 +247,9 @@ class PROCESOS(View):
 				'fecha_creacion': proceso.creado_en.strftime('%d/%m/%Y'),
 				'fecha_inicio'	: proceso.fecha_inicio.strftime('%d/%m/%Y'),
 				'fecha_termino'	: proceso.fecha_termino.strftime('%d/%m/%Y'),
-				'estado'		: proceso.proceso_estado.nombre,
+				'estado_id'		: proceso.proceso_estado.id,
+				'estado_nombre'	: proceso.proceso_estado.nombre,
+				'estado_color'	: proceso.proceso_estado.color,
 				'usuario'		: usuario,
 				'conceptos'		: conceptos,
 				'contratos'		: contratos,
@@ -256,10 +260,167 @@ class PROCESOS(View):
 
 
 # Funciones ----------------------------
-def enviar_detalle_propuesta(detalle_id):
+def enviar_detalle_propuesta(id):
 
 	data 	= list()
-	detalle = Proceso_Detalle.objects.get(id=detalle_id)
+	detalle = Proceso_Detalle.objects.get(id=id)
+
+	SDT_DocVentaExt = ET.Element('SDT_DocVentaExt')
+	SDT_DocVentaExt.set('xmlns', 'http://www.informat.cl/ws')
+	
+	# SDT_DocVentaExt
+	EncDoc 		= ET.SubElement(SDT_DocVentaExt, 'EncDoc')
+	DetDoc 		= ET.SubElement(SDT_DocVentaExt, 'DetDoc')
+	ResumenDoc 	= ET.SubElement(SDT_DocVentaExt, 'ResumenDoc')
+	Recaudacion = ET.SubElement(SDT_DocVentaExt, 'Recaudacion')
+
+	# SDT_DocVentaExt/EncDoc
+	RefDoc	= ET.SubElement(EncDoc, 'RefDoc')
+	Cliente	= ET.SubElement(EncDoc, 'Cliente')
+
+	# SDT_DocVentaExt/EncDoc/RefDoc
+	ET.SubElement(RefDoc, 'NroRefCliente')
+	ET.SubElement(RefDoc, 'Modulo')
+	ET.SubElement(RefDoc, 'NroOrdCom')
+
+	# SDT_DocVentaExt/EncDoc/RefDoc
+	Identificacion 	= ET.SubElement(Cliente, 'Identificacion')
+	Facturacion 	= ET.SubElement(Cliente, 'Facturacion')
+
+	# SDT_DocVentaExt/EncDoc/RefDoc/Identificacion
+	ET.SubElement(Identificacion, 'IdCliente').text='77304990'
+	ET.SubElement(Identificacion, 'Nombre_Completo').text='VALVERDE NORAMBUENA SPA'
+	ET.SubElement(Identificacion, 'Secuencia').text='1'# IDENTIIFCAR SI ES CLIENTE O PROVEEDOR
+	ET.SubElement(Identificacion, 'Direccion').text='JOSE M.ESCRIBA BALAGER 13105, OF 813'
+	ET.SubElement(Identificacion, 'Comuna').text='LO BARNECHEA'
+	ET.SubElement(Identificacion, 'Ciudad').text='SANTIAGO'
+	ET.SubElement(Identificacion, 'Telefono')
+	ET.SubElement(Identificacion, 'Email')
+
+	# SDT_DocVentaExt/EncDoc/RefDoc/Facturacion
+	ET.SubElement(Facturacion, 'Moneda').text='1'
+	ET.SubElement(Facturacion, 'Tasa').text='1'
+	ET.SubElement(Facturacion, 'CondVenta').text='0'# SI ES CONTADO, EN CREDITO ETC
+	ET.SubElement(Facturacion, 'Origen').text='0'
+	ET.SubElement(Facturacion, 'DocAGenerar').text='200'
+	ET.SubElement(Facturacion, 'DocRef').text='0'
+	ET.SubElement(Facturacion, 'NroDocRef').text='0'
+	ET.SubElement(Facturacion, 'NroDoc').text='0'
+	ET.SubElement(Facturacion, 'Estado').text='0'
+	ET.SubElement(Facturacion, 'Equipo').text='1'# AVERIGUAR QUE ES
+	ET.SubElement(Facturacion, 'Bodega_Salida').text='1'
+	ET.SubElement(Facturacion, 'IdVendedor').text='6395133'
+	ET.SubElement(Facturacion, 'Sucursal_Cod').text='1'
+	ET.SubElement(Facturacion, 'ListaPrecio_Cod')
+	ET.SubElement(Facturacion, 'Fecha_Atencion').text='2016-08-19'
+	ET.SubElement(Facturacion, 'Fecha_Documento').text='2016-08-19'
+
+
+	# SDT_DocVentaExtDetDoc/DetDoc
+	Items = ET.SubElement(DetDoc, 'Items')
+	
+	# SDT_DocVentaExtDetDoc/DetDoc/Items
+	Item = ET.SubElement(Items, 'Item')
+
+	ET.SubElement(Item, 'NumItem').text='1'
+	ET.SubElement(Item, 'FechaEntrega').text='0'
+	ET.SubElement(Item, 'PrecioRef').text='1000'
+	ET.SubElement(Item, 'Cantidad').text='1'
+	ET.SubElement(Item, 'PorcUno').text='0'
+	ET.SubElement(Item, 'MontoUno').text='1000'
+	ET.SubElement(Item, 'DescDos_Cod').text='0'
+	ET.SubElement(Item, 'DescTre_Cod')
+	ET.SubElement(Item, 'MontoImpUno').text='0'
+	ET.SubElement(Item, 'PorcImpUno').text='0'
+	ET.SubElement(Item, 'MontoImpDos').text='0'
+	ET.SubElement(Item, 'PorcImpDos').text='0'
+	ET.SubElement(Item, 'TotalDocLin').text='1000'
+
+	Producto = ET.SubElement(Item, 'Producto')
+
+	Producto_Vta 	= ET.SubElement(Producto, 'Producto_Vta').text='01010045001217'
+	Unidad 			= ET.SubElement(Producto, 'Unidad').text='Unid'
+
+	# SDT_DocVentaExtDetDoc/ResumenDoc
+	ET.SubElement(ResumenDoc, 'TotalNeto').text='1000'
+	ET.SubElement(ResumenDoc, 'CodigoDescuento')
+	ET.SubElement(ResumenDoc, 'TotalDescuento').text='0'
+	ET.SubElement(ResumenDoc, 'TotalIVA').text='190'
+	ET.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text='0'
+	ET.SubElement(ResumenDoc, 'TotalDoc').text='1190'
+	TotalConceptos = ET.SubElement(ResumenDoc, 'TotalConceptos')
+
+	# SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
+	# CREAR UN FOR 
+	Conceptos = ET.SubElement(TotalConceptos, 'Conceptos')
+	ET.SubElement(Conceptos, 'Concepto_Cod').text='200'
+	ET.SubElement(Conceptos, 'ValorConcepto').text='1190'
+
+	Conceptos = ET.SubElement(TotalConceptos, 'Conceptos')
+	ET.SubElement(Conceptos, 'Concepto_Cod').text='170'
+	ET.SubElement(Conceptos, 'ValorConcepto').text='190'
+
+	Conceptos = ET.SubElement(TotalConceptos, 'Conceptos')
+	ET.SubElement(Conceptos, 'Concepto_Cod').text='100'
+	ET.SubElement(Conceptos, 'ValorConcepto').text='1000'
+
+
+	# Recaudacion
+	Encabezado	= ET.SubElement(Recaudacion, 'Encabezado')
+	Detalle		= ET.SubElement(Recaudacion, 'Detalle')
+
+	# Recaudacion/Encabezado
+	ET.SubElement(Encabezado, 'IdCajero')
+	ET.SubElement(Encabezado, 'Tipo_Vuelto')
+	ET.SubElement(Encabezado, 'IdCliente')
+	ET.SubElement(Encabezado, 'DigitoVerificador')
+	ET.SubElement(Encabezado, 'NombreCompleto')
+	ET.SubElement(Encabezado, 'Direccion')
+	ET.SubElement(Encabezado, 'Ciudad')
+	ET.SubElement(Encabezado, 'Comuna')
+	ET.SubElement(Encabezado, 'Telefono')
+	ET.SubElement(Encabezado, 'Email')
+	ET.SubElement(Encabezado, 'TotalaRecaudar')
+	RecaudacionEnc_ext = ET.SubElement(Encabezado, 'RecaudacionEnc_ext')
+
+	# Recaudacion/Encabezado/RecaudacionEnc_ext
+	REnExt_Item = ET.SubElement(RecaudacionEnc_ext, 'REnExt_Item')
+	ET.SubElement(REnExt_Item, 'RecEnc_opcion')
+	ET.SubElement(REnExt_Item, 'RecEnd_datos')
+
+
+	# Recaudacion/Detalle/FormaPago
+	FormaPago = ET.SubElement(Detalle, 'FormaPago')
+	ET.SubElement(FormaPago, 'Cod_FormaPago')
+	ET.SubElement(FormaPago, 'Cod_MonedaFP')
+	ET.SubElement(FormaPago, 'NroCheque')
+	ET.SubElement(FormaPago, 'FechaCheque')
+	ET.SubElement(FormaPago, 'FechaVencto')
+	ET.SubElement(FormaPago, 'Cod_Banco')
+	ET.SubElement(FormaPago, 'Cod_Plaza')
+	ET.SubElement(FormaPago, 'Referencia')
+	ET.SubElement(FormaPago, 'MontoaRec')
+	ET.SubElement(FormaPago, 'ParidadRec')
+	
+	print ("---------------------------------")
+	# ET.dump(SDT_DocVentaExt)
+	xml = ET.tostring(SDT_DocVentaExt, short_empty_elements=False,  method='xml')
+
+
+	# xml_1 = '&lt;SDT_DocVentaExt xmlns=&quot;http://www.informat.cl/ws&quot;&gt;&lt;EncDoc&gt;&lt;RefDoc&gt;&lt;NroRefCliente&gt;2-2-101-101&lt;/NroRefCliente&gt;&lt;Modulo&gt;PDV&lt;/Modulo&gt;&lt;NroOrdCom&gt;2&lt;/NroOrdCom&gt;&lt;/RefDoc&gt;&lt;Cliente&gt;&lt;Identificacion&gt;&lt;IdCliente&gt;66666666&lt;/IdCliente&gt;&lt;Nombre_Completo&gt;CLIENTES VARIOS&lt;/Nombre_Completo&gt;&lt;Secuencia&gt;0&lt;/Secuencia&gt;&lt;Direccion&gt;CLIENTES VARIOS&lt;/Direccion&gt;&lt;Comuna&gt;CLIENTES VARIOS&lt;/Comuna&gt;&lt;Ciudad&gt;CLIENTES VARIOS&lt;/Ciudad&gt;&lt;Telefono&gt;CLIENTES VARIOS&lt;/Telefono&gt;&lt;Email /&gt;&lt;/Identificacion&gt;&lt;Facturacion&gt;&lt;Moneda&gt;1&lt;/Moneda&gt;&lt;Tasa&gt;1&lt;/Tasa&gt;&lt;CondVenta&gt;0&lt;/CondVenta&gt;&lt;Origen&gt;0&lt;/Origen&gt;&lt;DocAGenerar&gt;101&lt;/DocAGenerar&gt;&lt;DocRef&gt;0&lt;/DocRef&gt;&lt;NroDocRef&gt;0&lt;/NroDocRef&gt;&lt;NroDoc&gt;10001&lt;/NroDoc&gt;&lt;Estado&gt;0&lt;/Estado&gt;&lt;Equipo&gt;201&lt;/Equipo&gt;&lt;Bodega_Salida&gt;102&lt;/Bodega_Salida&gt;&lt;IdVendedor&gt;4839396&lt;/IdVendedor&gt;&lt;Sucursal_Cod&gt;2&lt;/Sucursal_Cod&gt;&lt;ListaPrecio_Cod /&gt;&lt;Fecha_Atencion&gt;2015-12-15&lt;/Fecha_Atencion&gt;&lt;Fecha_Documento&gt;2016-04-03&lt;/Fecha_Documento&gt;&lt;/Facturacion&gt;&lt;/Cliente&gt;&lt;/EncDoc&gt;&lt;DetDoc&gt;&lt;Items&gt;&lt;Item&gt;&lt;NumItem&gt;1&lt;/NumItem&gt;&lt;FechaEntrega&gt;0&lt;/FechaEntrega&gt;&lt;PrecioRef&gt;1000&lt;/PrecioRef&gt;&lt;Cantidad&gt;1.000000&lt;/Cantidad&gt;&lt;PorcUno&gt;0.00&lt;/PorcUno&gt;&lt;MontoUno&gt;0&lt;/MontoUno&gt;&lt;DescDos_Cod&gt;0&lt;/DescDos_Cod&gt;&lt;DescTre_Cod /&gt;&lt;MontoImpUno&gt;0&lt;/MontoImpUno&gt;&lt;PorcImpUno&gt;0.00&lt;/PorcImpUno&gt;&lt;MontoImpDos&gt;0&lt;/MontoImpDos&gt;&lt;PorcImpDos&gt;0.00&lt;/PorcImpDos&gt;&lt;TotalDocLin&gt;1000&lt;/TotalDocLin&gt;&lt;Producto&gt;&lt;Producto_Vta&gt;0000002572703&lt;/Producto_Vta&gt;&lt;Unidad&gt;Unid&lt;/Unidad&gt;&lt;/Producto&gt;&lt;/Item&gt;&lt;/Items&gt;&lt;/DetDoc&gt;&lt;ResumenDoc&gt;&lt;TotalNeto&gt;840&lt;/TotalNeto&gt;&lt;CodigoDescuento /&gt;&lt;TotalDescuento&gt;0&lt;/TotalDescuento&gt;&lt;TotalIVA&gt;160&lt;/TotalIVA&gt;&lt;TotalOtrosImpuestos&gt;0&lt;/TotalOtrosImpuestos&gt;&lt;TotalDoc&gt;1000&lt;/TotalDoc&gt;&lt;TotalConceptos&gt;&lt;Conceptos&gt;&lt;Concepto_Cod&gt;1&lt;/Concepto_Cod&gt;&lt;ValorConcepto&gt;0&lt;/ValorConcepto&gt;&lt;/Conceptos&gt;&lt;Conceptos&gt;&lt;Concepto_Cod&gt;2&lt;/Concepto_Cod&gt;&lt;ValorConcepto&gt;160&lt;/ValorConcepto&gt;&lt;/Conceptos&gt;&lt;Conceptos&gt;&lt;Concepto_Cod&gt;3&lt;/Concepto_Cod&gt;&lt;ValorConcepto&gt;840&lt;/ValorConcepto&gt;&lt;/Conceptos&gt;&lt;/TotalConceptos&gt;&lt;/ResumenDoc&gt;&lt;Recaudacion&gt;&lt;Encabezado&gt;&lt;IdCajero&gt;4839396&lt;/IdCajero&gt;&lt;Tipo_Vuelto&gt;1&lt;/Tipo_Vuelto&gt;&lt;IdCliente&gt;66666666&lt;/IdCliente&gt;&lt;DigitoVerificador&gt;6&lt;/DigitoVerificador&gt;&lt;NombreCompleto&gt;CLIENTES VARIOS&lt;/NombreCompleto&gt;&lt;Direccion&gt;CLIENTES VARIOS&lt;/Direccion&gt;&lt;Ciudad&gt;CLIENTES VARIOS&lt;/Ciudad&gt;&lt;Comuna&gt;CLIENTES VARIOS&lt;/Comuna&gt;&lt;Telefono&gt;CLIENTES VARIOS&lt;/Telefono&gt;&lt;Email /&gt;&lt;TotalaRecaudar&gt;1000&lt;/TotalaRecaudar&gt;&lt;RecaudacionEnc_ext&gt;&lt;REnExt_Item&gt;&lt;RecEnc_opcion /&gt;&lt;RecEnd_datos /&gt;&lt;/REnExt_Item&gt;&lt;/RecaudacionEnc_ext&gt;&lt;/Encabezado&gt;&lt;Detalle&gt;&lt;FormaPago&gt;&lt;Cod_FormaPago&gt;0&lt;/Cod_FormaPago&gt;&lt;Cod_MonedaFP&gt;1&lt;/Cod_MonedaFP&gt;&lt;NroCheque /&gt;&lt;FechaCheque&gt;2015-12-15&lt;/FechaCheque&gt;&lt;FechaVencto /&gt;&lt;Cod_Banco /&gt;&lt;Cod_Plaza /&gt;&lt;Referencia /&gt;&lt;MontoaRec&gt;1000&lt;/MontoaRec&gt;&lt;ParidadRec&gt;1&lt;/ParidadRec&gt;&lt;/FormaPago&gt;&lt;/Detalle&gt;&lt;/Recaudacion&gt;&lt;/SDT_DocVentaExt&gt;'
+	# xml1 = '<SDT_DocVentaExt xmlns="http://www.informat.cl/ws"><EncDoc><RefDoc><NroRefCliente>2-2-101-101</NroRefCliente><Modulo>PDV</Modulo><NroOrdCom>2</NroOrdCom></RefDoc><Cliente><Identificacion><IdCliente>66666666</IdCliente><Nombre_Completo>CLIENTES VARIOS</Nombre_Completo><Secuencia>0</Secuencia><Direccion>CLIENTES VARIOS</Direccion><Comuna>CLIENTES VARIOS</Comuna><Ciudad>CLIENTES VARIOS</Ciudad><Telefono>CLIENTES VARIOS</Telefono><Email /></Identificacion><Facturacion><Moneda>1</Moneda><Tasa>1</Tasa><CondVenta>0</CondVenta><Origen>0</Origen><DocAGenerar>101</DocAGenerar><DocRef>0</DocRef><NroDocRef>0</NroDocRef><NroDoc>101</NroDoc><Estado>0</Estado><Equipo>201</Equipo><Bodega_Salida>102</Bodega_Salida><IdVendedor>4839396</IdVendedor><Sucursal_Cod>2</Sucursal_Cod><ListaPrecio_Cod /><Fecha_Atencion>2015-12-15</Fecha_Atencion><Fecha_Documento>2015-12-15</Fecha_Documento></Facturacion></Cliente></EncDoc><DetDoc><Items><Item><NumItem>1</NumItem><FechaEntrega>0</FechaEntrega><PrecioRef>1000</PrecioRef><Cantidad>1.000000</Cantidad><PorcUno>0.00</PorcUno><MontoUno>0</MontoUno><DescDos_Cod>0</DescDos_Cod><DescTre_Cod /><MontoImpUno>0</MontoImpUno><PorcImpUno>0.00</PorcImpUno><MontoImpDos>0</MontoImpDos><PorcImpDos>0.00</PorcImpDos><TotalDocLin>1000</TotalDocLin><Producto><Producto_Vta>0000002572703</Producto_Vta><Unidad>Unid</Unidad></Producto></Item></Items></DetDoc><ResumenDoc><TotalNeto>840</TotalNeto><CodigoDescuento /><TotalDescuento>0</TotalDescuento><TotalIVA>160</TotalIVA><TotalOtrosImpuestos>0</TotalOtrosImpuestos><TotalDoc>1000</TotalDoc><TotalConceptos><Conceptos><Concepto_Cod>1</Concepto_Cod><ValorConcepto>0</ValorConcepto></Conceptos><Conceptos><Concepto_Cod>2</Concepto_Cod><ValorConcepto>160</ValorConcepto></Conceptos><Conceptos><Concepto_Cod>3</Concepto_Cod><ValorConcepto>840</ValorConcepto></Conceptos></TotalConceptos></ResumenDoc><Recaudacion><Encabezado><IdCajero>4839396</IdCajero><Tipo_Vuelto>1</Tipo_Vuelto><IdCliente>66666666</IdCliente><DigitoVerificador>6</DigitoVerificador><NombreCompleto>CLIENTES VARIOS</NombreCompleto><Direccion>CLIENTES VARIOS</Direccion><Ciudad>CLIENTES VARIOS</Ciudad><Comuna>CLIENTES VARIOS</Comuna><Telefono>CLIENTES VARIOS</Telefono><Email /><TotalaRecaudar>1000</TotalaRecaudar><RecaudacionEnc_ext><REnExt_Item><RecEnc_opcion /><RecEnd_datos /></REnExt_Item></RecaudacionEnc_ext></Encabezado><Detalle><FormaPago><Cod_FormaPago>0</Cod_FormaPago><Cod_MonedaFP>1</Cod_MonedaFP><NroCheque /><FechaCheque>2015-12-15</FechaCheque><FechaVencto /><Cod_Banco /><Cod_Plaza /><Referencia /><MontoaRec>1000</MontoaRec><ParidadRec>1</ParidadRec></FormaPago></Detalle></Recaudacion></SDT_DocVentaExt>'
+	# url = 'http://192.168.231.21:8080/wshcvm/servlet/axmldocvtaext?wsdl' # jaime
+	# url = 'http://192.168.231.114:8080/ws_inet_clp/servlet/axmldocvta?wsdl'# nuevo
+	url = 'http://192.168.231.114:8080/ws_inet_clp/servlet/axmldocvtaext?wsdl' #nuevo2
+	client1 = Client(url)
+	response = client1.service.Execute(xml.decode())
+
+	for error in response.SDT_ERRORES_ERROR:
+		print (error.DESCERROR)
+
+	# return response
+
+	
 
 	return data
 

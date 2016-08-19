@@ -469,7 +469,8 @@
 	"model": "procesos.proceso_estado",
 	"pk": 1,
 	"fields": {
-		"nombre": "Estado 1",
+		"nombre": "Iniciada",
+		"color": "#26A69A",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -478,7 +479,8 @@
 	"model": "procesos.proceso_estado",
 	"pk": 2,
 	"fields": {
-		"nombre": "Estado 2",
+		"nombre": "Propuesta",
+		"color": "#FF9800",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -487,7 +489,8 @@
 	"model": "procesos.proceso_estado",
 	"pk": 3,
 	"fields": {
-		"nombre": "Estado 3",
+		"nombre": "Error Propuesta",
+		"color": "#F44336",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -496,7 +499,28 @@
 	"model": "procesos.proceso_estado",
 	"pk": 4,
 	"fields": {
-		"nombre": "Estado 4",
+		"nombre": "Terminada",
+		"color": "#43A047",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "procesos.proceso_estado",
+	"pk": 5,
+	"fields": {
+		"nombre": "Error Envio",
+		"color": "#F44336",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "procesos.proceso_estado",
+	"pk": 6,
+	"fields": {
+		"nombre": "Reenviada",
+		"color": "#43A047",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}

@@ -12,6 +12,7 @@ class Proceso_Estado(models.Model):
 
 	# atributos (generales)
 	nombre 		= models.CharField(max_length=250)
+	color 		= models.CharField(max_length=7)
 	descripcion = models.TextField(blank=True)
 
 	# atributos (por defecto)

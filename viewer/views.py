@@ -20,10 +20,6 @@ from django.db.models import Sum, Q
 
 
 
-
-
-
-
 # FIN PRUEBA
 
 

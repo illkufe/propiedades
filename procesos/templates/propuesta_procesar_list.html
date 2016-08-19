@@ -65,7 +65,7 @@ function load_tabla_propuestas(){
 	{
 		'width': '15%',
 		'data': 'estado',
-		'title': 'Estado',
+		'title': '<div class="text-center">Estado</div>',
 	},
 	{
 		'width': '15%',
@@ -91,26 +91,46 @@ function data_tabla_propuestas(){
 
 			for (var i = 0; i < data.length; i++) {
 
-				var template = ''
-				template += '<div class="text-center">'
+				if (data[i].estado_id == 2) {
 
-				template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>'
-				template += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].id+',\'procesos\', \'tabla-propuestas\', \'Proceso\')"><i class="fa fa-trash"></i></a>'
-				template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-edit btn-bitbucket"><i class="fa fa-paper-plane"></i></a>'
-				template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-config btn-bitbucket"><i class="fa fa-comment"></i></a>'
+					var template = ''
+					template += '<div class="text-center">'
+					template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>'
+					template += '<a onclick="enviar_propuesta('+data[i].id+')"class="btn btn-edit btn-bitbucket"><i class="fa fa-paper-plane"></i></a>'
+					template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-config btn-bitbucket"><i class="fa fa-comment"></i></a>'
 
-				row = {}
+					row = {}
 
-				row.id 			= data[i].id
-				row.fecha 		= data[i].fecha_creacion
-				row.periodo 	= data[i].fecha_inicio+' - '+data[i].fecha_termino
-				row.nombre 		= data[i].nombre
-				row.estado 		= data[i].estado
-				row.opciones 	= template
+					row.id 			= data[i].id
+					row.fecha 		= data[i].fecha_creacion
+					row.periodo 	= data[i].fecha_inicio+' - '+data[i].fecha_termino
+					row.nombre 		= data[i].nombre
+					row.estado 		= '<div class="text-center"><span class="label" style="background:'+data[i].estado_color+'; color:#FFF">'+data[i].estado_nombre+'</span></div>'
+					row.opciones 	= template
 
-				rows.push(row)
+					rows.push(row)
+
+				};
+
 			}
 			tabla_procesos.rows.add(rows).draw();
+		}
+	})
+}
+
+
+function enviar_propuesta(id){
+	$.ajax({
+		url: '/procesos/procesar/propuesta',
+		type: 'post',
+		dataType: 'json',
+		data:{
+			id 	: id,
+			csrfmiddlewaretoken: getCookie('csrftoken'),
+		},
+		success: function(data){
+			console.log(data)
+			data_tabla_propuestas()
 		}
 	})
 }
