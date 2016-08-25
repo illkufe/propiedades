@@ -66,18 +66,12 @@ class PropuestaProcesarList(ListView):
 		
 		return context
 
-
-
-
-
-
-
-
 class ProcesoList(ListView):
 	model = Proceso
 	template_name = 'viewer/procesos/procesos_list.html'
 
-	def get_context_data(self, **kwargs):		
+	def get_context_data(self, **kwargs):
+
 		context = super(ProcesoList, self).get_context_data(**kwargs)
 		context['title'] 		= 'Cálculo de Conceptos'
 		context['subtitle'] 	= 'Procesos de Facturación'
@@ -86,7 +80,7 @@ class ProcesoList(ListView):
 
 		context['conceptos'] 	= Concepto.objects.all()
 		context['activos'] 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
-		
+
 		return context
 
 class ProcesoDelete(DeleteView):
@@ -424,37 +418,204 @@ def enviar_detalle_propuesta(id):
 
 	return data
 
-
 def filtrar_contratos(request):
 
-	data 		= list()
-	var_post 	= request.POST.copy()
+	data 			= list()
 
-	mes_inicio	= var_post['mes_inicio']
-	ano_inicio	= var_post['ano_inicio']
-	mes_termino	= var_post['mes_termino']
-	ano_termino	= var_post['ano_termino']
-	activo_id	= var_post['activo']
-	# concepto 	= var_post['concepto'] {falta: buscar los contratos con estos conceptos}
+	var_post 		= request.POST.copy()
+	mes_inicio		= var_post['mes_inicio']
+	ano_inicio		= var_post['ano_inicio']
+	mes_termino		= var_post['mes_termino']
+	ano_termino		= var_post['ano_termino']
+	activo_id		= var_post['activo']
+	conceptos_id 	= var_post.getlist('conceptos')
 
-	fecha_inicio 	= ultimo_dia(datetime.strptime('01/'+mes_inicio+'/'+ano_inicio+'', "%d/%m/%Y"))
+	fecha_inicio 	= primer_dia(datetime.strptime('01/'+mes_inicio+'/'+ano_inicio+'', "%d/%m/%Y"))
 	fecha_termino 	= ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+ano_termino+'', "%d/%m/%Y"))
 	activo 			= Activo.objects.get(id=activo_id)
-	locales 		= activo.local_set.all().values_list('id', flat=True)
-	contratos 		= Contrato.objects.filter(locales__in=locales, fecha_habilitacion__lte=fecha_inicio, fecha_termino__gte=fecha_termino, visible=True).distinct() # {falta: buscar por la fecha de activació del contrato}
+	locales 		= activo.local_set.filter(visible=True).values_list('id', flat=True)
+	contratos 		= Contrato.objects.filter(locales__in=locales, contrato_estado__in=[4,6], visible=True).distinct()
 
 	for contrato in contratos:
+
+		conceptos = list()
+
+		for concepto_id in conceptos_id:
+
+			concepto = Concepto.objects.get(id=concepto_id)
+
+			if contrato.conceptos.filter(id=concepto_id).exists():
+				asociado 	= True
+				valido 		= validar_concepto(contrato, concepto, fecha_inicio, fecha_termino)
+			else:
+				asociado 	= False 
+				valido 		= True
+
+			conceptos.append({
+				'id'		: concepto.id,
+				'nombre'	: concepto.nombre,
+				'codigo'	: concepto.codigo,
+				'asociado'	: asociado,
+				'valido'	: valido,
+			})
+
 		data.append({
-			'id'					: contrato.id,
-			'numero'				: contrato.numero,
-			'fecha_inicio'			: contrato.fecha_inicio.strftime('%d/%m/%Y'),
-			'fecha_termino'			: contrato.fecha_termino.strftime('%d/%m/%Y'),
-			'fecha_habilitacion'	: contrato.fecha_habilitacion.strftime('%d/%m/%Y'),
-			'cliente'				: contrato.cliente.nombre,
-			'locales'				: 'locales', # {falta: poner locales}
-		})	
+			'id'		: contrato.id,
+			'numero'	: contrato.numero,
+			'nombre'	: contrato.nombre_local,
+			'cliente'	: contrato.cliente.nombre,
+			'conceptos'	: conceptos,
+		})
 
 	return JsonResponse(data, safe=False)
+
+
+def validar_concepto(contrato, concepto, fecha_inicio, fecha_termino):
+
+	if concepto.concepto_tipo.id == 1:
+		return validar_concepto_arriendo_minimo(contrato, concepto, fecha_inicio, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 2:
+		return validar_concepto_arriendo_variable(contrato, concepto, fecha_inicio, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 3:
+		return validar_concepto_gasto_comun(contrato, concepto, fecha_inicio, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 4:
+		return validar_concepto_servicios_basicos(contrato, concepto, fecha_inicio, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 5:
+		return validar_concepto_cuota_de_incorporacion(contrato, concepto, fecha_inicio, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 6:
+		return validar_concepto_fondo_de_promocion(contrato, concepto, fecha_inicio, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 7:
+		return validar_concepto_arriendo_bodega(contrato, concepto, fecha_inicio, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 8:
+		return validar_concepto_servicios_varios(contrato, concepto, fecha_inicio, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 9:
+		return validar_concepto_multas(contrato, concepto, fecha_inicio, fecha_termino)
+
+	else:
+		return True
+
+
+
+def validar_concepto_arriendo_minimo(contrato, concepto, fecha_inicio, fecha_termino):
+
+	mensajes = [
+		'Correcto', 
+		'No tiene datos para este perido', 
+		'No existe arriendo mínimo'
+		]
+
+	try:
+
+		arriendo = Arriendo.objects.get(contrato=contrato, concepto=concepto)
+
+		if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha_inicio.month, mes_termino__gte=fecha_termino.month).exists():
+			estado 	= True
+			mensaje = 0
+		else:
+			estado 	= False
+			mensaje = 1
+
+	except:
+		estado 	= False
+		mensaje = 2
+
+	return {
+		'estado'	: estado,
+		'mensaje'	: mensajes[mensaje],
+	}
+
+def validar_concepto_arriendo_variable(contrato, concepto, fecha_inicio, fecha_termino):
+
+	mensajes = [
+		'correcto', 
+		'no tiene datos para este perido', 
+		'no existe arriendo mínimo'
+		]
+
+	try:
+		arriendo = Arriendo.objects.get(contrato=contrato, concepto=concepto)
+
+		if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha_inicio.month, mes_termino__gte=fecha_termino.month).exists():
+			estado 	= True
+			mensaje = 0
+		else:
+			estado 	= False
+			mensaje = 1
+
+	except:
+		estado 	= False
+		mensaje = 2
+
+	return {
+		'estado'	: estado,
+		'mensaje'	: mensajes[mensaje],
+	}
+
+def validar_concepto_gasto_comun(contrato, concepto, fecha_inicio, fecha_termino):
+
+	return {
+		'estado'	: True,
+		'mensaje'	: 'correcto',
+	}
+
+def validar_concepto_servicios_basicos(contrato, concepto, fecha_inicio, fecha_termino):
+
+	return {
+		'estado'	: True,
+		'mensaje'	: 'correcto',
+	}
+
+def validar_concepto_cuota_de_incorporacion(contrato, concepto, fecha_inicio, fecha_termino):
+
+	return {
+		'estado'	: True,
+		'mensaje'	: 'correcto',
+	}
+
+def validar_concepto_fondo_de_promocion(contrato, concepto, fecha_inicio, fecha_termino):
+
+	return {
+		'estado'	: True,
+		'mensaje'	: 'correcto',
+	}
+
+def validar_concepto_arriendo_bodega(contrato, concepto, fecha_inicio, fecha_termino):
+
+	return {
+		'estado'	: True,
+		'mensaje'	: 'correcto',
+	}
+
+def validar_concepto_servicios_varios(contrato, concepto, fecha_inicio, fecha_termino):
+
+	return {
+		'estado'	: True,
+		'mensaje'	: 'correcto',
+	}
+
+def validar_concepto_multas(contrato, concepto, fecha_inicio, fecha_termino):
+
+	return {
+		'estado'	: True,
+		'mensaje'	: 'correcto',
+	}
+
+
+
+
+
+
+
+
+
 
 
 

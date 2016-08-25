@@ -424,7 +424,7 @@
 	"model": "contrato.contrato_estado",
 	"pk": 2,
 	"fields": {
-		"nombre": "Pre Aprobado",
+		"nombre": "Aprobado",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -433,7 +433,7 @@
 	"model": "contrato.contrato_estado",
 	"pk": 3,
 	"fields": {
-		"nombre": "Aprobado",
+		"nombre": "Bloqueado",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -460,7 +460,7 @@
 	"model": "contrato.contrato_estado",
 	"pk": 6,
 	"fields": {
-		"nombre": "Bloqueado",
+		"nombre": "Proceso Renovación",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}

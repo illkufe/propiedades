@@ -1,0 +1,63 @@
+TAREAS PROGRAMACIÓN
+
+Cambiar funciones Cálculo Conceptos :
+
+	- calculo_arriendo_minimo
+	- calculo_arriendo_variable
+	- calculo_gasto_comun
+	- calculo_servicios_basico
+	- calculo_cuota_incorporacion
+	- calculo_fondo_promocion
+	- calculo_arriendo_bodega
+	- calculo_servicios_varios
+	- calculo_multas
+
+Cambiar funciones para imprimir la propuesta :
+
+	- data_arriendo_minimo
+	- data_arriendo_variable
+	- data_servicios_basicos
+	- data_gastos_comunes
+	- data_cuota_incorporacion
+	- data_fondo_promocion
+	- data_arriendo_bodega
+	- data_servicios_varios
+	- data_multas
+
+Poner estado en el proceso de facturación:
+
+	- Proceso
+	- Detalla
+
+Cambiar nombre a las tablas en el proceso de facturacion:
+
+	- Proceso 			---> Propuesta
+	- Proceso_Detalle 	---> Propuesta_Detalle
+
+Manejar (mostrar) errores en el fomulario de conceptos:
+
+	- Arriendo Mínimo
+	- Arriendo Bodega
+	- Arriendo Variable
+	- Gasto Comun
+	- Servicio Basico
+	- Cuota Incorporacion
+	- Fondo Promocion
+
+Al generar la propuesta saber que conceptos tienen datos validos :
+
+	- calculo_arriendo_minimo
+	- calculo_arriendo_variable
+	- calculo_gasto_comun
+	- calculo_servicios_basico
+	- calculo_cuota_incorporacion
+	- calculo_fondo_promocion
+	- calculo_arriendo_bodega
+	- calculo_servicios_varios
+	- calculo_multas
+
+
+
+
+
+
