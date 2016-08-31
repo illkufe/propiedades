@@ -542,6 +542,7 @@ class ContratoConceptoMixin(object):
 		elif concepto.concepto_tipo.id == 2:
 
 			if formulario.is_valid():
+				print (formulario)
 				newscores = formulario.save(commit=False)
 
 				for obj in formulario.deleted_objects:

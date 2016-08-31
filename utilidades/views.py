@@ -41,7 +41,7 @@ def primer_dia(fecha):
 	fecha 	= dia+'/'+mes+'/'+anio
 	fecha 	= datetime.strptime(fecha, "%d/%m/%Y")
 
-	return fecha
+	return fecha.date()
 
 def ultimo_dia(fecha):
 
@@ -51,7 +51,7 @@ def ultimo_dia(fecha):
 	fecha 	= dia+'/'+mes+'/'+anio
 	fecha 	= datetime.strptime(fecha, "%d/%m/%Y")
 
-	return fecha
+	return fecha.date()
 
 def meses_entre_fechas(fecha_inicio, fecha_termino):
 

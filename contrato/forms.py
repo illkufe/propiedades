@@ -2,7 +2,7 @@
 from django import forms
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User
-from utilidades.views import NumberField
+from utilidades.views import NumberField, primer_dia, ultimo_dia
 
 from accounts.models import UserProfile
 from administrador.models import Cliente
@@ -10,6 +10,8 @@ from activos.models import Activo
 from locales.models import Local
 from conceptos.models import Concepto
 from utilidades.models import Moneda
+
+from datetime import datetime, timedelta
 
 from .models import *
 
@@ -320,6 +322,9 @@ class ArriendoVariableForm(forms.ModelForm):
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
 	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
 
+	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False)
+	fecha_termino 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False)
+
 	class Meta:
 		model 	= Arriendo_Variable
 		fields 	= '__all__'
@@ -344,6 +349,21 @@ class ArriendoVariableForm(forms.ModelForm):
 		help_texts = {
 			'moneda' 		: 'moneda',
 		}
+
+	def clean_fecha_inicio(self):
+
+		mes_inicio 	= str(self.cleaned_data.get("mes_inicio")).zfill(2)
+		anio_inicio = str(self.cleaned_data.get("anio_inicio"))
+
+		return datetime.strptime('01/'+mes_inicio+'/'+anio_inicio+'', "%d/%m/%Y").date()
+
+	def clean_fecha_termino(self):
+
+		mes_termino 	= str(self.cleaned_data.get("mes_termino")).zfill(2)
+		anio_termino 	= str(self.cleaned_data.get("anio_termino"))
+
+		return ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+anio_termino+'', "%d/%m/%Y"))
+
 
 class GastoComunForm(forms.ModelForm):
 

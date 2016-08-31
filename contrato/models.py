@@ -261,6 +261,9 @@ class Arriendo_Variable(models.Model):
 	anio_termino 	= models.IntegerField()
 	valor			= models.FloatField()
 
+	fecha_inicio 	= models.DateField()
+	fecha_termino 	= models.DateField()
+
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
 	creado_en 	= models.DateTimeField(auto_now=True)

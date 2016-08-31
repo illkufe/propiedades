@@ -3,10 +3,10 @@
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
-<div class="wrapper wrapper-content">
+<div class="wrapper wrapper-content generar-propuesta animated fadeInUp">
 	<div class="row">
 		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
+			<div class="ibox float-e-margins filtrar-contratos">
 				<div class="ibox-title">
 					<h5>Filtrar Contratos</h5>
 					<div class="ibox-tools">
@@ -15,17 +15,18 @@
 						</a>
 					</div>
 				</div>
-				<div class="ibox-content" style="display: block;">
-					<form id="form-fitrar-contratos" role="form" action='{% url "filtrar_contratos" %}' method="POST">
-						{% csrf_token %}
+				<form id="form-fitrar-contratos" role="form" action='{% url "propuesta_filtrar" %}' method="POST">
+					{% csrf_token %}
+
+					<div class="ibox-content" style="display: block;">
 						<div class="row">
 							<div class="form-group col-sm-3">
 								<div>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
-									<label>Periodo Inicio: Mes/Año</label>
+									<label>Periodo: Mes/Año</label>
 								</div>
 								<div style="float:left; width:60%">
-									<select class="form-control" name="mes_inicio">
+									<select class="form-control" name="mes">
 										<option value="">---------</option>
 										<option value="1">Enero</option>
 										<option value="2">Febrero</option>
@@ -42,38 +43,11 @@
 									</select>
 								</div>
 								<div style="float:left; width:35%; margin-left:4%;">
-									<input type="number" class="form-control" name="ano_inicio">
+									<input type="number" class="form-control" name="anio">
 								</div>
 								<div class="container-error"></div>
 							</div>
 							<div class="form-group col-sm-3">
-								<div>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
-									<label>Periodo Termino: Mes/Año</label>
-								</div>
-								<div style="float:left; width:60%">
-									<select class="form-control" name="mes_termino">
-										<option value="">---------</option>
-										<option value="1">Enero</option>
-										<option value="2">Febrero</option>
-										<option value="3">Marzo</option>
-										<option value="4">Abril</option>
-										<option value="5">Mayo</option>
-										<option value="6">Junio</option>
-										<option value="7">Julio</option>
-										<option value="8">Agosto</option>
-										<option value="9">Septiembre</option>
-										<option value="10">Octubre</option>
-										<option value="11">Noviembre</option>
-										<option value="12">Diciembre</option>
-									</select>
-								</div>
-								<div style="float:left; width:35%; margin-left:4%;">
-									<input type="number" class="form-control" name="ano_termino">
-								</div>
-								<div class="container-error"></div>
-							</div>
-							<div class="form-group col-sm-2">
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
 								<label>Activo:</label>
 								<select name="activo" class="form-control">
@@ -84,7 +58,7 @@
 								</select>
 								<div class="container-error"></div>
 							</div>
-							<div class="form-group col-sm-4">
+							<div class="form-group col-sm-6">
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
 								<label>Conceptos:</label>
 								<select name="conceptos" class="form-control select2" multiple="multiple">
@@ -94,15 +68,19 @@
 								</select>
 								<div class="container-error"></div>
 							</div>
-							<div class="form-group col-sm-12">
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12">
 								<button type="submit" class="btn btn-primary btn-sm btn-w-m pull-right">ACEPTAR</button>
 							</div>
 						</div>
-					</form>
-				</div>
+
+					</div>
+				</form>
 			</div>
-			
-			<div class="ibox float-e-margins">
+
+			<div class="ibox float-e-margins seleccionar-contratos">
 				<div class="ibox-title">
 					<h5>Seleccionar Contratos</h5>
 					<div class="ibox-tools">
@@ -111,29 +89,33 @@
 						</a>
 					</div>
 				</div>
-				<div class="ibox-content" style="display: block;">
-					<form id="form-proceso" role="form" action="/procesos/contratos/propuesta" method="POST">
-						{% csrf_token %}
-						<input type="hidden" name="contratos">
-						<input type="hidden" name="fecha_inicio">
-						<input type="hidden" name="fecha_termino">
-						<input type="hidden" name="conceptos">
 
-						<div class="table-responsive">
-							<table id="tabla-contratos" class="table table-striped table-hover"></table>
-						</div>
+				<form id="form-generar-propuesta" class="hide" action='{% url "propuesta_generar" %}' method="POST">
+					{% csrf_token %}
+					<input type="hidden" name="mes">
+					<input type="hidden" name="anio">
+					<input type="hidden" name="conceptos">
+					<input type="hidden" name="contratos">
 
+					<div class="ibox-content" style="display: block;">
 						<div class="row">
 							<div class="col-xs-12">
-								<button type="submit" id="enviar-proceso" class="btn btn-primary btn-sm btn-w-m pull-right">PROCESAR</button>
+								<div class="table-responsive">
+									<table id="tabla-contratos" class="table table-striped table-hover"></table>
+								</div>
 							</div>
 						</div>
-					</form>
-				</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<button type="button" class="btn btn-primary btn-sm btn-w-m pull-right" onclick="crear_propuesta()">ACEPTAR</button>
+							</div>
+						</div>
+					</div>
+				</form>
 			</div>
 
+			<div class="ibox float-e-margins validar-propuesta">
 
-			<div class="ibox float-e-margins">
 				<div class="ibox-title">
 					<h5>Validar Propuesta</h5>
 					<div class="ibox-tools">
@@ -142,48 +124,72 @@
 						</a>
 					</div>
 				</div>
-				<div class="ibox-content" style="display: block;">
-				</div>
-			</div>
-		</div>
-	</div>
 
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Procesos de Facturación</h5>
-				</div>
-				<div class="ibox-content">
-
-					<div class="table-responsive">
-						<table id="tabla-procesos" class="table table-striped table-hover"></table>
+				<form id="validar-propuesta" class="hide">
+					<div id="container-propuesta"></div>
+					<div class="ibox-content" style="display: block;">
+						<div class="row">
+							<div class="col-xs-12">
+								<button type="submit" class="btn btn-primary btn-sm btn-w-m pull-right">ACEPTAR</button>
+							</div>
+						</div>
 					</div>
-
-				</div>
+				</form>
 			</div>
 		</div>
 	</div>
 </div>
 
+<style>
+.generar-propuesta .validar-propuesta .contrato-informacion{
+	margin-top: 10px;
+}
+
+.generar-propuesta .validar-propuesta .contrato-informacion p{
+	margin: 0 0 1px;
+	font-weight: 300;
+}
+
+.generar-propuesta .validar-propuesta .contrato-informacion p span:first-child{
+	font-weight: normal;
+	display: inline-block;
+	min-width: 110px;
+}
+
+.generar-propuesta .validar-propuesta .contrato-informacion p span:last-child::before{
+	content: ':';
+	padding: 0 10px;
+}
+
+.generar-propuesta .validar-propuesta .container-tabla{
+	margin-top: 20px;
+}
+
+.generar-propuesta .validar-propuesta .container-tabla table tr td:first-child{
+	width: 75%;
+}
+
+.generar-propuesta .validar-propuesta .container-tabla table tr td:last-child{
+	width: 25%;
+}
+
+.generar-propuesta .validar-propuesta .container-tabla table tr td input{
+	width: 100%
+}
+</style>
+
 {% endblock section %}
 
 {% block scripts %}
+
 <script>
 
 var tabla_contratos;
-var tabla_procesos;
 
 $(document).ready(function(){
 
 	initialize()
-	
-	// load_tabla_contratos()
-	// load_tabla_procesos()
-	// data_tabla_procesos()
-
 	filtrar_contratos()
-	procesar_contratos()
 
 });
 
@@ -191,235 +197,22 @@ function initialize(){
 
 	var fecha = new Date();
 
-	$('#form-fitrar-contratos select[name="mes_inicio"]').val(fecha.getMonth() + 1)
-	$('#form-fitrar-contratos select[name="mes_termino"]').val(fecha.getMonth() + 1)
-	$('#form-fitrar-contratos input[name="ano_inicio"]').val(fecha.getFullYear())
-	$('#form-fitrar-contratos input[name="ano_termino"]').val(fecha.getFullYear())
+	$('#form-fitrar-contratos select[name="mes"]').val(fecha.getMonth() + 1)
+	$('#form-fitrar-contratos input[name="anio"]').val(fecha.getFullYear())
 
-	$('#form-proceso button#enviar-proceso').attr('disabled', true)
-
-	$.validator.addMethod("comparacion", function (value, element) {
-		ano_inicio 	= parseInt($('#form-fitrar-contratos input[name="ano_inicio"]').val())
-		ano_termino = parseInt($('#form-fitrar-contratos input[name="ano_termino"]').val())
-
-		mes_inicio 	= parseInt($('#form-fitrar-contratos select[name="mes_inicio"]').val())
-		mes_termino = parseInt($('#form-fitrar-contratos select[name="mes_termino"]').val())
-
-		if (ano_inicio < ano_termino) {
-			return true;
-		}
-		else if(ano_inicio == ano_termino){
-			if (mes_inicio<=mes_termino) {
-				return true;
-			}else{
-				return false;
-			}
-		}
-		else{
-			return false;
-		}
-
-	}, 'Periodo invalido');
 }
 
 
 
-function load_tabla_contratos(conceptos){
-
-	console.log(conceptos)
-
-	var configuracion = {
-		'paginate': false,
-		'bLengthChange': false,
-		'bInfo': false,
-		'searching': false,
-		'buttons': [],
-	} 
-
-	var columns = [
-	{
-		'width': '5%',
-		'data': 'opciones',
-		'orderable': false,
-		'title': '<div class="text-center"><input type="checkbox" class="checkbox-all" onchange="seleccionar_todo(this)"></div>',
-	},
-	{
-		'width': '15%',
-		'data': 'numero',
-		'title': 'Nº Contrato',
-	},
-	{
-		'width': '15%',
-		'data': 'nombre',
-		'title': 'Nombre',
-	},
-	{
-		'width': '15%',
-		'data': 'cliente',
-		'title': 'Cliente',
-	}];
-
-	var columnas = []
-
-	for (var i = 0; i < conceptos.length; i++) {
-		columna = {}
-
-		columna.data 	= conceptos[i].id,
-		columna.title 	= conceptos[i].codigo,
-		columna.width 	= '7%',
-
-		columns.push(columna)
-	};
-
-	console.log(columnas)
-
-	tabla_contratos = load_table('#tabla-contratos', columns, configuracion)
-}
-
-// function load_tabla_procesos(){
-// 	var columns = [
-// 	{		
-// 		'data': 'id',
-// 		'title': 'ID',
-// 		'visible': false,
-// 	},
-// 	{
-// 		'width': '15%',
-// 		'data': 'fecha',
-// 		'title': 'FECHA',
-// 	},
-// 	{
-// 		'width': '20%',
-// 		'data': 'periodo',
-// 		'title': 'PERIODO',
-// 	},
-// 	{
-// 		'width': '15%',
-// 		'data': 'concepto',
-// 		'title': 'CONCEPTO',
-// 	},
-// 	{
-// 		'width': '10%',
-// 		'data': 'cliente',
-// 		'title': 'CLIENTE',
-// 		'visible': false,
-// 	},
-// 	{
-// 		'width': '20%',
-// 		'data': 'contratos',
-// 		'title': 'CONTRATOS',
-// 	},
-// 	{
-// 		'width': '10%',
-// 		'data': 'monto',
-// 		'title': 'MONTO',
-// 		'visible': false,
-// 	},
-// 	{
-// 		'width': '10%',
-// 		'data': 'estado',
-// 		'title': 'ESTADO',
-// 	},
-// 	{
-// 		'width': '10%',
-// 		'data': 'opciones',
-// 		'orderable': false,
-// 		'title': '',
-// 	}];
-
-// 	tabla_procesos = load_table('#tabla-procesos', columns, {})
-// }
-
-function data_tabla_contratos(data){
-
-	tabla_contratos.clear().draw();
-
-	rows = [];
-
-	for (var i = 0; i < data.length; i++) {
-		tabla_contratos.column(1).visible(true);
-
-		row = {}
-
-		row.id					= data[i].id
-		row.opciones 			= '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'" onchange="seleccionar_uno()"></div>'
-		row.numero				= data[i].numero
-		row.fecha_inicio		= 'borrar'
-		row.fecha_termino		= 'borrar'
-		row.fecha_habilitacion	= 'borrar'
-		row.cliente				= 'borrar'
-		row.locales				= 'borrar'
-
-		rows.push(row)
-	}
-
-	tabla_contratos.rows.add(rows).draw();
-}
-
-// function data_tabla_procesos(){
-
-// 	tabla_procesos.clear().draw();
-
-// 	$.ajax({
-// 		url: '/procesos/contratos/propuesta',
-// 		type: 'get',
-// 		dataType: 'json',
-// 		success: function(data){
-
-// 			rows = [];
-
-// 			for (var i = 0; i < data.length; i++) {
-
-// 				var template = ''
-// 				template += '<div class="text-center">'
-// 				template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>'
-// 				template += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].id+',\'procesos\', \'tabla-procesos\', \'Proceso\')"><i class="fa fa-trash"></i></a>'
-
-// 				row = {}
-
-// 				var conceptos = ''
-// 				for (var j = 0; j < data[i].conceptos.length; j++) {
-// 					conceptos += '<p>'+data[i].conceptos[j].nombre+'</p>'
-// 				};
-
-// 				var contratos = ''
-// 				for (var j = 0; j < data[i].contratos.length; j++) {
-// 					contratos += '<p>'+data[i].contratos[j].numero+'</p>'
-// 				};
-
-// 				row.id 			= data[i].id
-// 				row.fecha 		= data[i].fecha_creacion
-// 				row.periodo 	= data[i].fecha_inicio+' - '+data[i].fecha_termino
-// 				row.concepto 	= conceptos
-// 				row.cliente 	= '---' // {falta: poner cliente}
-// 				row.contratos 	= contratos
-// 				row.monto 		= '---' // {falta: poner monto}
-// 				row.estado 		= data[i].estado
-// 				row.opciones 	= template
-
-// 				rows.push(row)
-// 			}
-// 			tabla_procesos.rows.add(rows).draw();
-// 		}
-// 	})
-// }
-
+// seccion filtrar contratos
 function filtrar_contratos(){
 	$("#form-fitrar-contratos").validate({
 		rules: {
-			ano_inicio: {
+			mes: {
 				required: true,
 			},
-
-			mes_inicio: {
+			anio: {
 				required: true,
-			},
-			ano_termino: {
-				required: true,
-			},
-			mes_termino: {
-				required: true,
-				comparacion: true,
 			},
 			activo: {
 				required: true,
@@ -429,10 +222,10 @@ function filtrar_contratos(){
 			},
 		},
 		messages: {
-			ano_inicio: {
+			mes: {
 				required: "campo requerido",
 			},
-			mes_inicio: {
+			anio: {
 				required: "campo requerido",
 			},
 			activo: {
@@ -449,182 +242,147 @@ function filtrar_contratos(){
 			$('#form-fitrar-contratos').ajaxSubmit({
 				dataType: 'json',
 				success: function(data){
-					
+
+					$('#form-generar-propuesta input[name="mes"]').val($('#form-fitrar-contratos select[name="mes"]').val())
+					$('#form-generar-propuesta input[name="anio"]').val($('#form-fitrar-contratos input[name="anio"]').val())
+					$('#form-generar-propuesta input[name="conceptos"]').val($('#form-fitrar-contratos select[name="conceptos"]').val())
+
 					if (data.length > 0) {
-						console.log('tiene data')
+						$('.seleccionar-contratos #form-generar-propuesta').removeClass('hide')
 						load_tabla_contratos(data[0].conceptos)
+						data_tabla_contratos(data)
 					}else{
-						console.log('no tiene data')
+						$('.seleccionar-contratos #form-generar-propuesta').addClass('hide')
+						var configuracion = {
+							'toast_type'	: 'error',
+							'toast_text' 	: 'no se encontraron contratos',
+							'toast_title' 	: 'Advertencia',
+						}
+						notification_toast_final(configuracion)
 					}
-
-					
 				}
-
-				// armar tabla de contratos
-				// poner focus en la seccion seleccionar contratos
-				// limpiar formulario de filtrar contratos
-				// mostrar mensaje que se filtro correctamente o que no se 
-				// encontro contrato con esta configuración
-
 			})
 		}
 	})
 }
 
-// function filtrar_contratos(){
+function load_tabla_contratos(conceptos){
 
-// 	$("#form-fitrar-contratos").validate({
-// 		rules: {
-// 			ano_inicio: {
-// 				required: true,
-// 			},
+	if ($.fn.DataTable.isDataTable( '#tabla-contratos')){
+		tabla_contratos.destroy();
+		$('.seleccionar-contratos table#tabla-contratos').html('')
+	}
 
-// 			mes_inicio: {
-// 				required: true,
-// 			},
-// 			ano_termino: {
-// 				required: true,
-// 			},
-// 			mes_termino: {
-// 				required: true,
-// 				comparacion: true,
-// 			},
-// 			activo: {
-// 				required: true,
-// 			},
-// 			conceptos: {
-// 				required: true,
-// 			},
-// 		},
-// 		messages: {
-// 			ano_inicio: {
-// 				required: "campo requerido",
-// 			},
-// 			mes_inicio: {
-// 				required: "campo requerido",
-// 			},
-// 			activo: {
-// 				required: "campo requerido",
-// 			},
-// 			conceptos: {
-// 				required: "campo requerido",
-// 			}
-// 		},
-// 		errorPlacement: function(error, element) {
-// 			error.appendTo(element.closest(".form-group").find('.container-error'));
-// 		},
-// 		submitHandler: function(form) {
-// 			$('#form-fitrar-contratos').ajaxSubmit({
-// 				dataType: 'json',
-// 				success: function(data){
+	var configuracion = {
+		'order'			: [[1, 'desc']],
+		'paginate'		: false,
+		'bLengthChange'	: false,
+		'bInfo'			: false,
+		'searching'		: false,
+		'buttons'		: [],
+	} 
 
-// 					console.log(data)
+	var columns = [
+	{
+		'width'		: '5%',
+		'data'		: 'opciones',
+		'orderable'	: false,
+		'title'		: '<div class="text-center"><input type="checkbox" class="checkbox-all" onchange="seleccionar_todo(this)"></div>',
+	},
+	{
+		'width'	: '15%',
+		'data'	: 'numero',
+		'title'	: 'Nº Contrato',
+	},
+	{
+		'width'		: '15%',
+		'data'		: 'nombre',
+		'title'		: 'Nombre',
+		'visible'	: false,
+	},
+	{
+		'width'	: '15%',
+		'data'	: 'cliente',
+		'title'	: 'Cliente',
+	}];
 
-// 					if (data.length == 0) {
-// 						notification_toast('error', 'No Existen', 'contratos con estos filtros')
-// 						data_tabla_contratos([])
-// 					}else{
-// 						$('#form-proceso button#enviar-proceso').attr('disabled', true)
-// 						$('.checkbox-all').prop('checked', false)
-// 						tabla_contratos.column(1).visible(false);
-// 						data_tabla_contratos(data)
+	var columnas = []
 
-// 						var mes_inicio 	= $('#form-fitrar-contratos select[name="mes_inicio"]').val()
-// 						var mes_termino = $('#form-fitrar-contratos select[name="mes_termino"]').val()
+	for (var i = 0; i < conceptos.length; i++) {
 
-// 						mes_inicio 	= mes_inicio < 10 ? '0'+mes_inicio : mes_inicio
-// 						mes_termino = mes_termino < 10 ? '0'+mes_termino : mes_termino
+		columna = {}
 
-// 						var ano_inicio 	= $('#form-fitrar-contratos input[name="ano_inicio"]').val()
-// 						var ano_termino = $('#form-fitrar-contratos input[name="ano_termino"]').val()
-// 						var concepto 	= $('#form-fitrar-contratos select[name="conceptos"]').val()
+		columna.data 		= conceptos[i].id
+		columna.title 		= conceptos[i].codigo.toLowerCase()
+		columna.orderable 	= false
+		columna.width 		= '7%',
 
-// 						$('#form-proceso input[name="fecha_inicio"]').val('01/'+mes_inicio+'/'+ano_inicio)
-// 						$('#form-proceso input[name="fecha_termino"]').val('01/'+mes_termino+'/'+ano_termino)
-// 						$('#form-proceso input[name="conceptos"]').val(concepto)
+		columns.push(columna)
+	};
 
-// 					}
-// 				}
-// 			});
-// }
-// }) 
-// }
+	tabla_contratos = load_table('#tabla-contratos', columns, configuracion)
+}
 
-function procesar_contratos(){
-	$("#form-proceso").validate({
-		rules: {
-			ano_inicio: {
-				required: true,
-			},
-			mes_inicio: {
-				required: true,
-			},
-			activo: {
-				required: true,
-			},
-			concepto: {
-				required: true,
-			},
-		},
-		messages: {
-			ano_inicio: {
-				required: "campo requerido",
-			},
-			mes_inicio: {
-				required: "campo requerido",
-			},
-			activo: {
-				required: "campo requerido",
-			},
-			concepto: {
-				required: "campo requerido",
-			}
-		},
-		errorPlacement: function(error, element) {
-			error.appendTo(element.closest(".form-group"));
-		},
-		submitHandler: function(form) {
+function data_tabla_contratos(data){
 
-			var contratos 		= []
-			var tabla_contratos 	= $('#tabla-contratos').dataTable();
+	tabla_contratos.clear().draw();
 
-			$('.checkbox-contrato:checked', tabla_contratos.fnGetNodes()).each(function(i){
-				contratos.push($(this).val())
-			})
+	rows = [];
 
-			$('input[name="contratos"]').val(contratos)
+	for (var i = 0; i < data.length; i++) {
+		
+		row = {}
 
-			$('#form-proceso').ajaxSubmit({
-				dataType: 'json',
-				success: function(data){
+		row['opciones'] = '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'" onchange="seleccionar_uno()"></div>'
+		row['numero']	= data[i].numero
+		row['nombre']	= data[i].nombre
+		row['cliente']	= data[i].cliente
 
-					data_tabla_procesos()
-
-					swal({
-						title: 'Propuesta <small>ejecutada correctamente</small>',
-						text: '',
-						type: 'success',
-						showCancelButton: true,
-						confirmButtonColor: '#FCC491',
-						confirmButtonText: '<a href="/propuesta/pdf/'+data.id+'"><span style="color:#FFF">Descargar PDF<span>',
-						cancelButtonText: 'Cancelar',						
-						closeOnConfirm: true,
-					});
-				}
-			});
+		for (var j = 0; j < data[i].conceptos.length; j++) {
+			row[data[i].conceptos[j].id] = data[i].conceptos[j].valido.estado
 		}
-	}) 
+		rows.push(row)
+	}
+
+	tabla_contratos.rows.add(rows).draw();
+}
+
+
+
+// sección seleccionar contratos
+function crear_propuesta(){
+
+	var contratos 		= []
+	var tabla_contratos = $('#tabla-contratos').dataTable();
+	var enviar 			= false
+
+	$('.checkbox-contrato:checked', tabla_contratos.fnGetNodes()).each(function(i){
+		contratos.push($(this).val())
+		enviar = true
+	})
+
+	$('#form-generar-propuesta input[name="contratos"]').val(contratos)
+
+	if (enviar) {
+		$('#form-generar-propuesta').ajaxSubmit({
+			dataType: 'json',
+			success: function(data){
+				cargar_propuesta(data)
+			}
+		});
+	}else{
+		var configuracion = {
+			'toast_type'	: 'error',
+			'toast_text' 	: 'seleccionar al menos un contrato',
+			'toast_title' 	: 'Advertencia',
+		}
+		notification_toast_final(configuracion)
+	}
 }
 
 function seleccionar_uno(){
+
 	$('.checkbox-all').prop('checked', false)
-	$('#form-proceso button#enviar-proceso').attr('disabled', true)
-	var tabla 	= $('#tabla-contratos').dataTable();
-	$('.checkbox-contrato', tabla.fnGetNodes()).each(function(i){
-		if ($(this).is(':checked') == true){
-			$('#form-proceso button#enviar-proceso').attr('disabled', false)
-		}
-	})
 }
 
 function seleccionar_todo(obj){
@@ -634,15 +392,167 @@ function seleccionar_todo(obj){
 
 	if($(obj).is(':checked')){
 		all = true
-		$('#form-proceso button#enviar-proceso').attr('disabled', false)
-	}
-	else{
-		$('#form-proceso button#enviar-proceso').attr('disabled', true)
 	}
 
 	$('.checkbox-contrato', tabla.fnGetNodes()).each(function(i){
 		$(this).prop('checked', all)
 	})
+}
+
+
+
+// sección generar propuesta
+function cargar_propuesta(contratos){
+
+	$('#validar-propuesta').removeClass('hide')
+	$('#container-propuesta').html('')
+
+	for (var i = 0; i < contratos.length; i++) {
+		$('#container-propuesta').append(template_propuesta(contratos[i]))
+	}
+
+	validar_form_propuesta()
+}
+
+function template_propuesta(contrato){
+
+	var template = ''
+
+	template += '<div data-id="@contrato_id" class="ibox-content" style="display: block;">'
+
+	template += '<div class="contrato-informacion">'
+	template += '<p><span>Nº Contrato</span><span>@contrato_numero</span></p>'
+	template += '<p><span>Cliente</span><span>@cliente_nombre</span></p>'
+	template += '<p><span>RUT</span><span>@cliente_rut</span></p>'
+	template += '<p><span>Marca comercial</span><span>@contrato_nombre</span></p>'
+	template += '</div>'
+
+	template += '<div class="container-tabla">'
+	template += '<table id="tabla-conceptos-@contrato_id" class="table table-striped">'
+	template += '<thead>'
+	template += '<tr>'
+	template += '<th>concepto a facturar</th>'
+	template += '<th class="text-right">total ($)</th>'
+	template += '</tr>'
+	template += '</thead>'
+	template += '<tbody>'
+
+	for (var i = 0; i < contrato.conceptos.length; i++) {
+
+		template += '<tr>'
+		template += '<input type="hidden" class="id" value="@concepto_id">'
+		template += '<td><input type="text" class="nombre"  name="nombre-@contrato_id-@concepto_id" value="@concepto_nombre"><div class="container-error"></div></td>'
+		template += '<td><input type="number" class="total" name="total-@contrato_id-@concepto_id"  value="@concepto_total"><div class="container-error"></div></td>'
+		template += '</tr>'
+
+		template = template.replace(/@concepto_id/g, 		contrato.conceptos[i].id);
+		template = template.replace(/@concepto_nombre/g, 	contrato.conceptos[i].nombre);
+		template = template.replace(/@concepto_total/g, 	contrato.conceptos[i].total);
+	};
+
+	template += '</tbody>'
+	template += '</table>'
+	template += '</div>'
+	template += '</div>'
+
+	template = template.replace(/@contrato_id/g, 		contrato.id);
+	template = template.replace(/@contrato_numero/g, 	contrato.numero);
+	template = template.replace(/@cliente_nombre/g, 	contrato.nombre);
+	template = template.replace(/@cliente_rut/g, 		contrato.cliente.rut);
+	template = template.replace(/@contrato_nombre/g, 	contrato.cliente.nombre);
+
+	return template
+}
+
+function validar_form_propuesta(){
+
+	$("#validar-propuesta").validate({
+
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest("td").find('.container-error'));
+		},
+		submitHandler: function(form) {
+			var data = []
+
+			// armar data
+			$("#container-propuesta .ibox-content").each(function (index){
+
+				var contrato 		= {}
+				contrato.id 		=  $(this).data("id")
+				contrato.conceptos 	=  []
+
+				$('#tabla-conceptos-'+contrato.id+' > tbody > tr').each(function(){
+
+					var concepto = {}
+
+					concepto.id 		= $(this).find('input.id').val()
+					concepto.nombre 	= $(this).find('input.nombre').val()
+					concepto.total 		= $(this).find('input.total').val()
+					concepto.modified 	= false
+
+					contrato.conceptos.push(concepto)
+
+				});
+
+				data.push(contrato)
+			})
+
+			// enviar data
+			$.ajax({
+				url: '/procesos/propuesta/guardar',
+				type: 'post',
+				dataType: 'json',
+				data:{
+					mes 				: $('#form-generar-propuesta input[name="mes"]').val(),
+					anio 				: $('#form-generar-propuesta input[name="anio"]').val(),
+					contratos 			: JSON.stringify(data),
+					csrfmiddlewaretoken : getCookie('csrftoken'),
+				},
+				beforeSend: function(){
+					// $('.validar-propuesta button').attr('disabled', true)
+					// <i class="fa fa-spinner fa-pulse fa-fw"></i>
+				},
+				success: function(data){
+					console.log(data)
+					
+					// $('.validar-propuesta #container-propuesta').html('')
+					// $('.validar-propuesta button').attr('disabled', false)
+					// $('.validar-propuesta button').addClass('hide')
+
+					// swal({
+					// 	title: 'Creando Propuesta',
+					// 	text: '',
+					// 	type: 'success',
+					// 	showCancelButton: true,
+					// 	confirmButtonColor: '#FCC491',
+					// 	confirmButtonText: '<a><span style="color:#FFF">Descargar PDF<span>',
+					// 	cancelButtonText: 'Cancelar',
+					// 	closeOnConfirm: true,
+					// });
+				}
+			})
+		}
+	})
+
+	// agregar validacion a los campos nombre
+	$("[name^=nombre]").each(function () {
+		$(this).rules("add", {
+			required: true,
+			messages: {
+				required: "campo requerido",
+			}
+		});
+	});
+
+	// agregar validacion a los campos nombre
+	$("[name^=total]").each(function () {
+		$(this).rules("add", {
+			required: true,
+			messages: {
+				required: "campo requerido",
+			}
+		});
+	});
 }
 
 

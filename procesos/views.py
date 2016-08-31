@@ -25,10 +25,9 @@ import json
 import pdfkit
 
 from utilidades.views import primer_dia, ultimo_dia, meses_entre_fechas, sumar_meses, formato_moneda
-
 from suds.client import Client
-
 import xml.etree.ElementTree as ET
+
 
 
 class PropuestaGenerarList(ListView):
@@ -110,7 +109,6 @@ class PROPUESTA_PROCESAR(View):
 			data.append(enviar_detalle_propuesta(detalle.id))
 
 		return JsonResponse({'response': data}, safe=False)
-
 
 class PROCESOS(View):
 
@@ -253,185 +251,17 @@ class PROCESOS(View):
 
 
 
-# Funciones ----------------------------
-def enviar_detalle_propuesta(id):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	data 	= list()
-	detalle = Proceso_Detalle.objects.get(id=id)
-
-	SDT_DocVentaExt = ET.Element('SDT_DocVentaExt')
-	SDT_DocVentaExt.set('xmlns', 'http://www.informat.cl/ws')
-	
-	# SDT_DocVentaExt
-	EncDoc 		= ET.SubElement(SDT_DocVentaExt, 'EncDoc')
-	DetDoc 		= ET.SubElement(SDT_DocVentaExt, 'DetDoc')
-	ResumenDoc 	= ET.SubElement(SDT_DocVentaExt, 'ResumenDoc')
-	Recaudacion = ET.SubElement(SDT_DocVentaExt, 'Recaudacion')
-
-	# SDT_DocVentaExt/EncDoc
-	RefDoc	= ET.SubElement(EncDoc, 'RefDoc')
-	Cliente	= ET.SubElement(EncDoc, 'Cliente')
-
-	# SDT_DocVentaExt/EncDoc/RefDoc
-	ET.SubElement(RefDoc, 'NroRefCliente')
-	ET.SubElement(RefDoc, 'Modulo')
-	ET.SubElement(RefDoc, 'NroOrdCom')
-
-	# SDT_DocVentaExt/EncDoc/RefDoc
-	Identificacion 	= ET.SubElement(Cliente, 'Identificacion')
-	Facturacion 	= ET.SubElement(Cliente, 'Facturacion')
-
-	# SDT_DocVentaExt/EncDoc/RefDoc/Identificacion
-	ET.SubElement(Identificacion, 'IdCliente').text='77304990'
-	ET.SubElement(Identificacion, 'Nombre_Completo').text='VALVERDE NORAMBUENA SPA'
-	ET.SubElement(Identificacion, 'Secuencia').text='1'# IDENTIIFCAR SI ES CLIENTE O PROVEEDOR
-	ET.SubElement(Identificacion, 'Direccion').text='JOSE M.ESCRIBA BALAGER 13105, OF 813'
-	ET.SubElement(Identificacion, 'Comuna').text='LO BARNECHEA'
-	ET.SubElement(Identificacion, 'Ciudad').text='SANTIAGO'
-	ET.SubElement(Identificacion, 'Telefono')
-	ET.SubElement(Identificacion, 'Email')
-
-	# SDT_DocVentaExt/EncDoc/RefDoc/Facturacion
-	ET.SubElement(Facturacion, 'Moneda').text='1'
-	ET.SubElement(Facturacion, 'Tasa').text='1'
-	ET.SubElement(Facturacion, 'CondVenta').text='0'# SI ES CONTADO, EN CREDITO ETC
-	ET.SubElement(Facturacion, 'Origen').text='0'
-	ET.SubElement(Facturacion, 'DocAGenerar').text='200'
-	ET.SubElement(Facturacion, 'DocRef').text='0'
-	ET.SubElement(Facturacion, 'NroDocRef').text='0'
-	ET.SubElement(Facturacion, 'NroDoc').text='0'
-	ET.SubElement(Facturacion, 'Estado').text='0'
-	ET.SubElement(Facturacion, 'Equipo').text='1'# AVERIGUAR QUE ES
-	ET.SubElement(Facturacion, 'Bodega_Salida').text='1'
-	ET.SubElement(Facturacion, 'IdVendedor').text='6395133'
-	ET.SubElement(Facturacion, 'Sucursal_Cod').text='1'
-	ET.SubElement(Facturacion, 'ListaPrecio_Cod')
-	ET.SubElement(Facturacion, 'Fecha_Atencion').text='2016-08-19'
-	ET.SubElement(Facturacion, 'Fecha_Documento').text='2016-08-19'
-
-
-	# SDT_DocVentaExtDetDoc/DetDoc
-	Items = ET.SubElement(DetDoc, 'Items')
-	
-	# SDT_DocVentaExtDetDoc/DetDoc/Items
-	Item = ET.SubElement(Items, 'Item')
-
-	ET.SubElement(Item, 'NumItem').text='1'
-	ET.SubElement(Item, 'FechaEntrega').text='0'
-	ET.SubElement(Item, 'PrecioRef').text='1000'
-	ET.SubElement(Item, 'Cantidad').text='1'
-	ET.SubElement(Item, 'PorcUno').text='0'
-	ET.SubElement(Item, 'MontoUno').text='1000'
-	ET.SubElement(Item, 'DescDos_Cod').text='0'
-	ET.SubElement(Item, 'DescTre_Cod')
-	ET.SubElement(Item, 'MontoImpUno').text='0'
-	ET.SubElement(Item, 'PorcImpUno').text='0'
-	ET.SubElement(Item, 'MontoImpDos').text='0'
-	ET.SubElement(Item, 'PorcImpDos').text='0'
-	ET.SubElement(Item, 'TotalDocLin').text='1000'
-
-	Producto = ET.SubElement(Item, 'Producto')
-
-	Producto_Vta 	= ET.SubElement(Producto, 'Producto_Vta').text='01010045001217'
-	Unidad 			= ET.SubElement(Producto, 'Unidad').text='Unid'
-
-	# SDT_DocVentaExtDetDoc/ResumenDoc
-	ET.SubElement(ResumenDoc, 'TotalNeto').text='1000'
-	ET.SubElement(ResumenDoc, 'CodigoDescuento')
-	ET.SubElement(ResumenDoc, 'TotalDescuento').text='0'
-	ET.SubElement(ResumenDoc, 'TotalIVA').text='190'
-	ET.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text='0'
-	ET.SubElement(ResumenDoc, 'TotalDoc').text='1190'
-	TotalConceptos = ET.SubElement(ResumenDoc, 'TotalConceptos')
-
-	# SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
-	# CREAR UN FOR 
-	Conceptos = ET.SubElement(TotalConceptos, 'Conceptos')
-	ET.SubElement(Conceptos, 'Concepto_Cod').text='200'
-	ET.SubElement(Conceptos, 'ValorConcepto').text='1190'
-
-	Conceptos = ET.SubElement(TotalConceptos, 'Conceptos')
-	ET.SubElement(Conceptos, 'Concepto_Cod').text='170'
-	ET.SubElement(Conceptos, 'ValorConcepto').text='190'
-
-	Conceptos = ET.SubElement(TotalConceptos, 'Conceptos')
-	ET.SubElement(Conceptos, 'Concepto_Cod').text='100'
-	ET.SubElement(Conceptos, 'ValorConcepto').text='1000'
-
-
-	# Recaudacion
-	Encabezado	= ET.SubElement(Recaudacion, 'Encabezado')
-	Detalle		= ET.SubElement(Recaudacion, 'Detalle')
-
-	# Recaudacion/Encabezado
-	ET.SubElement(Encabezado, 'IdCajero')
-	ET.SubElement(Encabezado, 'Tipo_Vuelto')
-	ET.SubElement(Encabezado, 'IdCliente')
-	ET.SubElement(Encabezado, 'DigitoVerificador')
-	ET.SubElement(Encabezado, 'NombreCompleto')
-	ET.SubElement(Encabezado, 'Direccion')
-	ET.SubElement(Encabezado, 'Ciudad')
-	ET.SubElement(Encabezado, 'Comuna')
-	ET.SubElement(Encabezado, 'Telefono')
-	ET.SubElement(Encabezado, 'Email')
-	ET.SubElement(Encabezado, 'TotalaRecaudar')
-	RecaudacionEnc_ext = ET.SubElement(Encabezado, 'RecaudacionEnc_ext')
-
-	# Recaudacion/Encabezado/RecaudacionEnc_ext
-	REnExt_Item = ET.SubElement(RecaudacionEnc_ext, 'REnExt_Item')
-	ET.SubElement(REnExt_Item, 'RecEnc_opcion')
-	ET.SubElement(REnExt_Item, 'RecEnd_datos')
-
-
-	# Recaudacion/Detalle/FormaPago
-	FormaPago = ET.SubElement(Detalle, 'FormaPago')
-	ET.SubElement(FormaPago, 'Cod_FormaPago')
-	ET.SubElement(FormaPago, 'Cod_MonedaFP')
-	ET.SubElement(FormaPago, 'NroCheque')
-	ET.SubElement(FormaPago, 'FechaCheque')
-	ET.SubElement(FormaPago, 'FechaVencto')
-	ET.SubElement(FormaPago, 'Cod_Banco')
-	ET.SubElement(FormaPago, 'Cod_Plaza')
-	ET.SubElement(FormaPago, 'Referencia')
-	ET.SubElement(FormaPago, 'MontoaRec')
-	ET.SubElement(FormaPago, 'ParidadRec')
-	
-	print ("---------------------------------")
-	# ET.dump(SDT_DocVentaExt)
-	xml = ET.tostring(SDT_DocVentaExt, short_empty_elements=False,  method='xml')
-
-
-	# xml_1 = '&lt;SDT_DocVentaExt xmlns=&quot;http://www.informat.cl/ws&quot;&gt;&lt;EncDoc&gt;&lt;RefDoc&gt;&lt;NroRefCliente&gt;2-2-101-101&lt;/NroRefCliente&gt;&lt;Modulo&gt;PDV&lt;/Modulo&gt;&lt;NroOrdCom&gt;2&lt;/NroOrdCom&gt;&lt;/RefDoc&gt;&lt;Cliente&gt;&lt;Identificacion&gt;&lt;IdCliente&gt;66666666&lt;/IdCliente&gt;&lt;Nombre_Completo&gt;CLIENTES VARIOS&lt;/Nombre_Completo&gt;&lt;Secuencia&gt;0&lt;/Secuencia&gt;&lt;Direccion&gt;CLIENTES VARIOS&lt;/Direccion&gt;&lt;Comuna&gt;CLIENTES VARIOS&lt;/Comuna&gt;&lt;Ciudad&gt;CLIENTES VARIOS&lt;/Ciudad&gt;&lt;Telefono&gt;CLIENTES VARIOS&lt;/Telefono&gt;&lt;Email /&gt;&lt;/Identificacion&gt;&lt;Facturacion&gt;&lt;Moneda&gt;1&lt;/Moneda&gt;&lt;Tasa&gt;1&lt;/Tasa&gt;&lt;CondVenta&gt;0&lt;/CondVenta&gt;&lt;Origen&gt;0&lt;/Origen&gt;&lt;DocAGenerar&gt;101&lt;/DocAGenerar&gt;&lt;DocRef&gt;0&lt;/DocRef&gt;&lt;NroDocRef&gt;0&lt;/NroDocRef&gt;&lt;NroDoc&gt;10001&lt;/NroDoc&gt;&lt;Estado&gt;0&lt;/Estado&gt;&lt;Equipo&gt;201&lt;/Equipo&gt;&lt;Bodega_Salida&gt;102&lt;/Bodega_Salida&gt;&lt;IdVendedor&gt;4839396&lt;/IdVendedor&gt;&lt;Sucursal_Cod&gt;2&lt;/Sucursal_Cod&gt;&lt;ListaPrecio_Cod /&gt;&lt;Fecha_Atencion&gt;2015-12-15&lt;/Fecha_Atencion&gt;&lt;Fecha_Documento&gt;2016-04-03&lt;/Fecha_Documento&gt;&lt;/Facturacion&gt;&lt;/Cliente&gt;&lt;/EncDoc&gt;&lt;DetDoc&gt;&lt;Items&gt;&lt;Item&gt;&lt;NumItem&gt;1&lt;/NumItem&gt;&lt;FechaEntrega&gt;0&lt;/FechaEntrega&gt;&lt;PrecioRef&gt;1000&lt;/PrecioRef&gt;&lt;Cantidad&gt;1.000000&lt;/Cantidad&gt;&lt;PorcUno&gt;0.00&lt;/PorcUno&gt;&lt;MontoUno&gt;0&lt;/MontoUno&gt;&lt;DescDos_Cod&gt;0&lt;/DescDos_Cod&gt;&lt;DescTre_Cod /&gt;&lt;MontoImpUno&gt;0&lt;/MontoImpUno&gt;&lt;PorcImpUno&gt;0.00&lt;/PorcImpUno&gt;&lt;MontoImpDos&gt;0&lt;/MontoImpDos&gt;&lt;PorcImpDos&gt;0.00&lt;/PorcImpDos&gt;&lt;TotalDocLin&gt;1000&lt;/TotalDocLin&gt;&lt;Producto&gt;&lt;Producto_Vta&gt;0000002572703&lt;/Producto_Vta&gt;&lt;Unidad&gt;Unid&lt;/Unidad&gt;&lt;/Producto&gt;&lt;/Item&gt;&lt;/Items&gt;&lt;/DetDoc&gt;&lt;ResumenDoc&gt;&lt;TotalNeto&gt;840&lt;/TotalNeto&gt;&lt;CodigoDescuento /&gt;&lt;TotalDescuento&gt;0&lt;/TotalDescuento&gt;&lt;TotalIVA&gt;160&lt;/TotalIVA&gt;&lt;TotalOtrosImpuestos&gt;0&lt;/TotalOtrosImpuestos&gt;&lt;TotalDoc&gt;1000&lt;/TotalDoc&gt;&lt;TotalConceptos&gt;&lt;Conceptos&gt;&lt;Concepto_Cod&gt;1&lt;/Concepto_Cod&gt;&lt;ValorConcepto&gt;0&lt;/ValorConcepto&gt;&lt;/Conceptos&gt;&lt;Conceptos&gt;&lt;Concepto_Cod&gt;2&lt;/Concepto_Cod&gt;&lt;ValorConcepto&gt;160&lt;/ValorConcepto&gt;&lt;/Conceptos&gt;&lt;Conceptos&gt;&lt;Concepto_Cod&gt;3&lt;/Concepto_Cod&gt;&lt;ValorConcepto&gt;840&lt;/ValorConcepto&gt;&lt;/Conceptos&gt;&lt;/TotalConceptos&gt;&lt;/ResumenDoc&gt;&lt;Recaudacion&gt;&lt;Encabezado&gt;&lt;IdCajero&gt;4839396&lt;/IdCajero&gt;&lt;Tipo_Vuelto&gt;1&lt;/Tipo_Vuelto&gt;&lt;IdCliente&gt;66666666&lt;/IdCliente&gt;&lt;DigitoVerificador&gt;6&lt;/DigitoVerificador&gt;&lt;NombreCompleto&gt;CLIENTES VARIOS&lt;/NombreCompleto&gt;&lt;Direccion&gt;CLIENTES VARIOS&lt;/Direccion&gt;&lt;Ciudad&gt;CLIENTES VARIOS&lt;/Ciudad&gt;&lt;Comuna&gt;CLIENTES VARIOS&lt;/Comuna&gt;&lt;Telefono&gt;CLIENTES VARIOS&lt;/Telefono&gt;&lt;Email /&gt;&lt;TotalaRecaudar&gt;1000&lt;/TotalaRecaudar&gt;&lt;RecaudacionEnc_ext&gt;&lt;REnExt_Item&gt;&lt;RecEnc_opcion /&gt;&lt;RecEnd_datos /&gt;&lt;/REnExt_Item&gt;&lt;/RecaudacionEnc_ext&gt;&lt;/Encabezado&gt;&lt;Detalle&gt;&lt;FormaPago&gt;&lt;Cod_FormaPago&gt;0&lt;/Cod_FormaPago&gt;&lt;Cod_MonedaFP&gt;1&lt;/Cod_MonedaFP&gt;&lt;NroCheque /&gt;&lt;FechaCheque&gt;2015-12-15&lt;/FechaCheque&gt;&lt;FechaVencto /&gt;&lt;Cod_Banco /&gt;&lt;Cod_Plaza /&gt;&lt;Referencia /&gt;&lt;MontoaRec&gt;1000&lt;/MontoaRec&gt;&lt;ParidadRec&gt;1&lt;/ParidadRec&gt;&lt;/FormaPago&gt;&lt;/Detalle&gt;&lt;/Recaudacion&gt;&lt;/SDT_DocVentaExt&gt;'
-	# xml1 = '<SDT_DocVentaExt xmlns="http://www.informat.cl/ws"><EncDoc><RefDoc><NroRefCliente>2-2-101-101</NroRefCliente><Modulo>PDV</Modulo><NroOrdCom>2</NroOrdCom></RefDoc><Cliente><Identificacion><IdCliente>66666666</IdCliente><Nombre_Completo>CLIENTES VARIOS</Nombre_Completo><Secuencia>0</Secuencia><Direccion>CLIENTES VARIOS</Direccion><Comuna>CLIENTES VARIOS</Comuna><Ciudad>CLIENTES VARIOS</Ciudad><Telefono>CLIENTES VARIOS</Telefono><Email /></Identificacion><Facturacion><Moneda>1</Moneda><Tasa>1</Tasa><CondVenta>0</CondVenta><Origen>0</Origen><DocAGenerar>101</DocAGenerar><DocRef>0</DocRef><NroDocRef>0</NroDocRef><NroDoc>101</NroDoc><Estado>0</Estado><Equipo>201</Equipo><Bodega_Salida>102</Bodega_Salida><IdVendedor>4839396</IdVendedor><Sucursal_Cod>2</Sucursal_Cod><ListaPrecio_Cod /><Fecha_Atencion>2015-12-15</Fecha_Atencion><Fecha_Documento>2015-12-15</Fecha_Documento></Facturacion></Cliente></EncDoc><DetDoc><Items><Item><NumItem>1</NumItem><FechaEntrega>0</FechaEntrega><PrecioRef>1000</PrecioRef><Cantidad>1.000000</Cantidad><PorcUno>0.00</PorcUno><MontoUno>0</MontoUno><DescDos_Cod>0</DescDos_Cod><DescTre_Cod /><MontoImpUno>0</MontoImpUno><PorcImpUno>0.00</PorcImpUno><MontoImpDos>0</MontoImpDos><PorcImpDos>0.00</PorcImpDos><TotalDocLin>1000</TotalDocLin><Producto><Producto_Vta>0000002572703</Producto_Vta><Unidad>Unid</Unidad></Producto></Item></Items></DetDoc><ResumenDoc><TotalNeto>840</TotalNeto><CodigoDescuento /><TotalDescuento>0</TotalDescuento><TotalIVA>160</TotalIVA><TotalOtrosImpuestos>0</TotalOtrosImpuestos><TotalDoc>1000</TotalDoc><TotalConceptos><Conceptos><Concepto_Cod>1</Concepto_Cod><ValorConcepto>0</ValorConcepto></Conceptos><Conceptos><Concepto_Cod>2</Concepto_Cod><ValorConcepto>160</ValorConcepto></Conceptos><Conceptos><Concepto_Cod>3</Concepto_Cod><ValorConcepto>840</ValorConcepto></Conceptos></TotalConceptos></ResumenDoc><Recaudacion><Encabezado><IdCajero>4839396</IdCajero><Tipo_Vuelto>1</Tipo_Vuelto><IdCliente>66666666</IdCliente><DigitoVerificador>6</DigitoVerificador><NombreCompleto>CLIENTES VARIOS</NombreCompleto><Direccion>CLIENTES VARIOS</Direccion><Ciudad>CLIENTES VARIOS</Ciudad><Comuna>CLIENTES VARIOS</Comuna><Telefono>CLIENTES VARIOS</Telefono><Email /><TotalaRecaudar>1000</TotalaRecaudar><RecaudacionEnc_ext><REnExt_Item><RecEnc_opcion /><RecEnd_datos /></REnExt_Item></RecaudacionEnc_ext></Encabezado><Detalle><FormaPago><Cod_FormaPago>0</Cod_FormaPago><Cod_MonedaFP>1</Cod_MonedaFP><NroCheque /><FechaCheque>2015-12-15</FechaCheque><FechaVencto /><Cod_Banco /><Cod_Plaza /><Referencia /><MontoaRec>1000</MontoaRec><ParidadRec>1</ParidadRec></FormaPago></Detalle></Recaudacion></SDT_DocVentaExt>'
-	# url = 'http://192.168.231.21:8080/wshcvm/servlet/axmldocvtaext?wsdl' # jaime
-	# url = 'http://192.168.231.114:8080/ws_inet_clp/servlet/axmldocvta?wsdl'# nuevo
-	url = 'http://192.168.231.114:8080/ws_inet_clp/servlet/axmldocvtaext?wsdl' #nuevo2
-	client1 = Client(url)
-	response = client1.service.Execute(xml.decode())
-
-	for error in response.SDT_ERRORES_ERROR:
-		print (error.DESCERROR)
-
-	# return response
-
-	
-
-	return data
-
-def filtrar_contratos(request):
+def propuesta_filtrar(request):
 
 	data 			= list()
 
 	var_post 		= request.POST.copy()
-	mes_inicio		= var_post['mes_inicio']
-	ano_inicio		= var_post['ano_inicio']
-	mes_termino		= var_post['mes_termino']
-	ano_termino		= var_post['ano_termino']
 	activo_id		= var_post['activo']
 	conceptos_id 	= var_post.getlist('conceptos')
 
-	fecha_inicio 	= primer_dia(datetime.strptime('01/'+mes_inicio+'/'+ano_inicio+'', "%d/%m/%Y"))
-	fecha_termino 	= ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+ano_termino+'', "%d/%m/%Y"))
+	fecha 			= primer_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y"))
 	activo 			= Activo.objects.get(id=activo_id)
 	locales 		= activo.local_set.filter(visible=True).values_list('id', flat=True)
 	contratos 		= Contrato.objects.filter(locales__in=locales, contrato_estado__in=[4,6], visible=True).distinct()
@@ -446,10 +276,10 @@ def filtrar_contratos(request):
 
 			if contrato.conceptos.filter(id=concepto_id).exists():
 				asociado 	= True
-				valido 		= validar_concepto(contrato, concepto, fecha_inicio, fecha_termino)
+				valido 		= validar_concepto(contrato, concepto, fecha)
 			else:
 				asociado 	= False 
-				valido 		= True
+				valido 		= {'estado': False, 'mensaje': 'no tiene este concepto asociado'}
 
 			conceptos.append({
 				'id'		: concepto.id,
@@ -469,42 +299,123 @@ def filtrar_contratos(request):
 
 	return JsonResponse(data, safe=False)
 
+def propuesta_generar(request):
 
-def validar_concepto(contrato, concepto, fecha_inicio, fecha_termino):
+	response 		= list()
+	var_post 		= request.POST.copy()
+
+	contratos_id 	= var_post.get('contratos').split(",")
+	conceptos_id 	= var_post.get('conceptos').split(",")
+	fecha 			= datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y").date()
+
+	for contrato_id in contratos_id:
+
+		contrato 	= Contrato.objects.get(id=contrato_id)
+		conceptos 	= list()
+
+		for concepto_id in conceptos_id:
+
+			concepto = Concepto.objects.get(id=concepto_id)
+
+			if validar_concepto(contrato, concepto, fecha):
+
+				total = calcular_concepto(contrato, concepto, fecha)
+
+				if total is not 0:
+					conceptos.append({
+						'id'		: concepto.id,
+						'nombre'	: concepto.nombre,
+						'total'		: total,
+						})
+
+		cliente = {
+			'id' 		: contrato.cliente.id,
+			'nombre' 	: contrato.cliente.nombre,
+			'rut' 		: contrato.cliente.rut,
+		}
+
+		response.append({
+			'id'		: contrato.id,
+			'numero'	: contrato.numero,
+			'nombre'	: contrato.nombre_local,
+			'cliente'	: cliente,
+			'conceptos' : conceptos,
+			})
+
+	return JsonResponse(response, safe=False)
+
+def propuesta_guardar(request):
+
+	response 	= list()
+	var_post 	= request.POST.copy()
+	data 		= json.loads(var_post['contratos'])
+
+	proceso = Proceso(
+		fecha_inicio		= primer_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y")),
+		fecha_termino		= ultimo_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y")),
+		user				= request.user,
+		proceso_estado_id 	= 1,
+	)
+	proceso.save()
+
+	for item in data:
+
+		contrato_id = item['id']
+		conceptos 	= item['conceptos']
+
+		for concepto in conceptos:
+
+			concepto_id 		= concepto['id']
+			concepto_nombre 	= concepto['nombre']
+			concepto_total 		= concepto['total']
+			concepto_modificado = concepto['modified']
+
+			Proceso_Detalle(
+				fecha_inicio	= primer_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y")),
+				fecha_termino	= ultimo_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y")),
+				total 			= concepto_total,
+				proceso 		= proceso,
+				contrato_id 	= int(contrato_id),
+				concepto_id 	= int(concepto_id),
+			).save()
+
+	return JsonResponse(response, safe=False)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+def validar_concepto(contrato, concepto, fecha):
 
 	if concepto.concepto_tipo.id == 1:
-		return validar_concepto_arriendo_minimo(contrato, concepto, fecha_inicio, fecha_termino)
+		return validar_arriendo_minimo(contrato, concepto, fecha)
 
 	elif concepto.concepto_tipo.id == 2:
-		return validar_concepto_arriendo_variable(contrato, concepto, fecha_inicio, fecha_termino)
+		return validar_arriendo_variable(contrato, concepto, fecha)
 
 	elif concepto.concepto_tipo.id == 3:
-		return validar_concepto_gasto_comun(contrato, concepto, fecha_inicio, fecha_termino)
+		return validar_gasto_comun(contrato, concepto, fecha)
 
 	elif concepto.concepto_tipo.id == 4:
-		return validar_concepto_servicios_basicos(contrato, concepto, fecha_inicio, fecha_termino)
+		return validar_servicios_basicos(contrato, concepto, fecha)
 
 	elif concepto.concepto_tipo.id == 5:
-		return validar_concepto_cuota_de_incorporacion(contrato, concepto, fecha_inicio, fecha_termino)
+		return validar_cuota_de_incorporacion(contrato, concepto, fecha)
 
 	elif concepto.concepto_tipo.id == 6:
-		return validar_concepto_fondo_de_promocion(contrato, concepto, fecha_inicio, fecha_termino)
+		return validar_fondo_de_promocion(contrato, concepto, fecha)
 
 	elif concepto.concepto_tipo.id == 7:
-		return validar_concepto_arriendo_bodega(contrato, concepto, fecha_inicio, fecha_termino)
+		return validar_arriendo_bodega(contrato, concepto, fecha)
 
 	elif concepto.concepto_tipo.id == 8:
-		return validar_concepto_servicios_varios(contrato, concepto, fecha_inicio, fecha_termino)
+		return validar_servicios_varios(contrato, concepto, fecha)
 
 	elif concepto.concepto_tipo.id == 9:
-		return validar_concepto_multas(contrato, concepto, fecha_inicio, fecha_termino)
+		return validar_multas(contrato, concepto, fecha)
 
 	else:
 		return True
 
-
-
-def validar_concepto_arriendo_minimo(contrato, concepto, fecha_inicio, fecha_termino):
+def validar_arriendo_minimo(contrato, concepto, periodo):
 
 	mensajes = [
 		'Correcto', 
@@ -516,7 +427,7 @@ def validar_concepto_arriendo_minimo(contrato, concepto, fecha_inicio, fecha_ter
 
 		arriendo = Arriendo.objects.get(contrato=contrato, concepto=concepto)
 
-		if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha_inicio.month, mes_termino__gte=fecha_termino.month).exists():
+		if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month).exists():
 			estado 	= True
 			mensaje = 0
 		else:
@@ -532,81 +443,672 @@ def validar_concepto_arriendo_minimo(contrato, concepto, fecha_inicio, fecha_ter
 		'mensaje'	: mensajes[mensaje],
 	}
 
-def validar_concepto_arriendo_variable(contrato, concepto, fecha_inicio, fecha_termino):
+def validar_arriendo_variable(contrato, concepto, periodo):
 
 	mensajes = [
-		'correcto', 
-		'no tiene datos para este perido', 
-		'no existe arriendo mínimo'
-		]
+		'Correcto', 
+		'No tiene arriendo mínimo',
+	]
 
-	try:
-		arriendo = Arriendo.objects.get(contrato=contrato, concepto=concepto)
+	arriendo_minimo = validar_arriendo_minimo(contrato, concepto, periodo)
+	print (arriendo_minimo)
 
-		if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha_inicio.month, mes_termino__gte=fecha_termino.month).exists():
+	if arriendo_minimo['estado'] is True:
+		print ('tiene arriendo minimo')
+		# if Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists():
+		if Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, fecha_inicio__lte=fecha, fecha_termino__gte=fecha).exists():
+			print ('tiene arriendo variable')
 			estado 	= True
 			mensaje = 0
 		else:
+			print ('no tiene arriendo variable')
 			estado 	= False
-			mensaje = 1
+			mensaje = 1	
 
-	except:
+	else:
+		print ('no tiene arriendo minimo')
 		estado 	= False
-		mensaje = 2
+		mensaje = 1
+
+	# try:
+	# 	existe = Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
+	# 	# existe = Arriendo_Variable.objects.filter(contrato=contrato, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
+
+	# 	if existe is True:
+	# 		# detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
+	# 		detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
+	# 		valor 			= detalle[0].valor
+	# 		ventas 			= 0
+	# 		ventas_local 	= Venta.objects.filter(local_id__in=locales).\
+	# 		extra(select={'year': "EXTRACT(year FROM fecha_inicio)",'month': "EXTRACT(month FROM fecha_inicio)", 'id': "id"}).\
+	# 		values('year', 'month', 'local_id').\
+	# 		annotate(Sum('valor'))
+
+	# 		for venta in ventas_local:
+	# 			if fecha.month == venta['month'] and fecha.year == venta['year']:
+	# 				ventas += venta['valor__sum']
+
+	# 		if ((ventas * valor) / 100) >= arriendo_minimo and arriendo_minimo is not None:
+	# 			total = ((ventas * valor) / 100) - arriendo_minimo
+	# 		else:
+	# 			total = 0
+
+	# 	else:
+	# 		valor 	= None
+	# 		ventas 	= None
+	# 		total 	= None
+
+	# except Exception:
+	# 	valor 	= None
+	# 	ventas 	= None
+	# 	total 	= None
+
+	# return {
+	# 	'estado'	: estado,
+	# 	'mensaje'	: mensajes[mensaje],
+	# }
 
 	return {
 		'estado'	: estado,
 		'mensaje'	: mensajes[mensaje],
 	}
 
-def validar_concepto_gasto_comun(contrato, concepto, fecha_inicio, fecha_termino):
+def validar_gasto_comun(contrato, concepto, fecha_inicio, fecha_termino):
 
 	return {
 		'estado'	: True,
 		'mensaje'	: 'correcto',
 	}
 
-def validar_concepto_servicios_basicos(contrato, concepto, fecha_inicio, fecha_termino):
+def validar_servicios_basicos(contrato, concepto, fecha_inicio, fecha_termino):
 
 	return {
 		'estado'	: True,
 		'mensaje'	: 'correcto',
 	}
 
-def validar_concepto_cuota_de_incorporacion(contrato, concepto, fecha_inicio, fecha_termino):
+def validar_cuota_de_incorporacion(contrato, concepto, periodo):
+
+	mensajes = [
+		'Correcto',
+		'No tiene cuotas asociadas'
+	]
+
+	if Cuota_Incorporacion.objects.filter(contrato=contrato, concepto=concepto, fecha__year=periodo.year, fecha__month=periodo.month, visible=True).exists():
+		estado 	= True
+		mensaje = 0
+	else:
+		estado = False
+		mensaje = 1
+
+	return {
+		'estado'	: estado,
+		'mensaje'	: mensajes[mensaje],
+	}
+
+def validar_fondo_de_promocion(contrato, concepto, fecha_inicio, fecha_termino):
 
 	return {
 		'estado'	: True,
 		'mensaje'	: 'correcto',
 	}
 
-def validar_concepto_fondo_de_promocion(contrato, concepto, fecha_inicio, fecha_termino):
+def validar_arriendo_bodega(contrato, concepto, periodo):
+
+	mensajes = [
+		'Correcto',
+		'No tiene arriendo de bodega asociado en este periodo',
+		'No tiene arriendo de bodega asociado',
+	]
+
+	estado 	= False
+	mensaje = 2
+
+	if Arriendo_Bodega.objects.filter(contrato=contrato, concepto=concepto).exists():
+
+		arriendo_bodegas = Arriendo_Bodega.objects.filter(contrato=contrato, concepto=concepto)
+
+		for arriendo_bodega in arriendo_bodegas:
+
+			estado 	= False
+			mensaje = 1
+
+			if arriendo_bodega.periodicidad == 0 and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+
+				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+				
+				if periodo.month == mes_1.month:
+
+					return {
+						'estado'	: True,
+						'mensaje'	: mensajes[0],
+					}
+
+			elif arriendo_bodega.periodicidad == 1:
+
+				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
+				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+
+				if (periodo.month == mes_1.month or periodo.month==mes_2.month) and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+
+					return {
+						'estado'	: True,
+						'mensaje'	: mensajes[0],
+					}
+
+			elif arriendo_bodega.periodicidad == 2:
+
+				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 2)
+				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
+				mes_3 = sumar_meses(arriendo_bodega.fecha_inicio, 8)
+				mes_4 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+
+				if (periodo.month == mes_1.month or periodo.month==mes_2.month or periodo.month==mes_3.month or periodo.month==mes_4.month) and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+
+					return {
+						'estado'	: True,
+						'mensaje'	: mensajes[0],
+					}
+
+			elif arriendo_bodega.periodicidad == 3:
+
+				if periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+
+					return {
+						'estado'	: True,
+						'mensaje'	: mensajes[0],
+					}
+
+			else:
+				estado 	= False
+				mensaje = 1
+		
 
 	return {
-		'estado'	: True,
-		'mensaje'	: 'correcto',
+		'estado'	: estado,
+		'mensaje'	: mensajes[mensaje],
 	}
 
-def validar_concepto_arriendo_bodega(contrato, concepto, fecha_inicio, fecha_termino):
+def validar_servicios_varios(contrato, concepto, periodo):
+
+	mensajes = [
+		'Correcto', 
+		'No tiene gastos varios asociados',
+		]
+	
+	locales 	= contrato.locales.all()
+
+	for local in locales:
+
+		if local.gasto_servicio_set.all().filter(mes=periodo.month, anio=periodo.year).exists():
+			estado 	= True
+			mensaje = 0
+		else:
+			estado 	= False
+			mensaje = 1
 
 	return {
-		'estado'	: True,
-		'mensaje'	: 'correcto',
+		'estado'	: estado,
+		'mensaje'	: mensajes[mensaje],
 	}
 
-def validar_concepto_servicios_varios(contrato, concepto, fecha_inicio, fecha_termino):
+def validar_multas(contrato, concepto, periodo):
+
+	mensajes = [
+		'Correcto',
+		'No tiene multas asociadas'
+	]
+
+	if Multa.objects.filter(contrato=contrato, mes=periodo.month, anio=periodo.year, visible=True).exists():
+		estado 	= True
+		mensaje = 0
+	else:
+		estado = False
+		mensaje = 1
 
 	return {
-		'estado'	: True,
-		'mensaje'	: 'correcto',
+		'estado'	: estado,
+		'mensaje'	: mensajes[mensaje],
 	}
 
-def validar_concepto_multas(contrato, concepto, fecha_inicio, fecha_termino):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	return {
-		'estado'	: True,
-		'mensaje'	: 'correcto',
-	}
+def calcular_concepto(contrato, concepto, periodo):
+
+	if concepto.concepto_tipo.id == 1:
+		return calcular_arriendo_minimo(contrato, concepto, periodo)
+
+	elif concepto.concepto_tipo.id == 2:
+		return calcular_arriendo_variable(contrato, concepto, periodo, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 3:
+		return calcular_gasto_comun(contrato, concepto, periodo, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 4:
+		return calcular_servicios_basicos(contrato, concepto, periodo, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 5:
+		return calcular_cuota_de_incorporacion(contrato, concepto, periodo)
+
+	elif concepto.concepto_tipo.id == 6:
+		return calcular_fondo_de_promocion(contrato, concepto, periodo, fecha_termino)
+
+	elif concepto.concepto_tipo.id == 7:
+		return calcular_arriendo_bodega(contrato, concepto, periodo)
+
+	elif concepto.concepto_tipo.id == 8:
+		return calcular_servicios_varios(contrato, concepto, periodo)
+
+	elif concepto.concepto_tipo.id == 9:
+		return calcular_multas(contrato, concepto, periodo)
+
+	else:
+		return True
+
+
+def calcular_arriendo_minimo(contrato, concepto, periodo):
+
+	total 			= 0
+	locales 		= contrato.locales.all()
+	metros_total 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
+
+	try:
+		arriendo 	= Arriendo.objects.get(contrato=contrato, concepto=concepto)
+		detalle 	= Arriendo_Detalle.objects.get(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month)
+		moneda 		= detalle.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+		# verificar si es por metros cuadrados
+		if detalle.metro_cuadrado is True:
+			metros 	= metros_total['metros_cuadrados__sum']
+		else:
+			metros 	= 1
+
+		# verificar si tiene reajuste
+		if arriendo.reajuste is True and arriendo.por_meses is False and periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
+
+			if arriendo.moneda.id == 6:
+				reajuste = (arriendo.valor/100)+1
+			else:
+				reajuste = arriendo.valor * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+		elif arriendo.reajuste is True and arriendo.por_meses is True and periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
+
+			reajuste_factor = int((meses_entre_fechas(arriendo.fecha_inicio, periodo) -1)/arriendo.meses)
+
+			if arriendo.moneda.id == 6:
+				reajuste = ((arriendo.valor * reajuste_factor)/100)+1
+			else:
+				reajuste = (arriendo.valor * reajuste_factor) * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+		else:
+			reajuste = 1
+
+		total = moneda * metros * reajuste
+
+	except Exception:
+		total = 0
+
+	return total
+
+
+def calcular_arriendo_variable(contrato, concepto, fecha_inicio, fecha_termino):
+	
+	return 0
+
+def calcular_gasto_comun(contrato, concepto, fecha_inicio, fecha_termino):
+
+	return 0
+
+def calcular_servicios_basicos(contrato, concepto, fecha_inicio, fecha_termino):
+
+	return 0
+
+def calcular_cuota_de_incorporacion(contrato, concepto, periodo):
+
+	total 	= 0
+	cuotas 	= Cuota_Incorporacion.objects.filter(contrato=contrato, concepto=concepto, fecha__year=periodo.year, fecha__month=periodo.month, visible=True)
+
+	for cuota in cuotas:
+
+		if cuota.metro_cuadrado is True:
+			metros_cuadrados = cuota.contrato.locales.all().aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']			
+		else:
+			metros_cuadrados = 1
+
+		valor 	= cuota.valor
+		factor 	= cuota.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+		total 	+= (valor * factor * metros_cuadrados)
+	
+	return total
+
+def calcular_fondo_de_promocion(contrato, concepto, fecha_inicio, fecha_termino):
+
+
+	locales 		= contrato.locales.all()
+	metros_total 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
+
+	try:
+		arriendo 	= Arriendo.objects.get(contrato=contrato, concepto=concepto)
+		existe 		= Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month).exists()
+
+		if existe is True:
+			detalle 		= Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month)
+			metro_cuadrado	= detalle[0].metro_cuadrado
+			
+			if metro_cuadrado is True:
+				factor = detalle[0].moneda.moneda_historial_set.all().order_by('-id').first().valor
+				metros = metros_total['metros_cuadrados__sum']
+			else:
+				factor = detalle[0].moneda.moneda_historial_set.all().order_by('-id').first().valor
+				metros = 1
+
+			valor = detalle[0].valor * factor * metros
+
+			if arriendo.reajuste is True and arriendo.por_meses is False and fecha >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
+				reajuste = True
+
+				if arriendo.moneda.id == 6:
+					reajuste_valor = (arriendo.valor/100)+1
+				else:
+					reajuste_valor = arriendo.valor * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+				arriendo_minimo = valor * reajuste_valor
+
+			elif arriendo.reajuste is True and arriendo.por_meses is True and fecha >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
+
+				reajuste_factor = int((meses_entre_fechas(arriendo.fecha_inicio, fecha) -1)/arriendo.meses)
+
+				if arriendo.moneda.id == 6:
+					reajuste_valor = ((arriendo.valor * reajuste_factor)/100)+1
+				else:
+					reajuste_valor = (arriendo.valor * reajuste_factor) * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+				arriendo_minimo = valor * reajuste_valor
+
+			else:
+				arriendo_minimo = valor
+
+		else:
+			arriendo_minimo = None
+
+	except Arriendo.DoesNotExist:
+		arriendo_minimo = None
+
+	try:
+		# existe = Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
+		existe = Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
+		if existe is True:
+			# detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
+			detalle 		= Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year)	
+			valor 			= detalle[0].valor
+			ventas 			= 0
+			ventas_local 	= Venta.objects.filter(local_id__in=locales).\
+			extra(select={'year': "EXTRACT(year FROM fecha_inicio)",'month': "EXTRACT(month FROM fecha_inicio)", 'id': "id"}).\
+			values('year', 'month', 'local_id').\
+			annotate(Sum('valor'))
+
+			for venta in ventas_local:
+				if fecha.month == venta['month'] and fecha.year == venta['year']:
+					ventas += venta['valor__sum']
+
+			if ((ventas * valor) / 100) >= arriendo_minimo and arriendo_minimo is not None:
+				arriendo_reajustable = ((ventas * valor) / 100)
+			elif arriendo_minimo is not None:
+				arriendo_reajustable = arriendo_minimo
+			else:
+				arriendo_reajustable = 0
+
+		else:
+			arriendo_reajustable 	= None
+
+	except Exception:
+		arriendo_reajustable = None
+
+	try:
+		fondos_promocion = Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto)
+
+		for fondo_promocion in fondos_promocion:
+			
+			if fondo_promocion.periodicidad == 0:
+
+				mes_1 = sumar_meses(fondo_promocion.fecha, 11)
+
+				try:
+					if fecha.month == mes_1.month and fecha.month >= fondo_promocion.fecha.month and fecha.year >= fondo_promocion.fecha.year:
+						valor 	= fondo_promocion.valor
+						factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
+						total 	= valor * factor
+					else:
+						valor 	= None
+						factor 	= None
+						total 	= None
+					
+				except Exception:
+					valor 	= None
+					factor 	= None
+					total 	= None
+
+			elif fondo_promocion.periodicidad == 1:
+
+				mes_1 = sumar_meses(fondo_promocion.fecha, 5)
+				mes_2 = sumar_meses(fondo_promocion.fecha, 11)
+
+				try:
+					if (fecha.month == mes_1.month or fecha.month==mes_2.month) and fecha.month >= fondo_promocion.fecha.month and fecha.year >= fondo_promocion.fecha.year:
+						valor 	= fondo_promocion.valor
+						factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
+						total 	= valor * factor
+					else:
+						valor 	= None
+						factor 	= None
+						total 	= None
+					
+				except Exception:
+					valor 	= None
+					factor 	= None
+					total 	= None
+
+			elif fondo_promocion.periodicidad == 2:
+
+				mes_1 = sumar_meses(fondo_promocion.fecha, 2)
+				mes_2 = sumar_meses(fondo_promocion.fecha, 5)
+				mes_3 = sumar_meses(fondo_promocion.fecha, 8)
+				mes_4 = sumar_meses(fondo_promocion.fecha, 11)
+
+				try:
+					if (fecha.month == mes_1.month or fecha.month==mes_2.month or fecha.month==mes_3.month or fecha.month==mes_4.month) and fecha.month >= fondo_promocion.fecha.month and fecha.year >= fondo_promocion.fecha.year:
+						valor 	= fondo_promocion.valor
+						factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
+						total 	= valor * factor
+					else:
+						valor 	= None
+						factor 	= None
+						total 	= None
+				except Exception:
+					valor 	= None
+					factor 	= None
+					total 	= None
+
+			elif fondo_promocion.periodicidad == 3 and fecha.month >= fondo_promocion.fecha.month and fecha.year >= fondo_promocion.fecha.year:
+
+				valor 	= fondo_promocion.valor
+				factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
+				total 	= valor * factor
+
+			else:
+				valor 			= None
+				factor 			= None
+				total 			= None
+
+			if arriendo_reajustable is not None and valor is not None:
+				total = (arriendo_reajustable * valor) / 100
+			else:
+				total = None
+
+			Detalle_Fondo_Promocion(
+				valor 			= valor,
+				factor 			= factor,
+				total 			= total,
+				fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+				fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+				proceso 		= proceso,
+				contrato 		= contrato,
+			).save()
+
+	except Fondo_Promocion.DoesNotExist:
+
+		Detalle_Fondo_Promocion(
+			valor 			= None,
+			factor 			= None,
+			total 			= None,
+			fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
+			fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
+			proceso 		= proceso,
+			contrato 		= contrato,
+		).save()
+
+		
+
+def calcular_arriendo_bodega(contrato, concepto, periodo):
+
+	total = 0
+
+
+	if Arriendo_Bodega.objects.filter(contrato=contrato, concepto=concepto).exists():
+
+		arriendo_bodegas = Arriendo_Bodega.objects.filter(contrato=contrato, concepto=concepto)
+
+		for arriendo_bodega in arriendo_bodegas:
+			
+			if arriendo_bodega.periodicidad == 0 and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+
+				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+				
+				if periodo.month == mes_1.month:
+					valor 	= arriendo_bodega.valor
+					factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+					if arriendo_bodega.metro_cuadrado == True:
+						if contrato.bodega is True:
+							metros = contrato.metros_bodega
+						else:
+							metros = 0
+					else:
+						metros = 1
+
+					total += valor * factor * metros
+				else:
+					total += 0
+
+			elif arriendo_bodega.periodicidad == 1:
+
+				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
+				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+
+				if (periodo.month == mes_1.month or periodo.month==mes_2.month) and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+					valor 	= arriendo_bodega.valor
+					factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+					if arriendo_bodega.metro_cuadrado == True:
+						if contrato.bodega is True:
+							metros = contrato.metros_bodega
+						else:
+							metros = 0
+					else:
+						metros = 1
+
+					total += valor * factor * metros
+				else:
+					total += 0
+
+			elif arriendo_bodega.periodicidad == 2:
+
+				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 2)
+				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
+				mes_3 = sumar_meses(arriendo_bodega.fecha_inicio, 8)
+				mes_4 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+
+				if (periodo.month == mes_1.month or periodo.month==mes_2.month or periodo.month==mes_3.month or periodo.month==mes_4.month) and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+					valor 	= arriendo_bodega.valor
+					factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+					if arriendo_bodega.metro_cuadrado == True:
+						if contrato.bodega is True:
+							metros = contrato.metros_bodega
+						else:
+							metros = 0
+					else:
+						metros = 1
+
+					total += valor * factor * metros
+				else:
+					total += 0
+
+			elif arriendo_bodega.periodicidad == 3:
+
+				if periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+					valor 	= arriendo_bodega.valor
+					factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+					if arriendo_bodega.metro_cuadrado == True:
+						if contrato.bodega is True:
+							metros = contrato.metros_bodega
+						else:
+							metros = 0
+					else:
+						metros = 1
+
+					total += valor * factor * metros
+				else:
+					total += 0
+
+			else:
+				total += 0
+
+	return total
+
+def calcular_servicios_varios(contrato, concepto, periodo):
+	total 		= 0	
+	locales 	= contrato.locales.all()
+
+	for local in locales:
+		
+		if local.gasto_servicio_set.all().filter(mes=periodo.month, anio=periodo.year).exists():
+			
+			servicios = local.gasto_servicio_set.all().filter(mes=periodo.month, anio=periodo.year)
+
+			for servicio in servicios:
+
+				cantidad_locales = servicio.locales.all().count()
+				total 			+= servicio.valor / cantidad_locales
+
+	return total
+
+def calcular_multas(contrato, concepto, periodo):
+
+	total 	= 0
+	multas 	= Multa.objects.filter(contrato=contrato, mes=periodo.month, anio=periodo.year, visible=True)
+
+	for multa in multas:
+		total += multa.valor * multa.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+	return total
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -777,39 +1279,6 @@ def calculo_arriendo_variable(request, proceso, contratos, meses, fecha, concept
 
 			except Arriendo.DoesNotExist:
 				arriendo_minimo = None
-
-
-
-
-
-
-			# try:
-
-			# 	arriendos = Arriendo_Variable.objects.filter(contrato=contrato)
-
-			# 	for arriendo_variable in arriendos:
-
-			# 		mes_inicio 		= arriendo_variable.mes_inicio if arriendo_variable.mes_inicio > 9 else '0'+str(arriendo_variable.mes_inicio)
-			# 		mes_termino 	= arriendo_variable.mes_termino if arriendo_variable.mes_termino > 9 else '0'+str(arriendo_variable.mes_termino)
-			# 		anio_inicio 	= arriendo_variable.anio_inicio
-			# 		anio_termino 	= arriendo_variable.anio_termino
-
-			# 		fecha_inicio 	= primer_dia(datetime.strptime('01/'+str(mes_inicio)+'/'+str(anio_inicio), "%d/%m/%Y")).date()
-			# 		fecha_termino 	= ultimo_dia(datetime.strptime('01/'+str(mes_termino)+'/'+str(anio_termino), "%d/%m/%Y")).date()
-				
-			# 		if fecha >= fecha_inicio and fecha <= fecha_termino
-
-				
-
-			# except Exception:
-			# 	pass
-			# 	# valor 	= None
-			# 	# ventas 	= None
-			# 	# total 	= None
-
-
-			
-
 
 			try:
 				existe = Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, mes_inicio__lte=fecha.month, mes_termino__gte=fecha.month, anio_inicio__lte=fecha.year, anio_termino__gte=fecha.year).exists()
@@ -1517,7 +1986,6 @@ def data_servicios_basicos(proceso):
 	for item in detalles_gas:
 		detalles.append(item)
 
-
 	for item in detalles:
 		detalle.append({
 			'medidor'			: item.medidor.nombre,
@@ -1945,4 +2413,169 @@ def propuesta_pdf(proceso, pk=None):
 
 
 
+
+# Funciones ----------------------------
+def enviar_detalle_propuesta(id):
+
+	data 	= list()
+	detalle = Proceso_Detalle.objects.get(id=id)
+
+	SDT_DocVentaExt = ET.Element('SDT_DocVentaExt')
+	SDT_DocVentaExt.set('xmlns', 'http://www.informat.cl/ws')
+	
+	# SDT_DocVentaExt
+	EncDoc 		= ET.SubElement(SDT_DocVentaExt, 'EncDoc')
+	DetDoc 		= ET.SubElement(SDT_DocVentaExt, 'DetDoc')
+	ResumenDoc 	= ET.SubElement(SDT_DocVentaExt, 'ResumenDoc')
+	Recaudacion = ET.SubElement(SDT_DocVentaExt, 'Recaudacion')
+
+	# SDT_DocVentaExt/EncDoc
+	RefDoc	= ET.SubElement(EncDoc, 'RefDoc')
+	Cliente	= ET.SubElement(EncDoc, 'Cliente')
+
+	# SDT_DocVentaExt/EncDoc/RefDoc
+	ET.SubElement(RefDoc, 'NroRefCliente')
+	ET.SubElement(RefDoc, 'Modulo')
+	ET.SubElement(RefDoc, 'NroOrdCom')
+
+	# SDT_DocVentaExt/EncDoc/RefDoc
+	Identificacion 	= ET.SubElement(Cliente, 'Identificacion')
+	Facturacion 	= ET.SubElement(Cliente, 'Facturacion')
+
+	# SDT_DocVentaExt/EncDoc/RefDoc/Identificacion
+	ET.SubElement(Identificacion, 'IdCliente').text='77304990'
+	ET.SubElement(Identificacion, 'Nombre_Completo').text='VALVERDE NORAMBUENA SPA'
+	ET.SubElement(Identificacion, 'Secuencia').text='1'# IDENTIIFCAR SI ES CLIENTE O PROVEEDOR
+	ET.SubElement(Identificacion, 'Direccion').text='JOSE M.ESCRIBA BALAGER 13105, OF 813'
+	ET.SubElement(Identificacion, 'Comuna').text='LO BARNECHEA'
+	ET.SubElement(Identificacion, 'Ciudad').text='SANTIAGO'
+	ET.SubElement(Identificacion, 'Telefono')
+	ET.SubElement(Identificacion, 'Email')
+
+	# SDT_DocVentaExt/EncDoc/RefDoc/Facturacion
+	ET.SubElement(Facturacion, 'Moneda').text='1'
+	ET.SubElement(Facturacion, 'Tasa').text='1'
+	ET.SubElement(Facturacion, 'CondVenta').text='0'# SI ES CONTADO, EN CREDITO ETC
+	ET.SubElement(Facturacion, 'Origen').text='0'
+	ET.SubElement(Facturacion, 'DocAGenerar').text='200'
+	ET.SubElement(Facturacion, 'DocRef').text='0'
+	ET.SubElement(Facturacion, 'NroDocRef').text='0'
+	ET.SubElement(Facturacion, 'NroDoc').text='0'
+	ET.SubElement(Facturacion, 'Estado').text='0'
+	ET.SubElement(Facturacion, 'Equipo').text='1'# AVERIGUAR QUE ES
+	ET.SubElement(Facturacion, 'Bodega_Salida').text='1'
+	ET.SubElement(Facturacion, 'IdVendedor').text='6395133'
+	ET.SubElement(Facturacion, 'Sucursal_Cod').text='1'
+	ET.SubElement(Facturacion, 'ListaPrecio_Cod')
+	ET.SubElement(Facturacion, 'Fecha_Atencion').text='2016-08-19'
+	ET.SubElement(Facturacion, 'Fecha_Documento').text='2016-08-19'
+
+
+	# SDT_DocVentaExtDetDoc/DetDoc
+	Items = ET.SubElement(DetDoc, 'Items')
+	
+	# SDT_DocVentaExtDetDoc/DetDoc/Items
+	Item = ET.SubElement(Items, 'Item')
+
+	ET.SubElement(Item, 'NumItem').text='1'
+	ET.SubElement(Item, 'FechaEntrega').text='0'
+	ET.SubElement(Item, 'PrecioRef').text='1000'
+	ET.SubElement(Item, 'Cantidad').text='1'
+	ET.SubElement(Item, 'PorcUno').text='0'
+	ET.SubElement(Item, 'MontoUno').text='1000'
+	ET.SubElement(Item, 'DescDos_Cod').text='0'
+	ET.SubElement(Item, 'DescTre_Cod')
+	ET.SubElement(Item, 'MontoImpUno').text='0'
+	ET.SubElement(Item, 'PorcImpUno').text='0'
+	ET.SubElement(Item, 'MontoImpDos').text='0'
+	ET.SubElement(Item, 'PorcImpDos').text='0'
+	ET.SubElement(Item, 'TotalDocLin').text='1000'
+
+	Producto = ET.SubElement(Item, 'Producto')
+
+	Producto_Vta 	= ET.SubElement(Producto, 'Producto_Vta').text='01010045001217'
+	Unidad 			= ET.SubElement(Producto, 'Unidad').text='Unid'
+
+	# SDT_DocVentaExtDetDoc/ResumenDoc
+	ET.SubElement(ResumenDoc, 'TotalNeto').text='1000'
+	ET.SubElement(ResumenDoc, 'CodigoDescuento')
+	ET.SubElement(ResumenDoc, 'TotalDescuento').text='0'
+	ET.SubElement(ResumenDoc, 'TotalIVA').text='190'
+	ET.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text='0'
+	ET.SubElement(ResumenDoc, 'TotalDoc').text='1190'
+	TotalConceptos = ET.SubElement(ResumenDoc, 'TotalConceptos')
+
+	# SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
+	# CREAR UN FOR 
+	Conceptos = ET.SubElement(TotalConceptos, 'Conceptos')
+	ET.SubElement(Conceptos, 'Concepto_Cod').text='200'
+	ET.SubElement(Conceptos, 'ValorConcepto').text='1190'
+
+	Conceptos = ET.SubElement(TotalConceptos, 'Conceptos')
+	ET.SubElement(Conceptos, 'Concepto_Cod').text='170'
+	ET.SubElement(Conceptos, 'ValorConcepto').text='190'
+
+	Conceptos = ET.SubElement(TotalConceptos, 'Conceptos')
+	ET.SubElement(Conceptos, 'Concepto_Cod').text='100'
+	ET.SubElement(Conceptos, 'ValorConcepto').text='1000'
+
+
+	# Recaudacion
+	Encabezado	= ET.SubElement(Recaudacion, 'Encabezado')
+	Detalle		= ET.SubElement(Recaudacion, 'Detalle')
+
+	# Recaudacion/Encabezado
+	ET.SubElement(Encabezado, 'IdCajero')
+	ET.SubElement(Encabezado, 'Tipo_Vuelto')
+	ET.SubElement(Encabezado, 'IdCliente')
+	ET.SubElement(Encabezado, 'DigitoVerificador')
+	ET.SubElement(Encabezado, 'NombreCompleto')
+	ET.SubElement(Encabezado, 'Direccion')
+	ET.SubElement(Encabezado, 'Ciudad')
+	ET.SubElement(Encabezado, 'Comuna')
+	ET.SubElement(Encabezado, 'Telefono')
+	ET.SubElement(Encabezado, 'Email')
+	ET.SubElement(Encabezado, 'TotalaRecaudar')
+	RecaudacionEnc_ext = ET.SubElement(Encabezado, 'RecaudacionEnc_ext')
+
+	# Recaudacion/Encabezado/RecaudacionEnc_ext
+	REnExt_Item = ET.SubElement(RecaudacionEnc_ext, 'REnExt_Item')
+	ET.SubElement(REnExt_Item, 'RecEnc_opcion')
+	ET.SubElement(REnExt_Item, 'RecEnd_datos')
+
+
+	# Recaudacion/Detalle/FormaPago
+	FormaPago = ET.SubElement(Detalle, 'FormaPago')
+	ET.SubElement(FormaPago, 'Cod_FormaPago')
+	ET.SubElement(FormaPago, 'Cod_MonedaFP')
+	ET.SubElement(FormaPago, 'NroCheque')
+	ET.SubElement(FormaPago, 'FechaCheque')
+	ET.SubElement(FormaPago, 'FechaVencto')
+	ET.SubElement(FormaPago, 'Cod_Banco')
+	ET.SubElement(FormaPago, 'Cod_Plaza')
+	ET.SubElement(FormaPago, 'Referencia')
+	ET.SubElement(FormaPago, 'MontoaRec')
+	ET.SubElement(FormaPago, 'ParidadRec')
+	
+	print ("---------------------------------")
+	# ET.dump(SDT_DocVentaExt)
+	xml = ET.tostring(SDT_DocVentaExt, short_empty_elements=False,  method='xml')
+
+
+	# xml_1 = '&lt;SDT_DocVentaExt xmlns=&quot;http://www.informat.cl/ws&quot;&gt;&lt;EncDoc&gt;&lt;RefDoc&gt;&lt;NroRefCliente&gt;2-2-101-101&lt;/NroRefCliente&gt;&lt;Modulo&gt;PDV&lt;/Modulo&gt;&lt;NroOrdCom&gt;2&lt;/NroOrdCom&gt;&lt;/RefDoc&gt;&lt;Cliente&gt;&lt;Identificacion&gt;&lt;IdCliente&gt;66666666&lt;/IdCliente&gt;&lt;Nombre_Completo&gt;CLIENTES VARIOS&lt;/Nombre_Completo&gt;&lt;Secuencia&gt;0&lt;/Secuencia&gt;&lt;Direccion&gt;CLIENTES VARIOS&lt;/Direccion&gt;&lt;Comuna&gt;CLIENTES VARIOS&lt;/Comuna&gt;&lt;Ciudad&gt;CLIENTES VARIOS&lt;/Ciudad&gt;&lt;Telefono&gt;CLIENTES VARIOS&lt;/Telefono&gt;&lt;Email /&gt;&lt;/Identificacion&gt;&lt;Facturacion&gt;&lt;Moneda&gt;1&lt;/Moneda&gt;&lt;Tasa&gt;1&lt;/Tasa&gt;&lt;CondVenta&gt;0&lt;/CondVenta&gt;&lt;Origen&gt;0&lt;/Origen&gt;&lt;DocAGenerar&gt;101&lt;/DocAGenerar&gt;&lt;DocRef&gt;0&lt;/DocRef&gt;&lt;NroDocRef&gt;0&lt;/NroDocRef&gt;&lt;NroDoc&gt;10001&lt;/NroDoc&gt;&lt;Estado&gt;0&lt;/Estado&gt;&lt;Equipo&gt;201&lt;/Equipo&gt;&lt;Bodega_Salida&gt;102&lt;/Bodega_Salida&gt;&lt;IdVendedor&gt;4839396&lt;/IdVendedor&gt;&lt;Sucursal_Cod&gt;2&lt;/Sucursal_Cod&gt;&lt;ListaPrecio_Cod /&gt;&lt;Fecha_Atencion&gt;2015-12-15&lt;/Fecha_Atencion&gt;&lt;Fecha_Documento&gt;2016-04-03&lt;/Fecha_Documento&gt;&lt;/Facturacion&gt;&lt;/Cliente&gt;&lt;/EncDoc&gt;&lt;DetDoc&gt;&lt;Items&gt;&lt;Item&gt;&lt;NumItem&gt;1&lt;/NumItem&gt;&lt;FechaEntrega&gt;0&lt;/FechaEntrega&gt;&lt;PrecioRef&gt;1000&lt;/PrecioRef&gt;&lt;Cantidad&gt;1.000000&lt;/Cantidad&gt;&lt;PorcUno&gt;0.00&lt;/PorcUno&gt;&lt;MontoUno&gt;0&lt;/MontoUno&gt;&lt;DescDos_Cod&gt;0&lt;/DescDos_Cod&gt;&lt;DescTre_Cod /&gt;&lt;MontoImpUno&gt;0&lt;/MontoImpUno&gt;&lt;PorcImpUno&gt;0.00&lt;/PorcImpUno&gt;&lt;MontoImpDos&gt;0&lt;/MontoImpDos&gt;&lt;PorcImpDos&gt;0.00&lt;/PorcImpDos&gt;&lt;TotalDocLin&gt;1000&lt;/TotalDocLin&gt;&lt;Producto&gt;&lt;Producto_Vta&gt;0000002572703&lt;/Producto_Vta&gt;&lt;Unidad&gt;Unid&lt;/Unidad&gt;&lt;/Producto&gt;&lt;/Item&gt;&lt;/Items&gt;&lt;/DetDoc&gt;&lt;ResumenDoc&gt;&lt;TotalNeto&gt;840&lt;/TotalNeto&gt;&lt;CodigoDescuento /&gt;&lt;TotalDescuento&gt;0&lt;/TotalDescuento&gt;&lt;TotalIVA&gt;160&lt;/TotalIVA&gt;&lt;TotalOtrosImpuestos&gt;0&lt;/TotalOtrosImpuestos&gt;&lt;TotalDoc&gt;1000&lt;/TotalDoc&gt;&lt;TotalConceptos&gt;&lt;Conceptos&gt;&lt;Concepto_Cod&gt;1&lt;/Concepto_Cod&gt;&lt;ValorConcepto&gt;0&lt;/ValorConcepto&gt;&lt;/Conceptos&gt;&lt;Conceptos&gt;&lt;Concepto_Cod&gt;2&lt;/Concepto_Cod&gt;&lt;ValorConcepto&gt;160&lt;/ValorConcepto&gt;&lt;/Conceptos&gt;&lt;Conceptos&gt;&lt;Concepto_Cod&gt;3&lt;/Concepto_Cod&gt;&lt;ValorConcepto&gt;840&lt;/ValorConcepto&gt;&lt;/Conceptos&gt;&lt;/TotalConceptos&gt;&lt;/ResumenDoc&gt;&lt;Recaudacion&gt;&lt;Encabezado&gt;&lt;IdCajero&gt;4839396&lt;/IdCajero&gt;&lt;Tipo_Vuelto&gt;1&lt;/Tipo_Vuelto&gt;&lt;IdCliente&gt;66666666&lt;/IdCliente&gt;&lt;DigitoVerificador&gt;6&lt;/DigitoVerificador&gt;&lt;NombreCompleto&gt;CLIENTES VARIOS&lt;/NombreCompleto&gt;&lt;Direccion&gt;CLIENTES VARIOS&lt;/Direccion&gt;&lt;Ciudad&gt;CLIENTES VARIOS&lt;/Ciudad&gt;&lt;Comuna&gt;CLIENTES VARIOS&lt;/Comuna&gt;&lt;Telefono&gt;CLIENTES VARIOS&lt;/Telefono&gt;&lt;Email /&gt;&lt;TotalaRecaudar&gt;1000&lt;/TotalaRecaudar&gt;&lt;RecaudacionEnc_ext&gt;&lt;REnExt_Item&gt;&lt;RecEnc_opcion /&gt;&lt;RecEnd_datos /&gt;&lt;/REnExt_Item&gt;&lt;/RecaudacionEnc_ext&gt;&lt;/Encabezado&gt;&lt;Detalle&gt;&lt;FormaPago&gt;&lt;Cod_FormaPago&gt;0&lt;/Cod_FormaPago&gt;&lt;Cod_MonedaFP&gt;1&lt;/Cod_MonedaFP&gt;&lt;NroCheque /&gt;&lt;FechaCheque&gt;2015-12-15&lt;/FechaCheque&gt;&lt;FechaVencto /&gt;&lt;Cod_Banco /&gt;&lt;Cod_Plaza /&gt;&lt;Referencia /&gt;&lt;MontoaRec&gt;1000&lt;/MontoaRec&gt;&lt;ParidadRec&gt;1&lt;/ParidadRec&gt;&lt;/FormaPago&gt;&lt;/Detalle&gt;&lt;/Recaudacion&gt;&lt;/SDT_DocVentaExt&gt;'
+	# xml1 = '<SDT_DocVentaExt xmlns="http://www.informat.cl/ws"><EncDoc><RefDoc><NroRefCliente>2-2-101-101</NroRefCliente><Modulo>PDV</Modulo><NroOrdCom>2</NroOrdCom></RefDoc><Cliente><Identificacion><IdCliente>66666666</IdCliente><Nombre_Completo>CLIENTES VARIOS</Nombre_Completo><Secuencia>0</Secuencia><Direccion>CLIENTES VARIOS</Direccion><Comuna>CLIENTES VARIOS</Comuna><Ciudad>CLIENTES VARIOS</Ciudad><Telefono>CLIENTES VARIOS</Telefono><Email /></Identificacion><Facturacion><Moneda>1</Moneda><Tasa>1</Tasa><CondVenta>0</CondVenta><Origen>0</Origen><DocAGenerar>101</DocAGenerar><DocRef>0</DocRef><NroDocRef>0</NroDocRef><NroDoc>101</NroDoc><Estado>0</Estado><Equipo>201</Equipo><Bodega_Salida>102</Bodega_Salida><IdVendedor>4839396</IdVendedor><Sucursal_Cod>2</Sucursal_Cod><ListaPrecio_Cod /><Fecha_Atencion>2015-12-15</Fecha_Atencion><Fecha_Documento>2015-12-15</Fecha_Documento></Facturacion></Cliente></EncDoc><DetDoc><Items><Item><NumItem>1</NumItem><FechaEntrega>0</FechaEntrega><PrecioRef>1000</PrecioRef><Cantidad>1.000000</Cantidad><PorcUno>0.00</PorcUno><MontoUno>0</MontoUno><DescDos_Cod>0</DescDos_Cod><DescTre_Cod /><MontoImpUno>0</MontoImpUno><PorcImpUno>0.00</PorcImpUno><MontoImpDos>0</MontoImpDos><PorcImpDos>0.00</PorcImpDos><TotalDocLin>1000</TotalDocLin><Producto><Producto_Vta>0000002572703</Producto_Vta><Unidad>Unid</Unidad></Producto></Item></Items></DetDoc><ResumenDoc><TotalNeto>840</TotalNeto><CodigoDescuento /><TotalDescuento>0</TotalDescuento><TotalIVA>160</TotalIVA><TotalOtrosImpuestos>0</TotalOtrosImpuestos><TotalDoc>1000</TotalDoc><TotalConceptos><Conceptos><Concepto_Cod>1</Concepto_Cod><ValorConcepto>0</ValorConcepto></Conceptos><Conceptos><Concepto_Cod>2</Concepto_Cod><ValorConcepto>160</ValorConcepto></Conceptos><Conceptos><Concepto_Cod>3</Concepto_Cod><ValorConcepto>840</ValorConcepto></Conceptos></TotalConceptos></ResumenDoc><Recaudacion><Encabezado><IdCajero>4839396</IdCajero><Tipo_Vuelto>1</Tipo_Vuelto><IdCliente>66666666</IdCliente><DigitoVerificador>6</DigitoVerificador><NombreCompleto>CLIENTES VARIOS</NombreCompleto><Direccion>CLIENTES VARIOS</Direccion><Ciudad>CLIENTES VARIOS</Ciudad><Comuna>CLIENTES VARIOS</Comuna><Telefono>CLIENTES VARIOS</Telefono><Email /><TotalaRecaudar>1000</TotalaRecaudar><RecaudacionEnc_ext><REnExt_Item><RecEnc_opcion /><RecEnd_datos /></REnExt_Item></RecaudacionEnc_ext></Encabezado><Detalle><FormaPago><Cod_FormaPago>0</Cod_FormaPago><Cod_MonedaFP>1</Cod_MonedaFP><NroCheque /><FechaCheque>2015-12-15</FechaCheque><FechaVencto /><Cod_Banco /><Cod_Plaza /><Referencia /><MontoaRec>1000</MontoaRec><ParidadRec>1</ParidadRec></FormaPago></Detalle></Recaudacion></SDT_DocVentaExt>'
+	# url = 'http://192.168.231.21:8080/wshcvm/servlet/axmldocvtaext?wsdl' # jaime
+	# url = 'http://192.168.231.114:8080/ws_inet_clp/servlet/axmldocvta?wsdl'# nuevo
+	url = 'http://192.168.231.114:8080/ws_inet_clp/servlet/axmldocvtaext?wsdl' #nuevo2
+	client1 = Client(url)
+	response = client1.service.Execute(xml.decode())
+
+	for error in response.SDT_ERRORES_ERROR:
+		print (error.DESCERROR)
+
+	# return response
+
+	
+
+	return data
 

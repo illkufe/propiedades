@@ -51,12 +51,10 @@
 
 
 
-
-
-
 form .container-error{
 	color: #ed5565;
-	height: 20px;
+	height: 12px;
+	font-size: 12px;
 	padding-left: 1px;
 }
 
