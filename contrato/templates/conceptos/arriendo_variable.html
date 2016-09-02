@@ -47,11 +47,15 @@
 									{{ form.anio_termino.label_tag }}
 								</th>
 								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.relacion.help_text }}" ></i>
+									{{ form.relacion.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
 									{{ form.valor.label_tag }}
 								</th>
 								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
 									{{ form.moneda.label_tag }}
 								</th>
 								<th></th>
@@ -93,7 +97,22 @@
 											</div>
 										</div>
 									</td>
-
+									<td>
+										<div class="form-group">
+											{{ form.relacion }}
+											<div class="container-error">
+												{{ form.relacion.errors }}
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="form-group">
+											{{ form.arriendo_minimo }}
+											<div class="container-error">
+												{{ form.arriendo_minimo.errors }}
+											</div>
+										</div>
+									</td>
 									<td>
 										<div class="form-group">
 											{{ form.valor }}

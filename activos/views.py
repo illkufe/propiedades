@@ -19,6 +19,7 @@ class ActivoMixin(object):
 	def form_invalid(self, form):
 		response = super(ActivoMixin, self).form_invalid(form)
 		if self.request.is_ajax():
+			print (form.errors)
 			return JsonResponse(form.errors, status=400)
 		else:
 			return response

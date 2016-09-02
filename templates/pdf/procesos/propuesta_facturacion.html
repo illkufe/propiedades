@@ -74,40 +74,32 @@
     <div class="page">
         <h4 class="text-center">PROPUESTA DE FACTURACIÓN</h4>
         <div class="informacion-proceso">
-
             <p><span>Fecha Inicio</span>    : {{proceso.fecha_inicio|date:"d/m/Y"}}</p>
             <p><span>Fecha Término</span>   : {{proceso.fecha_termino|date:"d/m/Y"}}</p>
             <p><span>Usuario</span>         : {{proceso.user.first_name}} {{proceso.user.last_name}}</p>
         </div>
 
-        {% for concepto in detalle %}
-        
-        <div class="concepto">
-            <p><span>Concepto Facturado</span><strong>: {{concepto.nombre}}</strong></p>
+        {% for propuesta in propuestas %}
+
+        <div class="informacion-proceso">
+            <p><span>Nº Contrato</span>     : {{ propuesta.contrato.numero }} </p>
+            <p><span>Cliente</span>         : {{ propuesta.contrato.cliente.nombre }} </p>
+            <p><span>Rut</span>             : {{ propuesta.contrato.cliente.rut}} </p>
+            <p><span>Marca Comercial</span> : {{ propuesta.contrato.nombre_local}} </p>
         </div>
 
-        <!-- Arriendo Mínimo -->
-        {% if concepto.tipo == 1 %}        
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th style="width:10%">F.Inicio</th>
-                    <th style="width:10%">F.Termino</th>
-                    <th style="width:25%">Cliente</th>
-                    <th style="width:15%">Nº Contrato</th>
-                    <th style="width:22.5%">Marca Comercial</th>
-                    <th class="text-right" style="width:17.5%">Valor</th>
+                    <th style="width:80%">Nombre</th>
+                    <th class="text-right" style="width:20%">Valor</th>
                 </tr>
             </thead>
             <tbody>
-                {% for item in concepto.detalle %}
+                {% for detalle in propuesta.conceptos %}
                 <tr>
-                    <td>{{item.fecha_inicio}}</td>
-                    <td>{{item.fecha_termino}}</td>
-                    <td>{{item.cliente}}</td>
-                    <td>{{item.contrato}}</td>
-                    <td>{{item.nombre_local}}</td>
-                    <td class="text-right">{{item.total}}</td>
+                    <td>{{detalle.nombre}}</td>
+                    <td class="text-right">{{detalle.total}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -117,323 +109,13 @@
             <tfoot>
                 <th>
                     <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
-                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
-                </th>
-            </tfoot>
-        </table>
-        
-        <!-- Arriendo Variable -->
-        {% elif concepto.id == 2 %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th style="width:10%">F.Inicio</th>
-                    <th style="width:10%">F.Termino</th>
-                    <th style="width:25%">Cliente</th>
-                    <th style="width:15%">Nº Contrato</th>
-                    <th style="width:22.5%">Marca Comercial</th>
-                    <th class="text-right" style="width:17.5%">Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in concepto.detalle %}
-                <tr>
-                    <td>{{item.fecha_inicio}}</td>
-                    <td>{{item.fecha_termino}}</td>
-                    <td>{{item.cliente}}</td>
-                    <td>{{item.contrato}}</td>
-                    <td>{{item.nombre_local}}</td>
-                    <td class="text-right">{{item.total}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <table class="table table-bordered tabla-subtotal">
-            <tfoot>
-                <th>
-                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
-                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
-                </th>
-            </tfoot>
-        </table>
-        
-        <!-- Gasto Común -->
-        {% elif concepto.id == 3 %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th style="width:10%">F.Inicio</th>
-                    <th style="width:10%">F.Termino</th>
-                    <th style="width:25%">Cliente</th>
-                    <th style="width:15%">Nº Contrato</th>
-                    <th style="width:22.5%">Local</th>
-                    <th class="text-right" style="width:17.5%">Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in concepto.detalle %}
-                <tr>
-                    <td>{{item.fecha_inicio}}</td>
-                    <td>{{item.fecha_termino}}</td>
-                    <td>{{item.cliente}}</td>
-                    <td>{{item.contrato}}</td>
-                    <td>{{item.local}}</td>
-                    <td class="text-right">{{item.total}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <table class="table table-bordered tabla-subtotal">
-            <tfoot>
-                <th>
-                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
-                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
+                    <span style="display:inline-block; width:49%; text-align:right">{{propuesta.subtotal}}</span>
                 </th>
             </tfoot>
         </table>
 
-        <!-- Servicios Básicos -->
-        {% elif concepto.id == 4 %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Termino</th>
-                    <th>Nº Contrato</th>
-                    <th>Local</th>
-                    <th>Medidor</th>
-                    <th>Lectura Anterior</th>
-                    <th>Lectura Actual</th>
-                    <th>Diferencia</th>
-                    <th>Valor</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for item in concepto.detalle %}
-                <tr>
-                    <td>{{item.fecha_inicio}}</td>
-                    <td>{{item.fecha_termino}}</td>
-                    <td>{{item.contrato}}</td>
-                    <td>{{item.local}}</td>
-                    <td>{{item.medidor}}</td>
-                    <td>{{item.lectura_anterior}}</td>
-                    <td>{{item.lectura_actual}}</td>
-                    <td>{{item.diferencia}}</td>
-                    <td>{{item.valor}}</td>
-                    <td>{{item.total}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <table class="table table-bordered tabla-subtotal">
-            <tfoot>
-                <th>
-                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
-                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
-                </th>
-            </tfoot>
-        </table>
-
-        <!-- Cuota Incorporación -->
-        {% elif concepto.id == 5 %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th style="width:10%">F.Inicio</th>
-                    <th style="width:10%">F.Termino</th>
-                    <th style="width:25%">Cliente</th>
-                    <th style="width:15%">Nº Contrato</th>
-                    <th style="width:22.5%">Marca Comercial</th>
-                    <th class="text-right" style="width:17.5%">Valor</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for item in concepto.detalle %}
-                <tr>
-                    <td>{{item.fecha_inicio}}</td>
-                    <td>{{item.fecha_termino}}</td>
-                    <td>{{item.cliente}}</td>
-                    <td>{{item.contrato}}</td>
-                    <td>{{item.nombre_local}}</td>
-                    <td class="text-right">{{item.total}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <table class="table table-bordered tabla-subtotal">
-            <tfoot>
-                <th>
-                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
-                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
-                </th>
-            </tfoot>
-        </table>
-
-        <!-- Fondo Promoción -->
-        {% elif concepto.id == 6 %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th style="width:10%">F.Inicio</th>
-                    <th style="width:10%">F.Termino</th>
-                    <th style="width:25%">Cliente</th>
-                    <th style="width:15%">Nº Contrato</th>
-                    <th style="width:22.5%">Marca Comercial</th>
-                    <th class="text-right" style="width:17.5%">Valor</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for item in concepto.detalle %}
-                <tr>
-                    <td>{{item.fecha_inicio}}</td>
-                    <td>{{item.fecha_termino}}</td>
-                    <td>{{item.cliente}}</td>
-                    <td>{{item.contrato}}</td>
-                    <td>{{item.nombre_local}}</td>
-                    <td class="text-right">{{item.total}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <table class="table table-bordered tabla-subtotal">
-            <tfoot>
-                <th>
-                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
-                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
-                </th>
-            </tfoot>
-        </table>
-
-        <!-- Arriendo Bodega -->
-        {% elif concepto.id == 7 %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th style="width:10%">F.Inicio</th>
-                    <th style="width:10%">F.Termino</th>
-                    <th style="width:25%">Cliente</th>
-                    <th style="width:15%">Nº Contrato</th>
-                    <th style="width:22.5%">Marca Comercial</th>
-                    <th class="text-right" style="width:17.5%">Valor</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for item in concepto.detalle %}
-                <tr>
-                    <td>{{item.fecha_inicio}}</td>
-                    <td>{{item.fecha_termino}}</td>
-                    <td>{{item.cliente}}</td>
-                    <td>{{item.contrato}}</td>
-                    <td>{{item.nombre_local}}</td>
-                    <td class="text-right">{{item.total}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <table class="table table-bordered tabla-subtotal">
-            <tfoot>
-                <th>
-                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
-                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
-                </th>
-            </tfoot>
-        </table>
-
-        <!-- Servicios Varios -->
-        {% elif concepto.id == 8 %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th style="width:10%">F.Inicio</th>
-                    <th style="width:10%">F.Termino</th>
-                    <th style="width:25%">Cliente</th>
-                    <th style="width:10%">Nº Contrato</th>
-                    <th style="width:12.5%">Marca Comercial</th>
-                    <th style="width:15%">Local</th>
-                    <th class="text-right" style="width:17.5%">Valor</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for item in concepto.detalle %}
-                <tr>
-                    <td>{{item.fecha_inicio}}</td>
-                    <td>{{item.fecha_termino}}</td>
-                    <td>{{item.cliente}}</td>
-                    <td>{{item.contrato}}</td>
-                    <td>{{item.nombre_local}}</td>
-                    <td>{{item.local}}</td>
-                    <td class="text-right">{{item.total}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <table class="table table-bordered tabla-subtotal">
-            <tfoot>
-                <th>
-                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
-                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
-                </th>
-            </tfoot>
-        </table>
-
-
-        <!-- Multas -->
-        {% elif concepto.id == 9 %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th style="width:10%">F.Inicio</th>
-                    <th style="width:10%">F.Termino</th>
-                    <th style="width:30%">Cliente</th>
-                    <th style="width:10%">Nº Contrato</th>
-                    <th style="width:22.5%">Marca Comercial</th>
-                    <th class="text-right" style="width:17.5%">Valor</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for item in concepto.detalle %}
-                <tr>
-                    <td>{{item.fecha_inicio}}</td>
-                    <td>{{item.fecha_termino}}</td>
-                    <td>{{item.cliente}}</td>
-                    <td>{{item.contrato}}</td>
-                    <td>{{item.nombre_local}}</td>
-                    <td class="text-right">{{item.total}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <table class="table table-bordered tabla-subtotal">
-            <tfoot>
-                <th>
-                    <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
-                    <span style="display:inline-block; width:49%; text-align:right">{{concepto.total}}</span>
-                </th>
-            </tfoot>
-        </table>
-
-        {% else %}
-        <p>----</p>
-
-        {% endif %}
-
-        <br>
         {% endfor %}
+
         <br>
 
         <table class="table table-bordered">

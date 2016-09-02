@@ -56,15 +56,28 @@ function guardar_formulario_conceptos(form, id){
 		url: $('#'+form).attr('action'),
 		data: $('#'+form).serialize(),
 		success: function(response) {
-			// alert('guardado CTM')
 			window.location.href = '/contrato-concepto/'+id
 		},
 		error: function(data, textStatus, jqXHR) {
-			alert('no se guardo CTM')
 			clear_errors_form('#'+form)
 			var errors = $.parseJSON(data.responseText)
-			console.log(errors)
-			apply_errors_form(errors)
+			// console.log(errors)
+			
+			$.each(errors, function(index, value) {
+				// console.log(value)
+
+				$.each(value, function(k, v) {
+					// console.log(k + ' : ' + v);
+					$("#id_gasto_comun_set-"+index+'-'+k).closest('.form-group').find('.container-error').append(v)
+				})
+
+				
+				// console.log(index)
+				// console.log(value)
+				// error_msg = value[0]
+				
+			});
+			
 		}
 	});
 	return false;

@@ -493,8 +493,6 @@ class ContratoConceptoMixin(object):
 
 	def form_invalid(self, form):
 
-		print ('form_invalid')
-
 		response = super(ContratoConceptoMixin, self).form_invalid(form)
 
 		if self.request.is_ajax():
@@ -504,22 +502,12 @@ class ContratoConceptoMixin(object):
 
 	def form_valid(self, form):
 
-		context 					= self.get_context_data()
-
-		# formset_arriendo 			= context['formset_arriendo']
-		# formset_detalle 			= context['formset_detalle']
-		# form_arriendo_bodega 		= context['form_arriendo_bodega']
-		# form_arriendo_variable 		= context['form_arriendo_variable']
-		# formset_gasto_comun			= context['form_gasto_comun']
-		# formset_servicios_basicos		= context['form_servicios_basicos']
-		# formset_cuota_incorporacion	= context['form_cuota_incorporacion']
-		# formset_fondo_promocion		= context['form_fondo_promocion']
-
+		context 	= self.get_context_data()
 		concepto 	= Concepto.objects.get(id=context['concepto_id'])
 		formulario 	= context['formulario']
 
 		if concepto.concepto_tipo.id == 1:
-			print ('probar')
+			
 			if formulario.is_valid():
 				formulario_detalle 	= context['formulario_detalle']
 
@@ -528,21 +516,22 @@ class ContratoConceptoMixin(object):
 				newscore.save()
 
 				if formulario_detalle.is_valid():
-					print ('hijo valido')
 					formulario_detalle.save()
 				else:
-					print ('hijo malo ctm')
+					print ('----')
 					print (formulario_detalle.errors)
+					print ('----')
 					return JsonResponse(form.errors, status=400)
 
 			else:
-				print ('no es valido')
+				print ('----')
 				print (formulario.errors)
+				print ('----')
 				return JsonResponse(form.errors, status=400)
+
 		elif concepto.concepto_tipo.id == 2:
 
 			if formulario.is_valid():
-				print (formulario)
 				newscores = formulario.save(commit=False)
 
 				for obj in formulario.deleted_objects:
@@ -552,8 +541,9 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				print (formulario.errors)
 				return JsonResponse(form.errors, status=400)
+
+		# gasto común
 		elif concepto.concepto_tipo.id == 3:
 			if formulario.is_valid():
 				newscores = formulario.save(commit=False)
@@ -565,8 +555,11 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
+				print ('----')
 				print (formulario.errors)
-				return JsonResponse(form.errors, status=400)
+				print ('----')
+				return JsonResponse(formulario.errors, safe=False, status=400)
+
 		elif concepto.concepto_tipo.id == 4:
 
 			if formulario.is_valid():
@@ -578,12 +571,11 @@ class ContratoConceptoMixin(object):
 				for newscore in newscores:
 					newscore.concepto_id = concepto.id
 					newscore.save()
-
 				formulario.save_m2m()
+
 			else:
-				print (formulario.errors)
 				return JsonResponse(form.errors, status=400)
-			pass
+			
 		elif concepto.concepto_tipo.id == 5:
 
 			if formulario.is_valid():
@@ -596,7 +588,6 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				print (formulario.errors)
 				return JsonResponse(form.errors, status=400)
 
 		elif concepto.concepto_tipo.id == 6:
@@ -610,7 +601,6 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				print (formulario.errors)
 				return JsonResponse(form.errors, status=400)
 
 		elif concepto.concepto_tipo.id == 7:
@@ -625,10 +615,9 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				print (formulario.errors)
 				return JsonResponse(form.errors, status=400)
 		else:
-			print ('-----')
+			pass
 
 
 
@@ -787,7 +776,7 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
 
 			elif concepto.concepto_tipo.id == 2:
-				context['formulario'] 	= ArriendoVariableFormSet(self.request.POST, instance=contrato)
+				context['formulario'] 	= ArriendoVariableFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			elif concepto.concepto_tipo.id == 3:
 				context['formulario'] 	= GastoComunFormSet(self.request.POST, instance=contrato)
 			elif concepto.concepto_tipo.id == 4:
@@ -824,9 +813,9 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
 				elif concepto.concepto_tipo.id == 2:
 					if Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto).exists():
-						form = ArriendoVariableFormSet(instance=contrato, queryset=Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto))
+						form = ArriendoVariableFormSet(instance=contrato, queryset=Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto), form_kwargs={'contrato': contrato})
 					else:
-						form = ArriendoVariableFormSet()
+						form = ArriendoVariableFormSet(form_kwargs={'contrato': contrato})
 
 					formularios.append({
 						'fomulario' : form, 
@@ -835,9 +824,9 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 					})
 				elif concepto.concepto_tipo.id == 3:
 					if Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto).exists():
-						form = GastoComunFormSet(instance=contrato, queryset=Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto))
+						form = GastoComunFormSet(instance=contrato, queryset=Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto), form_kwargs={'contrato': contrato})
 					else:
-						form = GastoComunFormSet()
+						form = GastoComunFormSet(form_kwargs={'contrato': contrato})
 
 					formularios.append({
 						'fomulario' : form, 
@@ -847,7 +836,7 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 				elif concepto.concepto_tipo.id == 4:
 
 					if Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto).exists():
-						form = ServicioBasicoFormSet(instance=contrato, queryset=Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto))
+						form = ServicioBasicoFormSet(instance=contrato, queryset=Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto), form_kwargs={'contrato': contrato})
 					else:
 						form = ServicioBasicoFormSet()
 

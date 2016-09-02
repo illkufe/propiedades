@@ -17,9 +17,12 @@ urlpatterns = [
 
 	url(r'^procesos/procesar/propuesta$', csrf_exempt(views.PROPUESTA_PROCESAR.as_view()),name='procesos_con_id'),
 
-	url(r'^proceso/propuesta/filtar$', views.propuesta_filtrar, name='propuesta_filtrar'),
+	url(r'^procesos/propuesta/filtar$', views.propuesta_filtrar, name='propuesta_filtrar'),
 	url(r'^procesos/propuesta/generar$', views.propuesta_generar ,name='propuesta_generar'),
 	url(r'^procesos/propuesta/guardar$', views.propuesta_guardar ,name='propuesta_guardar'),
+	url(r'^procesos/propuesta/pdf/(?P<pk>\d+)$', views.propuesta_pdf ,name='propuesta_pdf'),
+
+	
 	
 	
 
@@ -30,7 +33,7 @@ urlpatterns = [
 	url(r'^procesos/list$', views.ProcesoList.as_view(), name='procesos_list'),
 	url(r'^procesos/delete/(?P<pk>\d+)$', views.ProcesoDelete.as_view(), name='proceso_delete'),
 
-	url(r'^propuesta/pdf/(?P<pk>\d+)$', views.propuesta_pdf, name='propuesta_pdf'),
+	# url(r'^propuesta/pdf/(?P<pk>\d+)$', views.propuesta_pdf, name='propuesta_pdf'),
 	
 
 ]

@@ -43,7 +43,7 @@ class Proceso(models.Model):
 	conceptos 		= models.ManyToManyField(Concepto)
 
 	def __str__(self):
-		return self.user.first_name
+		return self.nombre
 
 	class Meta:
 		verbose_name 		= "Proceso"
@@ -51,6 +51,7 @@ class Proceso(models.Model):
 
 class Proceso_Detalle(models.Model):
 	
+	nombre 			= models.CharField(max_length=250)
 	fecha_inicio 	= models.DateField()
 	fecha_termino 	= models.DateField()
 	total 			= models.FloatField(null=True, blank=True)
@@ -65,7 +66,7 @@ class Proceso_Detalle(models.Model):
 	concepto 	= models.ForeignKey(Concepto)
 
 	def __str__(self):
-		return str(self.contrato.numero)+' '+str(self.concepto.nombre)
+		return str(self.nombre)
 
 # Modelos (detalle conceptos)
 class Detalle_Arriendo_Minimo(models.Model):

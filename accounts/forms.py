@@ -64,7 +64,9 @@ class UpdateUserProfileForm(forms.Form):
 	descripcion 	= forms.CharField(max_length=200, required=False, widget=forms.Textarea(attrs={'class': 'form-control',  'rows':'2'}), label='Descripción')
 
 	def __init__(self, *args, **kwargs):
+
 		self.user = kwargs.pop('user', None)
+
 		super(UpdateUserProfileForm, self).__init__(*args, **kwargs)
 
 		self.fields['first_name'].initial 	= self.user.first_name

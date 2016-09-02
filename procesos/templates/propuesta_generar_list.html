@@ -251,6 +251,7 @@ function filtrar_contratos(){
 						$('.seleccionar-contratos #form-generar-propuesta').removeClass('hide')
 						load_tabla_contratos(data[0].conceptos)
 						data_tabla_contratos(data)
+						$('[data-toggle="tooltip"]').tooltip()
 					}else{
 						$('.seleccionar-contratos #form-generar-propuesta').addClass('hide')
 						var configuracion = {
@@ -313,7 +314,7 @@ function load_tabla_contratos(conceptos){
 		columna = {}
 
 		columna.data 		= conceptos[i].id
-		columna.title 		= conceptos[i].codigo.toLowerCase()
+		columna.title 		= '<div class="text-center">'+conceptos[i].codigo.toLowerCase()+'</div>'
 		columna.orderable 	= false
 		columna.width 		= '7%',
 
@@ -339,7 +340,17 @@ function data_tabla_contratos(data){
 		row['cliente']	= data[i].cliente
 
 		for (var j = 0; j < data[i].conceptos.length; j++) {
-			row[data[i].conceptos[j].id] = data[i].conceptos[j].valido.estado
+			var template = ''
+			template += '<div class="text-center">'
+			if (data[i].conceptos[j].valido.estado == true) {
+				template += '<i class="fa fa-check-circle info-label"></i>'
+			}else{
+				template += '<i class="fa fa-times-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
+			}
+
+			template += '</div>'
+			row[data[i].conceptos[j].id] = template
+			// row[data[i].conceptos[j].id] = data[i].conceptos[j].valido.estado
 		}
 		rows.push(row)
 	}
@@ -513,22 +524,46 @@ function validar_form_propuesta(){
 					// <i class="fa fa-spinner fa-pulse fa-fw"></i>
 				},
 				success: function(data){
-					console.log(data)
-					
 					// $('.validar-propuesta #container-propuesta').html('')
 					// $('.validar-propuesta button').attr('disabled', false)
 					// $('.validar-propuesta button').addClass('hide')
+					swal({
+						title 	: 'Propuesta Creada',
+						text 	: '',
+						type 	: 'success',
+						showCancelButton 	: true,
+						confirmButtonColor 	: '#FCC491',
+						// confirmButtonText 	: '<a href="/procesos/propuesta/pdf/152"><span style="color:#FFF">Descargar PDF<span>',
+						confirmButtonText 	: '<a>Descargar PDF</a>',
+						cancelButtonText 	: '<a href="/propuesta/generar/list"><span style="color:#FFF">Nueva Propuesta</span></a>',
+						allowOutsideClick 	: false,
+						allowEscapeKey 		: false,
+					}).then(function() {
+						console.log('asd')
+					})
 
-					// swal({
-					// 	title: 'Creando Propuesta',
-					// 	text: '',
-					// 	type: 'success',
-					// 	showCancelButton: true,
-					// 	confirmButtonColor: '#FCC491',
-					// 	confirmButtonText: '<a><span style="color:#FFF">Descargar PDF<span>',
-					// 	cancelButtonText: 'Cancelar',
-					// 	closeOnConfirm: true,
-					// });
+
+
+
+
+
+
+					swal({
+						title 	: 'Propuesta Creada',
+						text 	: '',
+						type 	: 'success',
+						showCancelButton 	: true,
+						confirmButtonColor 	: '#FCC491',
+						confirmButtonText 	: '<a>Descargar PDF</a>',
+						cancelButtonText 	: '<a href="/propuesta/generar/list"><span style="color:#FFF">Nueva Propuesta</span></a>',
+						allowOutsideClick 	: false,
+						allowEscapeKey 		: false,
+						allowOutsideClick: false
+					}).then(function() {
+						console.log('asd')
+					})
+
+
 				}
 			})
 		}

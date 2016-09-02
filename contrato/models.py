@@ -259,19 +259,21 @@ class Arriendo_Variable(models.Model):
 	mes_termino		= models.IntegerField(choices=MESES)
 	anio_inicio		= models.IntegerField()
 	anio_termino 	= models.IntegerField()
-	valor			= models.FloatField()
-
 	fecha_inicio 	= models.DateField()
 	fecha_termino 	= models.DateField()
 
+	valor			= models.FloatField()
+	relacion		= models.BooleanField(default=False)
+
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	contrato 	= models.ForeignKey(Contrato)
-	moneda 		= models.ForeignKey(Moneda)
-	concepto 	= models.ForeignKey(Concepto)
+	contrato 		= models.ForeignKey(Contrato)
+	moneda 			= models.ForeignKey(Moneda)
+	concepto 		= models.ForeignKey(Concepto)
+	arriendo_minimo = models.ForeignKey(Concepto, related_name='arriendo_minimo', null=True, blank=True)
 
 	def __str__(self):
 		return self.contrato.nombre_local

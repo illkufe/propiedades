@@ -89,13 +89,14 @@ function getCookie(name){
 }
 
 function apply_errors_form(errors){
-	console.log('acaca')
+	
 	$.each(errors, function(index, value) {
+		console.log(index)
 		
 		// var input = $("#id_" + index),
 		// container = $("#div_id_" + index),
 		error_msg = value[0]
-		console.log(error_msg)
+		// console.log(error_msg)
 		$("#id_" + index).closest('.form-group').find('.container-error').append(error_msg)
 		
 	});

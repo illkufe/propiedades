@@ -319,22 +319,28 @@ class ArriendoBodegaForm(forms.ModelForm):
 
 class ArriendoVariableForm(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
-	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
-
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 			= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False)
 	fecha_termino 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False)
 
+	def __init__(self, *args, **kwargs):
+		contrato = kwargs.pop('contrato', None)
+		super(ArriendoVariableForm, self).__init__(*args, **kwargs)
+		self.fields['arriendo_minimo'].queryset = Concepto.objects.filter(concepto_tipo_id=1, empresa=contrato.empresa)
+	
 	class Meta:
 		model 	= Arriendo_Variable
 		fields 	= '__all__'
 		exclude = ['visible', 'creado_en', 'concepto']
 
-		widgets = {
-			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
-			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
-			'anio_inicio'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'anio_termino'	: forms.NumberInput(attrs={'class': 'form-control'}),
+		widgets = {		
+			'mes_inicio'		: forms.Select(attrs={'class': 'form-control'}),
+			'mes_termino'		: forms.Select(attrs={'class': 'form-control'}),
+			'anio_inicio'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio_termino'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'relacion'			: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'arriendo_minimo' 	: forms.Select(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
@@ -364,7 +370,6 @@ class ArriendoVariableForm(forms.ModelForm):
 
 		return ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+anio_termino+'', "%d/%m/%Y"))
 
-
 class GastoComunForm(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
@@ -375,7 +380,10 @@ class GastoComunForm(forms.ModelForm):
 		super(GastoComunForm, self).__init__(*args, **kwargs)
 
 		if contrato is not None:
+			print ('gasto comunnnnnnnn')
 			self.fields['local'].queryset = contrato.locales.all()
+		else:
+			print ('no tengo contrato')
 
 	class Meta:
 		model 	= Gasto_Comun
