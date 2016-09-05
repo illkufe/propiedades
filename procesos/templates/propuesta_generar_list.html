@@ -126,6 +126,18 @@
 				</div>
 
 				<form id="validar-propuesta" class="hide">
+					<div class="ibox-content" style="display: block;">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group container-input">
+									<label>Nombre Propuesta</label>
+									<input type="text" class="form-control" name="nombre">
+									<div class="container-error"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+
 					<div id="container-propuesta"></div>
 					<div class="ibox-content" style="display: block;">
 						<div class="row">
@@ -452,8 +464,8 @@ function template_propuesta(contrato){
 
 		template += '<tr>'
 		template += '<input type="hidden" class="id" value="@concepto_id">'
-		template += '<td><input type="text" class="nombre"  name="nombre-@contrato_id-@concepto_id" value="@concepto_nombre"><div class="container-error"></div></td>'
-		template += '<td><input type="number" class="total" name="total-@contrato_id-@concepto_id"  value="@concepto_total"><div class="container-error"></div></td>'
+		template += '<td class="container-input"><input type="text" class="nombre"  name="nombre-@contrato_id-@concepto_id" value="@concepto_nombre"><div class="container-error"></div></td>'
+		template += '<td class="container-input"><input type="number" class="total" name="total-@contrato_id-@concepto_id"  value="@concepto_total"><div class="container-error"></div></td>'
 		template += '</tr>'
 
 		template = template.replace(/@concepto_id/g, 		contrato.conceptos[i].id);
@@ -478,9 +490,18 @@ function template_propuesta(contrato){
 function validar_form_propuesta(){
 
 	$("#validar-propuesta").validate({
-
+		rules: {
+			nombre: {
+				required: true,
+			}
+		},
+		messages: {
+			nombre: {
+				required: "campo requerido",
+			}
+		},
 		errorPlacement: function(error, element) {
-			error.appendTo(element.closest("td").find('.container-error'));
+			error.appendTo(element.closest('.container-input').find('.container-error'));
 		},
 		submitHandler: function(form) {
 			var data = []
@@ -514,6 +535,7 @@ function validar_form_propuesta(){
 				type: 'post',
 				dataType: 'json',
 				data:{
+					nombre 				: $('#validar-propuesta input[name="nombre"]').val(),
 					mes 				: $('#form-generar-propuesta input[name="mes"]').val(),
 					anio 				: $('#form-generar-propuesta input[name="anio"]').val(),
 					contratos 			: JSON.stringify(data),
@@ -524,46 +546,23 @@ function validar_form_propuesta(){
 					// <i class="fa fa-spinner fa-pulse fa-fw"></i>
 				},
 				success: function(data){
-					// $('.validar-propuesta #container-propuesta').html('')
-					// $('.validar-propuesta button').attr('disabled', false)
-					// $('.validar-propuesta button').addClass('hide')
-					swal({
-						title 	: 'Propuesta Creada',
-						text 	: '',
-						type 	: 'success',
-						showCancelButton 	: true,
-						confirmButtonColor 	: '#FCC491',
-						// confirmButtonText 	: '<a href="/procesos/propuesta/pdf/152"><span style="color:#FFF">Descargar PDF<span>',
-						confirmButtonText 	: '<a>Descargar PDF</a>',
-						cancelButtonText 	: '<a href="/propuesta/generar/list"><span style="color:#FFF">Nueva Propuesta</span></a>',
-						allowOutsideClick 	: false,
-						allowEscapeKey 		: false,
-					}).then(function() {
-						console.log('asd')
-					})
-
-
-
-
-
-
-
-					swal({
-						title 	: 'Propuesta Creada',
-						text 	: '',
-						type 	: 'success',
-						showCancelButton 	: true,
-						confirmButtonColor 	: '#FCC491',
-						confirmButtonText 	: '<a>Descargar PDF</a>',
-						cancelButtonText 	: '<a href="/propuesta/generar/list"><span style="color:#FFF">Nueva Propuesta</span></a>',
-						allowOutsideClick 	: false,
-						allowEscapeKey 		: false,
-						allowOutsideClick: false
-					}).then(function() {
-						console.log('asd')
-					})
-
-
+					if (data.estado == true) {
+						swal({
+							title 	: 'Propuesta Creada',
+							text 	: '',
+							type 	: 'success',
+							showCancelButton 	: true,
+							confirmButtonColor 	: '#FCC491',
+							confirmButtonText 	: '<a href="/procesos/propuesta/pdf/'+data.id+'"><span style="color:#FFF">Descargar PDF<span>',
+							cancelButtonText 	: '<a href="/propuesta/generar/list"><span style="color:#FFF">Nueva Propuesta</span></a>',
+							allowOutsideClick 	: false,
+							allowEscapeKey 		: false,
+						}).then(function() {
+							console.log('asd')
+						})
+					}else{
+						notification_toast('error', 'Error', data.mensaje)
+					}
 				}
 			})
 		}

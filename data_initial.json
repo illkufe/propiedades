@@ -466,28 +466,18 @@
 	}
 },
 {
-	"model": "procesos.proceso_estado",
+	"model": "procesos.factura_estado",
 	"pk": 1,
 	"fields": {
-		"nombre": "Iniciada",
-		"color": "#26A69A",
-		"descripcion": "",
-		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
-	"model": "procesos.proceso_estado",
-	"pk": 2,
-	"fields": {
 		"nombre": "Propuesta",
-		"color": "#FF9800",
+		"color": "#009688",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
 },
 {
-	"model": "procesos.proceso_estado",
-	"pk": 3,
+	"model": "procesos.factura_estado",
+	"pk": 2,
 	"fields": {
 		"nombre": "Error Propuesta",
 		"color": "#F44336",
@@ -496,18 +486,18 @@
 	}
 },
 {
-	"model": "procesos.proceso_estado",
-	"pk": 4,
+	"model": "procesos.factura_estado",
+	"pk": 3,
 	"fields": {
-		"nombre": "Terminada",
-		"color": "#43A047",
+		"nombre": "Enviada",
+		"color": "#2196F3",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
 },
 {
-	"model": "procesos.proceso_estado",
-	"pk": 5,
+	"model": "procesos.factura_estado",
+	"pk": 4,
 	"fields": {
 		"nombre": "Error Envio",
 		"color": "#F44336",
@@ -516,10 +506,20 @@
 	}
 },
 {
-	"model": "procesos.proceso_estado",
-	"pk": 6,
+	"model": "procesos.factura_estado",
+	"pk": 5,
 	"fields": {
 		"nombre": "Reenviada",
+		"color": "#2196F3",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "procesos.factura_estado",
+	"pk": 5,
+	"fields": {
+		"nombre": "Pagada",
 		"color": "#43A047",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"

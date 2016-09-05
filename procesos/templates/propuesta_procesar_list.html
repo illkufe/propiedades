@@ -1,18 +1,155 @@
 {% extends 'index.html' %}
 {% block section %}
+{% load extra_tags %}
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
+<!-- moda -->
+<div class="modal fade" id="info-factura-propuesta" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" >Información Propuesta a Facturar</h4>
+			</div>
+			<div class="modal-body">
+
+				<div class="row">
+					<div class="col-lg-12">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<div class="col-sm-3"><strong>Estado</strong></div>
+								<div class="col-sm-9"><span class="label label-primary">Propuesta</span></div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3"><strong>Nº Contrato</strong></div>
+								<div class="col-sm-9">: 7481</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3"><strong>Cliente</strong></div>
+								<div class="col-sm-9">: Falabella Retail S.A</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3"><strong>Rut Cliente</strong></div>
+								<div class="col-sm-9">: 77.261.280-K</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3"><strong>Marca Comercial</strong></div>
+								<div class="col-sm-9">: Falabella</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<div class="row m-b-lg m-t-lg">
+					<div class="col-md-8">
+						<small>Conceptos Facturados</small>
+						<table class="table small m-b-xs">
+							<tbody>
+								<tr>
+									<td>Arriendo Mínimo</td>
+									<td>$ <strong>22</strong></td>
+								</tr>
+								<tr>
+									<td>Arriendo Bodega</td>
+									<td>$<strong>54</strong></td>
+								</tr>
+								<tr>
+									<td>Gastos Comunes</td>
+									<td>$<strong>32</strong></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-4">
+						<small>Total</small>
+						<h2 class="no-margins">$206.480</h2>
+						<ul class="list-unstyled project-files">
+							<li><a href=""><i class="fa fa-file"></i> Propuesta_Factura.ppt</a></li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <div class="wrapper wrapper-content">
 	<div class="row">
+		<!-- facturas a procesar -->
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
 					<h5>Propuestas de Facturación</h5>
 				</div>
+
 				<div class="ibox-content">
 					<div class="table-responsive">
-						<table id="tabla-propuestas" class="table table-striped table-hover" style="width:100%"></table>
+						<table id="tabla-facturas-propuestas" class="table table-striped table-bordered table-hover" style="width:100%;">
+							<thead></thead>
+							<tbody>
+								{% for item in facturas_propuestas %}
+								<tr>
+									<td class="text-center"><input type="checkbox" class="checkbox-contrato"></td>
+									<td>{{ item.id }}</td>
+									<td>{{ item.propuesta.nombre }}</td>
+									<td>{{ item.propuesta.creado_en|date:"d/m/Y" }}</td>
+									<td>{{ item.fecha_inicio|date:"d/m/Y" }} - {{ item.fecha_termino|date:"d/m/Y" }}</td>
+									<td>{{ item.contrato.numero }}</td>
+									<td>{{ item.contrato.cliente.nombre }}</td>
+									<td class="text-right">{{ item.total|formato_moneda }}</td>
+									<td class="text-center">
+										<a class="btn btn-delete btn-bitbucket" onclick="eliminar_propuesta(this, {{item.id}}, 'tabla-facturas-propuestas')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-view btn-bitbucket" onclick="visualizar_propuesta({{item.id}})"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-edit btn-bitbucket" onclick="enviar_propuesta({{item.id}})"><i class="fa fa-paper-plane"></i></a>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<div class="row">
+						<div class="col-xs-12">
+							<button type="submit" class="btn btn-primary btn-sm btn-w-m pull-right">Enviar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- facturas procesadas -->
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Propuestas de Facturación</h5>
+				</div>
+
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table id="tabla-facturas-procesadas" class="table table-striped table-bordered table-hover dataTables-example" >
+							<thead></thead>
+							<tbody>
+								{% for item in facturas_procesadas %}
+								<tr>
+									<td>{{ item.id }}</td>
+									<td>{{ item.numero }}</td>
+									<td>{{ item.propuesta.nombre }}</td>
+									<td>{{ item.propuesta.creado_en|date:"d/m/Y" }}</td>
+									<td>{{ item.fecha_inicio|date:"d/m/Y" }} - {{ item.fecha_termino|date:"d/m/Y" }}</td>
+									<td>{{ item.contrato.numero }}</td>
+									<td>{{ item.contrato.cliente.nombre }}</td>
+									<td class="text-right">{{ item.total|formato_moneda }}</td>
+									<td class="text-center">
+										<a class="btn btn-view btn-bitbucket" onclick="visualizar_propuesta({{item.id}})"><i class="fa fa-eye"></i></a>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
@@ -20,52 +157,94 @@
 	</div>
 </div>
 
+
+<style>
+
+#info-factura-propuesta .m-b-lg{
+	margin-bottom: 20px;
+}
+
+#info-factura-propuesta .modal-header .modal-title{
+	font-weight: 300;
+}
+
+
+#info-factura-propuesta .form-group{
+	margin-bottom: 5px;
+}
+
+#info-factura-propuesta .project-files li a{
+	margin-top: 5px;
+	margin-left: 0px;
+}
+
+</style>
 {% endblock section %}
 
 {% block scripts %}
 <script>
 
-var tabla_contratos;
-var tabla_procesos;
+var tabla_facturas_propuestas;
+var tabla_facturas_enviadas;
 
 $(document).ready(function(){
 
 	initializar_datos()
 	
-	load_tabla_propuestas()
-	data_tabla_propuestas()
+	load_tabla_facturas_propuestas()
+	load_tabla_facturas_procesadas()
 
 });
 
 function initializar_datos(){
 }
 
-function load_tabla_propuestas(){
+function load_tabla_facturas_propuestas(){
+
+	var configuracion = {
+		'order'	: [[1, 'desc']],
+	} 
 
 	var columns = [
+	{
+		'width'		: '5%',
+		'data'		: 'seleccionar',
+		'orderable'	: false,
+		'title'		: '<div class="text-center"><input type="checkbox" class="checkbox-all" onchange="seleccionar_todo(this)"></div>',
+	},
 	{
 		'data': 'id',
 		'visible': false,
 	},
 	{
-		'width': '10%',
-		'data': 'fecha',
-		'title': 'Fecha',
+		'width': '15%',
+		'data': 'nombre_propuesta',
+		'title': 'Nombre Propuesta',
 	},
 	{
-		'width': '20%',
+		'data': 'fecha',
+		'title': 'Fecha',
+		'visible': false,
+	},
+	{
+		'width': '18%',
 		'data': 'periodo',
 		'title': 'Periodo',
 	},
 	{
-		'width': '40%',
-		'data': 'nombre',
-		'title': 'Nombre',
+		'width': '12%',
+		'data': 'contato',
+		'title': 'Nº Contrato',
 	},
 	{
 		'width': '15%',
-		'data': 'estado',
-		'title': '<div class="text-center">Estado</div>',
+		'data': 'cliente',
+		'title': 'Cliente',
+	},
+	{
+		'width': '10%',
+		'data': 'total',
+		'title': 'Total',
 	},
 	{
 		'width': '15%',
@@ -74,54 +253,158 @@ function load_tabla_propuestas(){
 		'title': '<div class="text-center">Opciones</div>',
 	}];
 
-	tabla_procesos = load_table('#tabla-propuestas', columns, {})
+	tabla_facturas_propuestas = load_table('#tabla-facturas-propuestas', columns, configuracion)
 }
 
-function data_tabla_propuestas(){
+function load_tabla_facturas_procesadas(){
 
-	tabla_procesos.clear().draw();
+	var configuracion = {
+		'order'	: [[1, 'desc']],
+	} 
+
+	var columns = [
+	{
+		'data': 'id',
+		'visible': false,
+	},
+	{
+		'width': '10%',
+		'data': 'numero_pedido',
+		'title': 'Nº Pedido',
+	},
+	{
+		'width': '20%',
+		'data': 'nombre_propuesta',
+		'title': 'Nombre Propuesta',
+	},
+	{
+		'data': 'fecha',
+		'title': 'Fecha',
+		'visible': false,
+	},
+	{
+		'width': '15%',
+		'data': 'periodo',
+		'title': 'Periodo',
+	},
+	{
+		'width': '10%',
+		'data': 'contato',
+		'title': 'Nº Contrato',
+	},
+	{
+		'width': '15%',
+		'data': 'cliente',
+		'title': 'Cliente',
+	},
+	{
+		'width': '10%',
+		'data': 'total',
+		'title': 'Total',
+	},
+	{
+		'width': '5%',
+		'data': 'opciones',
+		'orderable': false,
+		'title': '<div class="text-center">Opciones</div>',
+	}];
+
+	tabla_facturas_enviadas = load_table('#tabla-facturas-procesadas', columns, configuracion)
+}
+
+function visualizar_propuesta(id){
 
 	$.ajax({
-		url: '/procesos/contratos/propuesta',
+		url: '/api/factura/'+id,
 		type: 'get',
 		dataType: 'json',
 		success: function(data){
-
-			rows = [];
-
-			for (var i = 0; i < data.length; i++) {
-
-				if (data[i].estado_id == 2) {
-
-					var template = ''
-					template += '<div class="text-center">'
-					template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>'
-					template += '<a onclick="enviar_propuesta('+data[i].id+')"class="btn btn-edit btn-bitbucket"><i class="fa fa-paper-plane"></i></a>'
-					template += '<a href="/propuesta/pdf/'+data[i].id+'" class="btn btn-config btn-bitbucket"><i class="fa fa-comment"></i></a>'
-
-					row = {}
-
-					row.id 			= data[i].id
-					row.fecha 		= data[i].fecha_creacion
-					row.periodo 	= data[i].fecha_inicio+' - '+data[i].fecha_termino
-					row.nombre 		= data[i].nombre
-					row.estado 		= '<div class="text-center"><span class="label" style="background:'+data[i].estado_color+'; color:#FFF">'+data[i].estado_nombre+'</span></div>'
-					row.opciones 	= template
-
-					rows.push(row)
-
-				};
-
-			}
-			tabla_procesos.rows.add(rows).draw();
+			$('#info-factura-propuesta .modal-body').append(template_modal_info_factura(data[0]))
+			$('#info-factura-propuesta').modal('show')
 		}
 	})
 }
 
+function template_modal_info_factura(factura){
+
+	console.log(factura)
+
+	$('#info-factura-propuesta .modal-body').html('')
+
+	var template = ''
+
+	template += '<div class="row">'
+	template += '<div class="col-lg-12">'
+	template += '<form class="form-horizontal">'
+	template += '<div class="form-group">'
+	template += '<div class="col-sm-3"><strong>Nº Contrato</strong></div>'
+	template += '<div class="col-sm-9">: @contato_numero</div>'
+	template += '</div>'
+	template += '<div class="form-group">'
+	template += '<div class="col-sm-3"><strong>Cliente</strong></div>'
+	template += '<div class="col-sm-9">: @cliente_nombre</div>'
+	template += '</div>'
+	template += '<div class="form-group">'
+	template += '<div class="col-sm-3"><strong>Rut Cliente</strong></div>'
+	template += '<div class="col-sm-9">: @cliente_rut</div>'
+	template += '</div>'
+	template += '<div class="form-group">'
+	template += '<div class="col-sm-3"><strong>Marca Comercial</strong></div>'
+	template += '<div class="col-sm-9">: @contato_nombre_local</div>'
+	template += '</div>'
+	template += '<div class="form-group">'
+	template += '<div class="col-sm-9">'
+	template += '<span class="label" style="color:#fff; background:@estado_color">@estado_nombre</span>'
+	template += '</div>'
+	template += '</div>'
+	template += '</form>'
+	template += '</div>'
+	template += '</div>'
+	
+	template += '<div class="row m-b-lg m-t-lg">'
+	template += '<div class="col-md-7">'
+	template += '<small>Conceptos Facturados</small>'
+	template += '<table class="table small m-b-xs">'
+	template += '<tbody>'
+
+
+	for (var i = 0; i < factura.detalles.length; i++) {
+
+		template += '<tr>'
+		template += '<td>@concepto_nombre</td>'
+		template += '<td class="text-right"><strong>@concepto_subtotal</strong></td>'
+		template += '</tr>'
+
+		template = template.replace(/@concepto_nombre/g, 	factura.detalles[i].nombre);
+		template = template.replace(/@concepto_subtotal/g, 	factura.detalles[i].total);
+	};
+
+	template += '</tbody>'
+	template += '</table>'
+	template += '</div>'
+	template += '<div class="col-md-5">'
+	template += '<small>Total</small>'
+	template += '<h2 class="no-margins">@total</h2>'
+	template += '<ul class="list-unstyled project-files">'
+	template += '<li><a href=""><i class="fa fa-file"></i> Factura Propuesta.pdf</a></li>'
+	template += '</ul>'
+	template += '</div>'
+	template += '</div>'
+
+	template = template.replace(/@estado_nombre/g, 			factura.estado.nombre)
+	template = template.replace(/@estado_color/g, 			factura.estado.color)
+	template = template.replace(/@contato_numero/g, 		factura.contrato.numero)
+	template = template.replace(/@contato_nombre_local/g, 	factura.contrato.nombre_local)
+	template = template.replace(/@cliente_nombre/g, 		factura.contrato.cliente.nombre)
+	template = template.replace(/@cliente_rut/g, 			factura.contrato.cliente.rut)
+	template = template.replace(/@total/g, 					factura.total)
+
+	return template
+}
 
 function enviar_propuesta(id){
 	$.ajax({
-		url: '/procesos/procesar/propuesta',
+		url: '/procesos/propuesta/enviar',
 		type: 'post',
 		dataType: 'json',
 		data:{
@@ -130,13 +413,45 @@ function enviar_propuesta(id){
 		},
 		success: function(data){
 			console.log(data)
-			data_tabla_propuestas()
 		}
 	})
 }
 
+function eliminar_propuesta(obj, id, tabla){
+	console.log(tabla)
+
+	var col = $(obj).closest('tr')
+
+	swal({
+		title: '¿ Eliminar Propuesta ?',
+		text: '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#F8BB86',
+		cancelButtonColor: '#D0D0D0',
+		confirmButtonText: 'Si, eliminar',
+		cancelButtonText: 'Cancelar',
+		closeOnConfirm: true,
+	}).then(function() {
+		$.ajax({
+			url:'/api/factura/'+id,
+			type: 'DELETE',
+			dataType: "json",
+			success: function(data){
+				if (data.estado == true) {
+					var table = $('#'+tabla).DataTable();
+					table.row($(col)).remove().draw();
+					notification_toast('success', 'Exito', data.mensaje)
+				}else{
+					notification_toast('error', 'Error', data.mensaje)
+				}
+			},
+			error:function(data){
+				notification_toast('error', 'Error', 'no se puedo eliminar')
+			}
+		});
+	})
+}
 </script>
 
 {% endblock scripts %}
-
-

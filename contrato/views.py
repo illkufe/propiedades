@@ -9,7 +9,6 @@ from django.views.generic import View, ListView, FormView, CreateView, DeleteVie
 
 from administrador.models import Empresa, Cliente
 from locales.models import Local
-from procesos.models import Proceso
 
 from .forms import *
 from .models import *

@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
 from accounts.models import UserProfile
-from procesos.models import Proceso
 from .models import *
 
 from utilidades.views import *
