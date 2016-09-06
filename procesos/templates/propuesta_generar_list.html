@@ -129,10 +129,14 @@
 					<div class="ibox-content" style="display: block;">
 						<div class="row">
 							<div class="col-sm-6">
-								<div class="form-group container-input">
-									<label>Nombre Propuesta</label>
-									<input type="text" class="form-control" name="nombre">
-									<div class="container-error"></div>
+								<div class="form-horizontal">
+									<div class="form-group container-input" style="margin-bottom:0px">
+										<label class="col-lg-4 control-label">Nombre Propuesta :</label>
+										<div class="col-lg-8">
+											<input type="text" class="form-control" name="nombre">
+											<div class="container-error"></div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -211,10 +215,7 @@ function initialize(){
 
 	$('#form-fitrar-contratos select[name="mes"]').val(fecha.getMonth() + 1)
 	$('#form-fitrar-contratos input[name="anio"]').val(fecha.getFullYear())
-
 }
-
-
 
 // seccion filtrar contratos
 function filtrar_contratos(){
@@ -253,28 +254,51 @@ function filtrar_contratos(){
 		submitHandler: function(form) {
 			$('#form-fitrar-contratos').ajaxSubmit({
 				dataType: 'json',
+				before: function(){
+					loading(true)
+				},
 				success: function(data){
-
+					loading(false)
+					// limpiar formulario
 					$('#form-generar-propuesta input[name="mes"]').val($('#form-fitrar-contratos select[name="mes"]').val())
 					$('#form-generar-propuesta input[name="anio"]').val($('#form-fitrar-contratos input[name="anio"]').val())
 					$('#form-generar-propuesta input[name="conceptos"]').val($('#form-fitrar-contratos select[name="conceptos"]').val())
 
+					// verificar si el fitro tiene datos
 					if (data.length > 0) {
+
+						// configuración mensaje
+						var configuracion = {
+							'toast_type'	: 'success',
+							'toast_text' 	: 'se encontraron contratos',
+							'toast_title' 	: 'Correcto',
+						}
+
+						// mostrar seccion 
 						$('.seleccionar-contratos #form-generar-propuesta').removeClass('hide')
+
+						// cargar contratos
 						load_tabla_contratos(data[0].conceptos)
 						data_tabla_contratos(data)
 						$('[data-toggle="tooltip"]').tooltip()
+						cerrar_panel('.filtrar-contratos')
+
 					}else{
-						$('.seleccionar-contratos #form-generar-propuesta').addClass('hide')
+
+						// configuración mensaje
 						var configuracion = {
-							'toast_type'	: 'error',
+							'toast_type'	: 'warning',
 							'toast_text' 	: 'no se encontraron contratos',
 							'toast_title' 	: 'Advertencia',
 						}
-						notification_toast_final(configuracion)
-					}
+						$('.seleccionar-contratos #form-generar-propuesta').addClass('hide')
+					};
+					notification_toast_final(configuracion)
+				},
+				error: function(){
+					loading(false)
 				}
-			})
+			});
 		}
 	})
 }
@@ -288,10 +312,6 @@ function load_tabla_contratos(conceptos){
 
 	var configuracion = {
 		'order'			: [[1, 'desc']],
-		'paginate'		: false,
-		'bLengthChange'	: false,
-		'bInfo'			: false,
-		'searching'		: false,
 		'buttons'		: [],
 	} 
 
@@ -355,9 +375,9 @@ function data_tabla_contratos(data){
 			var template = ''
 			template += '<div class="text-center">'
 			if (data[i].conceptos[j].valido.estado == true) {
-				template += '<i class="fa fa-check-circle info-label"></i>'
+				template += '<i class="fa fa-check-circle info-succes"></i>'
 			}else{
-				template += '<i class="fa fa-times-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
+				template += '<i class="fa fa-times-circle info-error" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
 			}
 
 			template += '</div>'
@@ -369,7 +389,6 @@ function data_tabla_contratos(data){
 
 	tabla_contratos.rows.add(rows).draw();
 }
-
 
 
 // sección seleccionar contratos
@@ -389,14 +408,28 @@ function crear_propuesta(){
 	if (enviar) {
 		$('#form-generar-propuesta').ajaxSubmit({
 			dataType: 'json',
+			before: function(){
+				loading(true)
+			},
 			success: function(data){
+				loading(false)
+				var configuracion = {
+					'toast_type'	: 'success',
+					'toast_text' 	: 'propuesta generada',
+					'toast_title' 	: 'Correcto',
+				}
+				notification_toast_final(configuracion)
 				cargar_propuesta(data)
+				cerrar_panel('.seleccionar-contratos')
+			},
+			error: function(){
+				loading(false)
 			}
 		});
 	}else{
 		var configuracion = {
-			'toast_type'	: 'error',
-			'toast_text' 	: 'seleccionar al menos un contrato',
+			'toast_type'	: 'warning',
+			'toast_text' 	: 'seleccionar un contrato(s)',
 			'toast_title' 	: 'Advertencia',
 		}
 		notification_toast_final(configuracion)
@@ -421,7 +454,6 @@ function seleccionar_todo(obj){
 		$(this).prop('checked', all)
 	})
 }
-
 
 
 // sección generar propuesta
@@ -541,11 +573,11 @@ function validar_form_propuesta(){
 					contratos 			: JSON.stringify(data),
 					csrfmiddlewaretoken : getCookie('csrftoken'),
 				},
-				beforeSend: function(){
-					// $('.validar-propuesta button').attr('disabled', true)
-					// <i class="fa fa-spinner fa-pulse fa-fw"></i>
+				before: function(){
+					loading(true)
 				},
 				success: function(data){
+					loading(false)
 					if (data.estado == true) {
 						swal({
 							title 	: 'Propuesta Creada',
@@ -563,6 +595,9 @@ function validar_form_propuesta(){
 					}else{
 						notification_toast('error', 'Error', data.mensaje)
 					}
+				},
+				error: function(){
+					loading(false)
 				}
 			})
 		}
@@ -589,6 +624,16 @@ function validar_form_propuesta(){
 	});
 }
 
+
+// funciones
+function cerrar_panel(panel){
+	if (!$(panel+'.ibox').hasClass('border-bottom')) {
+		$(panel+'.ibox').addClass('border-bottom')
+		$(panel+'.ibox .ibox-title .collapse-link').find('i').removeClass('fa-chevron-up')
+		$(panel+'.ibox .ibox-title .collapse-link').find('i').addClass('fa-chevron-down')
+		$(panel+'.ibox .ibox-content').css('display', 'none')
+	};
+}
 
 </script>
 

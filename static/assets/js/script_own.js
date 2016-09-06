@@ -1,3 +1,5 @@
+
+
 $("span.pie").peity("pie", {
 	fill: ['#1ab394', '#d7d7d7', '#ffffff']
 })
@@ -375,12 +377,25 @@ function agregar_fila(tabla, entidad){
 }
 
 function diferencia_entre_meses(d1, d2) {
-    var months;
-    months = (d2.getFullYear() - d1.getFullYear()) * 12;
-    months -= d1.getMonth() + 1;
-    months += d2.getMonth() + 1;
-    return months <= 0 ? 0 : months;
+	var months;
+	months = (d2.getFullYear() - d1.getFullYear()) * 12;
+	months -= d1.getMonth() + 1;
+	months += d2.getMonth() + 1;
+	return months <= 0 ? 0 : months;
 }
 
 
-
+function loading(show) {
+	if (show) {
+		$.blockUI({
+			message: '<h1><i class="fa fa-cog fa-spin fa-1x fa-fw"></i> Por favor espere...</h1>', 
+			css: {
+				backgroundColor: 'none',
+				color: '#fff',
+				border:'none',
+			}
+		});
+	}else{
+		$.unblockUI();
+	}
+}

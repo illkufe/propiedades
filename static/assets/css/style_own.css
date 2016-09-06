@@ -38,6 +38,15 @@
 }
 
 
+.info-succes{
+	color: #4CAF50
+	
+}
+
+.info-error{
+	color: #F44336;
+}
+
 /* STYLE widget report */
 .widget-report{
 	cursor: pointer;

@@ -36,10 +36,10 @@ class PropuestaGenerarList(ListView):
 	def get_context_data(self, **kwargs):
 
 		context 			= super(PropuestaGenerarList, self).get_context_data(**kwargs)
-		context['title'] 	= 'Proceso de Facturación'
+		context['title'] 	= 'Gererar Propuestas'
 		context['subtitle'] = 'propuestas de facturación'
-		context['name'] 	= 'lista'
-		context['href'] 	= 'procesos'
+		context['name'] 	= 'generar'
+		context['href'] 	= 'propuesta/generar'
 
 		context['conceptos'] 	= Concepto.objects.all() #{falta: traer los conceptos de la empresa}
 		context['activos'] 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
@@ -57,9 +57,9 @@ class PropuestaProcesarList(ListView):
 		propuestas 	= Propuesta.objects.filter(user__in=users).values_list('id', flat=True)
 
 		context 			= super(PropuestaProcesarList, self).get_context_data(**kwargs)
-		context['title'] 	= 'Proceso de Facturación'
+		context['title'] 	= 'Procesar Propuesta'
 		context['subtitle'] = 'propuestas de facturación'
-		context['name'] 	= 'lista'
+		context['name'] 	= 'enviar'
 		context['href'] 	= 'propuesta/procesar'
 
 		context['facturas_propuestas'] = Factura.objects.filter(propuesta__in=propuestas, estado_id=1, visible=True)
@@ -1518,6 +1518,11 @@ class FACTURA(View):
 				})
 
 		return JsonResponse(data, safe=False)
+
+
+
+
+
 
 
 
