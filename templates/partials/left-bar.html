@@ -41,7 +41,7 @@
 			<li>
 				<a><i class="fa fa-building-o"></i> <span class="nav-label">Activo</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
-					<li><a href="/activos/list">Activos</a></li>
+					<li><a href='{% url "activo_list" %}'>Activos</a></li>
 					<li><a href="/gastos-mensual/list">Gastos Comunes</a></li>
 					<li><a href="/gastos-servicios/list">Servicios Varios</a></li>
 				</ul>
@@ -71,6 +71,7 @@
 				<ul class="nav nav-second-level collapse">
 					<li><a href="/propuesta/generar/list">Gererar Propuesta</a></li>
 					<li><a href="/propuesta/procesar/list">Procesar Propuesta</a></li>
+					<li><a href='{% url "propuesta_consultar" %}'>Consultar Contratos</a></li>
 				</ul>
 			</li>
 

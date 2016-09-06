@@ -155,9 +155,9 @@ class ContratoMixin(object):
 
 		# comprobar si tiene estado
 		try:
-			obj.contrato_estado
+			obj.estado
 		except Exception:
-			obj.contrato_estado = Contrato_Estado.objects.get(id=1)
+			obj.estado = Contrato_Estado.objects.get(id=1)
 
 		obj.save()
 		form.save_m2m()
@@ -1092,7 +1092,7 @@ class CONTRATO(View):
 				'bodega' 				: contrato.bodega,
 				'metros_bodega' 		: contrato.metros_bodega,
 				'tipo' 					: {'id': contrato.contrato_tipo.id, 'nombre': contrato.contrato_tipo.nombre},
-				'estado' 				: {'id': contrato.contrato_estado.id, 'nombre': contrato.contrato_estado.nombre},
+				'estado' 				: {'id': contrato.estado.id, 'nombre': contrato.estado.nombre},
 				'cliente' 				: {'id': contrato.cliente.id, 'nombre': contrato.cliente.nombre},
 				'locales' 				: data_locales,
 				'conceptos' 			: data_conceptos,
@@ -1157,7 +1157,7 @@ class CONTRATO_CONCEPTOS(View):
 				'bodega' 				: contrato.bodega,
 				'metros_bodega' 		: contrato.metros_bodega,
 				'tipo' 					: {'id': contrato.contrato_tipo.id, 'nombre': contrato.contrato_tipo.nombre},
-				'estado' 				: {'id': contrato.contrato_estado.id, 'nombre': contrato.contrato_estado.nombre},
+				'estado' 				: {'id': contrato.estado.id, 'nombre': contrato.estado.nombre},
 				'cliente' 				: {'id': contrato.cliente.id, 'nombre': contrato.cliente.nombre},
 				'locales' 				: data_locales,
 				'conceptos' 			: data_conceptos,
@@ -1173,7 +1173,7 @@ def contrato_activar(request, contrato_id):
 		data 		= {'estado': 'ok'}
 		contrato 	= Contrato.objects.get(id=contrato_id)
 		contrato.fecha_activacion 	= fecha_actual()
-		contrato.contrato_estado 	= Contrato_Estado.objects.get(id=4)
+		contrato.estado 	= Contrato_Estado.objects.get(id=4)
 		contrato.save()
 		
 	except Exception:

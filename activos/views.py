@@ -3,54 +3,54 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 
-from accounts.models import UserProfile
-from locales.models import Local, Medidor_Electricidad, Medidor_Agua, Medidor_Gas, Gasto_Servicio
+from accounts.models import *
+from locales.models import *
 
-from .forms import ActivoForm, SectorFormSet, NivelFormSet, GastoMensualForm, LocalForm, ElectricidadFormSet, AguaFormSet, GasFormSet, GastoServicioForm
-from .models import Activo, Sector, Nivel, Gasto_Mensual
+from .forms import *
+from .models import *
 
 
 class ActivoMixin(object):
 
-	template_name = 'viewer/activos/activo_new.html'
-	form_class = ActivoForm
-	success_url = '/activos/list'
+	template_name 	= 'activo_new.html'
+	form_class 		= ActivoForm
+	success_url 	= '/activos/list'
 
 	def form_invalid(self, form):
+
 		response = super(ActivoMixin, self).form_invalid(form)
+
 		if self.request.is_ajax():
-			print (form.errors)
 			return JsonResponse(form.errors, status=400)
 		else:
 			return response
 
 	def form_valid(self, form):
-		user 	= User.objects.get(pk=self.request.user.pk)
-		profile = UserProfile.objects.get(user=user)
 
 		context 		= self.get_context_data()
 		form_sector 	= context['sectorform']
 		form_nivel 		= context['nivelform']
 
-		obj = form.save(commit=False)
-		obj.empresa_id = profile.empresa_id
+		obj 			= form.save(commit=False)
+		obj.empresa 	= self.request.user.userprofile.empresa
 		obj.save()
 
+		# validar sectores {falta: devolver y pintar los errores}
 		if form_sector.is_valid():
 			self.object = form.save(commit=False)
 			form_sector.instance = self.object
 			form_sector.save()
 
+		# validar niveles {falta: devolver y pintar los errores}
 		if form_nivel.is_valid():
 			self.object = form.save(commit=False)
 			form_nivel.instance = self.object
 			form_nivel.save()
 
 		response = super(ActivoMixin, self).form_valid(form)
+
 		if self.request.is_ajax():
-			data = {
-				'pk': 'self.object.pk',
-			}
+			data = {'estado': True,}
 			return JsonResponse(data)
 		else:
 			return response
@@ -59,12 +59,12 @@ class ActivoNew(ActivoMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 
-		context = super(ActivoNew, self).get_context_data(**kwargs)
-		context['title'] = 'Activos'
-		context['subtitle'] = 'Activo'
-		context['name'] = 'Nuevo'
-		context['href'] = 'activos'
-		context['accion'] = 'create'
+		context 			= super(ActivoNew, self).get_context_data(**kwargs)
+		context['title'] 	= 'Activos'
+		context['subtitle'] = 'activos'
+		context['name'] 	= 'nuevo'
+		context['href'] 	= '/activos/list'
+		context['accion'] 	= 'create'
 
 		if self.request.POST:
 			context['sectorform'] = SectorFormSet(self.request.POST)
@@ -76,45 +76,46 @@ class ActivoNew(ActivoMixin, FormView):
 		return context
 
 class ActivoList(ListView):
-	model = Activo
-	template_name = 'viewer/activos/activo_list.html'
+
+	model 			= Activo
+	template_name 	= 'activo_list.html'
 
 	def get_context_data(self, **kwargs):
-		context = super(ActivoList, self).get_context_data(**kwargs)
-		context['title'] = 'Activos'
-		context['subtitle'] = 'Activo'
-		context['name'] = 'Lista'
-		context['href'] = 'activos'
+
+		context 			= super(ActivoList, self).get_context_data(**kwargs)
+		context['title'] 	= 'Activos'
+		context['subtitle'] = 'activos'
+		context['name']	 	= 'lista'
+		context['href'] 	= '/activos/list'
 		
 		return context
 
 	def get_queryset(self):
 
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profile 	= UserProfile.objects.get(user=user)
-		queryset 	= Activo.objects.filter(empresa=profile.empresa, visible=True)
+		queryset 	= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 
 		return queryset
 
 class ActivoDelete(DeleteView):
-	model = Activo
+
+	model 		= Activo
 	success_url = reverse_lazy('/activos/list')
 
 	def delete(self, request, *args, **kwargs):
 
-		self.object = self.get_object()
+		self.object 		= self.get_object()
 		self.object.visible = False
 		self.object.save()
-		payload = {'delete': 'ok'}
+		data 				= {'estado': True}
 
-		return JsonResponse(payload, safe=False)
+		return JsonResponse(data, safe=False)
 
 class ActivoUpdate(ActivoMixin, UpdateView):
 
-	model = Activo
-	form_class = ActivoForm
-	template_name = 'viewer/activos/activo_new.html'
-	success_url = '/activos/list'
+	model 			= Activo
+	form_class		= ActivoForm
+	template_name 	= 'activo_new.html'
+	success_url 	= '/activos/list'
 
 	def get_object(self, queryset=None):
 
@@ -131,41 +132,42 @@ class ActivoUpdate(ActivoMixin, UpdateView):
 
 		return queryset
 
-
 	def get_context_data(self, **kwargs):
 
-		context = super(ActivoUpdate, self).get_context_data(**kwargs)
-
-		context['title'] = 'Activos'
-		context['subtitle'] = 'Activo'
-		context['name'] = 'Editar'
-		context['href'] = 'activos'
-		context['accion'] = 'update'
+		context 			= super(ActivoUpdate, self).get_context_data(**kwargs)
+		context['title'] 	= 'Activos'
+		context['subtitle'] = 'activo'
+		context['name'] 	= 'editar'
+		context['href'] 	= 'activos'
+		context['accion'] 	= 'update'
 
 		if self.request.POST:
-			context['sectorform'] = SectorFormSet(self.request.POST, instance=self.object)
-			context['nivelform'] = NivelFormSet(self.request.POST, instance=self.object)
+			context['sectorform'] 	= SectorFormSet(self.request.POST, instance=self.object)
+			context['nivelform'] 	= NivelFormSet(self.request.POST, instance=self.object)
 		else:
-			context['sectorform'] = SectorFormSet(instance=self.object)
-			context['nivelform'] = NivelFormSet(instance=self.object)
+			context['sectorform'] 	= SectorFormSet(instance=self.object)
+			context['nivelform'] 	= NivelFormSet(instance=self.object)
 
 		return context
 
 
-
 class GastoMensualMixin(object):
 
-	template_name = 'viewer/activos/gasto_mensual_new.html'
-	form_class = GastoMensualForm
-	success_url = '/gastos-mensual/list'
+	template_name 	= 'viewer/activos/gasto_mensual_new.html'
+	form_class 		= GastoMensualForm
+	success_url 	= '/gastos-mensual/list'
 
 	def get_form_kwargs(self):
-		kwargs = super(GastoMensualMixin, self).get_form_kwargs()
-		kwargs['request'] = self.request
+
+		kwargs 				= super(GastoMensualMixin, self).get_form_kwargs()
+		kwargs['request'] 	= self.request
+
 		return kwargs
 
 	def form_invalid(self, form):
+
 		response = super(GastoMensualMixin, self).form_invalid(form)
+
 		if self.request.is_ajax():
 			return JsonResponse(form.errors, status=400)
 		else:
@@ -177,10 +179,10 @@ class GastoMensualMixin(object):
 		obj.user 	= self.request.user
 
 		try:
-			gasto = Gasto_Mensual.objects.get(activo_id= obj.activo.id, mes=obj.mes, anio=obj.anio)
+			gasto 			= Gasto_Mensual.objects.get(activo_id= obj.activo.id, mes=obj.mes, anio=obj.anio)
 			gasto.valor 	= obj.valor
-			gasto.user 	= obj.user
-			gasto.visible = True
+			gasto.user 		= obj.user
+			gasto.visible 	= True
 			gasto.save()
 		except Exception:
 			obj.save()

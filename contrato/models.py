@@ -71,8 +71,8 @@ class Contrato(models.Model):
 
 	# relaciones
 	empresa 		= models.ForeignKey(Empresa)
-	contrato_tipo 	= models.ForeignKey(Contrato_Tipo)
-	contrato_estado = models.ForeignKey(Contrato_Estado)
+	tipo 			= models.ForeignKey(Contrato_Tipo)
+	estado 			= models.ForeignKey(Contrato_Estado)
 	cliente 		= models.ForeignKey(Cliente)
 	locales 		= models.ManyToManyField(Local)
 	conceptos 		= models.ManyToManyField(Concepto)

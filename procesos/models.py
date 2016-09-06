@@ -47,9 +47,11 @@ class Factura_Estado(models.Model):
 class Factura(models.Model):
 
 	# atributos (generales)
+	numero_pedido 	= models.IntegerField(null=True, blank=True)
 	fecha_inicio 	= models.DateField()
 	fecha_termino 	= models.DateField()
 	total 			= models.FloatField()
+
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)

@@ -131,7 +131,7 @@
 							<div class="col-sm-6">
 								<div class="form-horizontal">
 									<div class="form-group container-input" style="margin-bottom:0px">
-										<label class="col-lg-4 control-label">Nombre Propuesta :</label>
+										<label class="col-lg-4 control-label" style="text-align:left">Nombre Propuesta :</label>
 										<div class="col-lg-8">
 											<input type="text" class="form-control" name="nombre">
 											<div class="container-error"></div>
@@ -254,7 +254,7 @@ function filtrar_contratos(){
 		submitHandler: function(form) {
 			$('#form-fitrar-contratos').ajaxSubmit({
 				dataType: 'json',
-				before: function(){
+				beforeSend: function(){
 					loading(true)
 				},
 				success: function(data){
@@ -408,7 +408,7 @@ function crear_propuesta(){
 	if (enviar) {
 		$('#form-generar-propuesta').ajaxSubmit({
 			dataType: 'json',
-			before: function(){
+			beforeSend: function(){
 				loading(true)
 			},
 			success: function(data){
@@ -573,7 +573,7 @@ function validar_form_propuesta(){
 					contratos 			: JSON.stringify(data),
 					csrfmiddlewaretoken : getCookie('csrftoken'),
 				},
-				before: function(){
+				beforeSend: function(){
 					loading(true)
 				},
 				success: function(data){

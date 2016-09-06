@@ -479,16 +479,6 @@
 	"model": "procesos.factura_estado",
 	"pk": 2,
 	"fields": {
-		"nombre": "Error Propuesta",
-		"color": "#F44336",
-		"descripcion": "",
-		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
-	"model": "procesos.factura_estado",
-	"pk": 3,
-	"fields": {
 		"nombre": "Enviada",
 		"color": "#2196F3",
 		"descripcion": "",
@@ -497,7 +487,7 @@
 },
 {
 	"model": "procesos.factura_estado",
-	"pk": 4,
+	"pk": 3,
 	"fields": {
 		"nombre": "Error Envio",
 		"color": "#F44336",
@@ -507,7 +497,7 @@
 },
 {
 	"model": "procesos.factura_estado",
-	"pk": 5,
+	"pk": 4,
 	"fields": {
 		"nombre": "Reenviada",
 		"color": "#2196F3",

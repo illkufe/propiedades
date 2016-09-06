@@ -63,16 +63,15 @@ class ContratoForm(forms.ModelForm):
 		super(ContratoForm, self).__init__(*args, **kwargs)	
 
 		if self.instance.pk is not None:
-			locales_id = Contrato.objects.values_list('locales', flat=True).filter(contrato_estado_id=4, visible=True).exclude(id=self.instance.pk)
+			locales_id = Contrato.objects.values_list('locales', flat=True).filter(estado=4, visible=True).exclude(id=self.instance.pk)
 		else:
-			locales_id = Contrato.objects.values_list('locales', flat=True).filter(contrato_estado_id=4, visible=True)
+			locales_id = Contrato.objects.values_list('locales', flat=True).filter(estado=4, visible=True)
 
-		self.fields['locales'].queryset 		= Local.objects.filter(activo__in=activos, visible=True).exclude(id__in=locales_id)
-		self.fields['conceptos'].queryset 		= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
-		self.fields['cliente'].queryset 		= Cliente.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
-		self.fields['contrato_tipo'].queryset 	= Contrato_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
-
-		self.fields['contrato_estado'].required = False
+		self.fields['locales'].queryset 	= Local.objects.filter(activo__in=activos, visible=True).exclude(id__in=locales_id)
+		self.fields['conceptos'].queryset 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		self.fields['cliente'].queryset 	= Cliente.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		self.fields['tipo'].queryset 		= Contrato_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		self.fields['estado'].required 		= False
 
 	class Meta:
 		model 	= Contrato
@@ -86,7 +85,7 @@ class ContratoForm(forms.ModelForm):
 			'dias_salida'		: forms.NumberInput(attrs={'class': 'form-control'}),
 			'nombre_local'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'destino_comercial'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
-			'contrato_tipo' 	: forms.Select(attrs={'class': 'form-control'}),
+			'tipo' 				: forms.Select(attrs={'class': 'form-control'}),
 			'cliente'			: forms.Select(attrs={'class': 'form-control'}),
 			'locales'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 			'conceptos'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
@@ -98,7 +97,7 @@ class ContratoForm(forms.ModelForm):
 			'destino_comercial'	: {'required': 'campo requerido'},
 			'meses'				: {'required': 'campo requerido'},
 			'dias_salida'		: {'required': 'campo requerido'},
-			'contrato_tipo'		: {'required': 'campo requerido'},
+			'tipo'				: {'required': 'campo requerido'},
 			'cliente'			: {'required': 'campo requerido'},
 			'locales'			: {'required': 'campo requerido'},
 			'conceptos'			: {'required': 'campo requerido'},
@@ -108,7 +107,7 @@ class ContratoForm(forms.ModelForm):
 			'numero'			: 'Nº Contrato',
 			'nombre_local'		: 'Marca Comercial',
 			'fecha_renovacion'	: 'Fecha Renovación',
-			'contrato_tipo' 	: 'Tipo de Contrato',
+			'tipo' 				: 'Tipo de Contrato',
 		}
 
 		help_texts = {

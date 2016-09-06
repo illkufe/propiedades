@@ -11,13 +11,13 @@
 				<div class="ibox-title">
 					<h5>Lista de Activos</h5>
 					<div class="ibox-tools">
-						<a href="/activos/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo activo</button></a>
+						<a href='{% url "activo_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo activo</button></a>
 					</div>
 				</div>
 				<div class="ibox-content">
 					<br>
 					<div class="table-responsive">
-						<table id="tabla-activos" class="table table-striped table-bordered table-hover">
+						<table id="tabla-activos" class="table table-striped table-bordered table-hover" style="width:100%">
 							<thead></thead>
 							<tbody>
 								{% for item in object_list %}

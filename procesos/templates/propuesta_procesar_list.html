@@ -337,6 +337,11 @@ function template_modal_info_factura(factura){
 	template += '<div class="col-lg-12">'
 	template += '<form class="form-horizontal">'
 	template += '<div class="form-group">'
+	template += '<div class="col-sm-9">'
+	template += '<span class="label" style="color:#fff; background:@estado_color">@estado_nombre</span>'
+	template += '</div>'
+	template += '</div>'
+	template += '<div class="form-group">'
 	template += '<div class="col-sm-3"><strong>Nº Contrato</strong></div>'
 	template += '<div class="col-sm-9">: @contato_numero</div>'
 	template += '</div>'
@@ -351,11 +356,6 @@ function template_modal_info_factura(factura){
 	template += '<div class="form-group">'
 	template += '<div class="col-sm-3"><strong>Marca Comercial</strong></div>'
 	template += '<div class="col-sm-9">: @contato_nombre_local</div>'
-	template += '</div>'
-	template += '<div class="form-group">'
-	template += '<div class="col-sm-9">'
-	template += '<span class="label" style="color:#fff; background:@estado_color">@estado_nombre</span>'
-	template += '</div>'
 	template += '</div>'
 	template += '</form>'
 	template += '</div>'
@@ -411,8 +411,15 @@ function enviar_propuesta(id){
 			id 	: id,
 			csrfmiddlewaretoken: getCookie('csrftoken'),
 		},
+		beforeSend: function(){
+			loading(true)
+		},
 		success: function(data){
+			loading(false)
 			console.log(data)
+		},
+		error: function(){
+			loading(false)
 		}
 	})
 }

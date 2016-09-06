@@ -16,6 +16,9 @@ urlpatterns = [
 	url(r'^procesos/propuesta/enviar$', views.propuesta_enviar ,name='propuesta_enviar'),
 	url(r'^procesos/propuesta/pdf/(?P<pk>\d+)$', views.propuesta_pdf ,name='propuesta_pdf'),
 
+	
+	url(r'^propuesta/consultar$', csrf_exempt(views.PROPUESTA_CONSULTAR.as_view()),name='propuesta_consultar'),
+
 	url(r'^api/facturas/$', csrf_exempt(views.FACTURA.as_view()),name='facturas'),
 	url(r'^api/factura/(?P<id>\d+)$', csrf_exempt(views.FACTURA.as_view()),name='factura'),
 ]

@@ -41,7 +41,7 @@ class PropuestaGenerarList(ListView):
 		context['name'] 	= 'generar'
 		context['href'] 	= 'propuesta/generar'
 
-		context['conceptos'] 	= Concepto.objects.all() #{falta: traer los conceptos de la empresa}
+		context['conceptos'] 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		context['activos'] 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		
 		return context
@@ -62,10 +62,73 @@ class PropuestaProcesarList(ListView):
 		context['name'] 	= 'enviar'
 		context['href'] 	= 'propuesta/procesar'
 
-		context['facturas_propuestas'] = Factura.objects.filter(propuesta__in=propuestas, estado_id=1, visible=True)
-		context['facturas_procesadas'] = Factura.objects.filter(propuesta__in=propuestas, estado_id=2, visible=True)
+		context['facturas_propuestas'] = Factura.objects.filter(propuesta__in=propuestas, estado_id__in=[1,3], visible=True)
+		context['facturas_procesadas'] = Factura.objects.filter(propuesta__in=propuestas, estado_id__in=[2,4,5], visible=True)
 		
 		return context
+
+
+class PROPUESTA_CONSULTAR(View):
+
+	http_method_names = ['get', 'post']
+
+	def get(self, request):
+
+		return render(request, 'propuesta_consultar.html',{
+			'title' 	: 'Proceso de Facturación',
+			'subtitle' 	: 'conceptos facturados',
+			'name' 		: 'consultar',
+			'href' 		: '/propuesta/consultar',
+			})
+		
+	def post(self, request):
+
+		data 		= list()
+
+		contratos 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, estado__in=[4,6], visible=True)
+		conceptos 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		var_post 	= request.POST.copy()
+		var_mes 	= var_post['mes']
+		var_anio 	= var_post['anio']
+
+		for contrato in contratos:
+
+			data_conceptos 	= list()
+
+			for concepto in conceptos:
+
+				if contrato.conceptos.filter(id=concepto.id).exists():
+
+					asociado = True
+
+					if contrato.factura_set.filter(estado__in=[2,4,5], fecha_inicio__month=var_mes, fecha_inicio__year=var_anio, fecha_termino__month=var_mes, fecha_termino__year=var_anio, visible=True).exists():
+						valido = True
+					else:
+						valido = False
+
+				else:
+					asociado 	= False
+					valido 		= None
+
+				data_conceptos.append({
+					'id'		: concepto.id,
+					'nombre'	: concepto.nombre,
+					'codigo'	: concepto.codigo,
+					'asociado'	: asociado,
+					'valido'	: valido,
+				})
+
+			data.append({
+				'id'		: contrato.id,
+				'numero'	: contrato.numero,
+				'nombre'	: contrato.nombre_local,
+				'cliente'	: contrato.cliente.nombre,
+				'conceptos'	: data_conceptos,
+			})
+
+		return JsonResponse(data, safe=False)
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -80,7 +143,7 @@ def propuesta_filtrar(request):
 	fecha 			= primer_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y"))
 	activo 			= Activo.objects.get(id=activo_id)
 	locales 		= activo.local_set.filter(visible=True).values_list('id', flat=True)
-	contratos 		= Contrato.objects.filter(locales__in=locales, contrato_estado__in=[4,6], visible=True).distinct()
+	contratos 		= Contrato.objects.filter(locales__in=locales, estado__in=[4,6], visible=True).distinct()
 
 	for contrato in contratos:
 
@@ -276,9 +339,15 @@ def propuesta_pdf(request, pk=None):
 
 	return response
 
-def propuesta_enviar(id):
 
-	data 	= list()
+
+def propuesta_enviar(request):
+
+	var_post 	= request.POST.copy()
+
+	data 		= list()
+	factura 	= Factura.objects.get(id=var_post['id'])
+	# obtener datos de conexión
 
 	SDT_DocVentaExt = ET.Element('SDT_DocVentaExt')
 	SDT_DocVentaExt.set('xmlns', 'http://www.informat.cl/ws')
@@ -433,20 +502,24 @@ def propuesta_enviar(id):
 					'codigo' : root.find('{http://www.informat.cl/ws}ATENUMREA').text,
 					'estado' : root.find('{http://www.informat.cl/ws}COD_ESTADO').text,
 					})
+				factura.estado_id = 2
 			else:
 				estado = False
 				response.append({
 					'numero' 		: error.NUMERROR,
 					'descripcion' 	: error.DESCERROR,
 					})
+				factura.estado_id = 3
 	else:
 		estado = False
+		factura.estado_id = 3
 		for error in response_ws.SDT_ERRORES_ERROR:
 			response.append({
 				'numero' 		: error.NUMERROR,
 				'descripcion' 	: error.DESCERROR,
 				})
 
+	factura.save()
 	data.append({
 		'estado'	: estado,
 		'response'	: response,

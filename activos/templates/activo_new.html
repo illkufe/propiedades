@@ -12,7 +12,7 @@
 					{% csrf_token %}
 
 					<div class="ibox-title">
-						<h5>IDENTIFICACION ACTIVO</h5>
+						<h5>Identificación Activo</h5>
 					</div>
 
 					<div class="ibox-content">
@@ -96,7 +96,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<h5>INFORMACIÓN LEGAL</h5>
+						<h5>Información Legal</h5>
 					</div>
 
 					<div class="ibox-content">
@@ -252,7 +252,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<h5>DATOS ECONÓMICOS</h5>
+						<h5>Datos Económicos</h5>
 					</div>
 
 
@@ -366,7 +366,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<h5>NIVELES Y SECTORES</h5>
+						<h5>Niveles y Sectores</h5>
 					</div>
 
 					<div class="ibox-content">
@@ -445,7 +445,7 @@
 						<br>
 						<div class="row">
 							<div class="col-sm-12">
-								<a href="/activos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+								<a href='{% url "activo_list" %}'><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-activo-new')">GUARDAR Y SEGUIR</button>
 							</div>
