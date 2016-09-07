@@ -106,6 +106,9 @@ activos/migrations/
 contrato/migrations/
 locales/migrations/
 procesos/migrations/
+notificaciones/migrations/
+utilidades/migrations/
+reporteria/migrations/
 
 
 #Ignora archivos de la carpeta media

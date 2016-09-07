@@ -11,6 +11,7 @@ class Reporte_Tipo(models.Model):
 	nombre 		= models.CharField(max_length=250)
 	codigo 		= models.CharField(max_length=250, blank=True)
 	descripcion = models.TextField(blank=True)
+	borrar 		= models.CharField(max_length=250)
 
 	# atributos de configuración
 	color 		= models.CharField(max_length=7)
