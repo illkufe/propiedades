@@ -15,6 +15,7 @@ class Propuesta(models.Model):
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
 	creado_en 	= models.DateTimeField(auto_now=True)
+	borrar 		= models.CharField(max_length=250)
 
 	# relaciones
 	user 		= models.ForeignKey(User)
