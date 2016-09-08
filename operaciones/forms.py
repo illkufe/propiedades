@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django import forms
 from utilidades.views import NumberField
 from .models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas

@@ -251,14 +251,14 @@ def profile(request):
 	form_profile    = UpdateUserProfileForm(user=request.user)
 	form_password   = UpdatePasswordForm(user=request.user)
 
-	return render(request, 'viewer/accounts/profile.html', {
-		'alertas': data_alert,
-		'form_profile': form_profile,
-		'form_password': form_password,
-		'title' : 'Perfil',
-		'subtitle' : 'Usuario',
-		'name' : 'Editar',
-		'href' : 'usuarios',
+	return render(request, 'perfil.html', {
+		'alertas'		: data_alert,
+		'form_profile'	: form_profile,
+		'form_password'	: form_password,
+		'title' 		: 'Perfil',
+		'subtitle' 		: 'perfil',
+		'name' 			: 'editar',
+		'href' 			: '/perfil',
 		})
 
 

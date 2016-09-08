@@ -3,16 +3,16 @@
 	"model": "administrador.empresa",
 	"pk": 1,
 	"fields": {
-		"nombre": "Inversiones S.A.",
+		"nombre": "Informat S.A.",
 		"rut": "24.186.766-8",
 		"cuidad" : "Santiago",
-		"comuna" : "Providencia",
-		"direccion" : "Pedro de Valdivia #7630",
+		"comuna" : "Las Condes",
+		"direccion" : "Av Vitacura 2771",
 		"representante" : "Marcelo Pereira",
 		"representante_rut" : "17.234.557-3",
 		"representante_profesion" : "Contador",
 		"representante_nacionalidad" : "Chileno",
-		"descripcion": "Descripción Inversiones S.A.",
+		"descripcion": "Descripción Informat S.A.",
 		"creado_en": "2016-01-01 00:00:00",
 		"visible": true
 	}

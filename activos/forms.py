@@ -2,12 +2,12 @@
 from django import forms
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User, Group
-from utilidades.views import NumberField
 
+from utilidades.views import NumberField
 from accounts.models import UserProfile
-from administrador.models import Empresa
-from locales.models import Local, Local_Tipo, Medidor_Electricidad, Medidor_Agua, Medidor_Gas, Gasto_Servicio
-from .models import Activo, Sector, Nivel, Gasto_Mensual
+from locales.models import Gasto_Servicio
+
+from .models import *
 
 
 class ActivoForm(forms.ModelForm):
@@ -20,7 +20,7 @@ class ActivoForm(forms.ModelForm):
 	valor_tasacion 			= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
 	tasacion_fiscal 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
 	fecha_firma_nomina 		= forms.DateField(required=False, input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
-	fecha_servicio 			= forms.DateField(required=False, input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
+	fecha_escritura 			= forms.DateField(required=False, input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
 	fecha_adquisicion 		= forms.DateField(required=False, input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
 	fecha_tasacion 			= forms.DateField(required=False, input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
 
@@ -43,16 +43,17 @@ class ActivoForm(forms.ModelForm):
 			'propietario'			: forms.TextInput(attrs={'class': 'form-control'}),
 			'rut_propietario'		: forms.TextInput(attrs={'class': 'form-control format-rut'}),
 			'rol_avaluo'			: forms.TextInput(attrs={'class': 'form-control'}),
+			# inscripcion vigente
 			'inscripcion'			: forms.TextInput(attrs={'class': 'form-control'}),
+			'foja'					: forms.TextInput(attrs={'class': 'form-control'}),
+			'numero_inscripcion'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'año'					: forms.NumberInput(attrs={'class': 'form-control'}),
+			'conservador_bienes'	: forms.TextInput(attrs={'class': 'form-control'}),
+			# datos de escritura
+			'repertorio'			: forms.TextInput(attrs={'class': 'form-control'}),
+			'notaria'				: forms.TextInput(attrs={'class': 'form-control'}),		
 			'vendedor'				: forms.TextInput(attrs={'class': 'form-control'}),
 			'rut_vendedor'			: forms.TextInput(attrs={'class': 'form-control format-rut'}),
-			'datos_escritura'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'nomina_numero'			: forms.TextInput(attrs={'class': 'form-control'}),
-			'nomina_repertorio'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'nomina_fojas'			: forms.TextInput(attrs={'class': 'form-control'}),
-			'servicio_nomina'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'servicio_repertorio'	: forms.TextInput(attrs={'class': 'form-control'}),
-			'servicio_fojas'		: forms.TextInput(attrs={'class': 'form-control'}),
 
 			# datos economicos
 			'tasacion_por'		: forms.TextInput(attrs={'class': 'form-control'}),
@@ -68,8 +69,9 @@ class ActivoForm(forms.ModelForm):
 			'tasacion_fiscal' 	: {'required': 'campo requerido'},
 		}
 
-		labels = {
+		labels = {		
 			'codigo'		: 'Código',
+			'inscripcion' 	: 'Inscripción Vigente',
 			'vendedor'		: 'Propietario Anterior',
 			'rut_vendedor'	: 'Rut Propietario Anterior',
 		}
@@ -219,158 +221,5 @@ class GastoServicioForm(forms.ModelForm):
 			'anio'			: '...',
 		}
 
-class ElectricidadForm(forms.ModelForm):
-
-	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
-	potencia_presente 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
-	potencia_fuera 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
-
-	class Meta:
-		model 	= Medidor_Electricidad
-		fields 	= '__all__'
-		exclude = ['creado_en', 'visible', 'local']
-
-		widgets = {
-			'nombre'				: forms.TextInput(attrs={'class': 'form-control'}),
-			'numero_rotulo'			: forms.TextInput(attrs={'class': 'form-control'}),
-			'tarifa_electricidad'	: forms.Select(attrs={'class': 'form-control'}),
-		}
-
-		error_messages = {
-			'nombre' 		: {'required': 'campo requerido'},
-			'numero_rotulo' : {'required': 'campo requerido'},
-		}
-
-		help_texts = {
-			'nombre'				: '...',
-			'numero_rotulo'			: '...',
-			'tarifa_electricidad'	: '...',
-		}
-
-		labels = {
-			'numero_rotulo'			: 'Nº Rótulo',
-			'tarifa_electricidad'	: 'Tarifa',
-		}
-
-class AguaForm(forms.ModelForm):
-
-	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
-
-	class Meta:
-		model 	= Medidor_Agua
-		fields 	= '__all__'
-		exclude = ['creado_en', 'visible', 'local']
-
-		widgets = {
-			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'numero_rotulo'	: forms.TextInput(attrs={'class': 'form-control'}),
-		}
-
-		error_messages = {
-			'nombre' 		: {'required': 'campo requerido'},
-			'numero_rotulo' : {'required': 'campo requerido'},
-		}
-
-		help_texts = {
-			'nombre'			: '...',
-			'numero_rotulo'		: '...',
-		}
-
-		labels = {
-			'numero_rotulo'		: 'Nº Rótulo',
-		}
-
-class GasForm(forms.ModelForm):
-
-	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
-
-	class Meta:
-		model 	= Medidor_Gas
-		fields 	= '__all__'
-		exclude = ['creado_en', 'visible', 'local']
-
-		widgets = {
-			'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
-			'numero_rotulo'		: forms.TextInput(attrs={'class': 'form-control'}),
-		}
-
-		error_messages = {
-			'nombre' 		: {'required': 'campo requerido'},
-			'numero_rotulo' : {'required': 'campo requerido'},
-		}
-
-		help_texts = {
-			'nombre'			: '...',
-			'numero_rotulo'		: '...',
-		}
-
-		labels = {
-			'numero_rotulo'		: 'Nº Rótulo',
-		}
-
-class LocalForm(forms.ModelForm):
-
-	metros_cuadrados = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	metros_lineales = NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	metros_compartidos = NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	metros_bodega = NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-
-	def __init__(self, *args, **kwargs):
-
-		self.request 	= kwargs.pop('request')
-		activo_id 		= kwargs.pop('activo_id', None)
-		user 			= User.objects.get(pk=self.request.user.pk)
-		profile 		= UserProfile.objects.get(user=user)
-
-		super(LocalForm, self).__init__(*args, **kwargs)
-
-		activo = Activo.objects.get(id=activo_id)
-
-		self.fields['local_tipo'].queryset 	= Local_Tipo.objects.filter(empresa=profile.empresa)
-		self.fields['sector'].queryset 		= Sector.objects.filter(activo=activo)
-		self.fields['nivel'].queryset 		= Nivel.objects.filter(activo=activo)
-
-	class Meta:
-		model 	= Local
-		fields 	= '__all__'
-		exclude = ['creado_en', 'visible', 'activo']
-
-		widgets = {
-			'nombre'					: forms.TextInput(attrs={'class': 'form-control'}),
-			'codigo'					: forms.TextInput(attrs={'class': 'form-control'}),
-			'descripcion'				: forms.TextInput(attrs={'class': 'form-control'}),
-			'sector'					: forms.Select(attrs={'class': 'form-control'}),
-			'nivel'						: forms.Select(attrs={'class': 'form-control'}),
-			'local_tipo'				: forms.Select(attrs={'class': 'form-control'}),
-		}
-
-		error_messages = {
-			'nombre' 			: {'required': 'campo requerido'},
-			'codigo' 			: {'required': 'campo requerido'},
-			'sector' 			: {'required': 'campo requerido'},
-			'nivel' 			: {'required': 'campo requerido'},
-			'local_tipo' 		: {'required': 'campo requerido'},
-		}
-
-		help_texts = {
-			'nombre'			: '...',
-			'codigo'			: '...',
-			'descripcion'		: '...',
-			'sector'			: '...',
-			'nivel'				: '...',
-			'local_tipo'		: '...',
-		}
-
-		labels = {
-			'descripcion'	: 'Descripción',
-			'codigo'		: 'Código',
-			'local_tipo'	: 'Tipo de Local',
-		}
-
 SectorFormSet 		= inlineformset_factory(Activo, Sector, form=SectorForm, extra=1, can_delete=True)
 NivelFormSet 		= inlineformset_factory(Activo, Nivel, form=NivelForm, extra=1, can_delete=True)
-AguaFormSet 		= inlineformset_factory(Local, Medidor_Agua, form=AguaForm, extra=1, can_delete=True)
-GasFormSet 			= inlineformset_factory(Local, Medidor_Gas, form=GasForm, extra=1, can_delete=True)
-ElectricidadFormSet = inlineformset_factory(Local, Medidor_Electricidad, form=ElectricidadForm, extra=1, can_delete=True)
-
-

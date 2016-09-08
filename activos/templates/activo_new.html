@@ -130,6 +130,19 @@
 											{{ form.rol_avaluo.errors|striptags }}
 										</div>
 									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>Inscripción Vigente</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="row">
 
 									<div class="form-group col-sm-3">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.inscripcion.help_text }}" ></i>
@@ -137,6 +150,86 @@
 										{{ form.inscripcion }}
 										<div class="container-error">
 											{{ form.inscripcion.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.foja.help_text }}" ></i>
+										{{ form.foja.label_tag }}
+										{{ form.foja }}
+										<div class="container-error">
+											{{ form.foja.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero_inscripcion.help_text }}" ></i>
+										{{ form.numero_inscripcion.label_tag }}
+										{{ form.numero_inscripcion }}
+										<div class="container-error">
+											{{ form.numero_inscripcion.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.año.help_text }}" ></i>
+										{{ form.año.label_tag }}
+										{{ form.año }}
+										<div class="container-error">
+											{{ form.año.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.conservador_bienes.help_text }}" ></i>
+										{{ form.conservador_bienes.label_tag }}
+										{{ form.conservador_bienes }}
+										<div class="container-error">
+											{{ form.conservador_bienes.errors|striptags }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>Datos de Escritura</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="row">
+									<div class="form-group col-sm-3 date" id="data_2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_escritura.help_text }}" ></i>
+										{{ form.fecha_escritura.label_tag }}
+										<div class="input-group">
+											{{ form.fecha_escritura }}
+											<span class="input-group-addon">
+												<i class="fa fa-calendar"></i>
+											</span>
+										</div>
+										<div class="container-error">
+											{{ form.fecha_escritura.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.repertorio.help_text }}" ></i>
+										{{ form.repertorio.label_tag }}
+										{{ form.repertorio }}
+										<div class="container-error">
+											{{ form.repertorio.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.notaria.help_text }}" ></i>
+										{{ form.notaria.label_tag }}
+										{{ form.notaria }}
+										<div class="container-error">
+											{{ form.notaria.errors|striptags }}
 										</div>
 									</div>
 
@@ -157,95 +250,6 @@
 											{{ form.rut_vendedor.errors|striptags }}
 										</div>
 									</div>
-
-
-									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.datos_escritura.help_text }}" ></i>
-										{{ form.datos_escritura.label_tag }}
-										{{ form.datos_escritura }}
-										<div class="container-error">
-											{{ form.datos_escritura.errors|striptags }}
-										</div>
-									</div>
-
-									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nomina_numero.help_text }}" ></i>
-										{{ form.nomina_numero.label_tag }}
-										{{ form.nomina_numero }}
-										<div class="container-error">
-											{{ form.nomina_numero.errors|striptags }}
-										</div>
-									</div>
-									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nomina_repertorio.help_text }}" ></i>
-										{{ form.nomina_repertorio.label_tag }}
-										{{ form.nomina_repertorio }}
-										<div class="container-error">
-											{{ form.nomina_repertorio.errors|striptags }}
-										</div>
-									</div>
-									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nomina_fojas.help_text }}" ></i>
-										{{ form.nomina_fojas.label_tag }}
-										{{ form.nomina_fojas }}
-										<div class="container-error">
-											{{ form.nomina_fojas.errors|striptags }}
-										</div>
-									</div>
-
-									<div class="form-group col-sm-3 date" id="data_2">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_firma_nomina.help_text }}" ></i>
-										{{ form.fecha_firma_nomina.label_tag }}
-										<div class="input-group">
-											{{ form.fecha_firma_nomina }}
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
-										</div>
-										<div class="container-error">
-											{{ form.fecha_firma_nomina.errors|striptags }}
-										</div>
-									</div>
-
-									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.servicio_nomina.help_text }}" ></i>
-										{{ form.servicio_nomina.label_tag }}
-										{{ form.servicio_nomina }}
-										<div class="container-error">
-											{{ form.servicio_nomina.errors|striptags }}
-										</div>
-									</div>
-									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.servicio_repertorio.help_text }}" ></i>
-										{{ form.servicio_repertorio.label_tag }}
-										{{ form.servicio_repertorio }}
-										<div class="container-error">
-											{{ form.servicio_repertorio.errors|striptags }}
-										</div>
-									</div>
-									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.servicio_fojas.help_text }}" ></i>
-										{{ form.servicio_fojas.label_tag }}
-										{{ form.servicio_fojas }}
-										<div class="container-error">
-											{{ form.servicio_fojas.errors|striptags }}
-										</div>
-									</div>
-
-									<div class="form-group col-sm-3 date" id="data_2">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_servicio.help_text }}" ></i>
-										{{ form.fecha_servicio.label_tag }}
-										<div class="input-group">
-											{{ form.fecha_servicio }}
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
-										</div>
-										<div class="container-error">
-											{{ form.fecha_servicio.errors|striptags }}
-										</div>
-									</div>
-
 								</div>
 							</div>
 						</div>
@@ -254,7 +258,6 @@
 					<div class="ibox-title">
 						<h5>Datos Económicos</h5>
 					</div>
-
 
 					<div class="ibox-content">
 						<div class="row">

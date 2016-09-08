@@ -8,13 +8,13 @@
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>Nuevo Medidor</h5>
+					<h5>Tipo de Local</h5>
 				</div>
 				<div class="ibox-content">
 					<div class="row">
 						<div class="col-sm-12">
 
-							<form id="form-medidor-new" role="form" action="" method="post">
+							<form id="form-local-tipo-new" role="form" action="" method="post">
 								{% csrf_token %}
 
 								<div class="row">
@@ -29,11 +29,12 @@
 									</div>
 									{% endfor %}
 								</div>
+
 								<br>
 
-								<a href="/unidades-negocio/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+								<a href='{% url "local_tipo_list" %}'><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-medidor-new')">GUARDAR Y SEGUIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-local-tipo-new')">GUARDAR Y SEGUIR</button>
 
 							</form>
 						</div>
@@ -50,7 +51,7 @@
 <script>
 
 $(document).ready(function(){
-})
+});
 
 </script>
 {% endblock scripts %}

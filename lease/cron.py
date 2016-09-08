@@ -35,7 +35,6 @@ def update_currency():
 		except Moneda_Historial.DoesNotExist:
 			Moneda_Historial(fecha=fecha, moneda_id=currency['id'], valor=currency['value']).save()
 
-
 def update_alert():
 
 	# configuración firebase
@@ -79,7 +78,6 @@ def update_alert():
 					pass
 		else:
 			pass
-
 
 def format_currency(value):
 

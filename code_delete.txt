@@ -1024,14 +1024,14 @@ var data 			= {}
 var contratos 		= []
 var tabla_contrato 	= $('#tabla-contratos').dataTable();
 
-data.fecha_inicio 	= '01-01-2015' //{falta, agregar la fecha que correponda}
-data.fecha_termino 	= '31-12-2015' //{falta, agregar la fecha que correponda}
+data.fecha_inicio 	= '01-01-2015' 
+data.fecha_termino 	= '31-12-2015' 
 
 $('.checkbox-contrato:checked', tabla_contrato.fnGetNodes()).each(function(i){
 
 	contrato 			= {}
 	contrato.id 		= $(this).val()
-	contrato.conceptos 	= [1] //{falta, agregar la fecha que correponda}
+	contrato.conceptos 	= [1] 
 
 	contratos.push(contrato)
 	})

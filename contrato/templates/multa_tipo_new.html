@@ -8,7 +8,7 @@
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>{{name}} {{subtitle}}</h5>
+					<h5>Tipo de Multa</h5>
 				</div>
 				<div class="ibox-content">
 					<div class="row">
@@ -48,7 +48,7 @@
 
 								</div>
 								<br>
-								<a href="/contrato-multa-tipo/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+								<a href='{% url "multa_tipo_list" %}'><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-contrato-multa-tipo')">GUARDAR Y SEGUIR</button>
 							</form>

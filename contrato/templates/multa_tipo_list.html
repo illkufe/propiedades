@@ -8,9 +8,9 @@
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>{{name}} de {{subtitle}}</h5>
+					<h5>Lista de Tipos de Multa</h5>
 					<div class="ibox-tools">
-						<a href="/contrato-multa-tipo/new">
+						<a href='{% url "multa_tipo_new" %}'>
 							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo tipo de multa</button>
 						</a>
 					</div>
@@ -27,8 +27,8 @@
 									<td>{{ item.nombre }}</td>
 									<td>{{ item.descripcion }}</td>
 									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='{% url "contrato_multa_tipo_update" item.id %}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'contrato-multa-tipo', 'tabla-multa-tipos', 'Tipo de Multa')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-edit btn-bitbucket" href='{% url "multa_tipo_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'multa-tipo', 'tabla-multa-tipos', 'Tipo de Multa')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
 									</td>
 								</tr>

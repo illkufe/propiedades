@@ -25,7 +25,7 @@
 						</span>
 					</a>
 					<ul class="dropdown-menu animated fadeInRight m-t-xs">
-						<li><a href="/profile">Perfil</a></li>
+						<li><a href="/perfil">Perfil</a></li>
 						<li><a href="{% url "accounts:logout" %}">Salir</a></li>
 					</ul>
 				</div>
@@ -42,16 +42,26 @@
 				<a><i class="fa fa-building-o"></i> <span class="nav-label">Activo</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
 					<li><a href='{% url "activo_list" %}'>Activos</a></li>
-					<li><a href="/gastos-mensual/list">Gastos Comunes</a></li>
-					<li><a href="/gastos-servicios/list">Servicios Varios</a></li>
+
+					<li class="">
+						<a href="#">Admón de Gastos <span class="fa arrow"></span></a>
+						<ul class="nav nav-third-level collapse" style="height: 0px;">
+							<li>
+								<a href='{% url "gasto_mensual_list" %}'>Gastos Comunes</a>
+							</li>
+							<li>
+								<a href='{% url "gasto_servicio_list" %}'>Servicios Varios</a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 			</li>
 
 			<li>
 				<a><i class="fa fa-bank"></i> <span class="nav-label">Local</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
-					<li><a href="/locales-tipo/list">Tipos</a></li>
-					<li><a href="/locales/list">Locales</a></li>
+					<li><a href='{% url "local_tipo_list" %}'>Tipos</a></li>
+					<li><a href='{% url "local_list" %}'>Locales</a></li>
 					<li><a href="/ventas/list">Ventas</a></li>
 				</ul>
 			</li>
@@ -59,17 +69,17 @@
 			<li>
 				<a><i class="fa fa-legal"></i> <span class="nav-label">Contrato</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
-					<li><a href="/contrato-tipo/list">Tipo de Contratos</a></li>
-					<li><a href="/contrato-multa-tipo/list">Tipo de Multas</a></li>
-					<li><a href="/contrato/list">Contratos</a></li>
-					<li><a href="/contrato-multa/list">Multas</a></li>
+					<li><a href='{% url "contrato_tipo_list" %}'>Tipo de Contratos</a></li>
+					<li><a href='{% url "multa_tipo_list" %}'>Tipo de Multas</a></li>
+					<li><a href='{% url "contrato_list" %}'>Contratos</a></li>
+					<li><a href='{% url "multa_list" %}'>Multas</a></li>
 				</ul>
 			</li>
 
 			<li>
 				<a><i class="fa fa-refresh"></i> <span class="nav-label">Proceso</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
-					<li><a href="/propuesta/generar/list">Gererar Propuesta</a></li>
+					<li><a href="/propuesta/generar/list">Generar Propuesta</a></li>
 					<li><a href="/propuesta/procesar/list">Procesar Propuesta</a></li>
 					<li><a href='{% url "propuesta_consultar" %}'>Consultar Contratos</a></li>
 				</ul>
@@ -78,7 +88,7 @@
 			<li>
 				<a><i class="fa fa-thumb-tack"></i> <span class="nav-label">Operaciones</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
-					<li><a href="/lectura-medidores/list">Lectura Medidores</a></li>
+					<li><a href='{% url "lectura_medidor_list" %}'>Lectura Medidores</a></li>
 					<li><a href="/contratos/inactivos/list">Activar Contratos</a></li>
 				</ul>
 			</li>

@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from administrador.models import Empresa
 
-# Modelos
+# modelos
 class Activo(models.Model):
 
 	# atributos (identificacion Activo)
@@ -21,19 +21,20 @@ class Activo(models.Model):
 	propietario 		= models.CharField(max_length=250)
 	rut_propietario 	= models.CharField(max_length=250)
 	rol_avaluo 			= models.CharField(max_length=250, blank=True)
+
+	# atributos (inscripcion vigente)
 	inscripcion 		= models.CharField(max_length=250, blank=True)
+	foja 				= models.CharField(max_length=250, blank=True)
+	numero_inscripcion 	= models.IntegerField(null=True, blank=True)
+	año 				= models.IntegerField(null=True, blank=True)
+	conservador_bienes	= models.CharField(max_length=250, blank=True)
+	
+	# atributos (datos de escritura)
+	fecha_escritura 	= models.DateField(null=True, blank=True)
+	repertorio 			= models.CharField(max_length=250, blank=True)
+	notaria 			= models.CharField(max_length=250, blank=True)
 	vendedor 			= models.CharField(max_length=250, blank=True)
 	rut_vendedor 		= models.CharField(max_length=250, blank=True)
-	datos_escritura 	= models.CharField(max_length=250, blank=True)
-	nomina_numero 		= models.CharField(max_length=250, blank=True)
-	nomina_repertorio 	= models.CharField(max_length=250, blank=True)
-	nomina_fojas 		= models.CharField(max_length=250, blank=True)
-	fecha_firma_nomina 	= models.DateField(null=True, blank=True)
-
-	servicio_nomina 	= models.CharField(max_length=250, blank=True)	# Servicio Bienes Raices
-	servicio_repertorio = models.CharField(max_length=250, blank=True)	# Servicio Bienes Raices
-	servicio_fojas 		= models.CharField(max_length=250, blank=True)	# Servicio Bienes Raices
-	fecha_servicio 		= models.DateField(null=True, blank=True)		# Servicio Bienes Raices
 
 	# atributos (datos economicos)
 	fecha_adquisicion 	= models.DateField(null=True, blank=True)
@@ -138,7 +139,3 @@ class Gasto_Mensual(models.Model):
 	class Meta:
 		verbose_name 		= "Gasto Mensual"
 		verbose_name_plural = "Gastos Mensuales"
-
-
-
-

@@ -5,15 +5,14 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse_lazy
-
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
-from accounts.models import UserProfile
-from administrador.models import Empresa
-from activos.models import Activo
+from accounts.models import *
+from administrador.models import *
+from activos.models import *
 
-from .forms import LocalForm, LocalTipoForm
-from .models import Local, Local_Tipo, Venta
+from .forms import *
+from .models import *
 
 from datetime import datetime, timedelta
 from xlrd import open_workbook
@@ -23,115 +22,148 @@ import codecs
 import csv
 import xlrd
 
+# variables
+modulo 	= 'Locales'
 
-class AjaxableResponseMixin(object):
 
-	template_name = 'viewer/locales/local_tipo_new.html'
-	form_class = LocalTipoForm
-	success_url = '/locales-tipo/list'
+# tipos de locales
+class LocalTipoList(ListView):
+
+	model 			= Local_Tipo
+	template_name 	= 'local_tipo_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(LocalTipoList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'tipo de local'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/locales-tipo/list'
+		
+		return context
+
+	def get_queryset(self):
+
+		queryset 	= Local_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		return queryset
+
+class LocalTipMixin(object):
+
+	template_name 	= 'local_tipo_new.html'
+	form_class 		= LocalTipoForm
+	success_url 	= '/locales-tipo/list'
 
 	def form_invalid(self, form):
-		response = super(AjaxableResponseMixin, self).form_invalid(form)
+
+		response = super(LocalTipMixin, self).form_invalid(form)
+
 		if self.request.is_ajax():
 			return JsonResponse(form.errors, status=400)
 		else:
 			return response
 
 	def form_valid(self, form):
-		user 	= User.objects.get(pk=self.request.user.pk)
-		profile = UserProfile.objects.get(user=user)
 
-		obj = form.save(commit=False)
-		obj.empresa_id = profile.empresa_id
+		obj 		= form.save(commit=False)
+		obj.empresa = self.request.user.userprofile.empresa
 		obj.save()
 
-		response = super(AjaxableResponseMixin, self).form_valid(form)
+		response = super(LocalTipMixin, self).form_valid(form)
+
 		if self.request.is_ajax():
-			data = {
-				'pk': 'self.object.pk',
-			}
+			data = {'estado': True,}
 			return JsonResponse(data)
 		else:
 			return response
 
-class LocalTipoNew(AjaxableResponseMixin, FormView):
+class LocalTipoNew(LocalTipMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 
-		context = super(LocalTipoNew, self).get_context_data(**kwargs)
-		context['title'] 	= 'Locales'
-		context['subtitle'] = 'Tipo de Local'
-		context['name'] 	= 'Nuevo'
-		context['href'] 	= 'locales-tipo'
+		context 			= super(LocalTipoNew, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'tipo de local'
+		context['name'] 	= 'nuevo'
+		context['href'] 	= '/locales-tipo/list'
 		context['accion'] 	= 'create'
 
 		return context
 
-class LocalTipoList(ListView):
-	model = Local_Tipo
-	template_name = 'viewer/locales/local_tipo_list.html'
+class LocalTipoUpdate(UpdateView):
+
+	model 			= Local_Tipo
+	form_class 		= LocalTipoForm
+	template_name 	= 'local_tipo_new.html'
+	success_url 	= '/locales-tipo/list'
 
 	def get_context_data(self, **kwargs):
-		context = super(LocalTipoList, self).get_context_data(**kwargs)
-		context['title'] = 'Locales'
-		context['subtitle'] = 'Tipo de Local'
-		context['name'] = 'Lista'
-		context['href'] = 'locales-tipo'
+		
+		context 			= super(LocalTipoUpdate, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'tipo de local'
+		context['name'] 	= 'editar'
+		context['href'] 	= '/locales-tipo/list'
+		context['accion'] 	= 'update'
+
+		return context
+
+class LocalTipoDelete(DeleteView):
+
+	model 		= Local_Tipo
+	success_url = reverse_lazy('/locales-tipo/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object 		= self.get_object()
+		self.object.visible = False
+		self.object.save()
+
+		data = {'estado': True}
+
+		return JsonResponse(data, safe=False)
+
+
+# locales
+class LocalList(ListView):
+
+	model 			= Local
+	template_name 	= 'local_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(LocalList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'local'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/locales/list'
 		
 		return context
 
 	def get_queryset(self):
 
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profile 	= UserProfile.objects.get(user=user)
-		queryset 	= Local_Tipo.objects.filter(empresa_id=profile.empresa_id, visible=True)
-
+		activos 	= Activo.objects.filter(empresa=self.request.user.userprofile.empresa).values_list('id', flat=True)
+		queryset 	= Local.objects.filter(activo_id__in=activos, visible=True)
+	
 		return queryset
 
-class LocalTipoDelete(DeleteView):
-	model = Local_Tipo
-	success_url = reverse_lazy('/locales-tipo/list')
+class LocalMixin(object):
 
-	def delete(self, request, *args, **kwargs):
-		self.object = self.get_object()
-		self.object.visible = False
-		self.object.save()
-		payload = {'delete': 'ok'}
-		return JsonResponse(payload, safe=False)
-
-class LocalTipoUpdate(UpdateView):
-
-	model = Local_Tipo
-	form_class = LocalTipoForm
-	template_name = 'viewer/locales/local_tipo_new.html'
-	success_url = '/locales-tipo/list'
-
-	def get_context_data(self, **kwargs):
-		
-		context = super(LocalTipoUpdate, self).get_context_data(**kwargs)
-		context['title'] = 'Locales'
-		context['subtitle'] = 'Tipo de Local'
-		context['name'] = 'Editar'
-		context['href'] = 'locales-tipo'
-		context['accion'] = 'update'
-		return context
-
-
-
-
-class AjaxableResponseMixinLocal(object):
-
-	template_name = 'viewer/locales/local_new.html'
-	form_class = LocalForm
-	success_url = '/locales/list'
+	template_name 	= 'local_new.html'
+	form_class 		= LocalForm
+	success_url 	= '/locales/list'
 
 	def get_form_kwargs(self):
-		kwargs = super(AjaxableResponseMixinLocal, self).get_form_kwargs()
-		kwargs['request'] = self.request
+
+		kwargs = super(LocalMixin, self).get_form_kwargs()
+
+		kwargs['request'] 	= self.request
+		kwargs['activo_id'] = self.kwargs['activo_id']
+
 		return kwargs
 
 	def form_invalid(self, form):
-		response = super(AjaxableResponseMixinLocal, self).form_invalid(form)
+		response = super(LocalMixin, self).form_invalid(form)
 		if self.request.is_ajax():
 			return JsonResponse(form.errors, status=400)
 		else:
@@ -139,111 +171,121 @@ class AjaxableResponseMixinLocal(object):
 
 	def form_valid(self, form):
 
-		obj = form.save(commit=False)
+		context 		= self.get_context_data()
+		obj 			= form.save(commit=False)
+		obj.activo_id 	= self.kwargs['activo_id']
 		obj.save()
-		
-		form.save_m2m()
-		for medidor in form.cleaned_data['medidores']:
-			medidor.estado = True
-			medidor.save()
 
-		response = super(AjaxableResponseMixinLocal, self).form_valid(form)
+		form_electricidad 	= context['form_electricidad']
+		form_gas 			= context['form_gas']
+		form_agua 			= context['form_agua']
+
+		if form_electricidad.is_valid():
+			self.object 				= form.save(commit=False)
+			form_electricidad.instance 	= self.object
+			form_electricidad.save()
+
+		if form_gas.is_valid():
+			self.object 		= form.save(commit=False)
+			form_gas.instance 	= self.object
+			form_gas.save()
+
+		if form_agua.is_valid():
+			self.object 		= form.save(commit=False)
+			form_agua.instance 	= self.object
+			form_agua.save()
+
+		response = super(LocalMixin, self).form_valid(form)
+
 		if self.request.is_ajax():
-			data = {
-				'pk': 'self.object.pk',
-			}
+			data = {'estado': True,}
 			return JsonResponse(data)
 		else:
 			return response
 
-class LocalNew(AjaxableResponseMixinLocal, FormView):
+class LocalNew(LocalMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 		
-		context = super(LocalNew, self).get_context_data(**kwargs)
-		context['title'] = 'Locales'
-		context['subtitle'] = 'Local'
-		context['name'] = 'Nuevo'
-		context['href'] = 'locales'
-		context['accion'] = 'create'
+		context 			= super(LocalNew, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'local'
+		context['name'] 	= 'nuevo'
+		context['href'] 	= '/locales/list'
+		context['accion'] 	= 'create'
+
+		if self.request.POST:
+			context['form_electricidad'] 	= ElectricidadFormSet(self.request.POST)
+			context['form_agua'] 			= AguaFormSet(self.request.POST)
+			context['form_gas']				= GasFormSet(self.request.POST)
+		else:
+			context['form_electricidad'] 	= ElectricidadFormSet()
+			context['form_agua'] 			= AguaFormSet()
+			context['form_gas'] 			= GasFormSet()
 
 		return context
-	
-class LocalList(ListView):
-	model = Local
-	template_name = 'viewer/locales/local_list.html'
+
+class LocalUpdate(LocalMixin, UpdateView):
+
+	model 			= Local
+	form_class 		= LocalForm
+	template_name 	= 'local_new.html'
+	success_url 	= '/locales/list'
+
 
 	def get_context_data(self, **kwargs):
-		context = super(LocalList, self).get_context_data(**kwargs)
-		context['title'] = 'Locales'
-		context['subtitle'] = 'Local'
-		context['name'] = 'Lista'
-		context['href'] = 'locales'
 		
+		context 			= super(LocalUpdate, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'local'
+		context['name'] 	= 'editar'
+		context['href'] 	= '/locales/list'
+		context['accion'] 	= 'update'
+
+		if self.request.POST:
+			context['form_electricidad'] 	= ElectricidadFormSet(self.request.POST, instance=self.object)
+			context['form_agua'] 			= AguaFormSet(self.request.POST, instance=self.object)
+			context['form_gas'] 			= GasFormSet(self.request.POST, instance=self.object)
+		else:
+			context['form_electricidad'] 	= ElectricidadFormSet(instance=self.object)
+			context['form_agua'] 			= AguaFormSet(instance=self.object)
+			context['form_gas'] 			= GasFormSet(instance=self.object)
+
 		return context
-
-	def get_queryset(self):
-
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profile 	= UserProfile.objects.get(user=user)
-		activos 	= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
-		queryset 	= Local.objects.filter(activo_id__in=activos, visible=True)
-	
-		return queryset
 
 class LocalDelete(DeleteView):
-	model = Local
+
+	model 		= Local
 	success_url = reverse_lazy('/locales/list')
 
 	def delete(self, request, *args, **kwargs):
-		self.object = self.get_object()
+
+		self.object 		= self.get_object()
 		self.object.visible = False
 		self.object.save()
-		payload = {'delete': 'ok'}
-		return JsonResponse(payload, safe=False)
+		data = {'estado': True}
 
-class LocalUpdate(UpdateView):
-
-	model = Local
-	form_class = LocalForm
-	template_name = 'viewer/locales/local_new.html'
-	success_url = '/locales/list'
-
-	def get_form_kwargs(self):
-		kwargs = super(LocalUpdate, self).get_form_kwargs()
-		kwargs['request'] = self.request
-		return kwargs
-
-	def get_context_data(self, **kwargs):
-		
-		context = super(LocalUpdate, self).get_context_data(**kwargs)
-		context['title'] = 'Locales'
-		context['subtitle'] = 'Local'
-		context['name'] = 'Editar'
-		context['href'] = 'locales'
-		context['accion'] = 'update'
-
-		return context
+		return JsonResponse(data, safe=False)
 
 
-
+# ventas
 class VentaList(ListView):
-	model = Venta
-	template_name = 'viewer/locales/venta_list.html'
+
+	model 			= Venta
+	template_name 	= 'ventas_list.html'
 
 	def get_context_data(self, **kwargs):
-		context = super(VentaList, self).get_context_data(**kwargs)
-		context['title'] = 'Locales'
-		context['subtitle'] = 'Ventas'
-		context['name'] = 'Lista'
-		context['href'] = 'locales'
-		
-		user 				= User.objects.get(pk=self.request.user.pk)
-		profile 			= UserProfile.objects.get(user=user)
-		activos 			= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
+
+		context 			= super(VentaList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'ventas'
+		context['name'] 	= 'lista'
+		context['href'] 	= 'locales'
+
+		activos 			= Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
 		locales 			= Local.objects.filter(activo_id__in=activos, visible=True)
 		context['locales'] 	= locales
-		
+
 		return context
 
 
@@ -252,9 +294,6 @@ class VENTAS(View):
 	http_method_names = ['get', 'post', 'put', 'delete']
 
 	def get(self, request, id=None):
-
-		# user 	= User.objects.get(pk=request.user.pk)
-		# profile = UserProfile.objects.get(user=user)
 
 		if id == None:
 			self.object_list = Venta.objects.all().\

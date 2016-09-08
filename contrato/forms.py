@@ -130,7 +130,7 @@ class GarantiaForm(forms.ModelForm):
 			'nombre' 	: forms.TextInput(attrs={'class': 'form-control'}),
 		}
 
-class ContratoMultaTipoForm(forms.ModelForm):
+class MultaTipoForm(forms.ModelForm):
 	
 	class Meta:
 
@@ -159,7 +159,7 @@ class ContratoMultaTipoForm(forms.ModelForm):
 			'descripcion' 	: 'descripción del tipo de multa',
 		}
 
-class ContratoMultaForm(forms.ModelForm):
+class MultaForm(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), label='Valor Multa', error_messages={'required': 'campo requerido'})
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
@@ -168,7 +168,7 @@ class ContratoMultaForm(forms.ModelForm):
 
 		self.request = kwargs.pop('request')
 
-		super(ContratoMultaForm, self).__init__(*args, **kwargs)
+		super(MultaForm, self).__init__(*args, **kwargs)
 
 		self.fields['multa_tipo'].queryset 	= Multa_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		self.fields['contrato'].queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)

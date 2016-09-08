@@ -24,7 +24,6 @@ import os
 # VARIABLES
 modulo 	= 'Contrato'
 
-# CONTRATO_TIPO
 class ContratoTipoMixin(object):
 
 	template_name 	= 'contrato_tipo_new.html'
@@ -32,6 +31,7 @@ class ContratoTipoMixin(object):
 	success_url 	= '/contrato-tipo/list'
 
 	def form_invalid(self, form):
+
 		response = super(ContratoTipoMixin, self).form_invalid(form)
 		if self.request.is_ajax():
 			return JsonResponse(form.errors, status=400)
@@ -42,15 +42,12 @@ class ContratoTipoMixin(object):
 
 		obj 		= form.save(commit=False)
 		obj.empresa = self.request.user.userprofile.empresa
-
 		obj.save()
 
 		response = super(ContratoTipoMixin, self).form_valid(form)
 
 		if self.request.is_ajax():
-			data = {
-				'estado': 'ok',
-			}
+			data = {'estado': True,}
 			return JsonResponse(data)
 		else:
 			return response
@@ -61,9 +58,9 @@ class ContratoTipoNew(ContratoTipoMixin, FormView):
 		
 		context 			= super(ContratoTipoNew, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Tipo de Contrato'
-		context['name'] 	= 'Nuevo'
-		context['href'] 	= 'contrato-tipo'
+		context['subtitle'] = 'tipo de contrato'
+		context['name'] 	= 'nuevo'
+		context['href'] 	= '/contrato-tipo/list'
 		context['accion'] 	= 'create'
 
 		return context
@@ -77,9 +74,9 @@ class ContratoTipoList(ListView):
 
 		context 			= super(ContratoTipoList, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Tipos de Contratos'
-		context['name'] 	= 'Lista'
-		context['href'] 	= 'contrato-tipo'
+		context['subtitle'] = 'tipos de contratos'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/contrato-tipo/list'
 		
 		return context
 
@@ -114,9 +111,9 @@ class ContratoTipoUpdate(UpdateView):
 		
 		context 			= super(ContratoTipoUpdate, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Tipo de Contrato'
-		context['name'] 	= 'Editar'
-		context['href'] 	= 'contratos-tipo'
+		context['subtitle'] = 'tipo de contrato'
+		context['name'] 	= 'editar'
+		context['href'] 	= '/contrato-tipo/list'
 		context['accion'] 	= 'update'
 
 		return context
@@ -170,9 +167,7 @@ class ContratoMixin(object):
 		response = super(ContratoMixin, self).form_valid(form)
 
 		if self.request.is_ajax():
-			data = {
-				'estado': 'ok',
-			}
+			data = {'estado': True,}
 			return JsonResponse(data)
 		else:
 			return response
@@ -278,16 +273,15 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 
 
 
-# MULTA_TIPO
-class ContratoMultaTipoMixin(object):
+class MultaTipoMixin(object):
 
-	template_name 	= 'contrato_multa_tipo_new.html'
-	form_class 		= ContratoMultaTipoForm
-	success_url 	= '/contrato-multa-tipo/list'
+	template_name 	= 'multa_tipo_new.html'
+	form_class 		= MultaTipoForm
+	success_url 	= '/multa-tipo/list'
 
 	def form_invalid(self, form):
 
-		response = super(ContratoMultaTipoMixin, self).form_invalid(form)
+		response = super(MultaTipoMixin, self).form_invalid(form)
 		if self.request.is_ajax():
 			return JsonResponse(form.errors, status=400)
 		else:
@@ -299,40 +293,38 @@ class ContratoMultaTipoMixin(object):
 		obj.empresa = self.request.user.userprofile.empresa
 		obj.save()
 
-		response = super(ContratoMultaTipoMixin, self).form_valid(form)
+		response = super(MultaTipoMixin, self).form_valid(form)
 		if self.request.is_ajax():
-			data = {
-				'save': 'ok',
-			}
+			data = {'estado': True,}
 			return JsonResponse(data)
 		else:
 			return response
 
-class ContratoMultaTipoNew(ContratoMultaTipoMixin, FormView):
+class MultaTipoNew(MultaTipoMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 
-		context 			= super(ContratoMultaTipoNew, self).get_context_data(**kwargs)
+		context 			= super(MultaTipoNew, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Tipo de Multa'
-		context['name'] 	= 'Nuevo'
-		context['href'] 	= 'contrato-multa-tipo'
+		context['subtitle'] = 'tipos de multa'
+		context['name'] 	= 'nuevo'
+		context['href'] 	= '/multa-tipo/list'
 		context['accion'] 	= 'create'
 
 		return context
 
-class ContratoMultaTipoList(ListView):
+class MultaTipoList(ListView):
 
-	model 			= Multa
-	template_name 	= 'contrato_multa_tipo_list.html'
+	model 			= Multa_Tipo
+	template_name 	= 'multa_tipo_list.html'
 
 	def get_context_data(self, **kwargs):
 
-		context 			= super(ContratoMultaTipoList, self).get_context_data(**kwargs)
+		context 			= super(MultaTipoList, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Tipo de Multas'
-		context['name'] 	= 'Lista'
-		context['href'] 	= 'contrato-multa-tipo'
+		context['subtitle'] = 'tipos de multa'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/multa-tipo/list'
 		
 		return context
 
@@ -342,9 +334,10 @@ class ContratoMultaTipoList(ListView):
 
 		return queryset
 
-class ContratoMultaTipoDelete(DeleteView):
+class MultaTipoDelete(DeleteView):
+
 	model 		= Multa_Tipo
-	success_url = reverse_lazy('/contrato-multa-tipo/list')
+	success_url = reverse_lazy('/multa-tipo/list')
 
 	def delete(self, request, *args, **kwargs):
 
@@ -355,42 +348,42 @@ class ContratoMultaTipoDelete(DeleteView):
 
 		return JsonResponse(payload, safe=False)
 
-class ContratoMultaTipoUpdate(ContratoMultaTipoMixin, UpdateView):
+class MultaTipoUpdate(MultaTipoMixin, UpdateView):
 
 	model 			= Multa_Tipo
-	form_class 		= ContratoMultaTipoForm
-	template_name 	= 'contrato_multa_tipo_new.html'
-	success_url		= '/contrato-multa-tipo/list'
-
+	form_class 		= MultaTipoForm
+	template_name 	= 'multa_tipo_new.html'
+	success_url		= '/multa-tipo/list'
 
 	def get_context_data(self, **kwargs):
 
-		context 			= super(ContratoMultaTipoUpdate, self).get_context_data(**kwargs)
+		context 			= super(MultaTipoUpdate, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Tipo de Multa'
-		context['name'] 	= 'Editar'
-		context['href'] 	= 'contrato-multa-tipo'
+		context['subtitle'] = 'tipos de multa'
+		context['name'] 	= 'editar'
+		context['href'] 	= '/multa-tipo/list'
 		context['accion'] 	= 'update'
 
 		return context
 
 
 
-# MULTA
-class ContratoMultaMixin(object):
+class MultaMixin(object):
 
-	template_name 	= 'contrato_multa_new.html'
-	form_class 		= ContratoMultaForm
-	success_url 	= '/contrato-multa/list'
+	template_name 	= 'multa_new.html'
+	form_class 		= MultaForm
+	success_url 	= '/multa/list'
 
 	def get_form_kwargs(self):
-		kwargs = super(ContratoMultaMixin, self).get_form_kwargs()
-		kwargs['request'] = self.request
+
+		kwargs 				= super(MultaMixin, self).get_form_kwargs()
+		kwargs['request'] 	= self.request
+
 		return kwargs
 
 	def form_invalid(self, form):
 
-		response = super(ContratoMultaMixin, self).form_invalid(form)
+		response = super(MultaMixin, self).form_invalid(form)
 		if self.request.is_ajax():
 			return JsonResponse(form.errors, status=400)
 		else:
@@ -403,40 +396,39 @@ class ContratoMultaMixin(object):
 
 		obj.save()
 
-		response = super(ContratoMultaMixin, self).form_valid(form)
+		response = super(MultaMixin, self).form_valid(form)
+
 		if self.request.is_ajax():
-			data = {
-				'save': 'ok',
-			}
+			data = {'estado': True,}
 			return JsonResponse(data)
 		else:
 			return response
 
-class ContratoMultaNew(ContratoMultaMixin, FormView):
+class MultaNew(MultaMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 
-		context = super(ContratoMultaNew, self).get_context_data(**kwargs)
+		context 			= super(MultaNew, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Multa'
-		context['name'] 	= 'Nueva'
-		context['href'] 	= 'contratos-multas'
+		context['subtitle'] = 'multas'
+		context['name'] 	= 'nueva'
+		context['href'] 	= '/multa/list'
 		context['accion'] 	= 'create'
 
 		return context
 
-class ContratoMultaList(ListView):
+class MultaList(ListView):
 
 	model 			= Multa
-	template_name 	= 'contrato_multa_list.html'
+	template_name 	= 'multa_list.html'
 
 	def get_context_data(self, **kwargs):
 
-		context 			= super(ContratoMultaList, self).get_context_data(**kwargs)
+		context 			= super(MultaList, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Multas'
-		context['name'] 	= 'Lista'
-		context['href'] 	= 'contratos-multas'
+		context['subtitle'] = 'multas'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/multa/list'
 
 		return context
 
@@ -449,7 +441,7 @@ class ContratoMultaList(ListView):
 
 		return queryset
 
-class ContratoMultaDelete(DeleteView):
+class MultaDelete(DeleteView):
 
 	model 		= Multa
 	success_url = reverse_lazy('/contrato-multa/list')
@@ -463,20 +455,20 @@ class ContratoMultaDelete(DeleteView):
 
 		return JsonResponse(payload, safe=False)
 
-class ContratoMultaUpdate(ContratoMultaMixin, UpdateView):
+class MultaUpdate(MultaMixin, UpdateView):
 
 	model 			= Multa
-	form_class 		= ContratoMultaForm
-	template_name 	= 'contrato_multa_new.html'
-	success_url 	= '/contrato-multa/list'
+	form_class 		= MultaForm
+	template_name 	= 'multa_new.html'
+	success_url 	= '/multa/list'
 
 	def get_context_data(self, **kwargs):
 
-		context 			= super(ContratoMultaUpdate, self).get_context_data(**kwargs)
+		context 			= super(MultaUpdate, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Multa'
-		context['name'] 	= 'Editar'
-		context['href'] 	= 'contrato-multa'
+		context['subtitle'] = 'multas'
+		context['name'] 	= 'editar'
+		context['href'] 	= '/multa/list'
 		context['accion'] 	= 'update'
 
 		return context
@@ -618,115 +610,10 @@ class ContratoConceptoMixin(object):
 		else:
 			pass
 
-
-
-		# conceptos 	= Contrato.objects.get(id=self.kwargs['contrato_id']).conceptos.all()
-
-	
-	
-		# for concepto in conceptos:
-
-
-		# 	if concepto.id == 1:
-		# 		if formset_arriendo.is_valid():
-		# 			formset_arriendo.save()
-		# 			if formset_detalle.is_valid():
-		# 				self.object = formset_arriendo.save(commit=False)
-		# 				formset_detalle.instance = self.object
-		# 				formset_detalle.save()
-
-		# 	elif concepto.id == 2:
-		# 		if form_arriendo_variable.is_valid():
-		# 			form_arriendo_variable.save()
-
-		# 	elif concepto.id == 3:
-		# 		if formset_gasto_comun.is_valid():
-		# 			formset_gasto_comun.save()
-
-		# 	elif concepto.id == 4:
-		# 		if formset_servicios_basicos.is_valid():
-		# 			formset_servicios_basicos.save()
-
-		# 	elif concepto.id == 5:
-		# 		if formset_cuota_incorporacion.is_valid():
-		# 			formset_cuota_incorporacion.save()
-
-		# 	elif concepto.id == 6:
-		# 		if formset_fondo_promocion.is_valid():
-		# 			formset_fondo_promocion.save()
-
-		# 	elif concepto.concepto_tipo.id == 7:
-
-
-
-
-		# 		form_arriendo_bodega = context['formulario']
-
-		# 		if form_arriendo_bodega.is_valid():
-					
-		# 			newscores = form_arriendo_bodega.save(commit=False)
-		# 			for obj in form_arriendo_bodega.deleted_objects:
-		# 				obj.delete()
-
-		# 			for newscore in newscores:
-		# 				print (newscore)
-		# 				# newscore.concepto = concepto
-		# 				newscore.concepto_id = context['asdassd']
-						
-		# 				newscore.save()
-
-
-		# 		# if form_arriendo_bodega.is_valid():
-
-		# 		# 	# print (form_arriendo_bodega)
-		# 		# 	# for k, v in form_arriendo_bodega.iteritems():
-		# 		# 	# 	print (k)
-		# 		# 	# 	print (v)
-
-		# 		# 	for asd in form_arriendo_bodega:
-		# 		# 		print ('-------------------------')
-		# 		# 		print (asd['valor'].value)
-		# 		# 		# print (asd['valor'].field.__dict__)
-
-		# 		# 	# 	for k, v in asd.iteritems():
-		# 		# 	# 		print (k)
-		# 		# 	# 		print (v)
-
-		# 		# 		# asd['concepto_id'] = 15
-		# 		# 	# print (form_arriendo_bodega.cleaned_data)
-		# 		# 	# for data in form_arriendo_bodega.cleaned_data:
-		# 		# 	# 	data.save()
-
-
-
-		# 		# 	# obj = form_arriendo_bodega.save(commit=False)
-
-		# 		# 	# obj.save()
-
-		# 		# 	# cd = 
-
-		# 		# 	# cd.save()
-
-		# 		# 	# print (cd)
-		# 		# 	# obj.empresa = self.request.user.userprofile.empresa
-					
-					
-
-		# 		# 	# obj = form_arriendo_bodega.save(commit=False)
-		# 		# 	# obj.save()
-		# 		# 	form_arriendo_bodega.save()
-		# 		else:
-		# 			print ('invalido')
-		# 			print (form_arriendo_bodega.errors)
-		# 			return JsonResponse(form.errors, status=400)
-		# 	else:
-		# 		pass
-
 		response = super(ContratoConceptoMixin, self).form_valid(form)
+
 		if self.request.is_ajax():
-			data = {
-				'save': 'ok',
-			}
+			data = {'estado': True,}
 			return JsonResponse(data)
 		else:
 			return response
@@ -1025,14 +912,13 @@ class ContratosInactivosList(ListView):
 
 	def get_queryset(self):
 
-		queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True, fecha_activacion=None)
+		queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True, estado__in=[1])
 
 		for item in queryset:
 			item.fecha_inicio  	= item.fecha_inicio.strftime('%d/%m/%Y')
 			item.fecha_termino 	= item.fecha_termino.strftime('%d/%m/%Y')
 
 		return queryset
-
 
 # API
 class CONTRATO(View):
@@ -1041,7 +927,7 @@ class CONTRATO(View):
 	def get(self, request, id=None):
 
 		if id == None:
-			self.object_list = Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+			self.object_list = Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True, estado__in=[1])
 		else:
 			self.object_list = Contrato.objects.filter(pk=id)
 
@@ -1091,7 +977,7 @@ class CONTRATO(View):
 				'fecha_plazo' 			: contrato.fecha_plazo.strftime('%d/%m/%Y') if contrato.fecha_plazo is not None else None,
 				'bodega' 				: contrato.bodega,
 				'metros_bodega' 		: contrato.metros_bodega,
-				'tipo' 					: {'id': contrato.contrato_tipo.id, 'nombre': contrato.contrato_tipo.nombre},
+				'tipo' 					: {'id': contrato.tipo.id, 'nombre': contrato.tipo.nombre},
 				'estado' 				: {'id': contrato.estado.id, 'nombre': contrato.estado.nombre},
 				'cliente' 				: {'id': contrato.cliente.id, 'nombre': contrato.cliente.nombre},
 				'locales' 				: data_locales,

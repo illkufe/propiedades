@@ -581,16 +581,17 @@ function validar_form_propuesta(){
 					if (data.estado == true) {
 						swal({
 							title 	: 'Propuesta Creada',
-							text 	: '',
+							// text 	: '',
 							type 	: 'success',
+							html 	: '<a href="/procesos/propuesta/pdf/'+data.id+'"><span style="color:#575757">Descargar PDF<span>',
 							showCancelButton 	: true,
 							confirmButtonColor 	: '#FCC491',
-							confirmButtonText 	: '<a href="/procesos/propuesta/pdf/'+data.id+'"><span style="color:#FFF">Descargar PDF<span>',
-							cancelButtonText 	: '<a href="/propuesta/generar/list"><span style="color:#FFF">Nueva Propuesta</span></a>',
+							confirmButtonText 	: '<a href="/propuesta/generar/list"><span style="color:#FFF">Nueva Propuesta<span>',
+							cancelButtonText 	: '<a href="/propuesta/procesar/list"><span style="color:#FFF">Procesar Propuesta</span></a>',
 							allowOutsideClick 	: false,
 							allowEscapeKey 		: false,
 						}).then(function() {
-							console.log('asd')
+							console.log('enviar')
 						})
 					}else{
 						notification_toast('error', 'Error', data.mensaje)

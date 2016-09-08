@@ -23,17 +23,17 @@ urlpatterns = [
 	url(r'^contrato-tipo/delete/(?P<pk>\d+)$', views.ContratoTipoDelete.as_view(), name='contrato_tipo_delete'),
 	url(r'^contrato-tipo/update/(?P<pk>\d+)$', views.ContratoTipoUpdate.as_view(), name='contrato_tipo_update'),
 
-	# multa_tipo
-	url(r'^contrato-multa-tipo/list$',views.ContratoMultaTipoList.as_view(), name='contrato_multa_tipo_list'),
-	url(r'^contrato-multa-tipo/new$', views.ContratoMultaTipoNew.as_view(), name='contrato_multa_tipo_new'),
-	url(r'^contrato-multa-tipo/delete/(?P<pk>\d+)$',views.ContratoMultaTipoDelete.as_view(), name='contrato_multa_tipo_delete'),
-	url(r'^contrato-multa-tipo/update/(?P<pk>\d+)$',views.ContratoMultaTipoUpdate.as_view(), name='contrato_multa_tipo_update'),
+	# tipo de multa
+	url(r'^multa-tipo/list$',views.MultaTipoList.as_view(), name='multa_tipo_list'),
+	url(r'^multa-tipo/new$', views.MultaTipoNew.as_view(), name='multa_tipo_new'),
+	url(r'^multa-tipo/delete/(?P<pk>\d+)$',views.MultaTipoDelete.as_view(), name='multa_tipo_delete'),
+	url(r'^multa-tipo/update/(?P<pk>\d+)$',views.MultaTipoUpdate.as_view(), name='multa_tipo_update'),
 
 	# multa
-	url(r'^contrato-multa/list$',views.ContratoMultaList.as_view(), name='contrato_multa_list'),
-	url(r'^contrato-multa/new$', views.ContratoMultaNew.as_view(), name='contrato_multa_new'),
-	url(r'^contrato-multa/delete/(?P<pk>\d+)$',views.ContratoMultaDelete.as_view(), name='contrato_multa_delete'),
-	url(r'^contrato-multa/update/(?P<pk>\d+)$',views.ContratoMultaUpdate.as_view(), name='contrato_multa_update'),
+	url(r'^multa/list$',views.MultaList.as_view(), name='multa_list'),
+	url(r'^multa/new$', views.MultaNew.as_view(), name='multa_new'),
+	url(r'^multa/delete/(?P<pk>\d+)$',views.MultaDelete.as_view(), name='multa_delete'),
+	url(r'^multa/update/(?P<pk>\d+)$',views.MultaUpdate.as_view(), name='multa_update'),
 
 	# contrato_concepto
 	url(r'^contrato-concepto/(?P<contrato_id>\d+)$', views.ContratoConceptoNew.as_view(), name='contrato_concepto_new'),

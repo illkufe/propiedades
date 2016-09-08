@@ -10,7 +10,7 @@
 				<div class="ibox-title">
 					<h5>Lista de Tipos de Locales</h5>
 					<div class="ibox-tools">
-						<a href="/locales-tipo/new">
+						<a href='{% url "local_tipo_new" %}'>
 							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo tipo de local</button>
 						</a>
 					</div>
@@ -47,9 +47,9 @@
 {% block scripts %}
 <script>
 
-$(document).ready(function(){
+var tabla_local_tipos;
 
-	var tabla_local_tipos = []
+$(document).ready(function(){
 
 	var columns = [
 	{		

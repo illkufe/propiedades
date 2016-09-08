@@ -11,9 +11,9 @@
 				<div class="ibox-title">
 					<h5>Lecturas de Medidores</h5>
 					<div class="ibox-tools">
-						<a href="/lectura-electricidad/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Lectura Luz</button></a>
-						<a href="/lectura-agua/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Lectura Agua</button></a>
-						<a href="/lectura-gas/new"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Lectura Gas</button></a>
+						<a href='{% url "lectura_electricidad_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Lectura Luz</button></a>
+						<a href='{% url "lectura_agua_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Lectura Agua</button></a>
+						<a href='{% url "lectura_gas_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Lectura Gas</button></a>
 					</div>
 				</div>
 				<div class="ibox-content">
@@ -56,7 +56,7 @@
 {% block scripts %}
 <script>
 
-var tabla_lecturas = []
+var tabla_lecturas;
 
 $(document).ready(function(){
 

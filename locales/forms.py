@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User
-from django.db.models import Q
-from accounts.models import UserProfile
-from administrador.models import Empresa
-from activos.models import Activo, Nivel, Sector
 
-from .models import Local, Local_Tipo
+from utilidades.views import NumberField
+from accounts.models import UserProfile
+from activos.models import *
+
+from .models import *
 
 
 class LocalTipoForm(forms.ModelForm):
@@ -31,80 +32,55 @@ class LocalTipoForm(forms.ModelForm):
 
 class LocalForm(forms.ModelForm):
 
-	# medidores = forms.ModelMultipleChoiceField(
-	# 	queryset=Medidor.objects.filter(estado=False),
-	# 	# queryset=Medidor.objects.filter(Q(estado=False) | Q(id__in=()))),
-	# 	required=False,
-	# 	widget=forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'})
-	# 	)
+	metros_cuadrados = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	metros_lineales = NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	metros_compartidos = NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	metros_bodega = NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
 
-	
 	def __init__(self, *args, **kwargs):
-		# contrato = kwargs.pop('activo', None)
+
+		self.request 	= kwargs.pop('request')
+		activo_id 		= kwargs.pop('activo_id', None)
+		user 			= User.objects.get(pk=self.request.user.pk)
+		profile 		= UserProfile.objects.get(user=user)
+
 		super(LocalForm, self).__init__(*args, **kwargs)
-		asd = kwargs.pop('activo')
-		# user 		= User.objects.get(pk=self.request.user.pk)
-		# profile 	= UserProfile.objects.get(user=user)
-		# if contrato is not None:
-		# 	self.fields['local'].queryset = contrato.locales.all()
 
+		activo = Activo.objects.get(id=activo_id)
 
-
-	# def __init__(self, *args, **kwargs):
-	# 	self.request = kwargs.pop('request')
-	# 	super(LocalForm, self).__init__(*args, **kwargs)
-
-	# 	user 		= User.objects.get(pk=self.request.user.pk)
-	# 	profile 	= UserProfile.objects.get(user=user)
-	# 	activos 	= Activo.objects.filter(empresa_id=profile.empresa_id).values_list('id', flat=True)
-
-	# 	self.fields['activo'].queryset 		= Activo.objects.filter(empresa_id=profile.empresa_id)
-	# 	self.fields['local_tipo'].queryset 	= Local_Tipo.objects.filter(empresa_id=profile.empresa_id)
-	# 	self.fields['sector'].queryset 		= Sector.objects.filter(activo_id__in=activos)
-	# 	self.fields['nivel'].queryset		= Nivel.objects.filter(activo_id__in=activos)
-
+		self.fields['local_tipo'].queryset 	= Local_Tipo.objects.filter(empresa=profile.empresa, visible=True)
+		self.fields['sector'].queryset 		= Sector.objects.filter(activo=activo)
+		self.fields['nivel'].queryset 		= Nivel.objects.filter(activo=activo)
 
 	class Meta:
 		model 	= Local
 		fields 	= '__all__'
-		exclude = ['creado_en', 'visible']
+		exclude = ['creado_en', 'visible', 'activo']
 
 		widgets = {
-			'nombre'				: forms.TextInput(attrs={'class': 'form-control'}),
-			'codigo'				: forms.TextInput(attrs={'class': 'form-control'}),
-			'metros_cuadrados'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'metros_lineales'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'metros_compartidos'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'metros_bodega'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			'descripcion'			: forms.TextInput(attrs={'class': 'form-control'}),
-			'activo'				: forms.Select(attrs={'class': 'select2 form-control'}),
-			'sector'				: forms.Select(attrs={'class': 'select2 form-control'}),
-			'nivel'					: forms.Select(attrs={'class': 'select2 form-control'}),
-			'local_tipo'			: forms.Select(attrs={'class': 'select2 form-control'}),
-			'prorrateo'				: forms.CheckboxInput(attrs={'class': 'form-control prorrateo'}),
+			'nombre'					: forms.TextInput(attrs={'class': 'form-control'}),
+			'codigo'					: forms.TextInput(attrs={'class': 'form-control'}),
+			'descripcion'				: forms.TextInput(attrs={'class': 'form-control'}),
+			'sector'					: forms.Select(attrs={'class': 'form-control'}),
+			'nivel'						: forms.Select(attrs={'class': 'form-control'}),
+			'local_tipo'				: forms.Select(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
-			'nombre' 		: {'required': 'campo requerido'},
-			'codigo' 		: {'required': 'campo requerido'},
-			'activo' 		: {'required': 'campo requerido'},
-			'sector' 		: {'required': 'campo requerido'},
-			'nivel' 		: {'required': 'campo requerido'},
-			'local_tipo' 	: {'required': 'campo requerido'},
+			'nombre' 			: {'required': 'campo requerido'},
+			'codigo' 			: {'required': 'campo requerido'},
+			'sector' 			: {'required': 'campo requerido'},
+			'nivel' 			: {'required': 'campo requerido'},
+			'local_tipo' 		: {'required': 'campo requerido'},
 		}
 
 		help_texts = {
-			'nombre'				: '...',
-			'codigo'				: '...',
-			'metros_cuadrados'		: '...',
-			'metros_lineales'		: '...',
-			'metros_compartidos'	: '...',
-			'metros_bodega'			: '...',
-			'descripcion'			: '...',
-			'activo'				: '...',
-			'sector'				: '...',
-			'nivel'					: '...',
-			'local_tipo'			: '...',
+			'nombre'			: '...',
+			'codigo'			: '...',
+			'descripcion'		: '...',
+			'sector'			: '...',
+			'nivel'				: '...',
+			'local_tipo'		: '...',
 		}
 
 		labels = {
@@ -115,3 +91,95 @@ class LocalForm(forms.ModelForm):
 
 
 
+class ElectricidadForm(forms.ModelForm):
+
+	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	potencia_presente 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	potencia_fuera 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+
+	class Meta:
+		model 	= Medidor_Electricidad
+		fields 	= '__all__'
+		exclude = ['creado_en', 'visible', 'local']
+
+		widgets = {
+			'nombre'				: forms.TextInput(attrs={'class': 'form-control'}),
+			'numero_rotulo'			: forms.TextInput(attrs={'class': 'form-control'}),
+			'tarifa_electricidad'	: forms.Select(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'nombre' 		: {'required': 'campo requerido'},
+			'numero_rotulo' : {'required': 'campo requerido'},
+		}
+
+		help_texts = {
+			'nombre'				: '...',
+			'numero_rotulo'			: '...',
+			'tarifa_electricidad'	: '...',
+		}
+
+		labels = {
+			'numero_rotulo'			: 'Nº Rótulo',
+			'tarifa_electricidad'	: 'Tarifa',
+		}
+
+class AguaForm(forms.ModelForm):
+
+	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+
+	class Meta:
+		model 	= Medidor_Agua
+		fields 	= '__all__'
+		exclude = ['creado_en', 'visible', 'local']
+
+		widgets = {
+			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'numero_rotulo'	: forms.TextInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'nombre' 		: {'required': 'campo requerido'},
+			'numero_rotulo' : {'required': 'campo requerido'},
+		}
+
+		help_texts = {
+			'nombre'			: '...',
+			'numero_rotulo'		: '...',
+		}
+
+		labels = {
+			'numero_rotulo'		: 'Nº Rótulo',
+		}
+
+class GasForm(forms.ModelForm):
+
+	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+
+	class Meta:
+		model 	= Medidor_Gas
+		fields 	= '__all__'
+		exclude = ['creado_en', 'visible', 'local']
+
+		widgets = {
+			'nombre'			: forms.TextInput(attrs={'class': 'form-control'}),
+			'numero_rotulo'		: forms.TextInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'nombre' 		: {'required': 'campo requerido'},
+			'numero_rotulo' : {'required': 'campo requerido'},
+		}
+
+		help_texts = {
+			'nombre'			: '...',
+			'numero_rotulo'		: '...',
+		}
+
+		labels = {
+			'numero_rotulo'		: 'Nº Rótulo',
+		}
+
+AguaFormSet 		= inlineformset_factory(Local, Medidor_Agua, form=AguaForm, extra=1, can_delete=True)
+GasFormSet 			= inlineformset_factory(Local, Medidor_Gas, form=GasForm, extra=1, can_delete=True)
+ElectricidadFormSet = inlineformset_factory(Local, Medidor_Electricidad, form=ElectricidadForm, extra=1, can_delete=True)

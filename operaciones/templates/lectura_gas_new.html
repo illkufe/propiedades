@@ -20,11 +20,11 @@
 								<div class="row">
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor_agua.help_text }}" ></i>
-										{{ form.medidor_agua.label_tag }}
-										{{ form.medidor_agua }}
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor_gas.help_text }}" ></i>
+										{{ form.medidor_gas.label_tag }}
+										{{ form.medidor_gas }}
 										<div class="container-error">
-											{{ form.medidor_agua.errors|striptags }}
+											{{ form.medidor_gas.errors|striptags }}
 										</div>
 									</div>
 
@@ -68,7 +68,7 @@
 								<br>
 								<div class="row buttons-form">
 									<div class="col-xs-12">
-										<button class="btn btn-w-m btn-sm btn-default" type="button" onclick="location.href='/lectura-medidores/list'">CANCELAR</button>
+										<a href='{% url "lectura_medidor_list" %}'><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 										<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
 										<button class="btn btn-w-m btn-sm btn-primary pull-right margin" type="button" onclick="guardar_formulario_file('{{accion}}', 'form-lectura-medidor')">GUARDAR Y SEGUIR</button>
 									</div>

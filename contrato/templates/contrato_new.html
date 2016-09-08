@@ -11,7 +11,7 @@
 					{% csrf_token %}
 
 					<div class="ibox-title">
-						<h5>INFORMACIÓN GENERAL</h5>
+						<h5>Información General</h5>
 					</div>
 
 					<div class="ibox-content">
@@ -37,11 +37,11 @@
 								</div>
 
 								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.contrato_tipo.help_text }}" ></i>
-									{{ form.contrato_tipo.label_tag }}
-									{{ form.contrato_tipo }}
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+									{{ form.tipo.label_tag }}
+									{{ form.tipo }}
 									<div class="container-error">
-										{{ form.contrato_tipo.errors|striptags }}
+										{{ form.tipo.errors|striptags }}
 									</div>
 								</div>
 
@@ -99,7 +99,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<h5>PERIODO</h5>
+						<h5>Periodo</h5>
 					</div>
 
 					<div class="ibox-content">
@@ -251,7 +251,7 @@
 
 					<div class="ibox-title">
 						
-						<h5>OTRAS SUPERFICIES</h5>
+						<h5>Otras Superficies</h5>
 					</div>
 
 					<div class="ibox-content">
@@ -284,7 +284,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<h5>GARANTÍAS</h5>
+						<h5>Garantías</h5>
 					</div>
 
 					<div class="ibox-content">
@@ -765,8 +765,6 @@ function seleccionar_locales_modal(){
 	var $exampleMulti = $("#id_locales").select2();
 	$exampleMulti.val(null).trigger("change");
 	$exampleMulti.val(locales).trigger("change");
-
-
 
 	$('#m-locales').modal('hide')
 }
