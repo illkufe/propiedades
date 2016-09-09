@@ -25,10 +25,10 @@
 									<td>{{ item.numero }}</td>
 									<td>{{ item.cliente.nombre }}</td>
 									<td>{{ item.nombre_local }}</td>
-									<td>{{ item.tipo }}</td>
+									<td class="text-center"><span class="label">{{ item.tipo }}</span></td>
 									<td class="text-right">{{ item.fecha_inicio }}</td>
 									<td class="text-right">{{ item.fecha_termino }}</td>
-									<td>{{ item.estado }}</td>
+									<td class="text-center"><span class="label" style="color:{{item.estado.color}};background:{{item.estado.background}};">{{ item.estado }}</span></td>
 									<td class="text-center">
 										{% if item.cantidad == 0 %}
 											<a class="btn btn-config btn-bitbucket" onclick="alerta_contrato_sin_conceptos({{ item.id }})"><i class="fa fa-cog"></i></a>
@@ -55,7 +55,7 @@
 {% block scripts %}
 <script>
 
-var tabla_contratos = []
+var tabla_contratos;
 
 $(document).ready(function(){
 

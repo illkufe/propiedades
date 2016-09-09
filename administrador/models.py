@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
+
 from django.db import models
 from utilidades.models import Estado_Civil
 
+# modelos
 class Empresa(models.Model):
 
 	# atributos (generales)

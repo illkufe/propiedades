@@ -9,7 +9,7 @@ class Activo(models.Model):
 
 	# atributos (identificacion Activo)
 	nombre 			= models.CharField(max_length=250)
-	codigo 			= models.CharField(max_length=250)
+	codigo 			= models.CharField(max_length=10)
 	tipo 			= models.CharField(max_length=250, blank=True)
 	direccion 		= models.CharField(max_length=250, blank=True)
 	comuna 			= models.CharField(max_length=250, blank=True)
@@ -66,7 +66,7 @@ class Sector(models.Model):
 
 	# atributos (generales)
 	nombre 		= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=250, blank=True)
+	codigo 		= models.CharField(max_length=8, blank=True)
 	descripcion = models.TextField(blank=True)
 
 	# atributos (por defecto)
@@ -87,7 +87,7 @@ class Nivel(models.Model):
 
 	# atributos (generales)
 	nombre 		= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=250, blank=True)
+	codigo 		= models.CharField(max_length=8, blank=True)
 	descripcion = models.TextField(blank=True)
 	
 	# atributos (por defecto)

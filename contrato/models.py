@@ -6,12 +6,12 @@ from locales.models import Local
 from conceptos.models import Concepto
 from utilidades.models import Moneda
 
-# Modelos
+# modelos
 class Contrato_Tipo(models.Model):
 
 	# atributos (generales)
 	nombre  	= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=250, blank=True)
+	codigo 		= models.CharField(max_length=10, blank=True)
 	descripcion = models.TextField(blank=True)
 
 	# atributos (por defecto)
@@ -32,6 +32,8 @@ class Contrato_Estado(models.Model):
 
 	# atributos (generales)
 	nombre  	= models.CharField(max_length=250)
+	background 	= models.CharField(max_length=7)
+	color 		= models.CharField(max_length=7)
 	descripcion = models.TextField(blank=True)
 
 	# atributos (por defecto)
@@ -105,7 +107,7 @@ class Multa_Tipo(models.Model):
 
 	# atributos (generales)
 	nombre  	= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=250, blank=True)
+	codigo 		= models.CharField(max_length=10, blank=True)
 	descripcion = models.TextField(blank=True)
 
 	# atributos (por defecto)

@@ -328,8 +328,6 @@ function visualizar_propuesta(id){
 
 function template_modal_info_factura(factura){
 
-	console.log(factura)
-
 	$('#info-factura-propuesta .modal-body').html('')
 
 	var template = ''
@@ -426,7 +424,6 @@ function enviar_propuesta(id){
 }
 
 function eliminar_propuesta(obj, id, tabla){
-	console.log(tabla)
 
 	var col = $(obj).closest('tr')
 
@@ -449,13 +446,27 @@ function eliminar_propuesta(obj, id, tabla){
 				if (data.estado == true) {
 					var table = $('#'+tabla).DataTable();
 					table.row($(col)).remove().draw();
-					notification_toast('success', 'Exito', data.mensaje)
+					var configuracion = {
+						'toast_type'	: 'success',
+						'toast_text' 	: data.mensaje,
+						'toast_title' 	: 'Éxito',
+					}
 				}else{
-					notification_toast('error', 'Error', data.mensaje)
+					var configuracion = {
+						'toast_type'	: 'error',
+						'toast_text' 	: data.mensaje,
+						'toast_title' 	: 'Error',
+					}
 				}
+				notification_toast(configuracion)
 			},
 			error:function(data){
-				notification_toast('error', 'Error', 'no se puedo eliminar')
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se puedo eliminar la propuesta',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
 			}
 		});
 	})

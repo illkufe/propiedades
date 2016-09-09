@@ -4,11 +4,11 @@ from django.db import models
 from administrador.models import Empresa
 from activos.models import Activo
 
-# Modelos
+# modelos
 class Concepto_Tipo(models.Model):
 
 	nombre 		= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=250)
+	codigo 		= models.CharField(max_length=10)
 	template 	= models.CharField(max_length=250, null=True, blank=True)
 	descripcion = models.TextField(blank=True)
 
@@ -30,7 +30,7 @@ class Concepto(models.Model):
 
 	# atributos (generales)
 	nombre 				= models.CharField(max_length=250)
-	codigo 				= models.CharField(max_length=250)
+	codigo 				= models.CharField(max_length=10)
 	iva 				= models.BooleanField(default=False)
 	codigo_documento 	= models.CharField(max_length=100, blank=True)
 	codigo_producto 	= models.CharField(max_length=100, blank=True)

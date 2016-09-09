@@ -1,8 +1,5 @@
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.template import loader
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.models import User, Group
-from accounts.models import UserProfile
+# -*- coding: utf-8 -*-
+from django.http import JsonResponse
 from django.core.urlresolvers import reverse_lazy
 
 from django.views.generic import ListView, FormView, DeleteView, UpdateView
@@ -10,6 +7,26 @@ from django.views.generic import ListView, FormView, DeleteView, UpdateView
 from .forms import ConceptoForm
 from .models import Concepto
 
+class ConceptoList(ListView):
+
+	model 			= Concepto
+	template_name 	= 'concepto_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ConceptoList, self).get_context_data(**kwargs)
+		context['title'] 	= 'Configuración'
+		context['subtitle'] = 'conceptos'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/conceptos/list'
+		
+		return context
+
+	def get_queryset(self):
+
+		queryset = Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		return queryset
 
 class ConceptoMixin(object):
 
@@ -49,34 +66,13 @@ class ConceptoNew(ConceptoMixin, FormView):
 	def get_context_data(self, **kwargs):
 		
 		context 			= super(ConceptoNew, self).get_context_data(**kwargs)
-		context['title'] 	= 'Conceptos'
-		context['subtitle'] = 'Concepto'
-		context['name'] 	= 'Nuevo'
-		context['href'] 	= 'conceptos'
+		context['title'] 	= 'Configuración'
+		context['subtitle'] = 'concepto'
+		context['name'] 	= 'nuevo'
+		context['href'] 	= '/conceptos/list'
 		context['accion'] 	= 'create'
 
 		return context
-	
-class ConceptoList(ListView):
-
-	model 			= Concepto
-	template_name 	= 'concepto_list.html'
-
-	def get_context_data(self, **kwargs):
-
-		context 			= super(ConceptoList, self).get_context_data(**kwargs)
-		context['title'] 	= 'Conceptos'
-		context['subtitle'] = 'Conceptos'
-		context['name'] 	= 'Lista'
-		context['href'] 	= 'conceptos'
-		
-		return context
-
-	def get_queryset(self):
-
-		queryset = Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
-
-		return queryset
 
 class ConceptoDelete(DeleteView):
 
@@ -101,10 +97,11 @@ class ConceptoUpdate(ConceptoMixin, UpdateView):
 
 	def get_context_data(self, **kwargs):
 		
-		context = super(ConceptoUpdate, self).get_context_data(**kwargs)
-		context['title'] = 'Conceptos'
-		context['subtitle'] = 'Concepto'
-		context['name'] = 'Editar'
-		context['href'] = 'conceptos'
-		context['accion'] = 'update'
+		context 			= super(ConceptoUpdate, self).get_context_data(**kwargs)
+		context['title'] 	= 'Configuración'
+		context['subtitle'] = 'concepto'
+		context['name'] 	= 'editar'
+		context['href'] 	= '/conceptos/list'
+		context['accion'] 	= 'update'
+
 		return context

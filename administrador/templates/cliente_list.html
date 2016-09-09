@@ -11,7 +11,7 @@
 					<h5>Lista de Clientes</h5>
 					<div class="ibox-tools">
 						<a href="/clientes/new">
-							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Cliente</button>
+							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo cliente</button>
 						</a>
 					</div>
 				</div>
@@ -89,6 +89,7 @@ function load_tabla_clientes(){
 		'width': '15%',
 		'data': 'options',
 		'orderable': false,
+		'title': '<div class="text-center">Opciones</div>',
 	}]
 
 	tabla_clientes = load_table('#tabla-clientes', columns, {})	

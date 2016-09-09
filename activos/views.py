@@ -9,6 +9,7 @@ from .models import *
 # variables
 modulo 	= 'Activos'
 
+
 # activo
 class ActivoMixin(object):
 
@@ -380,7 +381,6 @@ class GastoServicioUpdate(GastoServicioMixin, UpdateView):
 		context['accion'] 	= 'update'
 
 		return context
-
 
 # api: activo
 class ACTIVOS(View):

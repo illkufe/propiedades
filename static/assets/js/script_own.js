@@ -1,5 +1,3 @@
-
-
 $("span.pie").peity("pie", {
 	fill: ['#1ab394', '#d7d7d7', '#ffffff']
 })
@@ -24,6 +22,7 @@ $('.format-rut').rut({
 });
 
 $('.format-date').datepicker({
+	language: "es",
 	todayBtn: 'linked',
 	keyboardNavigation: false,
 	forceParse: false,
@@ -32,17 +31,17 @@ $('.format-date').datepicker({
 	format: 'dd/mm/yyyy',
 });
 
-$('.format-datetime').datetimepicker({
-	format: 'DD/MM/YYYY HH:mm'
-});
-
 $('#date_range .input-daterange').datepicker({
+	language: "es",
 	keyboardNavigation: false,
 	forceParse: false,
 	autoclose: true,
 	format: 'dd/mm/yyyy',
 });
 
+$('.format-datetime').datetimepicker({
+	format: 'DD/MM/YYYY HH:mm',
+});
 
 $(".file-format").filestyle({
 	placeholder: "Seleccionar Archivo",
@@ -74,21 +73,7 @@ $(".select2").select2();
 
 $('[data-toggle="tooltip"]').tooltip()
 
-function getCookie(name){
-	var cookieValue = null;
-	if (document.cookie && document.cookie != '') {
-		var cookies = document.cookie.split(';');
-		for (var i = 0; i < cookies.length; i++) {
-			var cookie = jQuery.trim(cookies[i]);
-			// Does this cookie string begin with the name we want?
-			if (cookie.substring(0, name.length + 1) == (name + '=')) {
-				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-				break;
-			}
-		}
-	}
-	return cookieValue;
-}
+
 
 function apply_errors_form(errors){
 	
@@ -105,6 +90,7 @@ function apply_errors_form(errors){
 }
 
 function clear_errors_form(form){
+
 	$(form +' '+ '.container-error').html('')
 }
 
@@ -124,56 +110,6 @@ function search_column_table(obj, table_entidad){
 	value = $(obj).val()
 	index = $(obj).attr('data-column')
 	$(table_entidad).DataTable().column(index).search(value).draw()
-}
-
-
-
-function notification_toast_final(configuracion){
-
-	toastr.options = {
-		"closeButton": true,
-		"debug": false,
-		"progressBar": true,
-		"preventDuplicates": false,
-		"positionClass": configuracion.positionClass == null ? "toast-top-right" : configuracion.positionClass,
-		"onclick": null,
-		"showDuration": "400",
-		"hideDuration": "1000",
-		"timeOut": "3000",
-		"extendedTimeOut": "1000",
-		"showEasing": "swing",
-		"hideEasing": "linear",
-		"showMethod": "fadeIn",
-		"hideMethod": "fadeOut"
-	}
-
-	toastr[configuracion.toast_type](configuracion.toast_text, configuracion.toast_title)
-}
-
-
-
-function notification_toast(toast_type, toast_title, toast_text){
-
-
-
-	toastr.options = {
-		"closeButton": true,
-		"debug": false,
-		"progressBar": true,
-		"preventDuplicates": false,
-		"positionClass": "toast-top-right",
-		"onclick": null,
-		"showDuration": "400",
-		"hideDuration": "1000",
-		"timeOut": "3000",
-		"extendedTimeOut": "1000",
-		"showEasing": "swing",
-		"hideEasing": "linear",
-		"showMethod": "fadeIn",
-		"hideMethod": "fadeOut"
-	}
-
-	toastr[toast_type](toast_text, toast_title)
 }
 
 
@@ -213,7 +149,6 @@ function load_table(tabla_id, columnas, configuracion){
 	return tabla;
 }
 
-
 function open_modal_delete(obj, id, model, tabla, text){
 
 	var col = $(obj).closest('tr')
@@ -236,16 +171,25 @@ function open_modal_delete(obj, id, model, tabla, text){
 			success: function(data){
 				var table = $('#'+tabla).DataTable();
 				table.row($(col)).remove().draw();
-				notification_toast('success', 'Exito', 'eliminado correctamente')
+
+				var configuracion = {
+					'toast_type'	: 'success',
+					'toast_text' 	: 'eliminado correctamente',
+					'toast_title' 	: 'Éxito',
+				}
+				notification_toast(configuracion)
 			},
 			error:function(data){
-				notification_toast('error', 'Error', 'no se puedo eliminar')
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se puedo eliminar',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
 			}
 		})
 	})
 }
-
-
 
 function open_modal_delete_child(obj, text){
 
@@ -264,7 +208,6 @@ function open_modal_delete_child(obj, text){
 		$(obj).closest('tr').addClass('hide')
 	});	
 }
-
 
 function guardar_formulario_final(accion, entidad){
 
@@ -286,7 +229,12 @@ function guardar_formulario_final(accion, entidad){
 			}
 
 			clear_errors_form('#form-'+entidad+'-new')
-			notification_toast('success', 'ÉXITO', 'guardado correctamente')
+			var configuracion = {
+				'toast_type'	: 'success',
+				'toast_text' 	: 'guardado correctamente',
+				'toast_title' 	: 'Éxito',
+			}
+			notification_toast(configuracion)
 		},
 		error: function(data, textStatus, jqXHR) {
 			clear_errors_form('#form-'+entidad+'-new')
@@ -296,7 +244,6 @@ function guardar_formulario_final(accion, entidad){
 	});
 	return false;
 }
-
 
 function guardar_formulario(accion, form){
 
@@ -311,7 +258,13 @@ function guardar_formulario(accion, form){
 				clear_form('#'+form)
 			}
 			clear_errors_form('#'+form)
-			notification_toast('success', 'ÉXITO', 'guardado correctamente')
+			var configuracion = {
+				'toast_type'	: 'success',
+				'toast_text' 	: 'guardado correctamente',
+				'toast_title' 	: 'Éxito',
+			}
+			notification_toast(configuracion)
+			
 		},
 		error: function(data, textStatus, jqXHR) {
 			clear_errors_form('#'+form)
@@ -321,7 +274,6 @@ function guardar_formulario(accion, form){
 	});
 	return false;
 }
-
 
 function guardar_formulario_file(accion, form){
 
@@ -334,8 +286,13 @@ function guardar_formulario_file(accion, form){
 				clear_form('#'+form)
 			}
 			clear_errors_form('#'+form)
-
-			notification_toast('success', 'ÉXITO', 'guardado correctamente')
+			
+			var configuracion = {
+				'toast_type'	: 'success',
+				'toast_text' 	: 'guardado correctamente',
+				'toast_title' 	: 'Éxito',
+			}
+			notification_toast(configuracion)
 		},
 		error: function(data, textStatus, jqXHR) {
 			clear_errors_form('#'+form)
@@ -353,7 +310,6 @@ function format_select(config){
 		});
 	} 
 }
-
 
 function agregar_fila(tabla, entidad){
 
@@ -373,20 +329,32 @@ function agregar_fila(tabla, entidad){
 	var cantidad = parseInt($('#id_'+entidad+'_set-TOTAL_FORMS').val())
 	cantidad += 1
 	$('#id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
-
-}
-
-function diferencia_entre_meses(d1, d2) {
-	var months;
-	months = (d2.getFullYear() - d1.getFullYear()) * 12;
-	months -= d1.getMonth() + 1;
-	months += d2.getMonth() + 1;
-	return months <= 0 ? 0 : months;
 }
 
 
-function loading(show) {
-	if (show) {
+
+
+
+
+// funciones factorizadas
+function getCookie(name){
+	var cookieValue = null;
+	if (document.cookie && document.cookie != '') {
+		var cookies = document.cookie.split(';');
+		for (var i = 0; i < cookies.length; i++) {
+			var cookie = jQuery.trim(cookies[i]);
+			// Does this cookie string begin with the name we want?
+			if (cookie.substring(0, name.length + 1) == (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
+	}
+	return cookieValue;
+}
+
+function loading(mostrar) {
+	if (mostrar) {
 		$.blockUI({
 			message: '<h1><i class="fa fa-cog fa-spin fa-1x fa-fw"></i> Por favor espere...</h1>', 
 			css: {
@@ -399,3 +367,37 @@ function loading(show) {
 		$.unblockUI();
 	}
 }
+
+function notification_toast(configuracion){
+
+	toastr.options = {
+		"closeButton": true,
+		"debug": false,
+		"progressBar": true,
+		"preventDuplicates": false,
+		"positionClass": configuracion.positionClass == null ? "toast-top-right" : configuracion.positionClass,
+		"onclick": null,
+		"showDuration": "400",
+		"hideDuration": "1000",
+		"timeOut": "3000",
+		"extendedTimeOut": "1000",
+		"showEasing": "swing",
+		"hideEasing": "linear",
+		"showMethod": "fadeIn",
+		"hideMethod": "fadeOut"
+	}
+
+	toastr[configuracion.toast_type](configuracion.toast_text, configuracion.toast_title)
+}
+
+function diferencia_entre_meses(fecha_inicio, fecha_termino) {
+
+	var months;
+
+	months = (fecha_termino.getFullYear() - fecha_inicio.getFullYear()) * 12;
+	months -= fecha_inicio.getMonth() + 1;
+	months += fecha_termino.getMonth() + 1;
+
+	return months <= 0 ? 0 : months;
+}
+

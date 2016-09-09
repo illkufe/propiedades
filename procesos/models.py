@@ -6,7 +6,7 @@ from conceptos.models import Concepto
 from contrato.models import Contrato
 from locales.models import Local, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 
-# Modelos
+# modelos
 class Propuesta(models.Model):
 
 	# atributos (generales)

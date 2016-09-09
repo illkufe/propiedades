@@ -404,7 +404,7 @@ body.fixed-sidebar .navbar-static-side,
 body.canvas-menu .navbar-static-side {
   position: fixed;
   width: 220px;
-  z-index: 2001;
+  z-index: 999;
   height: 100%;
 }
 body.fixed-sidebar.mini-navbar .navbar-static-side {
@@ -468,7 +468,7 @@ body.canvas-menu.mini-navbar .navbar-default .nav li .profile-element a span {
   left: 0;
 }
 body.canvas-menu nav.navbar-static-side {
-  z-index: 2001;
+  z-index: 999;
   background: #2f4050;
   height: 100%;
   position: fixed;
@@ -3574,7 +3574,7 @@ body.body-small .footer.fixed {
 .table > tfoot > tr > td {
   border-top: 1px solid #e7eaec;
   line-height: 1.42857;
-  padding: 8px;
+  padding: 6px 8px;
   vertical-align: top;
 }
 /* PANELS */
@@ -7330,7 +7330,7 @@ body.rtls.top-navigation .footer.fixed {
   }
   .body-small.rtls .navbar-static-side {
     display: none;
-    z-index: 2001;
+    z-index: 999;
     position: absolute;
     width: 70px;
   }
@@ -7339,7 +7339,7 @@ body.rtls.top-navigation .footer.fixed {
   }
   .rtls.fixed-sidebar.body-small .navbar-static-side {
     display: none;
-    z-index: 2001;
+    z-index: 999;
     position: fixed;
     width: 220px;
   }
@@ -8123,7 +8123,7 @@ body.md-skin {
   background-color: #ffffff;
 }
 .md-skin.canvas-menu nav.navbar-static-side {
-  z-index: 2001;
+  z-index: 999;
   background: #ffffff;
   height: 100%;
   position: fixed;
@@ -8136,7 +8136,7 @@ body.md-skin {
     min-height: 1200px;
   }
   .navbar-static-side {
-    z-index: 2001;
+    z-index: 999;
     position: absolute;
     width: 220px;
   }
@@ -8154,7 +8154,7 @@ body.md-skin {
   }
   .body-small .navbar-static-side {
     display: none;
-    z-index: 2001;
+    z-index: 999;
     position: absolute;
     width: 70px;
   }
@@ -8183,7 +8183,7 @@ body.md-skin {
   }
   .fixed-sidebar.body-small .navbar-static-side {
     display: none;
-    z-index: 2001;
+    z-index: 999;
     position: fixed;
     width: 220px;
   }

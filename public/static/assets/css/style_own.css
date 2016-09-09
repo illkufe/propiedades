@@ -1,10 +1,16 @@
+/* STYLE botons */
 .btn-config,
 .btn-edit,
 .btn-delete,
-.btn-view{
+.btn-view,
+.btn-none{
 	color: #FFF;
 	border: 1px solid #e7eaec;
 	padding: 4px 8px;
+}
+
+.btn-config{
+	background: #FCC491;
 }
 
 .btn-edit{
@@ -19,23 +25,40 @@
 	background: #59D7D7;
 }
 
-.btn-config{
-	background: #FCC491;
+.btn-none{
+	background: #C1C1C1;
 }
 
 .btn-config:hover,
 .btn-edit:hover,
 .btn-delete:hover,
-.btn-view:hover{
+.btn-view:hover
+.btn-none:hover{
 	color: #EBEBEB;
+}
+
+.info-succes{
+	color: #4CAF50	
+}
+
+.info-error{
+	color: #F44336;
+}
+
+.info-none{
+	color: #C1C1C1;
 }
 
 
 
+/* STYLE widget report */
+.widget-report{
+	cursor: pointer;
+}
 
-
-
-
+.widget-report:hover{
+	opacity: .8;
+}
 
 
 
@@ -43,7 +66,8 @@
 
 form .container-error{
 	color: #ed5565;
-	height: 20px;
+	height: 12px;
+	font-size: 12px;
 	padding-left: 1px;
 }
 
@@ -233,6 +257,11 @@ form#form-conceptos-new .select2.select2-container.select2-container--default{
 	width: 100% !important;
 }
 
+.select2.select2-container.select2-container--default{
+	width: 100% !important;
+}
+
+
 .ads .select2.select2-container.select2-container--default{
 	width: 100% !important;
 }
@@ -256,3 +285,4 @@ form#form-conceptos-new .select2.select2-container.select2-container--default{
 }
 
 
+	

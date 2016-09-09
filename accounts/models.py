@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from administrador.models import Empresa
 
-# Modelos
+# modelos
 class UserProfile(models.Model):
 	TIPO = (
 		(1, 'NORMAL'),

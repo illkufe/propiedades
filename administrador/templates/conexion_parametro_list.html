@@ -209,7 +209,7 @@ function actualizar_parametros(){
 				}
 			}
 
-			notification_toast_final(configuracion)
+			notification_toast(configuracion)
 			data_tabla_parametros()
 		}
 	})
@@ -268,7 +268,7 @@ function eliminar_parametro(obj, permiso){
 			'toast_text' 	: 'No tiene permiso para eliminar este parametro',
 			'toast_title' 	: 'Error',
 		}
-		notification_toast_final(configuracion)
+		notification_toast(configuracion)
 	}
 }
 

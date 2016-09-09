@@ -4,12 +4,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from administrador.models import Empresa
 
-# Modelos
+# modelos
 class Reporte_Tipo(models.Model):
 
 	# atributos (generales)
 	nombre 		= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=250, blank=True)
+	codigo 		= models.CharField(max_length=10, blank=True)
 	descripcion = models.TextField(blank=True)
 
 	# atributos de configuración

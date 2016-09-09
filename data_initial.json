@@ -416,6 +416,8 @@
 	"pk": 1,
 	"fields": {
 		"nombre": "Borrador",
+		"color": "#FFFFFF",
+		"background": "#00BCD4",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -425,6 +427,8 @@
 	"pk": 2,
 	"fields": {
 		"nombre": "Aprobado",
+		"color": "#FFFFFF",
+		"background": "#009688",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -434,6 +438,8 @@
 	"pk": 3,
 	"fields": {
 		"nombre": "Bloqueado",
+		"color": "#FFFFFF",
+		"background": "#F44336",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -443,6 +449,8 @@
 	"pk": 4,
 	"fields": {
 		"nombre": "Activo",
+		"color": "#FFFFFF",
+		"background": "#66BB6A",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -452,6 +460,8 @@
 	"pk": 5,
 	"fields": {
 		"nombre": "Terminado",
+		"color": "#FFFFFF",
+		"background": "#9E9E9E",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -461,6 +471,8 @@
 	"pk": 6,
 	"fields": {
 		"nombre": "Proceso Renovación",
+		"color": "#FFFFFF",
+		"background": "#CDDC39",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}

@@ -26,7 +26,7 @@
 {% block scripts %}
 <script>
 
-var tabla_contratos = []
+var tabla_contratos;
 
 $(document).ready(function(){
 
@@ -136,11 +136,21 @@ function activar_contrato(id){
 			type: 'POST',
 			data: {csrfmiddlewaretoken: getCookie('csrftoken')},
 			success: function(data){
-				notification_toast('success', 'Exito', 'contrato activado correctamente')
+				var configuracion = {
+					'toast_type'	: 'success',
+					'toast_text' 	: 'contrato activado correctamente',
+					'toast_title' 	: 'Éxito',
+				}
+				notification_toast(configuracion)
 				data_tabla_contratos()
 			},
 			error:function(data){
-				notification_toast('error', 'Error', 'no se puedo eliminar')
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se activar el contrato',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
 			}
 		})
 	})	

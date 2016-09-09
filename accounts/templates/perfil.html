@@ -358,7 +358,13 @@ function update_password(){
 				success: function(data){
 					clear_form('#form-update-password')
 					clear_errors_form('#form-update-password')
-					notification_toast('success', 'CONTRASEÑA', 'actualizada correctamente')
+
+					var configuracion = {
+						'toast_type'	: 'success',
+						'toast_text' 	: 'contraseña actualizada correctamente',
+						'toast_title' 	: 'Éxito',
+					}
+					notification_toast(configuracion)
 				},
 				error: function(data, textStatus, jqXHR) {
 					console.log(data.responseText)

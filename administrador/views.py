@@ -1,22 +1,45 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
-from accounts.models import UserProfile
 from conceptos.models import Concepto
 
 from .models import *
 from .forms import *
 
 import json
-from reporteria.models import *
+
+# variables
+modulo 	= 'Configuración'
+
+
+# cliente
+class ClienteList(ListView):
+
+	model 			= Cliente
+	template_name 	= 'cliente_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ClienteList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'clientes'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/clientes/list'
+		
+		return context
+
+	def get_queryset(self):
+
+		queryset 	= Cliente.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		return queryset
 
 class ClienteMixin(object):
 
-	template_name 	= 'viewer/configuracion/cliente_new.html'
+	template_name 	= 'cliente_new.html'
 	form_class 		= ClienteForm
 	success_url 	= '/clientes/list'
 
@@ -30,42 +53,36 @@ class ClienteMixin(object):
 
 	def form_valid(self, form):
 
-		user 	= User.objects.get(pk=self.request.user.pk)
-		profile = UserProfile.objects.get(user=user)
-
 		context 			= self.get_context_data()
 		form_representante 	= context['representante_form']
 
-		obj 			= form.save(commit=False)
-		obj.empresa_id 	= profile.empresa_id
+		obj 		= form.save(commit=False)
+		obj.empresa = self.request.user.userprofile.empresa
 		obj.save()
 
 		if form_representante.is_valid():
-			self.object = form.save(commit=False)
+			self.object 				= form.save(commit=False)
 			form_representante.instance = self.object
 			form_representante.save()
-
 
 		response = super(ClienteMixin, self).form_valid(form)
 
 		if self.request.is_ajax():
-			data = {
-				'id' 	: obj.id,
-				'nombre': obj.nombre,
-			}
+			data = {'estado' : True,}
 			return JsonResponse(data)
 		else:
 			return response
 
 class ClienteNew(ClienteMixin, FormView):
+
 	def get_context_data(self, **kwargs):
 		
-		context = super(ClienteNew, self).get_context_data(**kwargs)
-		context['title'] = 'Contrato'
-		context['subtitle'] = 'Cliente'
-		context['name'] = 'Nuevo'
-		context['href'] = 'clientes'
-		context['accion'] = 'create'
+		context 			= super(ClienteNew, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'clientes'
+		context['name'] 	= 'nuevo'
+		context['href'] 	= '/clientes/list'
+		context['accion'] 	= 'create'
 
 		if self.request.POST:
 			context['representante_form'] = ClienteFormSet(self.request.POST)
@@ -74,26 +91,28 @@ class ClienteNew(ClienteMixin, FormView):
 
 		return context
 	
-class ClienteList(ListView):
-	model = Cliente
-	template_name = 'viewer/configuracion/cliente_list.html'
+class ClienteUpdate(ClienteMixin, UpdateView):
+
+	model 			= Cliente
+	form_class 		= ClienteForm
+	template_name 	= 'cliente_new.html'
+	success_url 	= '/clientes/list'
 
 	def get_context_data(self, **kwargs):
-		context = super(ClienteList, self).get_context_data(**kwargs)
-		context['title'] 	= 'Configuración'
-		context['subtitle'] = 'Cliente'
-		context['name'] 	= 'Lista'
-		context['href'] 	= 'clientes'
 		
+		context 			= super(ClienteUpdate, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'cliente'
+		context['name'] 	= 'editar'
+		context['href'] 	= '/clientes/list'
+		context['accion'] 	= 'update'
+
+		if self.request.POST:
+			context['representante_form'] = ClienteFormSet(self.request.POST, instance=self.object)
+		else:
+			context['representante_form'] = ClienteFormSet(instance=self.object)
+
 		return context
-
-	def get_queryset(self):
-
-		user 		= User.objects.get(pk=self.request.user.pk)
-		profile 	= UserProfile.objects.get(user=user)
-		queryset 	= Cliente.objects.filter(empresa=profile.empresa, visible=True)
-
-		return queryset
 
 class ClienteDelete(DeleteView):
 	model = Cliente
@@ -106,31 +125,7 @@ class ClienteDelete(DeleteView):
 		payload = {'delete': 'ok'}
 		return JsonResponse(payload, safe=False)
 
-class ClienteUpdate(ClienteMixin, UpdateView):
-
-	model 			= Cliente
-	form_class 		= ClienteForm
-	template_name 	= 'viewer/configuracion/cliente_new.html'
-	success_url 	= '/clientes/list'
-
-	def get_context_data(self, **kwargs):
-		
-		context = super(ClienteUpdate, self).get_context_data(**kwargs)
-		context['title'] 	= 'Configuración'
-		context['subtitle'] = 'Cliente'
-		context['name'] 	= 'Editar'
-		context['href'] 	= 'clientes'
-		context['accion'] 	= 'update'
-
-		if self.request.POST:
-			context['representante_form'] = ClienteFormSet(self.request.POST, instance=self.object)
-		else:
-			context['representante_form'] = ClienteFormSet(instance=self.object)
-
-		return context
-
-
-
+# conexion parametro
 class CONEXION_PARAMETRO(View):
 
 	http_method_names =  ['get', 'post']
@@ -216,6 +211,7 @@ class CONEXION_PARAMETRO(View):
 
 		return JsonResponse(data, safe=False)
 
+# conexion cliente
 class CONEXION_CLIENTE(View):
 
 	http_method_names =  ['get', 'post']
@@ -279,6 +275,7 @@ class CONEXION_CLIENTE(View):
 
 		return JsonResponse(data, safe=False)
 
+# conexion concepto
 class CONEXION_CONCEPTO(View):
 
 	http_method_names =  ['get', 'post']
@@ -350,5 +347,3 @@ class CONEXION_CONCEPTO(View):
 				})
 
 		return JsonResponse(data, safe=False)
-
-

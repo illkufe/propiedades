@@ -21,9 +21,11 @@ import json
 import os
 
 
-# VARIABLES
+# variables
 modulo 	= 'Contrato'
 
+
+# tipo de contrato
 class ContratoTipoMixin(object):
 
 	template_name 	= 'contrato_tipo_new.html'
@@ -119,8 +121,7 @@ class ContratoTipoUpdate(UpdateView):
 		return context
 
 
-
-# CONTRATO
+# contrato
 class ContratoMixin(object):
 
 	template_name 	= 'contrato_new.html'
@@ -180,7 +181,7 @@ class ContratoNew(ContratoMixin, FormView):
 		context['title'] 	= modulo
 		context['subtitle'] = 'Contrato'
 		context['name'] 	= 'Nuevo'
-		context['href'] 	= 'contrato'
+		context['href'] 	= '/contrato/list'
 		context['accion'] 	= 'create'
 
 		if self.request.POST:
@@ -201,7 +202,7 @@ class ContratoList(ListView):
 		context['title'] 	= modulo
 		context['subtitle'] = 'Contrato'
 		context['name'] 	= 'Lista'
-		context['href'] 	= 'contrato'
+		context['href'] 	= '/contrato/list'
 
 		return context
 
@@ -259,7 +260,7 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 		context['title'] 	= modulo
 		context['subtitle'] = 'Contrato'
 		context['name'] 	= 'Editar'
-		context['href'] 	= 'contrato'
+		context['href'] 	= '/contrato/list'
 		context['accion'] 	= 'update'
 
 		if self.request.POST:
@@ -269,10 +270,8 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 
 		return context
 
-		return context
 
-
-
+# tipo de multa
 class MultaTipoMixin(object):
 
 	template_name 	= 'multa_tipo_new.html'
@@ -367,7 +366,7 @@ class MultaTipoUpdate(MultaTipoMixin, UpdateView):
 		return context
 
 
-
+# multa
 class MultaMixin(object):
 
 	template_name 	= 'multa_new.html'

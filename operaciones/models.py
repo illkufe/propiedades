@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from locales.models import Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 
-# Modelos
+# modelos
 class Lectura_Electricidad(models.Model):
 
 	MESES = (

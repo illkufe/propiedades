@@ -293,14 +293,14 @@ function filtrar_contratos(){
 						}
 						$('.seleccionar-contratos #form-generar-propuesta').addClass('hide')
 					};
-					notification_toast_final(configuracion)
+					notification_toast(configuracion)
 				},
 				error: function(){
 					loading(false)
 				}
 			});
-		}
-	})
+}
+})
 }
 
 function load_tabla_contratos(conceptos){
@@ -418,7 +418,7 @@ function crear_propuesta(){
 					'toast_text' 	: 'propuesta generada',
 					'toast_title' 	: 'Correcto',
 				}
-				notification_toast_final(configuracion)
+				notification_toast(configuracion)
 				cargar_propuesta(data)
 				cerrar_panel('.seleccionar-contratos')
 			},
@@ -432,7 +432,7 @@ function crear_propuesta(){
 			'toast_text' 	: 'seleccionar un contrato(s)',
 			'toast_title' 	: 'Advertencia',
 		}
-		notification_toast_final(configuracion)
+		notification_toast(configuracion)
 	}
 }
 
@@ -594,7 +594,12 @@ function validar_form_propuesta(){
 							console.log('enviar')
 						})
 					}else{
-						notification_toast('error', 'Error', data.mensaje)
+						var configuracion = {
+							'toast_type'	: 'error',
+							'toast_text' 	: data.mensaje,
+							'toast_title' 	: 'Error',
+						}
+						notification_toast(configuracion)
 					}
 				},
 				error: function(){
