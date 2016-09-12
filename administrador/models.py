@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from utilidades.models import Estado_Civil
+from utilidades.models import *
 
 # modelos
 class Empresa(models.Model):
@@ -12,6 +12,8 @@ class Empresa(models.Model):
 	cuidad 						= models.CharField(max_length=250)
 	comuna 						= models.CharField(max_length=250)
 	direccion 					= models.CharField(max_length=250)
+	email 						= models.EmailField(max_length=250)
+	telefono 					= models.CharField(max_length=250)
 	representante 				= models.CharField(max_length=250)
 	representante_rut 			= models.CharField(max_length=250)
 	representante_profesion 	= models.CharField(max_length=250)
@@ -19,8 +21,11 @@ class Empresa(models.Model):
 	descripcion 				= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	giro = models.ForeignKey(Giro)
 
 	def __str__(self):
 		return self.nombre
@@ -31,16 +36,22 @@ class Empresa(models.Model):
 
 class Cliente(models.Model):
 
+	TIPO = (
+		(1, 'Persona Jurídica'),
+		(2, 'Persona Natural'),
+	)
+
 	# atributos (generales)
+	tipo			= models.IntegerField(choices=TIPO)
 	nombre 			= models.CharField(max_length=250)
-	rut             = models.CharField(max_length=250)
+	rut 			= models.CharField(max_length=250)
+	email 			= models.EmailField(max_length=250)
 	razon_social 	= models.CharField(max_length=250, blank=True)
-	giro 			= models.CharField(max_length=250, blank=True)
-	region        	= models.CharField(max_length=250, blank=True)
-	comuna        	= models.CharField(max_length=250, blank=True)
-	direccion       = models.CharField(max_length=250)
-	telefono        = models.CharField(max_length=250)
-	cliente_tipo    = models.IntegerField()
+	region 			= models.CharField(max_length=250, blank=True)
+	comuna 			= models.CharField(max_length=250)
+	ciudad 			= models.CharField(max_length=250)
+	direccion 		= models.CharField(max_length=250)
+	telefono 		= models.CharField(max_length=250)
 
 	# atributos (conexión)
 	codigo_1 	= models.CharField(max_length=100, null=True, blank=True) # cuenta contable
@@ -49,11 +60,12 @@ class Cliente(models.Model):
 	codigo_4 	= models.CharField(max_length=100, null=True, blank=True) # item
 
 	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	empresa = models.ForeignKey(Empresa)
+	giro 	= models.ForeignKey(Giro, null=True, blank=True)
 
 	def __str__(self):
 		return self.nombre
@@ -61,15 +73,15 @@ class Cliente(models.Model):
 class Representante(models.Model):
 
 	# atributos (generales)
-	nombre          = models.CharField(max_length=250)
-	rut             = models.CharField(max_length=250)
-	nacionalidad    = models.CharField(max_length=250)
-	profesion       = models.CharField(max_length=250)
-	domicilio       = models.CharField(max_length=250)
+	nombre			= models.CharField(max_length=250)
+	rut 			= models.CharField(max_length=250)
+	nacionalidad 	= models.CharField(max_length=250)
+	profesion 		= models.CharField(max_length=250)
+	domicilio 		= models.CharField(max_length=250)
 
 	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	cliente 		= models.ForeignKey(Cliente)
@@ -116,8 +128,8 @@ class Conexion(models.Model):
 	descripcion = models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	empresa 	= models.ForeignKey(Empresa)

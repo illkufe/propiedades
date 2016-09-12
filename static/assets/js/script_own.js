@@ -15,7 +15,7 @@ $('.format-rut').rut({
 	validateOn: 'blur'
 }).on('rutInvalido', function(){
 	$(this).closest('.form-group').find('.container-error').text('')
-	$(this).closest('.form-group').find('.container-error').append('Rut invalido')
+	$(this).closest('.form-group').find('.container-error').append('rut invalido')
 	$(this).val('')
 }).on('rutValido', function(){
 	$(this).closest('.form-group').find('.container-error').text('')

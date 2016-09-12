@@ -3,7 +3,7 @@ from django import forms
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User, Group
 
-from .models import Empresa, Cliente, Representante
+from .models import *
 
 class ClienteForm(forms.ModelForm):
 
@@ -13,24 +13,32 @@ class ClienteForm(forms.ModelForm):
 		exclude = ['creado_en', 'visible', 'empresa']
 
 		widgets = {
+			'tipo'			: forms.Select(attrs={'class': 'form-control'}),
 			'rut'			: forms.TextInput(attrs={'class': 'form-control format-rut'}),
 			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'razon_social'	: forms.TextInput(attrs={'class': 'form-control'}),
-			'giro'			: forms.TextInput(attrs={'class': 'form-control'}),
+			'email'			: forms.EmailInput(attrs={'class': 'form-control'}),
+			'giro'			: forms.Select(attrs={'class': 'form-control'}),
 			'region'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'ciudad'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'comuna'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'direccion'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'telefono'		: forms.TextInput(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
-			'nombre' 	: {'required': 'campo requerido'},
+			'tipo' 		: {'required': 'campo requerido'},
 			'rut' 		: {'required': 'campo requerido'},
-			'direccion' : {'required': 'campo requerido'},
+			'email' 	: {'required': 'campo requerido'},
 			'telefono' 	: {'required': 'campo requerido'},
+			'nombre' 	: {'required': 'campo requerido'},
+			'ciudad' 	: {'required': 'campo requerido'},
+			'comuna' 	: {'required': 'campo requerido'},
+			'direccion' : {'required': 'campo requerido'},
 		}
 
 		labels = {
+			'tipo'			: 'Tipo de Persona',
 			'razon_social'	: 'Razón Social',
 			'region'		: 'Región',
 			'direccion'		: 'Dirección',

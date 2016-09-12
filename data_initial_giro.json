@@ -1,0 +1,8388 @@
+[{
+	"model": "utilidades.giro", 
+	"pk": 1, 
+	"fields": { 
+		"codigo": 11111, 
+		"descripcion": "CULTIVO DE TRIGO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 2, 
+	"fields": { 
+		"codigo": 11112, 
+		"descripcion": "CULTIVO DE MAIZ", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 3, 
+	"fields": { 
+		"codigo": 11113, 
+		"descripcion": "CULTIVO DE AVENA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 4, 
+	"fields": { 
+		"codigo": 11114, 
+		"descripcion": "CULTIVO DE ARROZ", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 5, 
+	"fields": { 
+		"codigo": 11115, 
+		"descripcion": "CULTIVO DE CEBADA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 6, 
+	"fields": { 
+		"codigo": 11119, 
+		"descripcion": "CULTIVO DE OTROS CEREALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 7, 
+	"fields": { 
+		"codigo": 11121, 
+		"descripcion": "CULTIVO FORRAJEROS EN PRADERAS NATURALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 8, 
+	"fields": { 
+		"codigo": 11122, 
+		"descripcion": "CULTIVO FORRAJEROS EN PRADERAS MEJORADAS O SEMBRADAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 9, 
+	"fields": { 
+		"codigo": 11131, 
+		"descripcion": "CULTIVO DE POROTOS O FRIJOL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 10, 
+	"fields": { 
+		"codigo": 11132, 
+		"descripcion": "CULTIVO, PRODUCCIÓN DE LUPINO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 11, 
+	"fields": { 
+		"codigo": 11139, 
+		"descripcion": "CULTIVO DE OTRAS LEGUMBRES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 12, 
+	"fields": { 
+		"codigo": 11141, 
+		"descripcion": "CULTIVO DE PAPAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 13, 
+	"fields": { 
+		"codigo": 11142, 
+		"descripcion": "CULTIVO DE CAMOTES O BATATAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 14, 
+	"fields": { 
+		"codigo": 11149, 
+		"descripcion": "CULTIVO DE OTROS TUBÉRCULOS N.C.P", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 15, 
+	"fields": { 
+		"codigo": 11151, 
+		"descripcion": "CULTIVO DE RAPS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 16, 
+	"fields": { 
+		"codigo": 11152, 
+		"descripcion": "CULTIVO DE MARAVILLA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 17, 
+	"fields": { 
+		"codigo": 11159, 
+		"descripcion": "CULTIVO DE OTRAS OLEAGINOSAS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 18, 
+	"fields": { 
+		"codigo": 11160, 
+		"descripcion": "PRODUCCIÓN DE SEMILLAS DE CEREALES, LEGUMBRES, OLEAGINOSAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 19, 
+	"fields": { 
+		"codigo": 11191, 
+		"descripcion": "CULTIVO DE REMOLACHA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 20, 
+	"fields": { 
+		"codigo": 11192, 
+		"descripcion": "CULTIVO DE TABACO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 21, 
+	"fields": { 
+		"codigo": 11193, 
+		"descripcion": "CULTIVO DE FIBRAS VEGETALES INDUSTRIALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 22, 
+	"fields": { 
+		"codigo": 11194, 
+		"descripcion": "CULTIVO DE PLANTAS AROMÁTICAS O MEDICINALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 23, 
+	"fields": { 
+		"codigo": 11199, 
+		"descripcion": "OTROS CULTIVOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 24, 
+	"fields": { 
+		"codigo": 11211, 
+		"descripcion": "CULTIVO TRADICIONAL DE HORTALIZAS FRESCAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 25, 
+	"fields": { 
+		"codigo": 11212, 
+		"descripcion": "CULTIVO DE HORTALIZAS EN INVERNADEROS Y CULTIVOS HIDROPONICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 26, 
+	"fields": { 
+		"codigo": 11213, 
+		"descripcion": "CULTIVO ORGÁNICO DE HORTALIZAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 27, 
+	"fields": { 
+		"codigo": 11220, 
+		"descripcion": "CULTIVO DE PLANTAS VIVAS Y PRODUCTOS DE LA FLORICULTURA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 28, 
+	"fields": { 
+		"codigo": 11230, 
+		"descripcion": "PRODUCCIÓN DE SEMILLAS DE FLORES, PRADOS, FRUTAS Y HORTALIZAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 29, 
+	"fields": { 
+		"codigo": 11240, 
+		"descripcion": "PRODUCCIÓN EN VIVEROS; EXCEPTO ESPECIES FORESTALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 30, 
+	"fields": { 
+		"codigo": 11250, 
+		"descripcion": "CULTIVO Y RECOLECCIÓN DE HONGOS, TRUFAS Y SAVIA; PRODUCCIÓN DE JARABE DE ARCE DE AZÚCAR Y AZÚCAR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 31, 
+	"fields": { 
+		"codigo": 11311, 
+		"descripcion": "CULTIVO DE UVA DESTINADA A PRODUCCIÓN DE PISCO Y AGUARDIENTE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 32, 
+	"fields": { 
+		"codigo": 11312, 
+		"descripcion": "CULTIVO DE UVA DESTINADA A PRODUCCIÓN DE VINO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 33, 
+	"fields": { 
+		"codigo": 11313, 
+		"descripcion": "CULTIVO DE UVA DE MESA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 34, 
+	"fields": { 
+		"codigo": 11321, 
+		"descripcion": "CULTIVO DE FRUTALES EN ÁRBOLES O ARBUSTOS CON CICLO DE VIDA MAYOR A UNA TEMPORADA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 35, 
+	"fields": { 
+		"codigo": 11322, 
+		"descripcion": "CULTIVO DE FRUTALES MENORES EN PLANTAS CON CICLO DE VIDA DE UNA TEMPORADA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 36, 
+	"fields": { 
+		"codigo": 11330, 
+		"descripcion": "CULTIVO DE PLANTAS CUYAS HOJAS O FRUTAS SE UTILIZAN PARA PREPARAR BEBIDAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 37, 
+	"fields": { 
+		"codigo": 11340, 
+		"descripcion": "CULTIVO DE ESPECIAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 38, 
+	"fields": { 
+		"codigo": 12111, 
+		"descripcion": "CRÍA DE GANADO BOVINO PARA LA PRODUCCIÓN LECHERA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 39, 
+	"fields": { 
+		"codigo": 12112, 
+		"descripcion": "CRÍA DE GANADO PARA PRODUCCIÓN DE CARNE, O COMO GANADO REPRODUCTOR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 40, 
+	"fields": { 
+		"codigo": 12120, 
+		"descripcion": "CRÍA DE GANADO OVINO Y/O EXPLOTACIÓN LANERA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 41, 
+	"fields": { 
+		"codigo": 12130, 
+		"descripcion": "CRÍA DE EQUINOS (CABALLARES, MULARES)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 42, 
+	"fields": { 
+		"codigo": 12210, 
+		"descripcion": "CRÍA DE PORCINOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 43, 
+	"fields": { 
+		"codigo": 12221, 
+		"descripcion": "CRÍA DE AVES DE CORRAL PARA LA PRODUCCIÓN DE CARNE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 44, 
+	"fields": { 
+		"codigo": 12222, 
+		"descripcion": "CRÍA DE AVES DE CORRAL PARA LA PRODUCCIÓN DE HUEVOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 45, 
+	"fields": { 
+		"codigo": 12223, 
+		"descripcion": "CRÍA DE AVES FINAS O NO TRADICIONALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 46, 
+	"fields": { 
+		"codigo": 12230, 
+		"descripcion": "CRÍA DE ANIMALES DOMÉSTICOS; PERROS Y GATOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 47, 
+	"fields": { 
+		"codigo": 12240, 
+		"descripcion": "APICULTURA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 48, 
+	"fields": { 
+		"codigo": 12250, 
+		"descripcion": "RANICULTURA, HELICICULTURA U OTRA ACTIVIDAD CON ANIMALES MENORES O INSECTOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 49, 
+	"fields": { 
+		"codigo": 12290, 
+		"descripcion": "OTRAS EXPLOTACIONES DE ANIMALES NO CLASIFICADOS EN OTRA PARTE, INCLUIDO SUS SUBPRODUCTOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 50, 
+	"fields": { 
+		"codigo": 13000, 
+		"descripcion": "EXPLOTACIÓN MIXTA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 51, 
+	"fields": { 
+		"codigo": 14011, 
+		"descripcion": "SERVICIO DE CORTE Y ENFARDADO DE FORRAJE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 52, 
+	"fields": { 
+		"codigo": 14012, 
+		"descripcion": "SERVICIO DE RECOLECCIÓN, EMPACADO, TRILLA, DESCASCARAMIENTO Y DESGRANE; Y SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 53, 
+	"fields": { 
+		"codigo": 14013, 
+		"descripcion": "SERVICIO DE ROTURACIÓN SIEMBRA Y SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 54, 
+	"fields": { 
+		"codigo": 14014, 
+		"descripcion": "DESTRUCCIÓN DE PLAGAS; PULVERIZACIONES, FUMIGACIONES U OTRAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 55, 
+	"fields": { 
+		"codigo": 14015, 
+		"descripcion": "COSECHA, PODA, AMARRE Y LABORES DE ADECUACIÓN DE LA PLANTA U OTRAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 56, 
+	"fields": { 
+		"codigo": 14019, 
+		"descripcion": "OTROS SERVICIOS AGRÍCOLAS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 57, 
+	"fields": { 
+		"codigo": 14021, 
+		"descripcion": "SERVICIOS DE ADIESTRAMIENTO, GUARDERÍA Y CUIDADOS DE MASCOTAS; EXCEPTO ACTIVIDADES VETERINARIAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 58, 
+	"fields": { 
+		"codigo": 14022, 
+		"descripcion": "SERVICIOS GANADEROS, EXCEPTO ACTIVIDADES VETERINARIAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 59, 
+	"fields": { 
+		"codigo": 15010, 
+		"descripcion": "CAZA DE MAMÍFEROS MARINOS; EXCEPTO BALLENAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 60, 
+	"fields": { 
+		"codigo": 15090, 
+		"descripcion": "CAZA ORDINARIA Y MEDIANTE TRAMPAS, Y ACTIVIDADES DE SERVICIOS CONEXAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 61, 
+	"fields": { 
+		"codigo": 20010, 
+		"descripcion": "EXPLOTACIÓN DE BOSQUES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 62, 
+	"fields": { 
+		"codigo": 20020, 
+		"descripcion": "RECOLECCIÓN DE PRODUCTOS FORESTALES SILVESTRES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 63, 
+	"fields": { 
+		"codigo": 20030, 
+		"descripcion": "EXPLOTACIÓN DE VIVEROS DE ESPECIES FORESTALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 64, 
+	"fields": { 
+		"codigo": 20041, 
+		"descripcion": "SERVICIOS DE FORESTACIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 65, 
+	"fields": { 
+		"codigo": 20042, 
+		"descripcion": "SERVICIOS DE CORTA DE MADERA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 66, 
+	"fields": { 
+		"codigo": 20043, 
+		"descripcion": "SERVICIOS DE CONTROL DE INCENDIOS FORESTALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 67, 
+	"fields": { 
+		"codigo": 20049, 
+		"descripcion": "OTRAS ACTIVIDADES DE SERVICIOS CONEXAS A LA SILVICULTURA N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 68, 
+	"fields": { 
+		"codigo": 51010, 
+		"descripcion": "CULTIVO DE ESPECIES ACUÁTICAS EN CUERPO DE AGUA DULCE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 69, 
+	"fields": { 
+		"codigo": 51020, 
+		"descripcion": "REPRODUCCIÓN Y CRIANZAS DE PECES MARINOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 70, 
+	"fields": { 
+		"codigo": 51030, 
+		"descripcion": "CULTIVO, REPRODUCCIÓN Y CRECIMIENTOS DE VEGETALES ACUÁTICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 71, 
+	"fields": { 
+		"codigo": 51040, 
+		"descripcion": "REPRODUCCIÓN Y CRÍA DE MOLUSCOS Y CRUSTACEOS.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 72, 
+	"fields": { 
+		"codigo": 51090, 
+		"descripcion": "SERVICIOS RELACIONADOS CON LA ACUICULTURA, NO INCLUYE SERVICIOS PROFESIONALES Y DE EXTRACCIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 73, 
+	"fields": { 
+		"codigo": 52010, 
+		"descripcion": "PESCA INDUSTRIAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 74, 
+	"fields": { 
+		"codigo": 52020, 
+		"descripcion": "ACTIVIDAD PESQUERA DE BARCOS FACTORÍAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 75, 
+	"fields": { 
+		"codigo": 52030, 
+		"descripcion": "PESCA ARTESANAL. EXTRACCIÓN DE RECURSOS ACUÁTICOS EN GENERAL; INCLUYE BALLENAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 76, 
+	"fields": { 
+		"codigo": 52040, 
+		"descripcion": "RECOLECCIÓN DE PRODUCTOS MARINOS, COMO PERLAS NATURALES, ESPONJAS, CORALES Y ALGAS.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 77, 
+	"fields": { 
+		"codigo": 52050, 
+		"descripcion": "SERVICIOS RELACIONADOS CON LA PESCA, NO INCLUYE SERVICIOS PROFESIONALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 78, 
+	"fields": { 
+		"codigo": 100000, 
+		"descripcion": "EXTRACCIÓN, AGLOMERACIÓN DE CARBÓN DE PIEDRA, LIGNITO Y TURBA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 79, 
+	"fields": { 
+		"codigo": 111000, 
+		"descripcion": "EXTRACCIÓN DE PETRÓLEO CRUDO Y GAS NATURAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 80, 
+	"fields": { 
+		"codigo": 112000, 
+		"descripcion": "ACTIVIDADES DE SERVICIOS RELACIONADAS CON LA EXTRACCIÓN DE PETRÓLEO Y GAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 81, 
+	"fields": { 
+		"codigo": 120000, 
+		"descripcion": "EXTRACCIÓN DE MINERALES DE URANIO Y TORIO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 82, 
+	"fields": { 
+		"codigo": 131000, 
+		"descripcion": "EXTRACCIÓN DE MINERALES DE HIERRO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 83, 
+	"fields": { 
+		"codigo": 132010, 
+		"descripcion": "EXTRACCIÓN DE ORO Y PLATA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 84, 
+	"fields": { 
+		"codigo": 132020, 
+		"descripcion": "EXTRACCIÓN DE ZINC Y PLOMO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 85, 
+	"fields": { 
+		"codigo": 132030, 
+		"descripcion": "EXTRACCIÓN DE MANGANESO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 86, 
+	"fields": { 
+		"codigo": 132090, 
+		"descripcion": "EXTRACCIÓN DE OTROS MINERALES METALÍFEROS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 87, 
+	"fields": { 
+		"codigo": 133000, 
+		"descripcion": "EXTRACCIÓN DE COBRE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 88, 
+	"fields": { 
+		"codigo": 141000, 
+		"descripcion": "EXTRACCIÓN DE PIEDRA, ARENA Y ARCILLA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 89, 
+	"fields": { 
+		"codigo": 142100, 
+		"descripcion": "EXTRACCIÓN DE NITRATOS Y YODO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 90, 
+	"fields": { 
+		"codigo": 142200, 
+		"descripcion": "EXTRACCIÓN DE SAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 91, 
+	"fields": { 
+		"codigo": 142300, 
+		"descripcion": "EXTRACCIÓN DE LITIO Y CLORUROS, EXCEPTO SAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 92, 
+	"fields": { 
+		"codigo": 142900, 
+		"descripcion": "EXPLOTACIÓN DE OTRAS MINAS Y CANTERAS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 93, 
+	"fields": { 
+		"codigo": 151110, 
+		"descripcion": "PRODUCCIÓN, PROCESAMIENTO DE CARNES ROJAS Y PRODUCTOS CÁRNICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 94, 
+	"fields": { 
+		"codigo": 151120, 
+		"descripcion": "CONSERVACIÓN DE CARNES ROJAS (FRIGORÍFICOS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 95, 
+	"fields": { 
+		"codigo": 151130, 
+		"descripcion": "PRODUCCIÓN, PROCESAMIENTO Y CONSERVACIÓN DE CARNES DE AVE Y OTRAS CARNES DISTINTAS A LAS ROJAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 96, 
+	"fields": { 
+		"codigo": 151140, 
+		"descripcion": "ELABORACIÓN DE CECINAS, EMBUTIDOS Y CARNES EN CONSERVA.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 97, 
+	"fields": { 
+		"codigo": 151210, 
+		"descripcion": "PRODUCCIÓN DE HARINA DE PESCADO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 98, 
+	"fields": { 
+		"codigo": 151221, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS ENLATADOS DE PESCADO Y MARISCOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 99, 
+	"fields": { 
+		"codigo": 151222, 
+		"descripcion": "ELABORACIÓN DE CONGELADOS DE PESCADOS Y MARISCOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 100, 
+	"fields": { 
+		"codigo": 151223, 
+		"descripcion": "ELABORACIÓN DE PRODUCTOS AHUMADOS, SALADOS, DESHIDRATADOS Y OTROS PROCESOS SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 101, 
+	"fields": { 
+		"codigo": 151230, 
+		"descripcion": "ELABORACIÓN DE PRODUCTOS EN BASE A VEGETALES ACUÁTICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 102, 
+	"fields": { 
+		"codigo": 151300, 
+		"descripcion": "ELABORACIÓN Y CONSERVACIÓN DE FRUTAS, LEGUMBRES Y HORTALIZAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 103, 
+	"fields": { 
+		"codigo": 151410, 
+		"descripcion": "ELABORACIÓN DE ACEITES Y GRASAS DE ORIGEN VEGETAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 104, 
+	"fields": { 
+		"codigo": 151420, 
+		"descripcion": "ELABORACIÓN DE ACEITES Y GRASAS DE ORIGEN ANIMAL, EXCEPTO LAS MANTEQUILLAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 105, 
+	"fields": { 
+		"codigo": 151430, 
+		"descripcion": "ELABORACIÓN DE ACEITES Y GRASAS DE ORIGEN MARINO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 106, 
+	"fields": { 
+		"codigo": 152010, 
+		"descripcion": "ELABORACIÓN DE LECHE, MANTEQUILLA, PRODUCTOS LÁCTEOS Y DERIVADOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 107, 
+	"fields": { 
+		"codigo": 152020, 
+		"descripcion": "ELABORACIÓN DE QUESOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 108, 
+	"fields": { 
+		"codigo": 152030, 
+		"descripcion": "FABRICACIÓN DE POSTRES A BASE DE LECHE (HELADOS, SORBETES Y OTROS SIMILARES)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 109, 
+	"fields": { 
+		"codigo": 153110, 
+		"descripcion": "ELABORACIÓN DE HARINAS DE TRIGO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 110, 
+	"fields": { 
+		"codigo": 153120, 
+		"descripcion": "ACTIVIDADES DE MOLIENDA DE ARROZ", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 111, 
+	"fields": { 
+		"codigo": 153190, 
+		"descripcion": "ELABORACIÓN DE OTRAS MOLINERAS Y ALIMENTOS A BASE DE CEREALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 112, 
+	"fields": { 
+		"codigo": 153210, 
+		"descripcion": "ELABORACIÓN DE ALMIDONES Y PRODUCTOS DERIVADOS DEL ALMIDÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 113, 
+	"fields": { 
+		"codigo": 153220, 
+		"descripcion": "ELABORACIÓN DE GLUCOSA Y OTROS AZÚCARES DIFERENTES DE LA REMOLACHA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 114, 
+	"fields": { 
+		"codigo": 153300, 
+		"descripcion": "ELABORACIÓN DE ALIMENTOS PREPARADOS PARA ANIMALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 115, 
+	"fields": { 
+		"codigo": 154110, 
+		"descripcion": "FABRICACIÓN DE PAN, PRODUCTOS DE PANADERÍA Y PASTELERÍA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 116, 
+	"fields": { 
+		"codigo": 154120, 
+		"descripcion": "FABRICACIÓN DE GALLETAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 117, 
+	"fields": { 
+		"codigo": 154200, 
+		"descripcion": "ELABORACIÓN DE AZÚCAR DE REMOLACHA O CANA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 118, 
+	"fields": { 
+		"codigo": 154310, 
+		"descripcion": "ELABORACIÓN DE CACAO Y CHOCOLATES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 119, 
+	"fields": { 
+		"codigo": 154320, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS DE CONFITERÍA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 120, 
+	"fields": { 
+		"codigo": 154400, 
+		"descripcion": "ELABORACIÓN DE MACARRONES, FIDEOS, ALCUZCUZ Y PRODUCTOS FARINACEOS SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 121, 
+	"fields": { 
+		"codigo": 154910, 
+		"descripcion": "ELABORACIÓN DE TE, CAFÉ, INFUSIONES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 122, 
+	"fields": { 
+		"codigo": 154920, 
+		"descripcion": "ELABORACIÓN DE LEVADURAS NATURALES O ARTIFICIALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 123, 
+	"fields": { 
+		"codigo": 154930, 
+		"descripcion": "ELABORACIÓN DE VINAGRES, MOSTAZAS, MAYONESAS Y CONDIMENTOS EN GENERAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 124, 
+	"fields": { 
+		"codigo": 154990, 
+		"descripcion": "ELABORACIÓN DE OTROS PRODUCTOS ALIMENTICIOS NO CLASIFICADOS EN OTRA PARTE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 125, 
+	"fields": { 
+		"codigo": 155110, 
+		"descripcion": "ELABORACIÓN DE PISCOS (INDUSTRIAS PISQUERAS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 126, 
+	"fields": { 
+		"codigo": 155120, 
+		"descripcion": "ELABORACIÓN DE BEBIDAS ALCOHÓLICAS Y DE ALCOHOL ETÍLICO A PARTIR DE SUSTANCIAS FERMENTADAS Y OTROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 127, 
+	"fields": { 
+		"codigo": 155200, 
+		"descripcion": "ELABORACIÓN DE VINOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 128, 
+	"fields": { 
+		"codigo": 155300, 
+		"descripcion": "ELABORACIÓN DE BEBIDAS MALTEADAS, CERVEZAS Y MALTAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 129, 
+	"fields": { 
+		"codigo": 155410, 
+		"descripcion": "ELABORACIÓN DE BEBIDAS NO ALCOHÓLICAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 130, 
+	"fields": { 
+		"codigo": 155420, 
+		"descripcion": "ENVASADO DE AGUA MINERAL NATURAL, DE MANANTIAL Y POTABLE PREPARADA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 131, 
+	"fields": { 
+		"codigo": 155430, 
+		"descripcion": "ELABORACIÓN DE HIELO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 132, 
+	"fields": { 
+		"codigo": 160010, 
+		"descripcion": "FABRICACIÓN DE CIGARROS Y CIGARRILLOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 133, 
+	"fields": { 
+		"codigo": 160090, 
+		"descripcion": "FABRICACIÓN DE OTROS PRODUCTOS DEL TABACO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 134, 
+	"fields": { 
+		"codigo": 171100, 
+		"descripcion": "PREPARACIÓN DE HILATURA DE FIBRAS TEXTILES; TEJEDURA PROD. TEXTILES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 135, 
+	"fields": { 
+		"codigo": 171200, 
+		"descripcion": "ACABADO DE PRODUCTOS TEXTIL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 136, 
+	"fields": { 
+		"codigo": 172100, 
+		"descripcion": "FABRICACIÓN DE ARTÍCULOS CONFECCIONADOS DE MATERIAS TEXTILES, EXCEPTO PRENDAS DE VESTIR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 137, 
+	"fields": { 
+		"codigo": 172200, 
+		"descripcion": "FABRICACIÓN DE TAPICES Y ALFOMBRA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 138, 
+	"fields": { 
+		"codigo": 172300, 
+		"descripcion": "FABRICACIÓN DE CUERDAS, CORDELES, BRAMANTES Y REDES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 139, 
+	"fields": { 
+		"codigo": 172910, 
+		"descripcion": "FABRICACIÓN DE TEJIDOS DE USO INDUSTRIAL COMO TEJIDOS IMPREGNADOS, MOLTOPRENE, BATISTA, ETC.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 140, 
+	"fields": { 
+		"codigo": 172990, 
+		"descripcion": "FABRICACIÓN DE OTROS PRODUCTOS TEXTILES N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 141, 
+	"fields": { 
+		"codigo": 173000, 
+		"descripcion": "FABRICACIÓN DE TEJIDOS DE PUNTO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 142, 
+	"fields": { 
+		"codigo": 181010, 
+		"descripcion": "FABRICACIÓN DE PRENDAS DE VESTIR TEXTILES Y SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 143, 
+	"fields": { 
+		"codigo": 181020, 
+		"descripcion": "FABRICACIÓN DE PRENDAS DE VESTIR DE CUERO NATURAL, ARTIFICIAL, PLÁSTICO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 144, 
+	"fields": { 
+		"codigo": 181030, 
+		"descripcion": "FABRICACIÓN DE ACCESORIOS DE VESTIR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 145, 
+	"fields": { 
+		"codigo": 181040, 
+		"descripcion": "FABRICACIÓN DE ROPA DE TRABAJO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 146, 
+	"fields": { 
+		"codigo": 182000, 
+		"descripcion": "ADOBO Y TENIDOS DE PIELES; FABRICACIÓN DE ARTÍCULOS DE PIEL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 147, 
+	"fields": { 
+		"codigo": 191100, 
+		"descripcion": "CURTIDO Y ADOBO DE CUEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 148, 
+	"fields": { 
+		"codigo": 191200, 
+		"descripcion": "FABRICACIÓN DE MALETAS, BOLSOS DE MANO Y SIMILARES; ARTÍCULOS DE TALABARTERÍA Y GUARNICIONERÍA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 149, 
+	"fields": { 
+		"codigo": 192000, 
+		"descripcion": "FABRICACIÓN DE CALZADO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 150, 
+	"fields": { 
+		"codigo": 201000, 
+		"descripcion": "ASERRADO Y ACEPILLADURA DE MADERAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 151, 
+	"fields": { 
+		"codigo": 202100, 
+		"descripcion": "FABRICACIÓN DE TABLEROS, PANELES Y HOJAS DE MADERA PARA ENCHAPADO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 152, 
+	"fields": { 
+		"codigo": 202200, 
+		"descripcion": "FABRICACIÓN DE PARTES Y PIEZAS DE CARPINTERÍA PARA EDIFICIOS Y CONSTRUCCIONES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 153, 
+	"fields": { 
+		"codigo": 202300, 
+		"descripcion": "FABRICACIÓN DE RECIPIENTES DE MADERA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 154, 
+	"fields": { 
+		"codigo": 202900, 
+		"descripcion": "FABRICACIÓN DE OTROS PRODUCTOS DE MADERA; ARTÍCULOS DE CORCHO, PAJA Y MATERIALES TRENZABLES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 155, 
+	"fields": { 
+		"codigo": 210110, 
+		"descripcion": "FABRICACIÓN DE CELULOSA Y OTRAS PASTAS DE MADERA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 156, 
+	"fields": { 
+		"codigo": 210121, 
+		"descripcion": "FABRICACIÓN DE PAPEL DE PERIÓDICO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 157, 
+	"fields": { 
+		"codigo": 210129, 
+		"descripcion": "FABRICACIÓN DE PAPEL Y CARTÓN N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 158, 
+	"fields": { 
+		"codigo": 210200, 
+		"descripcion": "FABRICACIÓN DE PAPEL Y CARTÓN ONDULADO Y DE ENVASES DE PAPEL Y CARTÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 159, 
+	"fields": { 
+		"codigo": 210900, 
+		"descripcion": "FABRICACIÓN DE OTROS ARTÍCULOS DE PAPEL Y CARTÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 160, 
+	"fields": { 
+		"codigo": 221101, 
+		"descripcion": "EDICIÓN PRINCIPALMENTE DE LIBROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 161, 
+	"fields": { 
+		"codigo": 221109, 
+		"descripcion": "EDICIÓN DE FOLLETOS, PARTITURAS Y OTRAS PUBLICACIONES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 162, 
+	"fields": { 
+		"codigo": 221200, 
+		"descripcion": "EDICIÓN DE PERIÓDICOS, REVISTAS Y PUBLICACIONES PERIÓDICAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 163, 
+	"fields": { 
+		"codigo": 221300, 
+		"descripcion": "EDICIÓN DE GRABACIONES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 164, 
+	"fields": { 
+		"codigo": 221900, 
+		"descripcion": "OTRAS ACTIVIDADES DE EDICIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 165, 
+	"fields": { 
+		"codigo": 222101, 
+		"descripcion": "IMPRESIÓN PRINCIPALMENTE DE LIBROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 166, 
+	"fields": { 
+		"codigo": 222109, 
+		"descripcion": "OTRAS ACTIVIDADES DE IMPRESIÓN N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 167, 
+	"fields": { 
+		"codigo": 222200, 
+		"descripcion": "ACTIVIDADES DE SERVICIO RELACIONADA CON LA IMPRESIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 168, 
+	"fields": { 
+		"codigo": 223000, 
+		"descripcion": "REPRODUCCIÓN DE GRABACIONES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 169, 
+	"fields": { 
+		"codigo": 231000, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS DE HORNOS COQUE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 170, 
+	"fields": { 
+		"codigo": 232000, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS DE REFINACIÓN DE PETRÓLEO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 171, 
+	"fields": { 
+		"codigo": 233000, 
+		"descripcion": "ELABORACIÓN DE COMBUSTIBLE NUCLEAR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 172, 
+	"fields": { 
+		"codigo": 241110, 
+		"descripcion": "FABRICACIÓN DE CARBÓN VEGETAL, Y BRIQUETAS DE CARBÓN VEGETAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 173, 
+	"fields": { 
+		"codigo": 241190, 
+		"descripcion": "FABRICACIÓN DE SUSTANCIAS QUÍMICAS BÁSICAS, EXCEPTO ABONOS Y COMPUESTOS DE NITRÓGENO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 174, 
+	"fields": { 
+		"codigo": 241200, 
+		"descripcion": "FABRICACIÓN DE ABONOS Y COMPUESTOS DE NITRÓGENO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 251, 
+	"fields": { 
+		"codigo": 292980, 
+		"descripcion": "REPARACIÓN DE OTROS TIPOS DE MAQUINARIA DE USO ESPECIAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 175, 
+	"fields": { 
+		"codigo": 241300, 
+		"descripcion": "FABRICACIÓN DE PLÁSTICOS EN FORMAS PRIMARIAS Y DE CAUCHO SINTÉTICO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 176, 
+	"fields": { 
+		"codigo": 242100, 
+		"descripcion": "FABRICACIÓN DE PLAGUICIDAS Y OTROS PRODUCTOS QUÍMICOS DE USO AGROPECUARIO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 177, 
+	"fields": { 
+		"codigo": 242200, 
+		"descripcion": "FABRICACIÓN DE PINTURAS, BARNICES Y PRODUCTOS DE REVESTIMIENTO SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 178, 
+	"fields": { 
+		"codigo": 242300, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS FARMACEUTICOS, SUSTANCIAS QUÍMICAS MEDICINALES Y PRODUCTOS BOTÁNICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 179, 
+	"fields": { 
+		"codigo": 242400, 
+		"descripcion": "FABRICACIONES DE JABONES Y DETERGENTES, PREPARADOS PARA LIMPIAR, PERFUMES Y PREPARADOS DE TOCADOR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 180, 
+	"fields": { 
+		"codigo": 242910, 
+		"descripcion": "FABRICACIÓN DE EXPLOSIVOS Y PRODUCTOS DE PIROTECNIA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 181, 
+	"fields": { 
+		"codigo": 242990, 
+		"descripcion": "FABRICACIÓN DE OTROS PRODUCTOS QUÍMICOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 182, 
+	"fields": { 
+		"codigo": 243000, 
+		"descripcion": "FABRICACIÓN DE FIBRAS MANUFACTURADAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 183, 
+	"fields": { 
+		"codigo": 251110, 
+		"descripcion": "FABRICACIÓN DE CUBIERTAS Y CÁMARAS DE CAUCHO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 184, 
+	"fields": { 
+		"codigo": 251120, 
+		"descripcion": "RECAUCHADO Y RENOVACIÓN DE CUBIERTAS DE CAUCHO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 185, 
+	"fields": { 
+		"codigo": 251900, 
+		"descripcion": "FABRICACIÓN DE OTROS PRODUCTOS DE CAUCHO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 186, 
+	"fields": { 
+		"codigo": 252010, 
+		"descripcion": "FABRICACIÓN DE PLANCHAS, LÁMINAS, CINTAS, TIRAS DE PLÁSTICO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 187, 
+	"fields": { 
+		"codigo": 252020, 
+		"descripcion": "FABRICACIÓN DE TUBOS, MANGUERAS PARA LA CONSTRUCCIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 188, 
+	"fields": { 
+		"codigo": 252090, 
+		"descripcion": "FABRICACIÓN DE OTROS ARTÍCULOS DE PLÁSTICO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 189, 
+	"fields": { 
+		"codigo": 261010, 
+		"descripcion": "FABRICACIÓN, MANIPULADO Y TRANSFORMACIÓN DE VIDRIO PLANO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 190, 
+	"fields": { 
+		"codigo": 261020, 
+		"descripcion": "FABRICACIÓN DE VIDRIO HUECO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 191, 
+	"fields": { 
+		"codigo": 261030, 
+		"descripcion": "FABRICACIÓN DE FIBRAS DE VIDRIO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 192, 
+	"fields": { 
+		"codigo": 261090, 
+		"descripcion": "FABRICACIÓN DE ARTÍCULOS DE VIDRIO N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 193, 
+	"fields": { 
+		"codigo": 269101, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS DE CERÁMICA NO REFRACTARIA PARA USO NO ESTRUCTURAL CON FINES ORNAMENTALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 194, 
+	"fields": { 
+		"codigo": 269109, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS DE CERÁMICA NO REFRACTARIA PARA USO NO ESTRUCTURAL N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 195, 
+	"fields": { 
+		"codigo": 269200, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS DE CERÁMICAS REFRACTARIA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 196, 
+	"fields": { 
+		"codigo": 269300, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS DE ARCILLA Y CERÁMICAS NO REFRACTARIAS PARA USO ESTRUCTURAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 197, 
+	"fields": { 
+		"codigo": 269400, 
+		"descripcion": "FABRICACIÓN DE CEMENTO, CAL Y YESO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 198, 
+	"fields": { 
+		"codigo": 269510, 
+		"descripcion": "ELABORACIÓN DE HORMIGÓN, ARTÍCULOS DE HORMIGÓN Y MORTERO (MEZCLA PARA CONSTRUCCIÓN)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 199, 
+	"fields": { 
+		"codigo": 269520, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS DE FIBROCEMENTO Y ASBESTOCEMENTO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 200, 
+	"fields": { 
+		"codigo": 269530, 
+		"descripcion": "FABRICACIÓN DE PANELES DE YESO PARA LA CONSTRUCCIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 201, 
+	"fields": { 
+		"codigo": 269590, 
+		"descripcion": "FABRICACIÓN DE ARTÍCULOS DE CEMENTO Y YESO N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 202, 
+	"fields": { 
+		"codigo": 269600, 
+		"descripcion": "CORTE, TALLADO Y ACABADO DE LA PIEDRA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 203, 
+	"fields": { 
+		"codigo": 269910, 
+		"descripcion": "FABRICACIÓN DE MEZCLAS BITUMINOSAS A BASE DE ASFALTO, DE BETUNES NATURALES, Y PRODUCTOS SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 204, 
+	"fields": { 
+		"codigo": 269990, 
+		"descripcion": "FABRICACIÓN DE OTROS PRODUCTOS MINERALES NO METÁLICOS N.C.P", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 205, 
+	"fields": { 
+		"codigo": 271000, 
+		"descripcion": "INDUSTRIAS BASICAS DE HIERRO Y ACERO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 206, 
+	"fields": { 
+		"codigo": 272010, 
+		"descripcion": "ELABORACIÓN DE PRODUCTOS DE COBRE EN FORMAS PRIMARIAS.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 207, 
+	"fields": { 
+		"codigo": 272020, 
+		"descripcion": "ELABORACIÓN DE PRODUCTOS DE ALUMINIO EN FORMAS PRIMARIAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 208, 
+	"fields": { 
+		"codigo": 272090, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS PRIMARIOS DE METALES PRECIOSOS Y DE OTROS METALES NO FERROSOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 209, 
+	"fields": { 
+		"codigo": 273100, 
+		"descripcion": "FUNDICIÓN DE HIERRO Y ACERO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 210, 
+	"fields": { 
+		"codigo": 273200, 
+		"descripcion": "FUNDICIÓN DE METALES NO FERROSOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 211, 
+	"fields": { 
+		"codigo": 281100, 
+		"descripcion": "FABRICACIÓN DE PRODUCTOS METÁLICOS DE USO ESTRUCTURAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 212, 
+	"fields": { 
+		"codigo": 281211, 
+		"descripcion": "FABRICACIÓN DE RECIPIENTES DE GAS COMPRIMIDO O LICUADO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 213, 
+	"fields": { 
+		"codigo": 281219, 
+		"descripcion": "FABRICACIÓN DE TANQUES, DEPÓSITOS Y RECIPIENTES DE METAL N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 214, 
+	"fields": { 
+		"codigo": 281280, 
+		"descripcion": "REPARACIÓN DE TANQUES, DEPÓSITOS Y RECIPIENTES DE METAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 215, 
+	"fields": { 
+		"codigo": 281310, 
+		"descripcion": "FABRICACIÓN DE GENERADORES DE VAPOR, EXCEPTO CALDERAS DE AGUA CALIENTE PARA CALEFACCIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 216, 
+	"fields": { 
+		"codigo": 281380, 
+		"descripcion": "REPARACIÓN DE GENERADORES DE VAPOR, EXCEPTO CALDERAS DE AGUA CALIENTE PARA CALEFACCIÓN CENTRAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 217, 
+	"fields": { 
+		"codigo": 289100, 
+		"descripcion": "FORJA, PRENSADO, ESTAMPADO Y LAMINADO DE METAL; INCLUYE PULVIMETALURGIA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 218, 
+	"fields": { 
+		"codigo": 289200, 
+		"descripcion": "TRATAMIENTOS Y REVESTIMIENTOS DE METALES; OBRAS DE INGENIERÍA MECÁNICA EN GENERAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 219, 
+	"fields": { 
+		"codigo": 289310, 
+		"descripcion": "FABRICACIÓN DE ARTÍCULOS DE CUCHILLERÍA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 220, 
+	"fields": { 
+		"codigo": 289320, 
+		"descripcion": "FABRICACIÓN DE HERRAMIENTAS DE MANO Y ARTÍCULOS DE FERRETERÍA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 221, 
+	"fields": { 
+		"codigo": 289910, 
+		"descripcion": "FABRICACIÓN DE CABLES, ALAMBRES Y PRODUCTOS DE ALAMBRE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 222, 
+	"fields": { 
+		"codigo": 289990, 
+		"descripcion": "FABRICACIÓN DE OTROS PRODUCTOS ELABORADOS DE METAL N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 223, 
+	"fields": { 
+		"codigo": 291110, 
+		"descripcion": "FABRICACIÓN DE MOTORES Y TURBINAS, EXCEPTO PARA AERONAVES, VEHÍCULOS AUTOMOTORES Y MOTOCICLETAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 224, 
+	"fields": { 
+		"codigo": 291180, 
+		"descripcion": "REPARACIÓN DE MOTORES Y TURBINAS, EXCEPTO PARA AERONAVES, VEHÍCULOS AUTOMOTORES Y MOTOCICLETAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 225, 
+	"fields": { 
+		"codigo": 291210, 
+		"descripcion": "FABRICACIÓN DE BOMBAS, GRIFOS, VÁLVULAS, COMPRESORES, SISTEMAS HIDRÁULICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 226, 
+	"fields": { 
+		"codigo": 291280, 
+		"descripcion": "REPARACIÓN DE BOMBAS, COMPRESORES, SISTEMAS HIDRÁULICOS, VÁLVULAS Y ARTÍCULOS DE GRIFERÍA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 227, 
+	"fields": { 
+		"codigo": 291310, 
+		"descripcion": "FABRICACIÓN DE COJINETES, ENGRANAJES, TRENES DE ENGRANAJES Y PIEZAS DE TRANSMISIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 228, 
+	"fields": { 
+		"codigo": 291380, 
+		"descripcion": "REPARACIÓN DE COJINETES, ENGRANAJES, TRENES DE ENGRANAJES Y PIEZAS DE TRANSMISIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 229, 
+	"fields": { 
+		"codigo": 291410, 
+		"descripcion": "FABRICACIÓN DE HORNOS, HOGARES Y QUEMADORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 230, 
+	"fields": { 
+		"codigo": 291480, 
+		"descripcion": "REPARACIÓN DE HORNOS, HOGARES Y QUEMADORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 231, 
+	"fields": { 
+		"codigo": 291510, 
+		"descripcion": "FABRICACIÓN DE EQUIPO DE ELEVACIÓN Y MANIPULACIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 232, 
+	"fields": { 
+		"codigo": 291580, 
+		"descripcion": "REPARACIÓN DE EQUIPO DE ELEVACIÓN Y MANIPULACIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 233, 
+	"fields": { 
+		"codigo": 291910, 
+		"descripcion": "FABRICACIÓN DE OTRO TIPO DE MAQUINARIAS DE USO GENERAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 234, 
+	"fields": { 
+		"codigo": 291980, 
+		"descripcion": "REPARACIÓN OTROS TIPOS DE MAQUINARIA Y EQUIPOS DE USO GENERAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 235, 
+	"fields": { 
+		"codigo": 292110, 
+		"descripcion": "FABRICACIÓN DE MAQUINARIA AGROPECUARIA Y FORESTAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 236, 
+	"fields": { 
+		"codigo": 292180, 
+		"descripcion": "REPARACIÓN DE MAQUINARIA AGROPECUARIA Y FORESTAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 237, 
+	"fields": { 
+		"codigo": 292210, 
+		"descripcion": "FABRICACIÓN DE MÁQUINAS HERRAMIENTAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 238, 
+	"fields": { 
+		"codigo": 292280, 
+		"descripcion": "REPARACIÓN DE MÁQUINAS HERRAMIENTAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 239, 
+	"fields": { 
+		"codigo": 292310, 
+		"descripcion": "FABRICACIÓN DE MAQUINARIA METALÚRGICA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 240, 
+	"fields": { 
+		"codigo": 292380, 
+		"descripcion": "REPARACIÓN DE MAQUINARIA PARA LA INDUSTRIA METALÚRGICA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 241, 
+	"fields": { 
+		"codigo": 292411, 
+		"descripcion": "FABRICACIÓN DE MAQUINARIA PARA MINAS Y CANTERAS Y PARA OBRAS DE CONSTRUCCIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 242, 
+	"fields": { 
+		"codigo": 292412, 
+		"descripcion": "FABRICACIÓN DE PARTES PARA MÁQUINAS DE SONDEO O PERFORACIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 243, 
+	"fields": { 
+		"codigo": 292480, 
+		"descripcion": "REPARACIÓN DE MAQUINARIA PARA LA EXPLOTACIÓN DE PETRÓLEO, MINAS, CANTERAS, Y OBRAS DE CONSTRUCCIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 244, 
+	"fields": { 
+		"codigo": 292510, 
+		"descripcion": "FABRICACIÓN DE MAQUINARIA PARA LA ELABORACIÓN DE ALIMENTOS, BEBIDAS Y TABACOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 245, 
+	"fields": { 
+		"codigo": 292580, 
+		"descripcion": "REPARACIÓN DE MAQUINARIA PARA LA ELABORACIÓN DE ALIMENTOS, BEBIDAS Y TABACOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 246, 
+	"fields": { 
+		"codigo": 292610, 
+		"descripcion": "FABRICACIÓN DE MAQUINARIA PARA LA ELABORACIÓN DE PRENDAS TEXTILES, PRENDAS DE VESTIR Y CUEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 247, 
+	"fields": { 
+		"codigo": 292680, 
+		"descripcion": "REPARACIÓN DE MAQUINARIA PARA LA INDUSTRIA TEXTIL, DE LA CONFECCIÓN, DEL CUERO Y DEL CALZADO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 248, 
+	"fields": { 
+		"codigo": 292710, 
+		"descripcion": "FABRICACIÓN DE ARMAS Y MUNICIONES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 249, 
+	"fields": { 
+		"codigo": 292780, 
+		"descripcion": "REPARACIÓN DE ARMAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 250, 
+	"fields": { 
+		"codigo": 292910, 
+		"descripcion": "FABRICACIÓN DE OTROS TIPOS DE MAQUINARIAS DE USO ESPECIAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 252, 
+	"fields": { 
+		"codigo": 293000, 
+		"descripcion": "FABRICACIÓN DE APARATOS DE USO DOMÉSTICO N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 253, 
+	"fields": { 
+		"codigo": 300010, 
+		"descripcion": "FABRICACIÓN Y ARMADO DE COMPUTADORES Y HARDWARE EN GENERAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 254, 
+	"fields": { 
+		"codigo": 300020, 
+		"descripcion": "FABRICACIÓN DE MAQUINARIA DE OFICINA, CONTABILIDAD, N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 255, 
+	"fields": { 
+		"codigo": 311010, 
+		"descripcion": "FABRICACIÓN DE MOTORES, GENERADORES Y TRANSFORMADORES ELÉCTRICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 256, 
+	"fields": { 
+		"codigo": 311080, 
+		"descripcion": "REPARACIÓN DE MOTORES, GENERADORES Y TRANSFORMADORES ELÉCTRICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 257, 
+	"fields": { 
+		"codigo": 312010, 
+		"descripcion": "FABRICACIÓN DE APARATOS DE DISTRIBUCIÓN Y CONTROL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 258, 
+	"fields": { 
+		"codigo": 312080, 
+		"descripcion": "REPARACIÓN DE APARATOS DE DISTRIBUCIÓN Y CONTROL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 259, 
+	"fields": { 
+		"codigo": 313000, 
+		"descripcion": "FABRICACIÓN DE HILOS Y CABLES AISLADOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 260, 
+	"fields": { 
+		"codigo": 314000, 
+		"descripcion": "FABRICACIÓN DE ACUMULADORES DE PILAS Y BATERÍAS PRIMARIAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 261, 
+	"fields": { 
+		"codigo": 315010, 
+		"descripcion": "FABRICACIÓN DE LÁMPARAS Y EQUIPO DE ILUMINACIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 262, 
+	"fields": { 
+		"codigo": 315080, 
+		"descripcion": "REPARACIÓN DE EQUIPO DE ILUMINACIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 263, 
+	"fields": { 
+		"codigo": 319010, 
+		"descripcion": "FABRICACIÓN DE OTROS TIPOS DE EQUIPO ELÉCTRICO N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 264, 
+	"fields": { 
+		"codigo": 319080, 
+		"descripcion": "REPARACIÓN DE OTROS TIPOS DE EQUIPO ELÉCTRICO N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 265, 
+	"fields": { 
+		"codigo": 321010, 
+		"descripcion": "FABRICACIÓN DE COMPONENTES ELECTRÓNICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 266, 
+	"fields": { 
+		"codigo": 321080, 
+		"descripcion": "REPARACIÓN DE COMPONENTES ELECTRÓNICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 267, 
+	"fields": { 
+		"codigo": 322010, 
+		"descripcion": "FABRICACIÓN DE TRANSMISORES DE RADIO Y TELEVISIÓN, APARATOS PARA TELEFONÍA Y TELEGRAFÍA CON HILOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 268, 
+	"fields": { 
+		"codigo": 322080, 
+		"descripcion": "REPARACIÓN DE TRANSMISORES DE RADIO Y TELEVISIÓN, APARATOS PARA TELEFONÍA Y TELEGRAFÍA CON HILOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 269, 
+	"fields": { 
+		"codigo": 323000, 
+		"descripcion": "FABRICACIÓN DE RECEPTORES (RADIO Y TV); APARATOS DE GRABACIÓN Y REPRODUCCIÓN (AUDIO Y VIDEO)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 270, 
+	"fields": { 
+		"codigo": 331110, 
+		"descripcion": "FABRICACIÓN DE EQUIPO MÉDICO Y QUIRÚRGICO, Y DE APARATOS ORTOPÉDICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 271, 
+	"fields": { 
+		"codigo": 331120, 
+		"descripcion": "LABORATORIOS DENTALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 272, 
+	"fields": { 
+		"codigo": 331180, 
+		"descripcion": "REPARACIÓN DE EQUIPO MÉDICO Y QUIRÚRGICO, Y DE APARATOS ORTOPÉDICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 273, 
+	"fields": { 
+		"codigo": 331210, 
+		"descripcion": "FABRICACIÓN DE INSTRUMENTOS Y APARATOS PARA MEDIR, VERIFICAR, ENSAYAR, NAVEGAR Y OTROS FINES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 274, 
+	"fields": { 
+		"codigo": 331280, 
+		"descripcion": "REPARACIÓN DE INSTRUMENTOS Y APARATOS PARA MEDIR, VERIFICAR, ENSAYAR, NAVEGAR Y OTROS FINES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 275, 
+	"fields": { 
+		"codigo": 331310, 
+		"descripcion": "FABRICACIÓN DE EQUIPOS DE CONTROL DE PROCESOS INDUSTRIALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 276, 
+	"fields": { 
+		"codigo": 331380, 
+		"descripcion": "REPARACIÓN DE EQUIPOS DE CONTROL DE PROCESOS INDUSTRIALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 277, 
+	"fields": { 
+		"codigo": 332010, 
+		"descripcion": "FABRICACIÓN Y/O REPARACIÓN DE LENTES Y ARTÍCULOS OFTALMOLÓGICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 278, 
+	"fields": { 
+		"codigo": 332020, 
+		"descripcion": "FABRICACIÓN DE INSTRUMENTOS DE OPTICA N.C.P. Y EQUIPOS FOTOGRÁFICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 279, 
+	"fields": { 
+		"codigo": 332080, 
+		"descripcion": "REPARACIÓN DE INSTRUMENTOS DE OPTICA N.C.P Y EQUIPO FOTOGRÁFICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 280, 
+	"fields": { 
+		"codigo": 333000, 
+		"descripcion": "FABRICACIÓN DE RELOJES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 281, 
+	"fields": { 
+		"codigo": 341000, 
+		"descripcion": "FABRICACIÓN DE VEHÍCULOS AUTOMOTORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 282, 
+	"fields": { 
+		"codigo": 342000, 
+		"descripcion": "FABRICACIÓN DE CARROCERÍAS PARA VEHÍCULOS AUTOMOTORES; FABRICACIÓN DE REMOLQUES Y SEMI REMOLQUES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 283, 
+	"fields": { 
+		"codigo": 343000, 
+		"descripcion": "FABRICACIÓN DE PARTES Y ACCESORIOS PARA VEHÍCULOS AUTOMOTORES Y SUS MOTORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 284, 
+	"fields": { 
+		"codigo": 351110, 
+		"descripcion": "CONSTRUCCIÓN Y REPARACIÓN DE BUQUES; ASTILLEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 285, 
+	"fields": { 
+		"codigo": 351120, 
+		"descripcion": "CONSTRUCCIÓN DE EMBARCACIONES MENORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 286, 
+	"fields": { 
+		"codigo": 351180, 
+		"descripcion": "REPARACIÓN DE EMBARCACIONES MENORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 287, 
+	"fields": { 
+		"codigo": 351210, 
+		"descripcion": "CONSTRUCCIÓN DE EMBARCACIONES DE RECREO Y DEPORTE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 288, 
+	"fields": { 
+		"codigo": 351280, 
+		"descripcion": "REPARACIÓN DE EMBARCACIONES DE RECREO Y DEPORTES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 289, 
+	"fields": { 
+		"codigo": 352000, 
+		"descripcion": "FABRICACIÓN DE LOCOMOTORAS Y DE MATERIAL RODANTE PARA FERROCARRILES Y TRANVÍAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 290, 
+	"fields": { 
+		"codigo": 353010, 
+		"descripcion": "FABRICACIÓN DE AERONAVES Y NAVES ESPACIALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 291, 
+	"fields": { 
+		"codigo": 353080, 
+		"descripcion": "REPARACIÓN DE AERONAVES Y NAVES ESPACIALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 292, 
+	"fields": { 
+		"codigo": 359100, 
+		"descripcion": "FABRICACIÓN DE MOTOCICLETAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 293, 
+	"fields": { 
+		"codigo": 359200, 
+		"descripcion": "FABRICACIÓN DE BICICLETAS Y DE SILLONES DE RUEDAS PARA INVALIDOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 294, 
+	"fields": { 
+		"codigo": 359900, 
+		"descripcion": "FABRICACIÓN DE OTROS EQUIPOS DE TRANSPORTE N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 295, 
+	"fields": { 
+		"codigo": 361010, 
+		"descripcion": "FABRICACIÓN DE MUEBLES PRINCIPALMENTE DE MADERA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 296, 
+	"fields": { 
+		"codigo": 361020, 
+		"descripcion": "FABRICACIÓN DE OTROS MUEBLES N.C.P., INCLUSO COLCHONES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 297, 
+	"fields": { 
+		"codigo": 369100, 
+		"descripcion": "FABRICACIÓN DE JOYAS Y PRODUCTOS CONEXOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 298, 
+	"fields": { 
+		"codigo": 369200, 
+		"descripcion": "FABRICACIÓN DE INSTRUMENTOS DE MÚSICA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 299, 
+	"fields": { 
+		"codigo": 369300, 
+		"descripcion": "FABRICACIÓN DE ARTÍCULOS DE DEPORTE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 300, 
+	"fields": { 
+		"codigo": 369400, 
+		"descripcion": "FABRICACIÓN DE JUEGOS Y JUGUETES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 301, 
+	"fields": { 
+		"codigo": 369910, 
+		"descripcion": "FABRICACIÓN DE PLUMAS Y LÁPICES DE TODA CLASE Y ARTÍCULOS DE ESCRITORIO EN GENERAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 302, 
+	"fields": { 
+		"codigo": 369920, 
+		"descripcion": "FABRICACIÓN DE BROCHAS, ESCOBAS Y CEPILLOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 303, 
+	"fields": { 
+		"codigo": 369990, 
+		"descripcion": "FABRICACIÓN DE ARTÍCULOS DE OTRAS INDUSTRIAS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 304, 
+	"fields": { 
+		"codigo": 371000, 
+		"descripcion": "RECICLAMIENTO DE DESPERDICIOS Y DESECHOS METÁLICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 305, 
+	"fields": { 
+		"codigo": 372010, 
+		"descripcion": "RECICLAMIENTO DE PAPEL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 306, 
+	"fields": { 
+		"codigo": 372020, 
+		"descripcion": "RECICLAMIENTO DE VIDRIO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 307, 
+	"fields": { 
+		"codigo": 372090, 
+		"descripcion": "RECICLAMIENTO DE OTROS DESPERDICIOS Y DESECHOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 308, 
+	"fields": { 
+		"codigo": 401011, 
+		"descripcion": "GENERACIÓN HIDROELÉCTRICA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 309, 
+	"fields": { 
+		"codigo": 401012, 
+		"descripcion": "GENERACIÓN EN CENTRALES TERMOELÉCTRICA DE CICLOS COMBINADOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 310, 
+	"fields": { 
+		"codigo": 401013, 
+		"descripcion": "GENERACIÓN EN OTRAS CENTRALES TERMOELÉCTRICAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 311, 
+	"fields": { 
+		"codigo": 401019, 
+		"descripcion": "GENERACIÓN EN OTRAS CENTRALES N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 312, 
+	"fields": { 
+		"codigo": 401020, 
+		"descripcion": "TRANSMISIÓN DE ENERGÍA ELÉCTRICA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 313, 
+	"fields": { 
+		"codigo": 401030, 
+		"descripcion": "DISTRIBUCIÓN DE ENERGIA ELÉCTRICA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 314, 
+	"fields": { 
+		"codigo": 402000, 
+		"descripcion": "FABRICACIÓN DE GAS; DISTRIBUCIÓN DE COMBUSTIBLES GASEOSOS POR TUBERÍAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 315, 
+	"fields": { 
+		"codigo": 403000, 
+		"descripcion": "SUMINISTRO DE VAPOR Y AGUA CALIENTE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 316, 
+	"fields": { 
+		"codigo": 410000, 
+		"descripcion": "CAPTACIÓN, DEPURACIÓN Y DISTRIBUCIÓN DE AGUA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 317, 
+	"fields": { 
+		"codigo": 451010, 
+		"descripcion": "PREPARACIÓN DEL TERRENO, EXCAVACIONES Y MOVIMIENTOS DE TIERRAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 318, 
+	"fields": { 
+		"codigo": 451020, 
+		"descripcion": "SERVICIOS DE DEMOLICIÓN Y EL DERRIBO DE EDIFICIOS Y OTRAS ESTRUCTURAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 319, 
+	"fields": { 
+		"codigo": 452010, 
+		"descripcion": "CONSTRUCCIÓN DE EDIFICIOS COMPLETOS O DE PARTES DE EDIFICIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 320, 
+	"fields": { 
+		"codigo": 452020, 
+		"descripcion": "OBRAS DE INGENIERÍA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 321, 
+	"fields": { 
+		"codigo": 453000, 
+		"descripcion": "ACONDICIONAMIENTO DE EDIFICIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 322, 
+	"fields": { 
+		"codigo": 454000, 
+		"descripcion": "OBRAS MENORES EN CONSTRUCCIÓN (CONTRATISTAS, ALBANILES, CARPINTEROS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 323, 
+	"fields": { 
+		"codigo": 455000, 
+		"descripcion": "ALQUILER DE EQUIPO DE CONSTRUCCIÓN O DEMOLICIÓN DOTADO DE OPERARIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 324, 
+	"fields": { 
+		"codigo": 501010, 
+		"descripcion": "VENTA AL POR MAYOR DE VEHÍCULOS AUTOMOTORES (IMPORTACIÓN, DISTRIBUCIÓN) EXCEPTO MOTOCICLETAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 325, 
+	"fields": { 
+		"codigo": 501020, 
+		"descripcion": "VENTA O COMPRAVENTA AL POR MENOR DE VEHÍCULOS AUTOMOTORES NUEVOS O USADOS; EXCEPTO MOTOCICLETAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 326, 
+	"fields": { 
+		"codigo": 502010, 
+		"descripcion": "SERVICIO DE LAVADO DE VEHÍCULOS AUTOMOTORES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 327, 
+	"fields": { 
+		"codigo": 502020, 
+		"descripcion": "SERVICIOS DE REMOLQUE DE VEHÍCULOS (GRUAS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 328, 
+	"fields": { 
+		"codigo": 502080, 
+		"descripcion": "MANTENIMIENTO Y REPARACIÓN DE VEHÍCULOS AUTOMOTORES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 329, 
+	"fields": { 
+		"codigo": 503000, 
+		"descripcion": "VENTA DE PARTES, PIEZAS Y ACCESORIOS DE VEHÍCULOS AUTOMOTORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 330, 
+	"fields": { 
+		"codigo": 504010, 
+		"descripcion": "VENTA DE MOTOCICLETAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 331, 
+	"fields": { 
+		"codigo": 504020, 
+		"descripcion": "VENTA DE PIEZAS Y ACCESORIOS DE MOTOCICLETAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 332, 
+	"fields": { 
+		"codigo": 504080, 
+		"descripcion": "REPARACIÓN DE MOTOCICLETAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 499, 
+	"fields": { 
+		"codigo": 651100, 
+		"descripcion": "BANCA CENTRAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 333, 
+	"fields": { 
+		"codigo": 505000, 
+		"descripcion": "VENTA AL POR MENOR DE COMBUSTIBLE PARA AUTOMOTORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 334, 
+	"fields": { 
+		"codigo": 511010, 
+		"descripcion": "CORRETAJE DE PRODUCTOS AGRÍCOLAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 335, 
+	"fields": { 
+		"codigo": 511020, 
+		"descripcion": "CORRETAJE DE GANADO (FERIAS DE GANADO)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 336, 
+	"fields": { 
+		"codigo": 511030, 
+		"descripcion": "OTROS TIPOS DE CORRETAJES O REMATES N.C.P. (NO INCLUYE SERVICIOS DE MARTILLERO)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 337, 
+	"fields": { 
+		"codigo": 512110, 
+		"descripcion": "VENTA AL POR MAYOR DE ANIMALES VIVOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 338, 
+	"fields": { 
+		"codigo": 512120, 
+		"descripcion": "VENTA AL POR MAYOR DE PRODUCTOS PECUARIOS (LANAS, PIELES, CUEROS SIN PROCESAR); EXCEPTO ALIMENTOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 339, 
+	"fields": { 
+		"codigo": 512130, 
+		"descripcion": "VENTA AL POR MAYOR DE MATERIAS PRIMAS AGRÍCOLAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 340, 
+	"fields": { 
+		"codigo": 512210, 
+		"descripcion": "MAYORISTA DE FRUTAS Y VERDURAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 341, 
+	"fields": { 
+		"codigo": 512220, 
+		"descripcion": "MAYORISTAS DE CARNES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 342, 
+	"fields": { 
+		"codigo": 512230, 
+		"descripcion": "MAYORISTAS DE PRODUCTOS DEL MAR (PESCADO, MARISCOS, ALGAS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 343, 
+	"fields": { 
+		"codigo": 512240, 
+		"descripcion": "MAYORISTAS DE VINOS Y BEBIDAS ALCOHÓLICAS Y DE FANTASÍA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 344, 
+	"fields": { 
+		"codigo": 512250, 
+		"descripcion": "VENTA AL POR MAYOR DE CONFITES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 345, 
+	"fields": { 
+		"codigo": 512260, 
+		"descripcion": "VENTA AL POR MAYOR DE TABACO Y PRODUCTOS DERIVADOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 346, 
+	"fields": { 
+		"codigo": 512290, 
+		"descripcion": "VENTA AL POR MAYOR DE HUEVOS, LECHE, ABARROTES, Y OTROS ALIMENTOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 347, 
+	"fields": { 
+		"codigo": 513100, 
+		"descripcion": "VENTA AL POR MAYOR DE PRODUCTOS TEXTILES, PRENDAS DE VESTIR Y CALZADO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 348, 
+	"fields": { 
+		"codigo": 513910, 
+		"descripcion": "VENTA AL POR MAYOR DE MUEBLES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 349, 
+	"fields": { 
+		"codigo": 513920, 
+		"descripcion": "VENTA AL POR MAYOR DE ARTÍCULOS ELÉCTRICOS Y ELECTRÓNICOS PARA EL HOGAR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 350, 
+	"fields": { 
+		"codigo": 513930, 
+		"descripcion": "VENTA AL POR MAYOR DE ARTÍCULOS DE PERFUMERÍA, COSMÉTICOS, JABONES Y PRODUCTOS DE LIMPIEZA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 351, 
+	"fields": { 
+		"codigo": 513940, 
+		"descripcion": "VENTA AL POR MAYOR DE PAPEL Y CARTÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 352, 
+	"fields": { 
+		"codigo": 513951, 
+		"descripcion": "VENTA AL POR MAYOR DE LIBROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 353, 
+	"fields": { 
+		"codigo": 513952, 
+		"descripcion": "VENTA AL POR MAYOR DE REVISTAS Y PERIÓDICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 354, 
+	"fields": { 
+		"codigo": 513960, 
+		"descripcion": "VENTA AL POR MAYOR DE PRODUCTOS FARMACEUTICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 355, 
+	"fields": { 
+		"codigo": 513970, 
+		"descripcion": "VENTA AL POR MAYOR DE INSTRUMENTOS CIENTÍFICOS Y QUIRÚRGICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 356, 
+	"fields": { 
+		"codigo": 513990, 
+		"descripcion": "VENTA AL POR MAYOR DE OTROS ENSERES DOMÉSTICOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 357, 
+	"fields": { 
+		"codigo": 514110, 
+		"descripcion": "VENTA AL POR MAYOR DE COMBUSTIBLES LÍQUIDOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 358, 
+	"fields": { 
+		"codigo": 514120, 
+		"descripcion": "VENTA AL POR MAYOR DE COMBUSTIBLES SÓLIDOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 359, 
+	"fields": { 
+		"codigo": 514130, 
+		"descripcion": "VENTA AL POR MAYOR DE COMBUSTIBLES GASEOSOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 360, 
+	"fields": { 
+		"codigo": 514140, 
+		"descripcion": "VENTA AL POR MAYOR DE PRODUCTOS CONEXOS A LOS COMBUSTIBLES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 361, 
+	"fields": { 
+		"codigo": 514200, 
+		"descripcion": "VENTA AL POR MAYOR DE METALES Y MINERALES METALÍFEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 362, 
+	"fields": { 
+		"codigo": 514310, 
+		"descripcion": "VENTA AL POR MAYOR DE MADERA NO TRABAJADA Y PRODUCTOS RESULTANTES DE SU ELABORACIÓN PRIMARIA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 363, 
+	"fields": { 
+		"codigo": 514320, 
+		"descripcion": "VENTA AL POR MAYOR DE MATERIALES DE CONSTRUCCIÓN, ARTÍCULOS DE FERRETERÍA Y RELACIONADOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 364, 
+	"fields": { 
+		"codigo": 514910, 
+		"descripcion": "VENTA AL POR MAYOR DE PRODUCTOS QUÍMICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 365, 
+	"fields": { 
+		"codigo": 514920, 
+		"descripcion": "VENTA AL POR MAYOR DE DESECHOS METÁLICOS (CHATARRA)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 366, 
+	"fields": { 
+		"codigo": 514930, 
+		"descripcion": "VENTA AL POR MAYOR DE INSUMOS VETERINARIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 367, 
+	"fields": { 
+		"codigo": 514990, 
+		"descripcion": "VENTA AL POR MAYOR DE OTROS PRODUCTOS INTERMEDIOS, DESPERDICIOS Y DESECHOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 368, 
+	"fields": { 
+		"codigo": 515001, 
+		"descripcion": "VENTA AL POR MAYOR DE MAQUINARIA AGRÍCOLA Y FORESTAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 369, 
+	"fields": { 
+		"codigo": 515002, 
+		"descripcion": "VENTA AL POR MAYOR DE MAQUINARIA METALÚRGICA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 370, 
+	"fields": { 
+		"codigo": 515003, 
+		"descripcion": "VENTA AL POR MAYOR DE MAQUINARIA PARA LA MINERÍA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 371, 
+	"fields": { 
+		"codigo": 515004, 
+		"descripcion": "VENTA AL POR MAYOR DE MAQUINARIA PARA LA CONSTRUCCIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 372, 
+	"fields": { 
+		"codigo": 515005, 
+		"descripcion": "VENTA AL POR MAYOR DE MAQUINARIA PARA LA ELABORACIÓN DE ALIMENTOS, BEBIDAS Y TABACO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 373, 
+	"fields": { 
+		"codigo": 515006, 
+		"descripcion": "VENTA AL POR MAYOR DE MAQUINARIA PARA TEXTILES Y CUEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 374, 
+	"fields": { 
+		"codigo": 515007, 
+		"descripcion": "VENTA AL POR MAYOR DE MÁQUINAS Y EQUIPOS DE OFICINA; INCLUYE MATERIALES CONEXOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 375, 
+	"fields": { 
+		"codigo": 515008, 
+		"descripcion": "VENTA AL POR MAYOR DE MAQUINARIA Y EQUIPO DE TRANSPORTE EXCEPTO VEHÍCULOS AUTOMOTORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 376, 
+	"fields": { 
+		"codigo": 515009, 
+		"descripcion": "VENTA AL POR MAYOR DE MAQUINARIA, HERRAMIENTAS, EQUIPO Y MATERIALES N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 377, 
+	"fields": { 
+		"codigo": 519000, 
+		"descripcion": "VENTA AL POR MAYOR DE OTROS PRODUCTOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 378, 
+	"fields": { 
+		"codigo": 521111, 
+		"descripcion": "GRANDES ESTABLECIMIENTOS (VENTA DE ALIMENTOS); HIPERMERCADOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 379, 
+	"fields": { 
+		"codigo": 521112, 
+		"descripcion": "ALMACENES MEDIANOS (VENTA DE ALIMENTOS); SUPERMERCADOS, MINIMARKETS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 380, 
+	"fields": { 
+		"codigo": 521120, 
+		"descripcion": "ALMACENES PEQUENOS (VENTA DE ALIMENTOS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 381, 
+	"fields": { 
+		"codigo": 521200, 
+		"descripcion": "GRANDES TIENDAS - PRODUCTOS DE FERRETERÍA Y PARA EL HOGAR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 382, 
+	"fields": { 
+		"codigo": 521300, 
+		"descripcion": "GRANDES TIENDAS - VESTUARIO Y PRODUCTOS PARA EL HOGAR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 383, 
+	"fields": { 
+		"codigo": 521900, 
+		"descripcion": "VENTA AL POR MENOR DE OTROS PRODUCTOS EN PEQUENOS ALMACENES NO ESPECIALIZADOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 384, 
+	"fields": { 
+		"codigo": 522010, 
+		"descripcion": "VENTA AL POR MENOR DE BEBIDAS Y LICORES (BOTILLERÍAS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 385, 
+	"fields": { 
+		"codigo": 522020, 
+		"descripcion": "VENTA AL POR MENOR DE CARNES (ROJAS, BLANCAS, OTRAS) PRODUCTOS CÁRNICOS Y SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 386, 
+	"fields": { 
+		"codigo": 522030, 
+		"descripcion": "COMERCIO AL POR MENOR DE VERDURAS Y FRUTAS (VERDULERÍA)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 387, 
+	"fields": { 
+		"codigo": 522040, 
+		"descripcion": "VENTA AL POR MENOR DE PESCADOS, MARISCOS Y PRODUCTOS CONEXOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 388, 
+	"fields": { 
+		"codigo": 522050, 
+		"descripcion": "VENTA AL POR MENOR DE PRODUCTOS DE PANADERÍA Y PASTELERÍA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 389, 
+	"fields": { 
+		"codigo": 522060, 
+		"descripcion": "VENTA AL POR MENOR DE ALIMENTOS PARA MASCOTAS Y ANIMALES EN GENERAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 390, 
+	"fields": { 
+		"codigo": 522070, 
+		"descripcion": "VENTA AL POR MENOR DE AVES Y HUEVOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 391, 
+	"fields": { 
+		"codigo": 522090, 
+		"descripcion": "VENTA AL POR MENOR DE PRODUCTOS DE CONFITERÍAS, CIGARRILLOS, Y OTROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 392, 
+	"fields": { 
+		"codigo": 523111, 
+		"descripcion": "FARMACIAS - PERTENECIENTES A CADENA DE ESTABLECIMIENTOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 393, 
+	"fields": { 
+		"codigo": 523112, 
+		"descripcion": "FARMACIAS INDEPENDIENTES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 394, 
+	"fields": { 
+		"codigo": 523120, 
+		"descripcion": "VENTA AL POR MENOR DE PRODUCTOS MEDICINALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 395, 
+	"fields": { 
+		"codigo": 523130, 
+		"descripcion": "VENTA AL POR MENOR DE ARTÍCULOS ORTOPÉDICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 396, 
+	"fields": { 
+		"codigo": 523140, 
+		"descripcion": "VENTA AL POR MENOR DE ARTÍCULOS DE TOCADOR Y COSMÉTICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 397, 
+	"fields": { 
+		"codigo": 523210, 
+		"descripcion": "VENTA AL POR MENOR DE CALZADO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 398, 
+	"fields": { 
+		"codigo": 523220, 
+		"descripcion": "VENTA AL POR MENOR DE PRENDAS DE VESTIR EN GENERAL, INCLUYE ACCESORIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 399, 
+	"fields": { 
+		"codigo": 523230, 
+		"descripcion": "VENTA AL POR MENOR DE LANAS, HILOS Y SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 400, 
+	"fields": { 
+		"codigo": 523240, 
+		"descripcion": "VENTA AL POR MENOR DE MALETERÍAS, TALABARTERÍAS Y ARTÍCULOS DE CUERO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 401, 
+	"fields": { 
+		"codigo": 523250, 
+		"descripcion": "VENTA AL POR MENOR DE ROPA INTERIOR Y PRENDAS DE USO PERSONAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 402, 
+	"fields": { 
+		"codigo": 523290, 
+		"descripcion": "COMERCIO AL POR MENOR DE TEXTILES PARA EL HOGAR Y OTROS PRODUCTOS TEXTILES N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 403, 
+	"fields": { 
+		"codigo": 523310, 
+		"descripcion": "VENTA AL POR MENOR DE ARTÍCULOS ELECTRODOMÉSTICOS Y ELECTRÓNICOS PARA EL HOGAR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 404, 
+	"fields": { 
+		"codigo": 523320, 
+		"descripcion": "VENTA AL POR MENOR DE CRISTALES, LOZAS, PORCELANA, MENAJE (CRISTALERÍAS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 405, 
+	"fields": { 
+		"codigo": 523330, 
+		"descripcion": "VENTA AL POR MENOR DE MUEBLES; INCLUYE COLCHONES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 406, 
+	"fields": { 
+		"codigo": 523340, 
+		"descripcion": "VENTA AL POR MENOR DE INSTRUMENTOS MUSICALES (CASA DE MÚSICA)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 407, 
+	"fields": { 
+		"codigo": 523350, 
+		"descripcion": "VENTA AL POR MENOR DE DISCOS, CASSETTES, DVD Y VIDEOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 408, 
+	"fields": { 
+		"codigo": 523360, 
+		"descripcion": "VENTA AL POR MENOR DE LÁMPARAS, APLIQUÉS Y SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 409, 
+	"fields": { 
+		"codigo": 523390, 
+		"descripcion": "VENTA AL POR MENOR DE APARATOS, ARTÍCULOS, EQUIPO DE USO DOMÉSTICO N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 410, 
+	"fields": { 
+		"codigo": 523410, 
+		"descripcion": "VENTA AL POR MENOR DE ARTÍCULOS DE FERRETERÍA Y MATERIALES DE CONSTRUCCIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 411, 
+	"fields": { 
+		"codigo": 523420, 
+		"descripcion": "VENTA AL POR MENOR DE PINTURAS, BARNICES Y LACAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 412, 
+	"fields": { 
+		"codigo": 523430, 
+		"descripcion": "COMERCIO AL POR MENOR DE PRODUCTOS DE VIDRIO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 413, 
+	"fields": { 
+		"codigo": 523911, 
+		"descripcion": "COMERCIO AL POR MENOR DE ARTÍCULOS FOTOGRÁFICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 414, 
+	"fields": { 
+		"codigo": 523912, 
+		"descripcion": "COMERCIO AL POR MENOR DE ARTÍCULOS ÓPTICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 415, 
+	"fields": { 
+		"codigo": 523921, 
+		"descripcion": "COMERCIO POR MENOR DE JUGUETES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 416, 
+	"fields": { 
+		"codigo": 523922, 
+		"descripcion": "COMERCIO AL POR MENOR DE LIBROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 417, 
+	"fields": { 
+		"codigo": 523923, 
+		"descripcion": "COMERCIO AL POR MENOR DE REVISTAS Y DIARIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 418, 
+	"fields": { 
+		"codigo": 523924, 
+		"descripcion": "COMERCIO DE ARTÍCULOS DE SUMINISTROS DE OFICINAS Y ARTÍCULOS DE ESCRITORIO EN GENERAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 419, 
+	"fields": { 
+		"codigo": 523930, 
+		"descripcion": "COMERCIO AL POR MENOR DE COMPUTADORAS, SOFTWARES Y SUMINISTROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 420, 
+	"fields": { 
+		"codigo": 523941, 
+		"descripcion": "COMERCIO AL POR MENOR DE ARMERÍAS, ARTÍCULOS DE CAZA Y PESCA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 421, 
+	"fields": { 
+		"codigo": 523942, 
+		"descripcion": "COMERCIO AL POR MENOR DE BICICLETAS Y SUS REPUESTOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 422, 
+	"fields": { 
+		"codigo": 523943, 
+		"descripcion": "COMERCIO AL POR MENOR DE ARTÍCULOS DEPORTIVOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 423, 
+	"fields": { 
+		"codigo": 523950, 
+		"descripcion": "COMERCIO AL POR MENOR DE ARTÍCULOS DE JOYERÍA, FANTASÍAS Y RELOJERÍAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 424, 
+	"fields": { 
+		"codigo": 523961, 
+		"descripcion": "VENTA AL POR MENOR DE GAS LICUADO EN BOMBONAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 425, 
+	"fields": { 
+		"codigo": 523969, 
+		"descripcion": "VENTA AL POR MENOR DE CARBÓN, LENA Y OTROS COMBUSTIBLES DE USO DOMÉSTICO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 426, 
+	"fields": { 
+		"codigo": 523991, 
+		"descripcion": "COMERCIO AL POR MENOR DE ARTÍCULOS TÍPICOS (ARTESANÍAS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 427, 
+	"fields": { 
+		"codigo": 523992, 
+		"descripcion": "VENTA AL POR MENOR DE FLORES, PLANTAS, ÁRBOLES, SEMILLAS, ABONOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 428, 
+	"fields": { 
+		"codigo": 523993, 
+		"descripcion": "VENTA AL POR MENOR DE MASCOTAS Y ACCESORIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 429, 
+	"fields": { 
+		"codigo": 523999, 
+		"descripcion": "VENTAS AL POR MENOR DE OTROS PRODUCTOS EN ALMACENES ESPECIALIZADOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 430, 
+	"fields": { 
+		"codigo": 524010, 
+		"descripcion": "COMERCIO AL POR MENOR DE ANTIGUEDADES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 431, 
+	"fields": { 
+		"codigo": 524020, 
+		"descripcion": "COMERCIO AL POR MENOR DE ROPA USADA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 432, 
+	"fields": { 
+		"codigo": 524090, 
+		"descripcion": "COMERCIO AL POR MENOR DE ARTÍCULOS Y ARTEFACTOS USADOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 433, 
+	"fields": { 
+		"codigo": 525110, 
+		"descripcion": "VENTA AL POR MENOR EN EMPRESAS DE VENTA A DISTANCIA POR CORREO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 434, 
+	"fields": { 
+		"codigo": 525120, 
+		"descripcion": "VENTA AL POR MENOR EN EMPRESAS DE VENTA A DISTANCIA VÍA TELEFÓNICA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 435, 
+	"fields": { 
+		"codigo": 525130, 
+		"descripcion": "VENTA AL POR MENOR EN EMPRESAS DE VENTA A DISTANCIA VÍA INTERNET; COMERCIO ELECTRÓNICO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 436, 
+	"fields": { 
+		"codigo": 525200, 
+		"descripcion": "VENTA AL POR MENOR EN PUESTOS DE VENTA Y MERCADOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 437, 
+	"fields": { 
+		"codigo": 525911, 
+		"descripcion": "VENTA AL POR MENOR REALIZADA POR INDEPENDIENTES EN TRANSPORTE PÚBLICO (LEY 20.388)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 438, 
+	"fields": { 
+		"codigo": 525919, 
+		"descripcion": "VENTA AL POR MENOR NO REALIZADA EN ALMACENES DE PRODUCTOS PROPIOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 439, 
+	"fields": { 
+		"codigo": 525920, 
+		"descripcion": "MÁQUINAS EXPENDEDORAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 440, 
+	"fields": { 
+		"codigo": 525930, 
+		"descripcion": "VENTA AL POR MENOR A CAMBIO DE UNA RETRIBUCIÓN O POR CONTRATA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 441, 
+	"fields": { 
+		"codigo": 525990, 
+		"descripcion": "OTROS TIPOS DE VENTA AL POR MENOR NO REALIZADA EN ALMACENES N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 442, 
+	"fields": { 
+		"codigo": 526010, 
+		"descripcion": "REPARACIÓN DE CALZADO Y OTROS ARTÍCULOS DE CUERO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 443, 
+	"fields": { 
+		"codigo": 526020, 
+		"descripcion": "REPARACIONES ELÉCTRICAS Y ELECTRÓNICAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 444, 
+	"fields": { 
+		"codigo": 526030, 
+		"descripcion": "REPARACIÓN DE RELOJES Y JOYAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 445, 
+	"fields": { 
+		"codigo": 526090, 
+		"descripcion": "OTRAS REPARACIONES DE EFECTOS PERSONALES Y ENSERES DOMÉSTICOS N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 446, 
+	"fields": { 
+		"codigo": 551010, 
+		"descripcion": "HOTELES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 447, 
+	"fields": { 
+		"codigo": 551020, 
+		"descripcion": "MOTELES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 448, 
+	"fields": { 
+		"codigo": 551030, 
+		"descripcion": "RESIDENCIALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 449, 
+	"fields": { 
+		"codigo": 551090, 
+		"descripcion": "OTROS TIPOS DE HOSPEDAJE TEMPORAL COMO CAMPING, ALBERGUES, POSADAS, REFUGIOS Y SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 450, 
+	"fields": { 
+		"codigo": 552010, 
+		"descripcion": "RESTAURANTES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 451, 
+	"fields": { 
+		"codigo": 552020, 
+		"descripcion": "ESTABLECIMIENTOS DE COMIDA RÁPIDA (BARES, FUENTES DE SODA, GELATERÍAS, PIZZERÍAS Y SIMILARES)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 452, 
+	"fields": { 
+		"codigo": 552030, 
+		"descripcion": "CASINOS Y CLUBES SOCIALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 453, 
+	"fields": { 
+		"codigo": 552040, 
+		"descripcion": "SERVICIOS DE COMIDA PREPARADA EN FORMA INDUSTRIAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 454, 
+	"fields": { 
+		"codigo": 552050, 
+		"descripcion": "SERVICIOS DE BANQUETES, BODAS Y OTRAS CELEBRACIONES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 455, 
+	"fields": { 
+		"codigo": 552090, 
+		"descripcion": "SERVICIOS DE OTROS ESTABLECIMIENTOS QUE EXPENDEN COMIDAS Y BEBIDAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 456, 
+	"fields": { 
+		"codigo": 601001, 
+		"descripcion": "TRANSPORTE INTERURBANO DE PASAJEROS POR FERROCARRILES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 457, 
+	"fields": { 
+		"codigo": 601002, 
+		"descripcion": "TRANSPORTE DE CARGA POR FERROCARRILES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 458, 
+	"fields": { 
+		"codigo": 602110, 
+		"descripcion": "TRANSPORTE URBANO DE PASAJEROS VÍA FERROCARRIL (INCLUYE METRO)",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 459, 
+	"fields": { 
+		"codigo": 602120, 
+		"descripcion": "TRANSPORTE URBANO DE PASAJEROS VÍA AUTOBUS (LOCOMOCIÓN COLECTIVA)",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 460, 
+	"fields": { 
+		"codigo": 602130, 
+		"descripcion": "TRANSPORTE INTERURBANO DE PASAJEROS VÍA AUTOBUS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 461, 
+	"fields": { 
+		"codigo": 602140, 
+		"descripcion": "TRANSPORTE URBANO DE PASAJEROS VÍA TAXI COLECTIVO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 462, 
+	"fields": { 
+		"codigo": 602150, 
+		"descripcion": "SERVICIOS DE TRANSPORTE ESCOLAR",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 463, 
+	"fields": { 
+		"codigo": 602160, 
+		"descripcion": "SERVICIOS DE TRANSPORTE DE TRABAJADORES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 464, 
+	"fields": { 
+		"codigo": 602190, 
+		"descripcion": "OTROS TIPOS DE TRANSPORTE REGULAR DE PASAJEROS POR VÍA TERRESTRE N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 465, 
+	"fields": { 
+		"codigo": 602210, 
+		"descripcion": "TRANSPORTES POR TAXIS LIBRES Y RADIOTAXIS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 466, 
+	"fields": { 
+		"codigo": 602220, 
+		"descripcion": "SERVICIOS DE TRANSPORTE A TURISTAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 467, 
+	"fields": { 
+		"codigo": 602230, 
+		"descripcion": "TRANSPORTE DE PASAJEROS EN VEHÍCULOS DE TRACCIÓN HUMANA Y ANIMAL",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 468, 
+	"fields": { 
+		"codigo": 602290, 
+		"descripcion": "OTROS TIPOS DE TRANSPORTE NO REGULAR DE PASAJEROS N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 469, 
+	"fields": { 
+		"codigo": 602300, 
+		"descripcion": "TRANSPORTE DE CARGA POR CARRETERA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 470, 
+	"fields": { 
+		"codigo": 603000, 
+		"descripcion": "TRANSPORTE POR TUBERÍAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 471, 
+	"fields": { 
+		"codigo": 611001, 
+		"descripcion": "TRANSPORTE MARÍTIMO Y DE CABOTAJE DE PASAJEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 472, 
+	"fields": { 
+		"codigo": 611002, 
+		"descripcion": "TRANSPORTE MARÍTIMO Y DE CABOTAJE DE CARGA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 473, 
+	"fields": { 
+		"codigo": 612001, 
+		"descripcion": "TRANSPORTE DE PASAJEROS POR VÍAS DE NAVEGACIÓN INTERIORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 474, 
+	"fields": { 
+		"codigo": 612002, 
+		"descripcion": "TRANSPORTE DE CARGA POR VÍAS DE NAVEGACIÓN INTERIORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 475, 
+	"fields": { 
+		"codigo": 621010, 
+		"descripcion": "TRANSPORTE REGULAR POR VÍA AÉREA DE PASAJEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 476, 
+	"fields": { 
+		"codigo": 621020, 
+		"descripcion": "TRANSPORTE REGULAR POR VÍA AÉREA DE CARGA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 477, 
+	"fields": { 
+		"codigo": 622001, 
+		"descripcion": "TRANSPORTE NO REGULAR POR VÍA AÉREA DE PASAJEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 478, 
+	"fields": { 
+		"codigo": 622002, 
+		"descripcion": "TRANSPORTE NO REGULAR POR VÍA AÉREA DE CARGA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 479, 
+	"fields": { 
+		"codigo": 630100, 
+		"descripcion": "MANIPULACIÓN DE LA CARGA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 480, 
+	"fields": { 
+		"codigo": 630200, 
+		"descripcion": "SERVICIOS DE ALMACENAMIENTO Y DEPÓSITO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 481, 
+	"fields": { 
+		"codigo": 630310, 
+		"descripcion": "TERMINALES TERRESTRES DE PASAJEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 482, 
+	"fields": { 
+		"codigo": 630320, 
+		"descripcion": "ESTACIONAMIENTO DE VEHÍCULOS Y PARQUÍMETROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 483, 
+	"fields": { 
+		"codigo": 630330, 
+		"descripcion": "PUERTOS Y AEROPUERTOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 484, 
+	"fields": { 
+		"codigo": 630340, 
+		"descripcion": "SERVICIOS PRESTADOS POR CONCESIONARIOS DE CARRETERAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 485, 
+	"fields": { 
+		"codigo": 630390, 
+		"descripcion": "OTRAS ACTIVIDADES CONEXAS AL TRANSPORTE N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 486, 
+	"fields": { 
+		"codigo": 630400, 
+		"descripcion": "AGENCIAS Y ORGANIZADORES DE VIAJES; ACTIVIDADES DE ASISTENCIA A TURISTAS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 487, 
+	"fields": { 
+		"codigo": 630910, 
+		"descripcion": "AGENCIAS DE ADUANAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 488, 
+	"fields": { 
+		"codigo": 630920, 
+		"descripcion": "AGENCIAS DE TRANSPORTE",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 489, 
+	"fields": { 
+		"codigo": 641100, 
+		"descripcion": "ACTIVIDADES POSTALES NACIONALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 490, 
+	"fields": { 
+		"codigo": 641200, 
+		"descripcion": "ACTIVIDADES DE CORREO DISTINTAS DE LAS ACTIVIDADES POSTALES NACIONALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 491, 
+	"fields": { 
+		"codigo": 642010, 
+		"descripcion": "SERVICIOS DE TELEFONÍA FIJA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 492, 
+	"fields": { 
+		"codigo": 642020, 
+		"descripcion": "SERVICIOS DE TELEFONÍA MÓVIL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 493, 
+	"fields": { 
+		"codigo": 642030, 
+		"descripcion": "PORTADORES TELEFÓNICOS (LARGA DISTANCIA NACIONAL E INTERNACIONAL)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 494, 
+	"fields": { 
+		"codigo": 642040, 
+		"descripcion": "SERVICIOS DE TELEVISIÓN NO ABIERTA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 495, 
+	"fields": { 
+		"codigo": 642050, 
+		"descripcion": "PROVEEDORES DE INTERNET", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 496, 
+	"fields": { 
+		"codigo": 642061, 
+		"descripcion": "CENTROS DE LLAMADOS; INCLUYE ENVÍO DE FAX", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 497, 
+	"fields": { 
+		"codigo": 642062, 
+		"descripcion": "CENTROS DE ACCESO A INTERNET", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 498, 
+	"fields": { 
+		"codigo": 642090, 
+		"descripcion": "OTROS SERVICIOS DE TELECOMUNICACIONES N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 500, 
+	"fields": { 
+		"codigo": 651910, 
+		"descripcion": "BANCOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 501, 
+	"fields": { 
+		"codigo": 651920, 
+		"descripcion": "FINANCIERAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 502, 
+	"fields": { 
+		"codigo": 651990, 
+		"descripcion": "OTROS TIPOS DE INTERMEDIACIÓN MONETARIA N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 503, 
+	"fields": { 
+		"codigo": 659110, 
+		"descripcion": "LEASING FINANCIERO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 504, 
+	"fields": { 
+		"codigo": 659120, 
+		"descripcion": "LEASING HABITACIONAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 505, 
+	"fields": { 
+		"codigo": 659210, 
+		"descripcion": "FINANCIAMIENTO DEL FOMENTO DE LA PRODUCCIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 506, 
+	"fields": { 
+		"codigo": 659220, 
+		"descripcion": "ACTIVIDADES DE CRÉDITO PRENDARIO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 507, 
+	"fields": { 
+		"codigo": 659231, 
+		"descripcion": "FACTORING", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 508, 
+	"fields": { 
+		"codigo": 659232, 
+		"descripcion": "SECURITIZADORAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 509, 
+	"fields": { 
+		"codigo": 659290, 
+		"descripcion": "OTROS INSTITUCIONES FINANCIERAS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 510, 
+	"fields": { 
+		"codigo": 659911, 
+		"descripcion": "ADMINISTRADORAS DE FONDOS DE INVERSIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 511, 
+	"fields": { 
+		"codigo": 659912, 
+		"descripcion": "ADMINISTRADORAS DE FONDOS MUTUOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 512, 
+	"fields": { 
+		"codigo": 659913, 
+		"descripcion": "ADMINISTRADORAS DE FICES (FONDOS DE INVERSIÓN DE CAPITAL EXTRANJERO)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 513, 
+	"fields": { 
+		"codigo": 659914, 
+		"descripcion": "ADMINISTRADORAS DE FONDOS PARA LA VIVIENDA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 514, 
+	"fields": { 
+		"codigo": 659915, 
+		"descripcion": "ADMINISTRADORAS DE FONDOS PARA OTROS FINES Y/O GENERALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 515, 
+	"fields": { 
+		"codigo": 659920, 
+		"descripcion": "SOCIEDADES DE INVERSIÓN Y RENTISTAS DE CAPITALES MOBILIARIOS EN GENERAL",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 516, 
+	"fields": { 
+		"codigo": 660101, 
+		"descripcion": "PLANES DE SEGURO DE VIDA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 517, 
+	"fields": { 
+		"codigo": 660102, 
+		"descripcion": "PLANES DE REASEGUROS DE VIDA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 518, 
+	"fields": { 
+		"codigo": 660200, 
+		"descripcion": "ADMINISTRADORAS DE FONDOS DE PENSIONES (AFP)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 519, 
+	"fields": { 
+		"codigo": 660301, 
+		"descripcion": "PLANES DE SEGUROS GENERALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 520, 
+	"fields": { 
+		"codigo": 660302, 
+		"descripcion": "PLANES DE REASEGUROS GENERALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 521, 
+	"fields": { 
+		"codigo": 660400, 
+		"descripcion": "ISAPRES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 522, 
+	"fields": { 
+		"codigo": 671100, 
+		"descripcion": "ADMINISTRACIÓN DE MERCADOS FINANCIEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 523, 
+	"fields": { 
+		"codigo": 671210, 
+		"descripcion": "CORREDORES DE BOLSA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 524, 
+	"fields": { 
+		"codigo": 671220, 
+		"descripcion": "AGENTES DE VALORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 525, 
+	"fields": { 
+		"codigo": 671290, 
+		"descripcion": "OTROS SERVICIOS DE CORRETAJE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 526, 
+	"fields": { 
+		"codigo": 671910, 
+		"descripcion": "CÁMARA DE COMPENSACIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 527, 
+	"fields": { 
+		"codigo": 671921, 
+		"descripcion": "ADMINISTRADORA DE TARJETAS DE CRÉDITO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 528, 
+	"fields": { 
+		"codigo": 671929, 
+		"descripcion": "EMPRESAS DE ASESORÍA, CONSULTORÍA FINANCIERA Y DE APOYO AL GIRO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 529, 
+	"fields": { 
+		"codigo": 671930, 
+		"descripcion": "CLASIFICADORES DE RIESGOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 530, 
+	"fields": { 
+		"codigo": 671940, 
+		"descripcion": "CASAS DE CAMBIO Y OPERADORES DE DIVISA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 531, 
+	"fields": { 
+		"codigo": 671990, 
+		"descripcion": "OTRAS ACTIVIDADES AUXILIARES DE LA INTERMEDIACIÓN FINANCIERA N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 532, 
+	"fields": { 
+		"codigo": 672010, 
+		"descripcion": "CORREDORES DE SEGUROS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 533, 
+	"fields": { 
+		"codigo": 672020, 
+		"descripcion": "AGENTES Y LIQUIDADORES DE SEGUROS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 534, 
+	"fields": { 
+		"codigo": 672090, 
+		"descripcion": "OTRAS ACTIVIDADES AUXILIARES DE LA FINANCIACIÓN DE PLANES DE SEGUROS Y DE PENSIONES N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 535, 
+	"fields": { 
+		"codigo": 701001, 
+		"descripcion": "ARRIENDO DE INMUEBLES AMOBLADOS O CON EQUIPOS Y MAQUINARIAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 536, 
+	"fields": { 
+		"codigo": 701009, 
+		"descripcion": "COMPRA, VENTA Y ALQUILER (EXCEPTO AMOBLADOS) DE INMUEBLES PROPIOS O ARRENDADOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 537, 
+	"fields": { 
+		"codigo": 702000, 
+		"descripcion": "CORREDORES DE PROPIEDADES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 538, 
+	"fields": { 
+		"codigo": 711101, 
+		"descripcion": "ALQUILER DE AUTOS Y CAMIONETAS SIN CHOFER", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 539, 
+	"fields": { 
+		"codigo": 711102, 
+		"descripcion": "ALQUILER DE OTROS EQUIPOS DE TRANSPORTE POR VÍA TERRESTRE SIN OPERARIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 540, 
+	"fields": { 
+		"codigo": 711200, 
+		"descripcion": "ALQUILER DE TRANSPORTE POR VÍA ACUÁTICA SIN TRIPULACIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 541, 
+	"fields": { 
+		"codigo": 711300, 
+		"descripcion": "ALQUILER DE EQUIPO DE TRANSPORTE POR VÍA AÉREA SIN TRIPULANTES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 542, 
+	"fields": { 
+		"codigo": 712100, 
+		"descripcion": "ALQUILER DE MAQUINARIA Y EQUIPO AGROPECUARIO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 543, 
+	"fields": { 
+		"codigo": 712200, 
+		"descripcion": "ALQUILER DE MAQUINARIA Y EQUIPO DE CONSTRUCCIÓN E INGENIERÍA CIVIL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 544, 
+	"fields": { 
+		"codigo": 712300, 
+		"descripcion": "ALQUILER DE MAQUINARIA Y EQUIPO DE OFICINA (SIN OPERARIOS NI SERVICIO ADMINISTRATIVO)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 545, 
+	"fields": { 
+		"codigo": 712900, 
+		"descripcion": "ALQUILER DE OTROS TIPOS DE MAQUINARIAS Y EQUIPOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 546, 
+	"fields": { 
+		"codigo": 713010, 
+		"descripcion": "ALQUILER DE BICICLETAS Y ARTÍCULOS PARA DEPORTES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 547, 
+	"fields": { 
+		"codigo": 713020, 
+		"descripcion": "ARRIENDO DE VIDEOS, JUEGOS DE VIDEO, Y EQUIPOS REPRODUCTORES DE VIDEO, MÚSICA Y SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 548, 
+	"fields": { 
+		"codigo": 713030, 
+		"descripcion": "ALQUILER DE MOBILIARIO PARA EVENTOS (SILLAS, MESAS, MESONES, VAJILLAS, TOLDOS Y RELACIONADOS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 549, 
+	"fields": { 
+		"codigo": 713090, 
+		"descripcion": "ALQUILER DE OTROS EFECTOS PERSONALES Y ENSERES DOMÉSTICOS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 550, 
+	"fields": { 
+		"codigo": 722000, 
+		"descripcion": "ASESORES Y CONSULTORES EN INFORMÁTICA (SOFTWARE)",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 551, 
+	"fields": { 
+		"codigo": 724000, 
+		"descripcion": "PROCESAMIENTO DE DATOS Y ACTIVIDADES RELACIONADAS CON BASES DE DATOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 552, 
+	"fields": { 
+		"codigo": 726000, 
+		"descripcion": "EMPRESAS DE SERVICIOS INTEGRALES DE INFORMÁTICA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 553, 
+	"fields": { 
+		"codigo": 725000, 
+		"descripcion": "MANTENIMIENTO Y REPARACIÓN DE MAQUINARIA DE OFICINA, CONTABILIDAD E INFORMÁTICA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 554, 
+	"fields": { 
+		"codigo": 731000, 
+		"descripcion": "INVESTIGACIONES Y DESARROLLO EXPERIMENTAL EN EL CAMPO DE LAS CIENCIAS NATURALES Y LA INGENIERÍA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 555, 
+	"fields": { 
+		"codigo": 732000, 
+		"descripcion": "INVESTIGACIONES Y DESARROLLO EXPERIMENTAL EN EL CAMPO DE LAS CIENCIAS SOCIALES Y LAS HUMANIDADES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 556, 
+	"fields": { 
+		"codigo": 741110, 
+		"descripcion": "SERVICIOS JURÍDICOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 557, 
+	"fields": { 
+		"codigo": 741120, 
+		"descripcion": "SERVICIO NOTARIAL",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 558, 
+	"fields": { 
+		"codigo": 741130, 
+		"descripcion": "CONSERVADOR DE BIENES RAICES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 559, 
+	"fields": { 
+		"codigo": 741140, 
+		"descripcion": "RECEPTORES JUDICIALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 560, 
+	"fields": { 
+		"codigo": 741190, 
+		"descripcion": "ARBITRAJES, SÍNDICOS, PERITOS Y OTROS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 561, 
+	"fields": { 
+		"codigo": 741200, 
+		"descripcion": "ACTIVIDADES DE CONTABILIDAD, TENEDURÍA DE LIBROS Y AUDITORÍA; ASESORAMIENTOS TRIBUTARIOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 562, 
+	"fields": { 
+		"codigo": 741300, 
+		"descripcion": "INVESTIGACIÓN DE MERCADOS Y REALIZACIÓN DE ENCUESTAS DE OPINIÓN PÚBLICA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 563, 
+	"fields": { 
+		"codigo": 741400, 
+		"descripcion": "ACTIVIDADES DE ASESORAMIENTO EMPRESARIAL Y EN MATERIA DE GESTIÓN",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 564, 
+	"fields": { 
+		"codigo": 742110, 
+		"descripcion": "SERVICIOS DE ARQUITECTURA Y TÉCNICO RELACIONADO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 565, 
+	"fields": { 
+		"codigo": 742121, 
+		"descripcion": "EMPRESAS DE SERVICIOS GEOLÓGICOS Y DE PROSPECCIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 566, 
+	"fields": { 
+		"codigo": 742122, 
+		"descripcion": "SERVICIOS PROFESIONALES EN GEOLOGÍA Y PROSPECCIÓN",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 567, 
+	"fields": { 
+		"codigo": 742131, 
+		"descripcion": "EMPRESAS DE SERVICIOS DE TOPOGRAFÍA Y AGRIMENSURA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 568, 
+	"fields": { 
+		"codigo": 742132, 
+		"descripcion": "SERVICIOS PROFESIONALES DE TOPOGRAFÍA Y AGRIMENSURA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 569, 
+	"fields": { 
+		"codigo": 742141, 
+		"descripcion": "SERVICIOS DE INGENIERÍA PRESTADOS POR EMPRESAS N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 570, 
+	"fields": { 
+		"codigo": 742142, 
+		"descripcion": "SERVICIOS DE INGENIERÍA PRESTADOS POR PROFESIONALES N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 571, 
+	"fields": { 
+		"codigo": 742190, 
+		"descripcion": "OTROS SERVICIOS DESARROLLADOS POR PROFESIONALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 572, 
+	"fields": { 
+		"codigo": 742210, 
+		"descripcion": "SERVICIO DE REVISIÓN TÉCNICA DE VEHÍCULOS AUTOMOTORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 573, 
+	"fields": { 
+		"codigo": 742290, 
+		"descripcion": "OTROS SERVICIOS DE ENSAYOS Y ANALISIS TÉCNICOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 574, 
+	"fields": { 
+		"codigo": 743001, 
+		"descripcion": "EMPRESAS DE PUBLICIDAD", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 575, 
+	"fields": { 
+		"codigo": 743002, 
+		"descripcion": "SERVICIOS PERSONALES EN PUBLICIDAD",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 576, 
+	"fields": { 
+		"codigo": 749110, 
+		"descripcion": "SERVICIOS SUMINISTRO DE PERSONAL; EMPRESAS SERVICIOS TRANSITORIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 577, 
+	"fields": { 
+		"codigo": 749190, 
+		"descripcion": "SERVICIOS DE RECLUTAMIENTO DE PERSONAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 578, 
+	"fields": { 
+		"codigo": 749210, 
+		"descripcion": "ACTIVIDADES DE INVESTIGACIÓN",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 579, 
+	"fields": { 
+		"codigo": 749221, 
+		"descripcion": "SERVICIOS INTEGRALES DE SEGURIDAD",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 580, 
+	"fields": { 
+		"codigo": 749222, 
+		"descripcion": "TRANSPORTE DE VALORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 581, 
+	"fields": { 
+		"codigo": 749229, 
+		"descripcion": "SERVICIOS PERSONALES RELACIONADOS CON SEGURIDAD",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 582, 
+	"fields": { 
+		"codigo": 749310, 
+		"descripcion": "EMPRESAS DE LIMPIEZA DE EDIFICIOS RESIDENCIALES Y NO RESIDENCIALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 583, 
+	"fields": { 
+		"codigo": 749320, 
+		"descripcion": "DESRATIZACIÓN Y FUMIGACIÓN NO AGRÍCOLA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 584, 
+	"fields": { 
+		"codigo": 749401, 
+		"descripcion": "SERVICIOS DE REVELADO, IMPRESIÓN, AMPLIACIÓN DE FOTOGRAFÍAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 585, 
+	"fields": { 
+		"codigo": 749402, 
+		"descripcion": "ACTIVIDADES DE FOTOGRAFÍA PUBLICITARIA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 586, 
+	"fields": { 
+		"codigo": 749409, 
+		"descripcion": "SERVICIOS PERSONALES DE FOTOGRAFÍA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 587, 
+	"fields": { 
+		"codigo": 749500, 
+		"descripcion": "SERVICIOS DE ENVASADO Y EMPAQUE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 588, 
+	"fields": { 
+		"codigo": 749911, 
+		"descripcion": "SERVICIOS DE COBRANZA DE CUENTAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 680, 
+	"fields": { 
+		"codigo": 924140, 
+		"descripcion": "HIPÓDROMOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 589, 
+	"fields": { 
+		"codigo": 749912, 
+		"descripcion": "EVALUACIÓN Y CALIFICACIÓN DEL GRADO DE SOLVENCIA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 590, 
+	"fields": { 
+		"codigo": 749913, 
+		"descripcion": "ASESORÍAS EN LA GESTIÓN DE LA COMPRA O VENTA DE PEQUENAS Y MEDIANAS EMPRESAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 591, 
+	"fields": { 
+		"codigo": 749921, 
+		"descripcion": "DISENADORES DE VESTUARIO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 592, 
+	"fields": { 
+		"codigo": 749922, 
+		"descripcion": "DISENADORES DE INTERIORES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 593, 
+	"fields": { 
+		"codigo": 749929, 
+		"descripcion": "OTROS DISENADORES N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 594, 
+	"fields": { 
+		"codigo": 749931, 
+		"descripcion": "EMPRESAS DE TAQUIGRAFÍA, REPRODUCCIÓN, DESPACHO DE CORRESPONDENCIA, Y OTRAS LABORES DE OFICINA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 595, 
+	"fields": { 
+		"codigo": 749932, 
+		"descripcion": "SERVICIOS PERSONALES DE TRADUCCIÓN, INTERPRETACIÓN Y LABORES DE OFICINA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 596, 
+	"fields": { 
+		"codigo": 749933, 
+		"descripcion": "EMPRESAS DE TRADUCCIÓN E INTERPRETACIÓN", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 597, 
+	"fields": { 
+		"codigo": 749934, 
+		"descripcion": "SERVICIOS DE FOTOCOPIAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 598, 
+	"fields": { 
+		"codigo": 749940, 
+		"descripcion": "AGENCIAS DE CONTRATACIÓN DE ACTORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 599, 
+	"fields": { 
+		"codigo": 749950, 
+		"descripcion": "ACTIVIDADES DE SUBASTA (MARTILLEROS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 600, 
+	"fields": { 
+		"codigo": 749961, 
+		"descripcion": "GALERÍAS DE ARTE", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 601, 
+	"fields": { 
+		"codigo": 749962, 
+		"descripcion": "FERIAS DE EXPOSICIONES CON FINES EMPRESARIALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 602, 
+	"fields": { 
+		"codigo": 749970, 
+		"descripcion": "SERVICIOS DE CONTESTACIÓN DE LLAMADAS (CALL CENTER)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 603, 
+	"fields": { 
+		"codigo": 749990, 
+		"descripcion": "OTRAS ACTIVIDADES EMPRESARIALES N.C.P.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 604, 
+	"fields": { 
+		"codigo": 751110, 
+		"descripcion": "GOBIERNO CENTRAL",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 605, 
+	"fields": { 
+		"codigo": 751120, 
+		"descripcion": "MUNICIPALIDADES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 606, 
+	"fields": { 
+		"codigo": 751200, 
+		"descripcion": "ACTIVIDADES DEL PODER JUDICIAL",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 607, 
+	"fields": { 
+		"codigo": 751300, 
+		"descripcion": "ACTIVIDADES DEL PODER LEGISLATIVO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 608, 
+	"fields": { 
+		"codigo": 752100, 
+		"descripcion": "RELACIONES EXTERIORES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 609, 
+	"fields": { 
+		"codigo": 752200, 
+		"descripcion": "ACTIVIDADES DE DEFENSA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 610, 
+	"fields": { 
+		"codigo": 752300, 
+		"descripcion": "ACTIVIDADES DE MANTENIMIENTO DEL ORDEN PÚBLICO Y DE SEGURIDAD",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 611, 
+	"fields": { 
+		"codigo": 753010, 
+		"descripcion": "ACTIVIDADES DE PLANES DE SEGURIDAD SOCIAL DE AFILIACIÓN OBLIGATORIA RELACIONADOS CON SALUD",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 612, 
+	"fields": { 
+		"codigo": 753020, 
+		"descripcion": "CAJAS DE COMPENSACIÓN",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 613, 
+	"fields": { 
+		"codigo": 753090, 
+		"descripcion": "OTRAS ACTIVIDADES DE PLANES DE SEGURIDAD SOCIAL DE AFILIACIÓN OBLIGATORIA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 614, 
+	"fields": { 
+		"codigo": 801010, 
+		"descripcion": "ESTABLECIMIENTOS DE ENSEÑANZA PREESCOLAR", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 615, 
+	"fields": { 
+		"codigo": 801020, 
+		"descripcion": "ESTABLECIMIENTOS DE ENSEÑANZA PRIMARIA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 616, 
+	"fields": { 
+		"codigo": 802100, 
+		"descripcion": "ESTABLECIMIENTOS DE ENSEÑANZA SECUNDARIA DE FORMACIÓN GENERAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 617, 
+	"fields": { 
+		"codigo": 802200, 
+		"descripcion": "ESTABLECIMIENTOS DE ENSEÑANZA SECUNDARIA DE FORMACIÓN TÉCNICA Y PROFESIONAL", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 618, 
+	"fields": { 
+		"codigo": 803010, 
+		"descripcion": "UNIVERSIDADES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 619, 
+	"fields": { 
+		"codigo": 803020, 
+		"descripcion": "INSTITUTOS PROFESIONALES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 620, 
+	"fields": { 
+		"codigo": 803030, 
+		"descripcion": "CENTROS DE FORMACIÓN TÉCNICA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 621, 
+	"fields": { 
+		"codigo": 809010, 
+		"descripcion": "ESTABLECIMIENTOS DE ENSEÑANZA PRIMARIA Y SECUNDARIA PARA ADULTOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 622, 
+	"fields": { 
+		"codigo": 809020, 
+		"descripcion": "ESTABLECIMIENTOS DE ENSEÑANZA PREUNIVERSITARIA", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 623, 
+	"fields": { 
+		"codigo": 809030, 
+		"descripcion": "EDUCACIÓN EXTRAESCOLAR (ESCUELA DE CONDUCCIÓN, MÚSICA, MODELAJE, ETC.)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 624, 
+	"fields": { 
+		"codigo": 809041, 
+		"descripcion": "EDUCACIÓN A DISTANCIA (INTERNET, CORRESPONDENCIA, OTRAS)",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 625, 
+	"fields": { 
+		"codigo": 809049, 
+		"descripcion": "SERVICIOS PERSONALES DE EDUCACIÓN",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 626, 
+	"fields": { 
+		"codigo": 851110, 
+		"descripcion": "HOSPITALES Y CLÍNICAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 627, 
+	"fields": { 
+		"codigo": 851120, 
+		"descripcion": "CLÍNICAS PSIQUIATRICAS, CENTROS DE REHABILITACIÓN, ASILOS Y CLÍNICAS DE REPOSO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 628, 
+	"fields": { 
+		"codigo": 851211, 
+		"descripcion": "SERVICIOS DE MÉDICOS EN FORMA INDEPENDIENTE",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 629, 
+	"fields": { 
+		"codigo": 851212, 
+		"descripcion": "ESTABLECIMIENTOS MÉDICOS DE ATENCIÓN AMBULATORIA (CENTROS MÉDICOS)",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 630, 
+	"fields": { 
+		"codigo": 851221, 
+		"descripcion": "SERVICIOS DE ODONTÓLOGOS EN FORMA INDEPENDIENTE",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 631, 
+	"fields": { 
+		"codigo": 851222, 
+		"descripcion": "CENTROS DE ATENCIÓN ODONTOLÓGICA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 632, 
+	"fields": { 
+		"codigo": 851910, 
+		"descripcion": "LABORATORIOS CLÍNICOS; INCLUYE BANCOS DE SANGRE",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 633, 
+	"fields": { 
+		"codigo": 851920, 
+		"descripcion": "OTROS PROFESIONALES DE LA SALUD",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 634, 
+	"fields": { 
+		"codigo": 851990, 
+		"descripcion": "OTRAS ACTIVIDADES EMPRESARIALES RELACIONADAS CON LA SALUD HUMANA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 635, 
+	"fields": { 
+		"codigo": 852010, 
+		"descripcion": "ACTIVIDADES DE CLÍNICAS VETERINARIAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 636, 
+	"fields": { 
+		"codigo": 852021, 
+		"descripcion": "SERVICIOS DE MÉDICOS VETERINARIOS EN FORMA INDEPENDIENTE",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 637, 
+	"fields": { 
+		"codigo": 852029, 
+		"descripcion": "SERVICIOS DE OTROS PROFESIONALES INDEPENDIENTES EN EL ÁREA VETERINARIA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 638, 
+	"fields": { 
+		"codigo": 853100, 
+		"descripcion": "SERVICIOS SOCIALES CON ALOJAMIENTO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 639, 
+	"fields": { 
+		"codigo": 853200, 
+		"descripcion": "SERVICIOS SOCIALES SIN ALOJAMIENTO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 640, 
+	"fields": { 
+		"codigo": 900010, 
+		"descripcion": "SERVICIOS DE VERTEDEROS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 641, 
+	"fields": { 
+		"codigo": 900020, 
+		"descripcion": "BARRIDO DE EXTERIORES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 642, 
+	"fields": { 
+		"codigo": 900030, 
+		"descripcion": "RECOGIDA Y ELIMINACIÓN DE DESECHOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 643, 
+	"fields": { 
+		"codigo": 900040, 
+		"descripcion": "SERVICIOS DE EVACUACIÓN DE RILES Y AGUAS SERVIDAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 644, 
+	"fields": { 
+		"codigo": 900050, 
+		"descripcion": "SERVICIOS DE TRATAMIENTO DE RILES Y AGUAS SERVIDAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 645, 
+	"fields": { 
+		"codigo": 900090, 
+		"descripcion": "OTRAS ACTIVIDADES DE MANEJO DE DESPERDICIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 646, 
+	"fields": { 
+		"codigo": 911100, 
+		"descripcion": "ACTIVIDADES DE ORGANIZACIONES EMPRESARIALES Y DE EMPLEADORES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 647, 
+	"fields": { 
+		"codigo": 911210, 
+		"descripcion": "COLEGIOS PROFESIONALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 648, 
+	"fields": { 
+		"codigo": 911290, 
+		"descripcion": "ACTIVIDADES DE OTRAS ORGANIZACIONES PROFESIONALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 649, 
+	"fields": { 
+		"codigo": 912000, 
+		"descripcion": "ACTIVIDADES DE SINDICATOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 650, 
+	"fields": { 
+		"codigo": 919100, 
+		"descripcion": "ACTIVIDADES DE ORGANIZACIONES RELIGIOSAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 651, 
+	"fields": { 
+		"codigo": 919200, 
+		"descripcion": "ACTIVIDADES DE ORGANIZACIONES POLÍTICAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 652, 
+	"fields": { 
+		"codigo": 919910, 
+		"descripcion": "CENTROS DE MADRES Y UNIDADES VECINALES Y COMUNALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 653, 
+	"fields": { 
+		"codigo": 919920, 
+		"descripcion": "CLUBES SOCIALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 654, 
+	"fields": { 
+		"codigo": 919930, 
+		"descripcion": "SERVICIOS DE INSTITUTOS DE ESTUDIOS, FUNDACIONES, CORPORACIONES DE DESARROLLO (EDUCACIÓN, SALUD)",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 655, 
+	"fields": { 
+		"codigo": 919990, 
+		"descripcion": "ACTIVIDADES DE OTRAS ASOCIACIONES N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 656, 
+	"fields": { 
+		"codigo": 921110, 
+		"descripcion": "PRODUCCIÓN DE PELÍCULAS CINEMATOGRÁFICAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 657, 
+	"fields": { 
+		"codigo": 921120, 
+		"descripcion": "DISTRIBUIDORA CINEMATOGRÁFICAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 658, 
+	"fields": { 
+		"codigo": 921200, 
+		"descripcion": "EXHIBICIÓN DE FILMES Y VIDEOCINTAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 659, 
+	"fields": { 
+		"codigo": 921310, 
+		"descripcion": "ACTIVIDADES DE TELEVISIÓN",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 660, 
+	"fields": { 
+		"codigo": 921320, 
+		"descripcion": "ACTIVIDADES DE RADIO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 661, 
+	"fields": { 
+		"codigo": 921411, 
+		"descripcion": "SERVICIOS DE PRODUCCIÓN DE RECITALES Y OTROS EVENTOS MUSICALES MASIVOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 662, 
+	"fields": { 
+		"codigo": 921419, 
+		"descripcion": "SERVICIOS DE PRODUCCIÓN TEATRAL Y OTROS N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 663, 
+	"fields": { 
+		"codigo": 921420, 
+		"descripcion": "ACTIVIDADES EMPRESARIALES DE ARTISTAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 664, 
+	"fields": { 
+		"codigo": 921430, 
+		"descripcion": "ACTIVIDADES ARTÍSTICAS; FUNCIONES DE ARTISTAS, ACTORES, MÚSICOS, CONFERENCISTAS, OTROS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 665, 
+	"fields": { 
+		"codigo": 921490, 
+		"descripcion": "AGENCIAS DE VENTA DE BILLETES DE TEATRO, SALAS DE CONCIERTO Y DE TEATRO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 666, 
+	"fields": { 
+		"codigo": 921911, 
+		"descripcion": "INSTRUCTORES DE DANZA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 667, 
+	"fields": { 
+		"codigo": 921912, 
+		"descripcion": "ACTIVIDADES DE DISCOTECAS, CABARET, SALAS DE BAILE Y SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 668, 
+	"fields": { 
+		"codigo": 921920, 
+		"descripcion": "ACTIVIDADES DE PARQUES DE ATRACCIONES Y CENTROS SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 669, 
+	"fields": { 
+		"codigo": 921930, 
+		"descripcion": "ESPECTÁCULOS CIRCENSES, DE TÍTERES U OTROS SIMILARES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 670, 
+	"fields": { 
+		"codigo": 921990, 
+		"descripcion": "OTRAS ACTIVIDADES DE ENTRETENIMIENTO N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 671, 
+	"fields": { 
+		"codigo": 922001, 
+		"descripcion": "AGENCIAS DE NOTICIAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 672, 
+	"fields": { 
+		"codigo": 922002, 
+		"descripcion": "SERVICIOS PERIODÍSTICOS PRESTADO POR PROFESIONALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 673, 
+	"fields": { 
+		"codigo": 923100, 
+		"descripcion": "ACTIVIDADES DE BIBLIOTECAS Y ARCHIVOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 674, 
+	"fields": { 
+		"codigo": 923200, 
+		"descripcion": "ACTIVIDADES DE MUSEOS Y PRESERVACIÓN DE LUGARES Y EDIFICIOS HISTÓRICOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 675, 
+	"fields": { 
+		"codigo": 923300, 
+		"descripcion": "ACTIVIDADES DE JARDINES BOTÁNICOS Y ZOOLÓGICOS Y DE PARQUES NACIONALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 676, 
+	"fields": { 
+		"codigo": 924110, 
+		"descripcion": "EXPLOTACIÓN DE INSTALACIONES ESPECIALIZADAS PARA LAS PRACTICAS DEPORTIVAS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 677, 
+	"fields": { 
+		"codigo": 924120, 
+		"descripcion": "ACTIVIDADES DE CLUBES DE DEPORTES Y ESTADIOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 678, 
+	"fields": { 
+		"codigo": 924131, 
+		"descripcion": "FUTBOL PROFESIONAL",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 679, 
+	"fields": { 
+		"codigo": 924132, 
+		"descripcion": "FUTBOL AMATEUR",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 681, 
+	"fields": { 
+		"codigo": 924150, 
+		"descripcion": "PROMOCIÓN Y ORGANIZACIÓN DE ESPECTÁCULOS DEPORTIVOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 682, 
+	"fields": { 
+		"codigo": 924160, 
+		"descripcion": "ESCUELAS PARA DEPORTES", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 683, 
+	"fields": { 
+		"codigo": 924190, 
+		"descripcion": "OTRAS ACTIVIDADES RELACIONADAS AL DEPORTE N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 684, 
+	"fields": { 
+		"codigo": 924910, 
+		"descripcion": "SISTEMAS DE JUEGOS DE AZAR MASIVOS.", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 685, 
+	"fields": { 
+		"codigo": 924920, 
+		"descripcion": "ACTIVIDADES DE CASINO DE JUEGOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 686, 
+	"fields": { 
+		"codigo": 924930, 
+		"descripcion": "SALAS DE BILLAR, BOWLING, POOL Y JUEGOS ELECTRÓNICOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 687, 
+	"fields": { 
+		"codigo": 924940, 
+		"descripcion": "CONTRATACIÓN DE ACTORES PARA CINE, TV, Y TEATRO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 688, 
+	"fields": { 
+		"codigo": 924990, 
+		"descripcion": "OTROS SERVICIOS DE DIVERSIÓN Y ESPARCIMIENTOS N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 689, 
+	"fields": { 
+		"codigo": 930100, 
+		"descripcion": "LAVADO Y LIMPIEZA DE PRENDAS DE TELA Y DE PIEL, INCLUSO LAS LIMPIEZAS EN SECO", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 690, 
+	"fields": { 
+		"codigo": 930200, 
+		"descripcion": "PELUQUERÍAS Y SALONES DE BELLEZA",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 691, 
+	"fields": { 
+		"codigo": 930310, 
+		"descripcion": "SERVICIOS FUNERARIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 692, 
+	"fields": { 
+		"codigo": 930320, 
+		"descripcion": "SERVICIOS EN CEMENTERIOS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 693, 
+	"fields": { 
+		"codigo": 930330, 
+		"descripcion": "SERVICIOS DE CARROZAS FÚNEBRES (TRANSPORTE DE CADÁVERES)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 694, 
+	"fields": { 
+		"codigo": 930390, 
+		"descripcion": "OTRAS ACTIVIDADES DE SERVICIOS FUNERARIOS Y OTRAS ACTIVIDADES CONEXAS", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 695, 
+	"fields": { 
+		"codigo": 930910, 
+		"descripcion": "ACTIVIDADES DE MANTENIMIENTO FÍSICO CORPORAL (BAÑOS, TURCOS, SAUNAS)", 
+		"afecto_iva": true, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 696, 
+	"fields": { 
+		"codigo": 930990, 
+		"descripcion": "OTRAS ACTIVIDADES DE SERVICIOS PERSONALES N.C.P.",
+		"afecto_iva": false, 
+		"categoria_tributaria": "2", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 697, 
+	"fields": { 
+		"codigo": 950001, 
+		"descripcion": "HOGARES PRIVADOS INDIVIDUALES CON SERVICIO DOMÉSTICO",
+		"afecto_iva": false, 
+		"categoria_tributaria": "N", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 698, 
+	"fields": { 
+		"codigo": 950002, 
+		"descripcion": "CONSEJO DE ADMINISTRACIÓN DE EDIFICIOS Y CONDOMINIOS",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+},
+{
+	"model": "utilidades.giro", 
+	"pk": 699, 
+	"fields": { 
+		"codigo": 990000, 
+		"descripcion": "ORGANIZACIONES Y ÓRGANOS EXTRATERRITORIALES",
+		"afecto_iva": false, 
+		"categoria_tributaria": "1", 
+		"visible": true, 
+		"creado_en": "2016-01-01 00:00:00"
+		}
+}]

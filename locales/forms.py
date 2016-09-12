@@ -32,10 +32,10 @@ class LocalTipoForm(forms.ModelForm):
 
 class LocalForm(forms.ModelForm):
 
-	metros_cuadrados = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	metros_lineales = NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	metros_compartidos = NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	metros_bodega = NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	metros_cuadrados 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	metros_lineales 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	metros_compartidos 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	metros_bodega 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
 
 	def __init__(self, *args, **kwargs):
 
@@ -126,7 +126,7 @@ class ElectricidadForm(forms.ModelForm):
 
 class AguaForm(forms.ModelForm):
 
-	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
 
 	class Meta:
 		model 	= Medidor_Agua

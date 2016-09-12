@@ -147,6 +147,8 @@ def propuesta_filtrar(request):
 
 	for contrato in contratos:
 
+		# {falta: mostrar solo contratos donde su cliente es persona juridica}
+
 		conceptos = list()
 
 		for concepto_id in conceptos_id:
@@ -342,6 +344,18 @@ def propuesta_pdf(request, pk=None):
 
 
 def propuesta_enviar(request):
+
+	#parametro_de_facturacion = sacar de la empresa
+
+	# if parametro_de_facturacion:
+	# 	# facturar inet
+	# 	# llamar funcion		
+	# elif:
+	# 	# facturar idt
+	# 	# llamar funcion
+	# else:
+	# 	# no facturar devolver mensaje
+		
 
 	var_post 	= request.POST.copy()
 

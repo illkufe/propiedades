@@ -12,7 +12,7 @@
 					{% csrf_token %}
 
 					<div class="ibox-title">
-						<h5>INFORMACIÓN GENERAL</h5>
+						<h5>Información General</h5>
 					</div>
 
 					<div class="ibox-content">
@@ -20,18 +20,17 @@
 							<div class="col-sm-12">
 
 								<div class="row">
-									<div class="form-group col-sm-12">
-										<input type="radio" id="persona-juridica" value="1" name="cliente_tipo" checked="" onclick="cambiar_tipo_persona(1)">
-										<label for="persona-juridica"> Persona Jurídica</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-										<input type="radio" id="persona-natural" value="2" name="cliente_tipo" onclick="cambiar_tipo_persona(2)">
-										<label for="persona-natural"> Persona Natural</label>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+										{{ form.tipo.label_tag }}
+										{{ form.tipo }}
+										<div class="container-error">
+											{{ form.tipo.errors|striptags }}
+										</div>
 									</div>
+								</div>
 
-									<br>
-									<br>
-									<br>
-
+								<div class="row">
 									<div class="form-group col-sm-3">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.rut.help_text }}" ></i>
 										{{ form.rut.label_tag }}
@@ -50,8 +49,26 @@
 										</div>
 									</div>
 
-									<div class="form-group col-sm-3 datos-persona-juridica">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.email.help_text }}" ></i>
+										{{ form.email.label_tag }}
+										{{ form.email }}
+										<div class="container-error">
+											{{ form.email.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.telefono.help_text }}" ></i>
+										{{ form.telefono.label_tag }}
+										{{ form.telefono }}
+										<div class="container-error">
+											{{ form.telefono.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-6 datos-persona-juridica">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.razon_social.help_text }}" ></i>
 										{{ form.razon_social.label_tag }}
 										{{ form.razon_social }}
 										<div class="container-error">
@@ -60,8 +77,8 @@
 									</div>
 
 
-									<div class="form-group col-sm-3 datos-persona-juridica">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+									<div class="form-group col-sm-6 datos-persona-juridica">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.giro.help_text }}" ></i>
 										{{ form.giro.label_tag }}
 										{{ form.giro }}
 										<div class="container-error">
@@ -69,15 +86,13 @@
 										</div>
 									</div>
 								</div>
-
 							</div>
 						</div>
 					</div>
 
 					<div class="ibox-title">
-						<h5>UBICACIÓN</h5>
+						<h5>Ubicación</h5>
 					</div>
-
 
 					<div class="ibox-content">
 						<div class="row">
@@ -91,6 +106,15 @@
 										{{ form.region }}
 										<div class="container-error">
 											{{ form.region.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.ciudad.help_text }}" ></i>
+										{{ form.ciudad.label_tag }}
+										{{ form.ciudad }}
+										<div class="container-error">
+											{{ form.ciudad.errors|striptags }}
 										</div>
 									</div>
 
@@ -113,21 +137,14 @@
 									</div>
 
 
-									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.telefono.help_text }}" ></i>
-										{{ form.telefono.label_tag }}
-										{{ form.telefono }}
-										<div class="container-error">
-											{{ form.telefono.errors|striptags }}
-										</div>
-									</div>
+
 								</div>
 							</div>
 						</div>
 					</div>
 
 					<div class="ibox-title">
-						<h5>REPRESENTANTES</h5>
+						<h5>Representantes</h5>
 						<div class="ibox-tools">
 							<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-representantes', 'representante')"><i class="fa fa-plus"></i> Representante</button>
 						</div>

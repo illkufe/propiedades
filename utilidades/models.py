@@ -127,3 +127,23 @@ class Tarifa_Electricidad(models.Model):
 	class Meta:
 		verbose_name 		= "Tarifa de Electricidad"
 		verbose_name_plural = "Tarifas de Electricidad"
+
+class Giro(models.Model):
+
+	# atributos (generales)
+	codigo 					= models.IntegerField()
+	descripcion 			= models.TextField(blank=True)
+	afecto_iva 				= models.BooleanField(default=False)
+	categoria_tributaria 	= models.CharField(max_length=250)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.descripcion
+
+	class Meta:
+		verbose_name 		= "Giro"
+		verbose_name_plural = "Giros"
+

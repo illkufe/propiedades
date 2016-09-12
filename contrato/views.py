@@ -649,8 +649,6 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 					context['formulario'] 			= ArriendoForm(self.request.POST)
 					context['formulario_detalle'] 	= ArriendoDetalleFormSet(self.request.POST)
 
-
-
 				# try:
 				# 	arriendo_minimo 			= Arriendo.objects.get(contrato_id=self.kwargs['contrato_id'])
 				# 	context['formset_arriendo'] = ArriendoForm(self.request.POST, instance=arriendo_minimo)
