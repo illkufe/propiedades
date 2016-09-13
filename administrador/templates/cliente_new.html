@@ -67,7 +67,7 @@
 										</div>
 									</div>
 
-									<div class="form-group col-sm-6 datos-persona-juridica">
+									<div class="form-group col-sm-6 dato-juridica">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.razon_social.help_text }}" ></i>
 										{{ form.razon_social.label_tag }}
 										{{ form.razon_social }}
@@ -76,8 +76,7 @@
 										</div>
 									</div>
 
-
-									<div class="form-group col-sm-6 datos-persona-juridica">
+									<div class="form-group col-sm-6 dato-juridica">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.giro.help_text }}" ></i>
 										{{ form.giro.label_tag }}
 										{{ form.giro }}
@@ -135,9 +134,6 @@
 											{{ form.direccion.errors|striptags }}
 										</div>
 									</div>
-
-
-
 								</div>
 							</div>
 						</div>
@@ -223,22 +219,25 @@
 
 $(document).ready(function(){
 
+	initialize()
+
 });
 
-function cambiar_tipo_persona(perona_tipo){
-	if (perona_tipo == 1) {
-		$('.datos-persona-juridica').removeClass('hide')
-	}else{
-		$('.datos-persona-juridica').addClass('hide')
-	}
+function initialize(){
+	$('#id_tipo').change(function() {
+		// 1 = persona juridica
+		// 2 = persona natural
+		if ($(this).val() == 1) {
+			$('.dato-juridica').removeClass('hide')
+		}else{
+			$('.dato-juridica').addClass('hide')
+		}
+	})
 }
-
 
 function agregar_representante(){
 
 	var count 	= $('#tabla-representantes tbody').children().length;
-
-	console.log(count)
 
 	var $tr 	= $('#tabla-representantes tbody tr:first');
 	var $clone 	= $tr.clone();

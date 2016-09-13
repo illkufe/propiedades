@@ -1,0 +1,783 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<form id="form-contrato-new" role="form" action="" method="post">
+					{% csrf_token %}
+
+					<div class="ibox-title">
+						<h5>Información General</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero.help_text }}" ></i>
+									{{ form.numero.label_tag }}
+									{{ form.numero }}
+									<div class="container-error">
+										{{ form.numero.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre_local.help_text }}" ></i>
+									{{ form.nombre_local.label_tag }}
+									{{ form.nombre_local }}
+									<div class="container-error">
+										{{ form.nombre_local.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+									{{ form.tipo.label_tag }}
+									{{ form.tipo }}
+									<div class="container-error">
+										{{ form.tipo.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cliente.help_text }}" ></i>
+									{{ form.cliente.label_tag }}
+									<div class="input-group">
+										{{ form.cliente }}
+										<span class="input-group-addon" onclick="open_form_cliente()">
+											<i class="fa fa-plus"></i>
+										</span>
+									</div>
+
+									<div class="container-error">
+										{{ form.cliente.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-4">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.locales.help_text }}" ></i>
+									{{ form.locales.label_tag }}
+									<div class="input-group">
+										<div class="ads">
+											{{ form.locales }}
+										</div>
+										<span class="input-group-addon" onclick="open_tabla_locales()">
+											<i class="fa fa-search"></i>
+										</span>
+									</div>
+
+									<div class="container-error">
+										{{ form.locales.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-5">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.conceptos.help_text }}" ></i>
+									{{ form.conceptos.label_tag }}
+									{{ form.conceptos }}
+									<div class="container-error">
+										{{ form.conceptos.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.destino_comercial.help_text }}" ></i>
+									{{ form.destino_comercial.label_tag }}
+									{{ form.destino_comercial }}
+									<div class="container-error">
+										{{ form.destino_comercial.errors|striptags }}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>Periodo</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_contrato.help_text }}" ></i>
+									{{ form.fecha_contrato.label_tag }}
+									<div class="input-group date">
+										{{ form.fecha_contrato }}
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+
+									<div class="container-error">
+										{{ form.fecha_contrato.errors|striptags }}
+									</div>
+								</div>
+
+								<div id="date_range">
+									<div class="input-daterange">
+
+										<div class="form-group col-sm-3">
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_inicio.help_text }}" ></i>
+											{{ form.fecha_inicio.label_tag }}
+											<div class="input-group">
+												{{ form.fecha_inicio }}
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+											</div>
+											<div class="container-error">
+												{{ form.fecha_inicio.errors|striptags }}
+											</div>
+										</div>
+
+										<div class="form-group col-sm-3">
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_termino.help_text }}" ></i>
+											{{ form.fecha_termino.label_tag }}
+
+											<div class="input-group">
+												{{ form.fecha_termino }}
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+											</div>
+
+											<div class="container-error">
+												{{ form.fecha_termino.errors|striptags }}
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group col-sm-2">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.meses.help_text }}" ></i>
+									{{ form.meses.label_tag }}
+									{{ form.meses }}
+									<div class="container-error">
+										{{ form.meses.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3 date" id="fecha_habilitacion">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_habilitacion.help_text }}" ></i>
+									{{ form.fecha_habilitacion.label_tag }}
+									<div class="input-group date">
+										{{ form.fecha_habilitacion }}
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+
+									<div class="container-error">
+										{{ form.fecha_habilitacion.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3 date" id="data_2">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_renovacion.help_text }}" ></i>
+									{{ form.fecha_renovacion.label_tag }}
+									<div class="input-group date">
+										{{ form.fecha_renovacion }}
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+									<div class="container-error">
+										{{ form.fecha_renovacion.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3 date" id="data_2">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_remodelacion.help_text }}" ></i>
+									{{ form.fecha_remodelacion.label_tag }}
+									<div class="input-group date">
+										{{ form.fecha_remodelacion }}
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+									<div class="container-error">
+										{{ form.fecha_remodelacion.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3 date" id="data_2">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_aviso.help_text }}" ></i>
+									{{ form.fecha_aviso.label_tag }}
+									<div class="input-group date">
+										{{ form.fecha_aviso }}
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+									<div class="container-error">
+										{{ form.fecha_aviso.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3 date" id="data_2">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_plazo.help_text }}" ></i>
+									{{ form.fecha_plazo.label_tag }}
+									<div class="input-group date">
+										{{ form.fecha_plazo }}
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+									<div class="container-error">
+										{{ form.fecha_plazo.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-2">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.dias_salida.help_text }}" ></i>
+									{{ form.dias_salida.label_tag }}
+									{{ form.dias_salida }}
+									<div class="container-error">
+										{{ form.dias_salida.errors|striptags }}
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						
+						<h5>Otras Superficies</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="col-xs-12 col-sm-6">
+
+								<div class="form-group col-sm-6">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.bodega.help_text }}" ></i>
+									{{ form.bodega.label_tag }}
+									<div class="checkbox checkbox-primary">
+										{{ form.bodega }}
+										<label for="checkbox2"></label>
+									</div>
+									<div class="container-error">
+										{{ form.bodega.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-6">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_bodega.help_text }}" ></i>
+									{{ form.metros_bodega.label_tag }}
+									{{ form.metros_bodega }}
+									<div class="container-error">
+										{{ form.metros_bodega.errors|striptags }}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>Garantías</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-xs-12 col-sm-7">
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-garantias', 'garantia')"><i class="fa fa-plus"></i> Nueva Garantía</button>
+
+								<br>
+								<br>
+								
+								{{ form_garantia.management_form }}
+
+								{% for form in form_garantia %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+								<table id="tabla-garantias" class="table">
+									<thead>
+										<tr>
+											<th>Nombre</th>
+											<th>Valor</th>
+											<th>Moneda</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for form in form_garantia %}
+										<tr>
+											<td>{{ form.nombre }}</td>
+											<td>{{ form.valor }}</td>
+											<td>{{ form.moneda }}</td>
+											<td class="text-center delete">
+												{{ form.DELETE }}
+												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Garantía')">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+
+						</div>
+						<br>
+						<br>
+
+						<div class="row">
+							<div class="col-sm-12">
+								<a href="/contrato/list"><button class="btn btn-w-m btn-sm btn-default" type="button" style="margin-right: 15px;">CANCELAR</button></a>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-contrato-new')">GUARDAR Y SEGUIR</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- modal lista de locales -->
+<div class="modal inmodal fade" id="m-cliente-new" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h6 class="modal-title text-left">Nuevo Cliente</h6>
+			</div>
+			<form id="form-cliente-new" role="form" action="/clientes/new" method="post">
+				<div class="modal-body" style="padding:15px 0px 0px 0px">
+
+					{% csrf_token %}
+
+					<div class="ibox-title">
+						<h5>INFORMACIÓN GENERAL</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+
+								<div class="row">
+
+									<div>
+										<div class="form-group col-sm-3">
+											<input type="radio" id="persona-juridica" value="1" name="cliente_tipo" checked="" onclick="cambiar_tipo_persona(1)">
+											<label for="persona-juridica"> Persona Jurídica</label>
+										</div>
+
+										<div class="form-group col-sm-3">
+											<input type="radio" id="persona-natural" value="2" name="cliente_tipo" onclick="cambiar_tipo_persona(2)">
+											<label for="persona-natural"> Persona Natural</label>
+										</div>
+									</div>
+
+									<br>
+									<br>
+									<br>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="rut"></i>
+										<label for="id_rut">Rut:</label>
+										<input class="form-control format-rut" id="id_rut" maxlength="250" name="rut" type="text">
+										<div class="container-error">
+											
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="nombre"></i>
+										<label for="id_nombre">Nombre:</label>
+										<input class="form-control" id="id_nombre" maxlength="250" name="nombre" type="text">
+										<div class="container-error">
+											
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3 datos-persona-juridica">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="nombre"></i>
+										<label for="id_razon_social">Razón Social:</label>
+										<input class="form-control" id="id_razon_social" maxlength="250" name="razon_social" type="text">
+										<div class="container-error">
+											
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3 datos-persona-juridica">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="nombre"></i>
+										<label for="id_giro">Giro:</label>
+										<input class="form-control" id="id_giro" maxlength="250" name="giro" type="text">
+										<div class="container-error">
+											
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>UBICACIÓN</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+
+								<div class="row">
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="region"></i>
+										<label for="id_region">Región:</label>
+										<input class="form-control" id="id_region" maxlength="250" name="region" type="text">
+										<div class="container-error">
+											
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="comuna"></i>
+										<label for="id_comuna">Comuna:</label>
+										<input class="form-control" id="id_comuna" maxlength="250" name="comuna" type="text">
+										<div class="container-error">
+											
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="direccion"></i>
+										<label for="id_direccion">Dirección:</label>
+										<input class="form-control" id="id_direccion" maxlength="250" name="direccion" type="text">
+										<div class="container-error">
+											
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="telefono"></i>
+										<label for="id_telefono">Teléfono:</label>
+										<input class="form-control" id="id_telefono" maxlength="250" name="telefono" type="text">
+										<div class="container-error">
+											
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<h5>REPRESENTANTES</h5>
+						<div class="ibox-tools">
+							<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-representantes', 'representante')"><i class="fa fa-plus"></i> Representante</button>
+						</div>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="col-xs-12">
+
+								<input id="id_representante_set-TOTAL_FORMS" name="representante_set-TOTAL_FORMS" type="hidden" value="1"><input id="id_representante_set-INITIAL_FORMS" name="representante_set-INITIAL_FORMS" type="hidden" value="0"><input id="id_representante_set-MIN_NUM_FORMS" name="representante_set-MIN_NUM_FORMS" type="hidden" value="0"><input id="id_representante_set-MAX_NUM_FORMS" name="representante_set-MAX_NUM_FORMS" type="hidden" value="1000">
+								<input id="id_representante_set-0-id" name="representante_set-0-id" type="hidden">
+								<input id="id_representante_set-0-cliente" name="representante_set-0-cliente" type="hidden">
+								
+								<table id="tabla-representantes" class="table">
+									<thead>
+										<tr>
+											<th>Dirección</th>
+											<th>Rut</th>
+											<th>Nacionalidad</th>
+											<th>Profesión</th>
+											<th>Estado Civil</th>
+											<th>Domicilio</th>
+											<th></th>
+										</tr>
+
+									</thead>
+									<tbody>
+										
+										<tr>
+											<td><input class="form-control" id="id_representante_set-0-nombre" maxlength="250" name="representante_set-0-nombre" type="text"></td>
+											<td><input class="form-control format-rut" id="id_representante_set-0-rut" maxlength="250" name="representante_set-0-rut" type="text"></td>
+											<td><input class="form-control" id="id_representante_set-0-nacionalidad" maxlength="250" name="representante_set-0-nacionalidad" type="text"></td>
+											<td><input class="form-control" id="id_representante_set-0-profesion" maxlength="250" name="representante_set-0-profesion" type="text"></td>
+											<td><select class="form-control" id="id_representante_set-0-estado_civil" name="representante_set-0-estado_civil">
+												<option value="" selected="selected">---------</option>
+												<option value="1">Hijo/Hija</option>
+												<option value="2">Padre/Madre</option>
+												<option value="3">Soltero/a</option>
+												<option value="4">Casado(a)</option>
+												<option value="5">Viudo(a)</option>
+												<option value="6">Divorciado(a)</option>
+												<option value="7">Conviviente Civil</option>
+											</select></td>
+											<td><input class="form-control" id="id_representante_set-0-domicilio" maxlength="250" name="representante_set-0-domicilio" type="text"></td>
+
+											<td class="text-center delete">
+												<input id="id_representante_set-0-DELETE" name="representante_set-0-DELETE" type="checkbox" style="display: none;">
+												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Representante')">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+					<button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="guardar_formulario_final('modal', 'cliente')">GUARDAR</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- modal formulario cliente -->
+<div class="modal inmodal fade" id="m-locales" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h6 class="modal-title text-left">Seleccionar Locales</h6>
+			</div>
+			<div class="modal-body">
+				<table id="tabla-locales" class="table table-striped table-bordered table-hover" width="100%">
+					<thead></thead>
+					<tbody></tbody>
+				</table>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+				<button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="seleccionar_locales_modal()">GUARDAR</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+var tabla_locales = []
+
+$(document).ready(function(){
+
+	initialize()
+	load_tabla_locales()
+	data_tabla_locales()
+
+});
+
+function initialize(){
+
+	var fecha = new Date();
+
+	$('#form-lectura-medidor select[name="mes"]').val(fecha.getMonth() + 1)
+	$('#form-lectura-medidor input[name="anio"]').val(fecha.getFullYear())
+
+	if ($('#id_bodega').is(':checked')) {
+		$("#id_metros_bodega").attr('disabled', false)
+	}
+
+	// cambio en fecha inicio
+	$('input[name="fecha_inicio"]').change(function(){
+		var fecha_inicio = $(this).val().split('/')
+		if ($('input[name="fecha_termino"]').val() != '') {
+
+			var fecha_termino 	= $('input[name="fecha_termino"]').val().split('/')
+			fecha_inicio 		= new Date(parseInt(fecha_inicio[2]), parseInt(fecha_inicio[1]-1), parseInt(fecha_inicio[0]));
+			fecha_termino 		= new Date(parseInt(fecha_termino[2]), parseInt(fecha_termino[1]-1), parseInt(fecha_termino[0]));
+
+			var meses = diferencia_entre_meses(fecha_inicio, fecha_termino)
+			$('input[name="meses"]').val(meses)
+		}
+	})
+
+	// cambio en fecha término
+	$('input[name="fecha_termino"]').change(function(){
+		var fecha_termino = $(this).val().split('/')
+		if ($('input[name="fecha_inicio"]').val() != '') {
+
+			var fecha_inicio 	= $('input[name="fecha_inicio"]').val().split('/')
+			fecha_inicio 		= new Date(parseInt(fecha_inicio[2]), parseInt(fecha_inicio[1]-1), parseInt(fecha_inicio[0]));
+			fecha_termino 		= new Date(parseInt(fecha_termino[2]), parseInt(fecha_termino[1]-1), parseInt(fecha_termino[0]));
+
+			var meses = diferencia_entre_meses(fecha_inicio, fecha_termino)
+			$('input[name="meses"]').val(meses)
+		}
+	})
+
+	// cambio en los meses
+	$('input[name="meses"]').change(function(){
+		var meses =  $(this).val()
+		if ($('input[name="fecha_inicio"]').val() != '') {
+
+			var fecha 	= $('input[name="fecha_inicio"]').val().split('/')
+			fecha 		= new Date(parseInt(fecha[2]), parseInt(fecha[1]-1), parseInt(fecha[0]));
+			fecha.setMonth(fecha.getMonth() + parseInt(meses));
+
+			var dia  = fecha.getDate() < 10 ? '0'+fecha.getDate() : fecha.getDate()
+			var mes  = fecha.getMonth()+1 < 10 ? '0'+(fecha.getMonth()+1) : fecha.getMonth()+1
+			var anio = fecha.getFullYear()
+
+			$('input[name="fecha_termino"]').val(dia+'/'+mes+'/'+anio)
+		}
+	})
+
+}
+
+
+
+
+function open_form_cliente(){
+	$('#m-cliente-new').modal('show')
+	clear_form('#form-cliente-new')
+	clear_errors_form('#form-cliente-new')
+}
+
+function open_tabla_locales(){
+
+	$('#m-locales').modal('show')
+	var tabla = $('#tabla-locales').dataTable();
+
+	$('.checkbox-local', tabla.fnGetNodes()).each(function(i){
+		$(this).attr('checked', false)
+	})
+}
+
+
+function load_tabla_locales(){
+	var configuracion = {
+		'buttons': [],
+	} 
+
+	var columns = [
+	{		
+		'data': 'id',
+		'title': 'ID',
+		'visible': false,
+	},
+	{
+		'width': '15%',
+		'data': 'codigo',
+		'title': 'Código',
+	},
+	{
+		'width': '15%',
+		'data': 'nombre',
+		'title': 'Nombre',
+	},
+	{
+		'width': '15%',
+		'data': 'activo',
+		'title': 'Activo',
+	},
+	{
+		'width': '15%',
+		'data': 'tipo',
+		'title': 'Tipo',
+	},
+	{
+		'width': '15%',
+		'data': 'sector',
+		'title': 'Sector',
+	},
+	{
+		'width': '15%',
+		'data': 'nivel',
+		'title': 'Nivel',
+	},
+	{
+		'width': '15%',
+		'data': 'opcion',
+		'orderable': false,
+	}]
+
+	tabla_locales = load_table('#tabla-locales', columns, configuracion)
+}
+
+function data_tabla_locales(){
+	$.ajax({
+		url: '/locales',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			rows = [];
+
+			for (var i = 0; i < data.length; i++) {
+
+				row = {}
+
+				row.id		= data[i].id
+				row.codigo 	= data[i].codigo
+				row.nombre	= data[i].nombre
+				row.tipo    = data[i].tipo
+				row.activo  = data[i].activo
+				row.sector 	= data[i].sector
+				row.nivel 	= data[i].nivel
+				row.opcion 	= '<div class="text-center"><input type="checkbox" class="checkbox-local" value="'+data[i].id+'"></div>'
+
+				rows.push(row)
+			}
+			tabla_locales.rows.add(rows).draw();
+		}
+	})
+}
+
+function habilitar_input_metros(obj){
+	$("#id_metros_bodega").attr('disabled', !($(obj).is(':checked')))
+	if (!($(obj).is(':checked'))) {
+		$("#id_metros_bodega").val('')
+	};
+}
+
+function seleccionar_locales_modal(){
+
+	var tabla 	= $('#tabla-locales').dataTable();
+	var locales = []
+
+
+	$('.checkbox-local:checked', tabla.fnGetNodes()).each(function(i){
+		locales.push($(this).val())
+	})
+
+	var $exampleMulti = $("#id_locales").select2();
+	$exampleMulti.val(null).trigger("change");
+	$exampleMulti.val(locales).trigger("change");
+
+	$('#m-locales').modal('hide')
+}
+
+function cambiar_tipo_persona(perona_tipo){
+	if (perona_tipo == 1) {
+		$('.datos-persona-juridica').removeClass('hide')
+	}else{
+		$('.datos-persona-juridica').addClass('hide')
+	}
+}
+
+
+
+</script>
+{% endblock scripts %}

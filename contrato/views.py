@@ -271,6 +271,156 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 		return context
 
 
+# contrato
+class PropuestaList(ListView):
+
+	model 			= Contrato
+	template_name 	= 'propuesta_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(PropuestaList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'propuesta'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/propuesta/list'
+
+		return context
+
+	def get_queryset(self):
+
+		queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		for item in queryset:
+			item.fecha_inicio  	= item.fecha_inicio.strftime('%d/%m/%Y')
+			item.fecha_termino 	= item.fecha_termino.strftime('%d/%m/%Y')
+			item.cantidad 		= len(item.conceptos.all()) # {cantidad de conceptos}
+
+		return queryset
+
+class PropuestaMixin(object):
+
+	template_name 	= 'propuesta_new.html'
+	form_class 		= ContratoForm
+	success_url 	= '/propuesta/list'
+
+	def get_form_kwargs(self):
+
+		kwargs 				= super(PropuestaMixin, self).get_form_kwargs()
+		kwargs['request'] 	= self.request
+
+		return kwargs
+
+	def form_invalid(self, form):
+
+		response = super(PropuestaMixin, self).form_invalid(form)
+		if self.request.is_ajax():
+			return JsonResponse(form.errors, status=400)
+		else:
+			return response
+
+	def form_valid(self, form):
+
+		context 		= self.get_context_data()
+		form_garantia 	= context['form_garantia']
+
+		obj 			= form.save(commit=False)
+		obj.empresa 	= self.request.user.userprofile.empresa
+
+		# comprobar si tiene estado
+		try:
+			obj.estado
+		except Exception:
+			obj.estado = Contrato_Estado.objects.get(id=1)
+
+		obj.save()
+		form.save_m2m()
+
+		if form_garantia.is_valid():
+			self.object = form.save(commit=False)
+			form_garantia.instance = self.object
+			form_garantia.save()
+
+		response = super(PropuestaMixin, self).form_valid(form)
+
+		if self.request.is_ajax():
+			data = {'estado': True,}
+			return JsonResponse(data)
+		else:
+			return response
+
+class PropuestaNew(PropuestaMixin, FormView):
+
+	def get_context_data(self, **kwargs):
+		
+		context 			= super(PropuestaNew, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'propuesta'
+		context['name'] 	= 'nueva'
+		context['href'] 	= '/propuesta/list'
+		context['accion'] 	= 'create'
+
+		if self.request.POST:
+			context['form_garantia'] = GarantiaFormSet(self.request.POST)
+		else:
+			context['form_garantia'] = GarantiaFormSet()
+		
+		return context
+
+class PropuestaDelete(DeleteView):
+
+	model 		= Contrato
+	success_url = reverse_lazy('/propusta/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object 		= self.get_object()
+		self.object.visible = False
+		self.object.save()
+
+		payload = {'delete': 'ok'}
+
+		return JsonResponse(payload, safe=False)
+
+class PropuestaUpdate(PropuestaMixin, UpdateView):
+
+	model 			= Contrato
+	form_class 		= ContratoForm
+	template_name 	= 'propuesta_new.html'
+	success_url 	= '/propuesta/list'
+
+	def get_object(self, queryset=None):
+
+		queryset = Contrato.objects.get(id=int(self.kwargs['pk']))
+
+		queryset.fecha_contrato 	= queryset.fecha_contrato.strftime('%d/%m/%Y')
+		queryset.fecha_inicio 		= queryset.fecha_inicio.strftime('%d/%m/%Y')
+		queryset.fecha_termino 		= queryset.fecha_termino.strftime('%d/%m/%Y')
+		queryset.fecha_habilitacion = queryset.fecha_habilitacion.strftime('%d/%m/%Y')
+		queryset.fecha_renovacion 	= queryset.fecha_renovacion.strftime('%d/%m/%Y')
+		queryset.fecha_remodelacion = queryset.fecha_remodelacion.strftime('%d/%m/%Y') if queryset.fecha_remodelacion is not None else ''
+		queryset.fecha_plazo 		= queryset.fecha_plazo.strftime('%d/%m/%Y') if queryset.fecha_plazo is not None else ''
+		queryset.fecha_aviso 		= queryset.fecha_aviso.strftime('%d/%m/%Y')
+
+		return queryset
+
+	def get_context_data(self, **kwargs):
+		
+		context 			= super(PropuestaUpdate, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'propuesta'
+		context['name'] 	= 'editar'
+		context['href'] 	= '/propuesta/list'
+		context['accion'] 	= 'update'
+
+		if self.request.POST:
+			context['form_garantia'] = GarantiaFormSet(self.request.POST, instance=self.object)
+		else:
+			context['form_garantia'] = GarantiaFormSet(instance=self.object)
+
+		return context
+
+
 # tipo de multa
 class MultaTipoMixin(object):
 

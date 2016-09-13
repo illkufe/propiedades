@@ -11,13 +11,19 @@ urlpatterns = [
 	url(r'^contratos/$', csrf_exempt(views.CONTRATO.as_view()),name='contrato'),
 	url(r'^contratos/(?P<id>\d+)$', csrf_exempt(views.CONTRATO.as_view()),name='contrato_con_id'),
 
-	# contrato_tipo
+	# propuesta
+	url(r'^propuesta/list$', views.PropuestaList.as_view(), name='propuesta_list'),
+	url(r'^propuesta/new$', views.PropuestaNew.as_view(), name='propuesta_new'),
+	url(r'^propuesta/delete/(?P<pk>\d+)$', views.PropuestaDelete.as_view(), name='propuesta_delete'),
+	url(r'^propuesta/update/(?P<pk>\d+)$', views.PropuestaUpdate.as_view(), name='propuesta_update'),
+
+	# contrato
 	url(r'^contrato/list$', views.ContratoList.as_view(), name='contrato_list'),
 	url(r'^contrato/new$', views.ContratoNew.as_view(), name='contrato_new'),
 	url(r'^contrato/delete/(?P<pk>\d+)$', views.ContratoDelete.as_view(), name='contrato_delete'),
 	url(r'^contrato/update/(?P<pk>\d+)$', views.ContratoUpdate.as_view(), name='contrato_update'),
 
-	# contrato
+	# contrato_tipo
 	url(r'^contrato-tipo/list$', views.ContratoTipoList.as_view(), name='contrato_tipo_list'),
 	url(r'^contrato-tipo/new$', views.ContratoTipoNew.as_view(), name='contrato_tipo_new'),
 	url(r'^contrato-tipo/delete/(?P<pk>\d+)$', views.ContratoTipoDelete.as_view(), name='contrato_tipo_delete'),
