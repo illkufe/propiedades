@@ -1,3 +1,4 @@
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -109,6 +110,7 @@ procesos/migrations/
 notificaciones/migrations/
 utilidades/migrations/
 reporteria/migrations/
+facturacion/migrations
 
 
 #Ignora archivos de la carpeta media

@@ -12,9 +12,6 @@ from locales.models import Local, Local_Tipo
 from contrato.models import Contrato
 
 from datetime import datetime
-from notificaciones.models import Alerta, Alerta_Miembro
-import pyrebase
-
 from django.db.models import Sum, Q
 
 

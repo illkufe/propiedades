@@ -1,7 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
+
+
 from utilidades.models import *
+from facturacion.models import MotorFacturacion
 
 # modelos
 class Empresa(models.Model):
@@ -9,7 +12,7 @@ class Empresa(models.Model):
 	# atributos (generales)
 	nombre 						= models.CharField(max_length=250)
 	rut 						= models.CharField(max_length=250)
-	cuidad 						= models.CharField(max_length=250)
+	ciudad 						= models.CharField(max_length=250)
 	comuna 						= models.CharField(max_length=250)
 	direccion 					= models.CharField(max_length=250)
 	email 						= models.EmailField(max_length=250)
@@ -96,24 +99,26 @@ class Representante(models.Model):
 
 class Configuracion(models.Model):
 
-	FORMATO_DECIMAL = (
-		(1, ','),
-		(2, '.'),
-	)
+    FORMATO_DECIMAL = (
+        (1, ','),
+        (2, '.'),
+    )
 
-	# atributos (generales)
-	formato_decimales	= models.IntegerField(choices=FORMATO_DECIMAL)
-	cantidad_decimales	= models.IntegerField()
+    # atributos (generales)
+    formato_decimales	= models.IntegerField(choices=FORMATO_DECIMAL)
+    cantidad_decimales	= models.IntegerField()
 
-	# relaciones
-	empresa = models.OneToOneField(Empresa)
 
-	def __str__(self):
-		return self.empresa.nombre
+    # relaciones
+    motor_factura   = models.ForeignKey(MotorFacturacion)
+    empresa         = models.OneToOneField(Empresa)
 
-	class Meta:
-		verbose_name 		= "Configuración de Empresa"
-		verbose_name_plural = "Configuración de Empresa"
+    def __str__(self):
+        return self.empresa.nombre
+
+    class Meta:
+        verbose_name 		= "Configuración de Empresa"
+        verbose_name_plural = "Configuración de Empresa"
 
 class Conexion(models.Model):
 

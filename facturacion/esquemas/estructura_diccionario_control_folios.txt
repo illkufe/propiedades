@@ -1,0 +1,62 @@
+-Los datos que se envian en el diccionario deben ser todos de tipo caracter.
+-Si no se desea enviar la informacion de las claves control_folios, rango_anulado o rango_utilizado
+esta debe quedar con asignación en blanco.
+    ej:
+        rango_utilizado: ''
+
+{
+	'fecha_emision': '2016-07-27',                                  -- Fecha de emision del control de folios año-mes-dia
+	'secuencia': 1,                                                 -- Secuencia que forma parte de la clave primaria en IDTE
+	'control_folios': [{
+							'tipo_documento_cf': '39',              -- Tipo de documento electronico o manual de S.I.I.
+							'monto_neto_cf': '1000',                -- Monto neto
+							'monto_iva_cf': '190',                  -- Monto iva
+							'tasa_iva_cf': '19',                    -- Tasa del iva
+							'monto_exento_cf': '0',                 -- Monto exento
+							'monto_total_cf': '1190',               -- Monto total
+							'folios_emitidos_cf': '334',            -- Cantidad de Folios emitidos
+							'folios_anulados_cf': '100',            -- Cantidad de Folios anulados
+							'folios_utilizados_cf': '434'	        -- Cantidad de Folios utilizados
+						},
+						{
+							'tipo_documento_cf': '41', 
+							'monto_neto_cf': '0',
+							'monto_iva_cf': '0', 
+							'tasa_iva_cf': '0',
+							'monto_exento_cf': '0', 
+							'monto_total_cf': '0', 
+							'folios_emitidos_cf': '0', 
+							'folios_anulados_cf': '0',
+							'folios_utilizados_cf': '0'	
+						}], 
+	'rango_anulado': [{
+								'id_rango_anulado': '1',            -- Identificador
+								'tipo_doc_rango_a': '39',           -- Tipo de documento electronico o manual de S.I.I.
+								'folio_inicial_rango_a': '1',       -- Folio inicial rango anulado
+								'folio_final_rango_a': '50'         -- Folio final rango anulado
+							},
+							{
+								'id_rango_anulado': '2', 
+								'tipo_doc_rango_a': '39',
+								'folio_inicial_rango_a': '301', 
+								'folio_final_rango_a': '434'
+							},
+							{
+								'id_rango_anulado': '1', 
+								'tipo_doc_rango_a': '61',
+								'folio_inicial_rango_a': '1', 
+								'folio_final_rango_a': '4'
+							}], 
+	'rango_utilizado': [{
+								'id_rango_utilizado': '1',          -- Identificador
+								'tipo_doc_rango_util': '39',        -- Tipo de documento electronico o manual de S.I.I.
+								'folio_inicial_rango_util': '1',    -- folio inicial rango utilizado
+								'folio_final_rango_util': '50'      -- folio final rango utilizado
+							},
+							{
+								'id_rango_utilizado': '2', 
+								'tipo_doc_rango_util': '39',
+								'folio_inicial_rango_util': '301', 
+								'folio_final_rango_util': '349'
+							}]
+}

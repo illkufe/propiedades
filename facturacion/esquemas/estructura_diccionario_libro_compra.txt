@@ -1,0 +1,87 @@
+-Los datos que se envian en el diccionario deben ser todos de tipo caracter.
+-Si no se desea enviar la informacion de las claves libro_compra o impuesto_retenido_lc esta debe quedar con
+asignación en blanco.
+    ej:
+        libro_compra: ''
+
+
+{
+'id_hist_lcv': '20160726',                                      --Identificador o clave primaria en las tablas de IDTE este debe ser añomesdia
+'tipo_libro': 'C',                                              --Tipo de libro C compras o V ventas
+'periodo_libro': '2016-07',                                     --Periodo del libro año-mes
+'num_notificacion': '0',                                        --Numero de notificación
+'cod_rectificatoria': '0',                                      --Código de rectificatoria
+'rectificatoria': '0',                                          --Rectificatoria
+'factor_Proporcional_iva': '0',                                 --Factor proporcional del iva
+'notificacion': '0',                                            --Notificacion
+'libro_compra': [{
+					'codigo_sucursal': '0',                     --Codigo de la sucursal
+					'folio_documento': '6',                     --Folio del documento
+					'razon_social_prov': 'Proveedor A',         --Razon social del proveedor
+					'imp_tabaco_cig': '0',                      --Impuesto tabaco cigarrillo
+					'iva_recuperable': '36252',                 --Iva recuperable
+					'monto_activo_fijo': '0',                   --Monto activo fijo
+					'imp_tabaco_elab': '0',                     --Impuesto tabaco elaborado
+					'total': '9658669',                         --Total
+					'tasa_iva': '19',                           --Tasa del iva
+					'iva_retenido': '0',                        --Iva retenido
+					'imp_sin_derecho_credito': '0',             --Impuesto sin derecho de credito
+					'folio_interno': '456',                     --Folio interno del documento
+					'iva_no_recup_3': '0',                      --Iva no recuperable
+					'iva_no_recup_9': '0',
+					'iva_uso_comun': '0',                       --Iva uso comun
+					'imp_adicional': '0', 
+					'tipo_documento': '30', 
+					'imp_tabaco_puros': '0',
+					'exento': '0', 
+					'impu_vehiculo': '0', 
+					'iva_no_retenido': '0',
+					'anulado': '0',
+					'rut_proveedor': '12345678-9', 
+					'afecto': '575639', 
+					'iva_activo_fijo': '0', 
+					'iva_no_recup_2': '0', 
+					'fecha_emision': '2016-07-18',
+					'iva_no_recup_1': '0',
+					'iva_no_recup_4': '0'
+				}], 
+'impuesto_retenido_lc': [{
+							'impuesto_art_42_letra_b': '0', 
+							'tipo_cta_pago': '0', 
+							'rut_provedor_ir': '12345678-9', 
+							'iva_retenido_chatarra': '0', 
+							'iva_retenido_silvestres': '5555', 
+							'impuesto_retenido_fact_inicio': '0', 
+							'iva_retenido_total': '0', 
+							'impuesto_adicional_art_37_ehil': '0', 
+							'impuesto_especifico_gasolina': '0',
+							'tipo_doc_ir': '30', 
+							'iva_retenido_ganado': '0', 
+							'impuesto_art_42_letra_a_2': '0', 
+							'iva_retenido_construccion': '0', 
+							'iva_margen_comerc': '0', 
+							'impuesto_art_42_letra_c_2': '0', 
+							'iva_retenido_arroz': '0', 
+							'folio_doc_ir': '6', 
+							'impuesto_retenido_suplementeros': '0', 
+							'indicador_monto_neto': '0', 
+							'impuesto_art_42_letra_a': '0', 
+							'iva_retenido_cartones': '0',
+							'impuesto_adicional_art_37_j': '0', 
+							'iva_retenido_hidrobiolo': '0', '
+							impuesto_art_42_letra_c_1': '0', 
+							'iva_retenido_legumbre': '0', 
+							'iva_anticipado_faenamiento': '0', 
+							'iva_margen_comer_instru_prepago': '0', 
+							'impuesto_adicional_art_37_abc': '0', 
+							'iva_anticipado_carne': '0', 
+							'iva_retenido_trigo': '4444', 
+							'iva_retenido_frambuesas_pasas': '0', '
+							iva_anticipado_harina': '0', 
+							'impuesto_especifico_diesel': '0', 
+							'impuesto_gas_licuado': '0', 
+							'impuesto_gas_natural': '0', 
+							'iva_retenido_madera': '0', 
+							'recuperacion_imp_diesel_transp': '0'
+						}]
+}

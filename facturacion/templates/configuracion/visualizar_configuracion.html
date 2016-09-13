@@ -1,0 +1,165 @@
+{% extends 'index.html' %}
+{% block section %}
+    {% include 'partials/breadcrumbs-bar.html' %}
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div class="ibox-tools">
+                            <a href="{% url 'facturacion:crear_configuracion' %}" class="btn btn-primary btn-xs "><i class="fa fa-plus"></i> Nueva Configuración Facturación</a>
+                        </div>
+                        <form id="filtrocondicion" method="post" action="" enctype="multipart/form-data" role="form">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="">
+                                    </div>
+                                </div>
+                            </div>
+                        </form><br>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" id="tablaParametrosFacturacion">
+                                <thead></thead>
+                                <tbody>
+                                    {% for e in parametros %}
+                                        <tr>
+                                            <td>{{ e.id }}</td>
+                                            <td>{{ e.codigo_conexion}}</td>
+                                            <td class="text-center">
+                                                <a class="btn btn-edit btn-sm btn-bitbucket" href="{% url 'facturacion:editar_configuracion' pk=e.id %}"><i class="fa fa-edit"></i></a>
+                                                <a class="btn btn-delete btn-sm btn-bitbucket" onclick="eliminar_configuración(this, {{ e.id }})"><i class="fa fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock section %}
+
+{% block Javascript %}
+    <script>
+        $(document).ready(function(){
+            var configuracion = {
+                'searching': true,
+                'order': [[1, 'asc']],
+                'paginate': true,
+                'bLengthChange': true,
+                'bInfo': true,
+                'buttons': [
+                {
+                    extend: 'excel',
+                    title: 'ExampleFile'
+                },
+                {
+                    extend: 'pdf', title: 'ExampleFile',text:'Imprimir'
+                },
+                {
+                    extend: 'print',
+                    customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+                        $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+                    }
+                }]
+            };
+
+            var columns= [
+                {
+                    'width': '1%',
+                    'data': 'id',
+                    'title': 'id',
+                    'visible': false
+                },
+                {
+                    'width': '20%',
+                    'data': 'codigo',
+                    'title': 'Código Conexión'
+                },
+                {
+                    'width': '19%',
+                    'data': 'options',
+                    'orderable': false,
+                    'title': 'Opciones'
+                }],
+            table = generar_tabla('#tablaParametrosFacturacion', columns, configuracion);
+        });
+
+        function search_column_table_reference_products(obj, form){
+            // obtener columna
+            var index = $(obj).attr('data-column');
+            var value = $(form).find('.col'+index+'_filter').val();
+
+            // buscar dentro de la columna
+            $('#tablaParametrosFacturacion').DataTable().column(index).search(value).draw()
+        }
+
+        function eliminar_configuración(row, id_parametro) {
+
+            var col  = $(row).closest('tr');
+
+            swal({
+                title: '¿ Eliminar parametrización de facturación.?',
+                text: '',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#F68793',
+                confirmButtonText: 'Si, eliminar',
+                cancelButtonText: 'Cancelar',
+                closeOnConfirm      : false,
+                closeOnCancel       : true
+                }, function(){
+                    $.ajax({
+                        url:  '{% url 'facturacion:eliminar_configuracion' %}',
+                        type: 'POST',
+                        data: {
+                            'id_parametro': id_parametro
+                        },
+                        success: function(response){
+                            if(response.success){
+                                var tabla_conexion = $('#tablaParametrosFacturacion').DataTable();
+                                tabla_conexion.row($(col)).remove().draw();
+                                swal({
+                                    title: 'Exito!',
+                                    text: 'Eliminado correctamente.',
+                                    type: 'success'
+                                });
+                            }else{
+                                swal({
+                                    title: 'Error!',
+                                    text: response.error,
+                                    type: 'error'
+                                });
+                            }
+
+                        },
+                        error:function(response){
+                            swal({
+                                title: 'Error!',
+                                text: 'no se puedo eliminar',
+                                type: 'error'
+                            });
+                        }
+                    })
+
+                }
+            );
+        }
+    </script>
+{% endblock %}

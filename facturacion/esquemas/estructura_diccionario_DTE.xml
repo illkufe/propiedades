@@ -1,0 +1,298 @@
+{
+	'tipo_documento': '33',
+	'ID1_ERP': '',
+	'ID2_ERP': '', 
+	'ID3_ERP': '', 
+	'ID4_ERP': '', 
+	'emails_PDF': 'pruebaingreso@ejemplo.cl', 
+	'emails_XML': 'pruebaingreso@ejemplo.cl', 
+	'encabezado': [{
+							'termino_pago_dias': '', 
+							'forma_pago_exportacion': '0',
+							'termino_pago_glosa': '', 
+							'termino_pago_codigo': '',
+							'tipo_cta_pago': '', 
+							'fecha_cancel': '', 
+							'periodo_desde': '', 
+							'indicador_traslado': '0',
+							'periodo_hasta': '', 
+							'indicador_monto_neto': '0', 
+							'medio_pago': 'EF', 
+							'indicador_servicio': '0',
+							'rut_mandante': '', 
+							'banco_pago': '',
+							'fecha_emision': '2016-06-30', 
+							'monto_bruto': '0', 
+							'ind_no_rebaja': '0', 
+							'numero_cta_pago': '',
+							'rut_solicitante': '', 
+							'monto_cancel': '0', 
+							'tipo_despacho': '0', 
+							'forma_pago': '1', 
+							'fecha_vecimiento': '2016-06-30', 
+							'tipo_impresion': '0',
+							'saldo_insoluto': '0'
+						}],
+	'emisor': [{
+					'codigo_vendedor': '',
+					'telefono_emisor': '0',
+					'comuna_origen': '0', 
+					'codigo_sii_sucursal': '', 
+					'ident_adicional_emisor': '', 
+					'correo_emisor': '', 
+					'ciudad_origen': '',
+					'fecha_autorizacion': '0', 
+					'codigo_traslado': '0',
+					'giro_emisor': 'Prueba de XML', 
+					'sucursal': '', 
+					'rut_emisor': '85412900-7',
+					'codigo_adicional_suc': '',
+					'folio_autorizado': '0', 
+					'direccion_emisor': '0', 
+					'razon_social_emisor': 'INFORMAT S.A.', 
+					'acteco': '0'
+				}], 				
+	'receptor': [{
+						'razon_receptor': 'Informat S.A',
+						'cuidad_receptor': 'SANTIAGO', 
+						'codigo_interno_receptor': '85.412.900-7',
+						'cuidad_postal': '', 
+						'rut_receptor': '85.412.900-7',
+						'comuna_receptor': 'SANTIAGO', 
+						'direccion_receptor': 'None', 
+						'giro_receptor': 'OBRAS DE INGENIERÍA', 
+						'direccion_postal': '', 
+						'num_ident_extranjero': '', 
+						'contacto_receptor': '', 
+						'comuna_postal': '',
+						'nacionalidad': '',
+						'correo_receptor': '', 
+						'ident_adicional_receptor': ''
+					}], 
+	'detalle': [{
+					'subcantidad_detalle': [{
+														'id_subcantidad': '0', 
+														'subcantidad': '0', 
+														'tipo_cod_subcantidad': '0', 
+														'subcodigo': '0'
+													}], 
+					'descripcion_item': '', 
+					'nro_linea': '1', 
+					'tipo_documento_liq': '', 
+					'unidad_medida': '', 
+					'retenedor_detalle': [{
+													'precio_consumidor_final': '80', 
+													'monto_margen_comercial': '20',
+													'monto_base_faena': '10', 
+													'indicador_agente': 'x'
+												}], 
+					'cod_imp_adic_1': '0', 
+					'ind_exencion': '0', 
+					'fecha_elaboracion': '', 
+					'otras_monedas_detalle': [{
+															'factor_conversion': '3',
+															'recarg_otra_moneda': '0', 
+															'moneda': 'usd', 
+															'monto_item_otra_moneda': '600',
+															'precio_otra_moneda': '300', 
+															'descuento_otra_moneda': '0'
+														}], 
+					'cod_imp_adic_2': '0', 
+					'recargo_monto': '0', 
+					'monto_item': '47070.0', 
+					'subrecargo_detalle': 	[{
+														'id_subrecargo': '0',
+														'tipo_recargo': '0', 
+														'valor_recargo': '0'
+													}], 
+					'unidad_medida_ref': 'Caja', 
+					'cantidad_item': '9', 
+					'nombre_item': 'Computador', 
+					'precio_unitario': '5230.0',
+					'rut_mandante_b': '',
+					'codigos_items': [{
+												'valor_codigo_item': '111111',
+												'tipo_codigo_item': 'EAN'
+											}], 
+					'recargo_porcentaje': '0', 
+					'descuento_monto': '0', 
+					'info_ticket': [{
+										'tipo_ticket': '0',
+										'lugar_evento': '0', 
+										'ubicacion_evento': '0', 
+										'codigo_evento': '0', 
+										'fecha_evento': '0',
+										'asiento_ubic_evento': '0',
+										'fecha_genera': '0',
+										'folio_ticket': '0', 
+										'numero_evento': '0',
+										'fila_ubic_evento': '0'
+									}], 
+					'subdescuentos_detalle': [{'
+															tipo_dscto': '0',
+															'id_dscto': '0', 
+															'valor_dscto': '0'
+														}], 
+					'item_espectaculo': '', '
+					fecha_vencimiento_prod': '', 
+					'descuento_porcentaje': '0',
+					'precio_referencia': '5230.0',
+					'cantidad_referencia': '9'
+				}],
+	'totales': [{
+					'iva_propio': '0', 
+					iva': '10112728', 
+					'monto_no_facturable': '0',
+					'valor_comision_exento': '0',
+					'monto_total': '63337612', 
+					'saldo_anterior': '0', 
+					'valor_comision_iva': '0', 
+					'iva_no_retenido': '0',
+					'garan_deposi_env_embal': '0', 
+					'valor_pagar': '0', 
+					'cred_espec_constr': '0', 
+					'tasa_iva': '19', 
+					'impuesto_retenido': [{
+														'tasa_impuesto': '12', 
+														'monto_impuesto': '4526',
+														'tipo_impuesto': 'xx', 
+														'id_impuesto': '1'
+												}], 
+					'monto_periodo': '0',
+					'iva_terceros': '0', 
+					'monto_margen_comerc': '0',
+					'monto_exento': '0',
+					'monto_neto': '53224884', 
+					'monto_base': '0', 
+					'valor_comision_neto': '0', 
+					'tipo_moneda': ''
+				}],
+	'recargos_globales': [{
+										'nro_linea_recargo': '1',
+										'glosa_recargo': 'recargo', 
+										'valor_otr_recargo': '0', 
+										'tipo_valor_recargo': '$', 
+										'tipo_mov_recargo': 'R', 
+										'valor_recargo': '234', 
+										'ind_exe_recargo': '0'
+								}], 
+	'referencias_documentos': [{
+												'fecha_referencia': '2016-07-20', 
+												'indicador_referencia': '',
+												'codigo_referencia': '1', 
+												'tipo_doc_referencia': '33', 
+												'rut_otro_contribuyente': '', 
+												'folio_referencia': '79',
+												'indicador_adic_otr_contribuyente': '0',
+												'nro_linea_referencia': '1',
+												'razon_referencia': ''
+											}], 	
+	'referencias_boletas': [{
+										'cod_vendedor': '0', 
+										'razon_ref_boleta': '0',
+										'cod_ref_boleta': '0',
+										'cod_caja_boleta': '0', 
+										'nro_linea_ref_boleta': '0'
+									}], 	
+	'comisiones': [{
+							'tipo_mov_comision': '0',
+							'glosa_comision': '0', 
+							'valor_comi_iva': '0', 
+							'tasa_comision': '0', 
+							'nro_linea_comision': '0', 
+							'valor_comi_neto': '0',
+							'valor_comi_exento': '0'
+						}], 	
+	'monto_pagos': [{
+								'fecha_pago': '0', 
+								'glosa_pago': '0',
+								'monto_pago': '0', 
+								'id_monto_pago': '0'
+							}], 	
+	'otra_moneda': [{
+							'mnt_total_otr_moneda': '0', 
+							'mnt_margen_otra_moneda': '0',
+							'tipo_cambio': '0',
+							'tipo_otr_moneda': '0', 
+							'mnt_fae_carne_otr_moneda': '0', 
+							'imp_otra_moneda': [{
+															'id_imp_otr_m': '0', 
+															'tipo_imp_otr_m': '0', 
+															'valor_imp_otr_m': '0', 
+															'tasa_imp_otr_m': '0'
+														}], 
+							'iva_no_ret_otr_moneda': '0', 
+							'mnt_exento_otra_moneda': '0',
+							'iva_otra_moneda': '0',
+							'mnt_neto_otra_moneda': '0'
+						}], 
+	'subtotales': [{
+						'neto_subtotal': '56789', 
+						'numero_subtotal': '1', 
+						'glosa_subtotal': 'glosa subtotal', 
+						'subtotales_lineas_detalles': 	[{
+																	'linea_detalle_subtotal': '0'
+																	}, 
+																	{
+																	'linea_detalle_subtotal': '1'
+																	}, 
+																	{
+																	'linea_detalle_subtotal': '2'
+																	}], 
+						'adici_subtotal': '456', 
+						'subtotal': '2356', 
+						'iva_subtotal': '4526', 
+						'exento_subtotal': '456', 
+						'orden_subtotal': '111'
+					}], 		
+	'transporte': [{
+						'aduanas': [{
+											'cod_pais_recep': '0', 
+											'total_item': '0', 
+											'rut_cia_transp': '0', '
+											cod_unid_peso_bruto': '0',
+											'monto_flete': '0', '
+											cod_pais_destino': '0', 
+											'cod_unid_medida_tara': '0', 
+											'total_bulto': '0', 
+											'cod_unid_peso_neto': '0', 
+											'tara': '0', 
+											'monto_seguro': '0', 
+											'cod_clausula_venta': '0', 
+											'peso_bruto': '0', '
+											modalidad_venta': '0', 
+											'booking': '0', 
+											'cod_pto_desembarque': '0', 
+											'total_clau_venta': '0', 
+											'tipo_bulto': [{
+																'cod_pais_recep': '0', '
+																cod_pais_destino': '0', 
+																'total_bulto': '0', 
+																'monto_flete': '0', 
+																'cod_unid_peso_neto': '0', 
+																'total_item': '0', 
+																'monto_seguro': '0'
+															}], 
+											'peso_neto': '0', 
+											'nombre_cia_transp': '0', 
+											'id_adic_transporte': '0',
+											'cod_pto_embarque': '0', 
+											'operador': '0', 
+											'nombre_transporte': '0', 
+											'id_adic_pto_embarq': '0', 
+											'id_adic_pto_desemb': '0', 
+											'cod_via_transp': '0'
+										}], 
+						'cuidad_destino': '0', 
+						'nombre_chofer': '0', 
+						'patente': '0', 
+						'rut_chofer': '0', 
+						'comuna_destino': '0', 
+						'direccion_destino': '0', 
+						'rut_transp': '0'
+					}], 
+	'extra_documento': [{
+									'concepto_extra': 'dato 1',
+									'valor_extra': '0'
+								}],  
+}
