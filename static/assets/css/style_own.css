@@ -3,6 +3,8 @@
 .btn-edit,
 .btn-delete,
 .btn-view,
+.btn-download,
+.btn-send,
 .btn-none{
 	color: #FFF;
 	border: 1px solid #e7eaec;
@@ -10,19 +12,27 @@
 }
 
 .btn-config{
-	background: #FCC491;
+	background: #FFCC80;
 }
 
 .btn-edit{
-	background: #5BAAD3;
+	background: #90CAF9;
 }
 
 .btn-delete{
-	background: #F68793;
+	background: #EF9A9A;
 }
 
 .btn-view{
-	background: #59D7D7;
+	background: #A5D6A7;
+}
+
+.btn-download{
+	background: #80DEEA;
+}
+
+.btn-send{
+	background: #B39DDB;
 }
 
 .btn-none{

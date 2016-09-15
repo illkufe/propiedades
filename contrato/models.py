@@ -120,7 +120,70 @@ class Multa_Tipo(models.Model):
 	def __str__(self):
 		return self.nombre
 
-# Modelos (conceptos)
+
+class Propuesta_Contrato(models.Model):
+
+	# atributos (generales)
+	numero = models.IntegerField()
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	empresa 	= models.ForeignKey(Empresa)
+
+	def __str__(self):
+		return str(self.numero)
+
+	class Meta:
+		verbose_name 		= "Propuesta"
+		verbose_name_plural = "Propuestas"
+
+
+class Propuesta_Version(models.Model):
+
+	# atributos (generales)
+	numero 				= models.IntegerField()
+	nombre_local 		= models.CharField(max_length=250)
+	fecha_inicio 		= models.DateField(null=True, blank=True)
+	fecha_termino 		= models.DateField(null=True, blank=True)
+	meses 				= models.IntegerField(null=True, blank=True)
+	fecha_habilitacion 	= models.DateField(null=True, blank=True)
+	fecha_activacion 	= models.DateField(null=True, blank=True)
+	fecha_renovacion 	= models.DateField(null=True, blank=True)
+	fecha_remodelacion 	= models.DateField(null=True, blank=True)
+	fecha_aviso 		= models.DateField(null=True, blank=True)
+	fecha_plazo 		= models.DateField(null=True, blank=True)
+	dias_salida			= models.IntegerField(null=True, blank=True)
+	destino_comercial 	= models.TextField(blank=True)
+
+	arriendo_minimo 	= models.BooleanField(default=False)
+	arriendo_variable 	= models.BooleanField(default=False)
+	arriendo_bodega 	= models.BooleanField(default=False)
+	cuota_incorporacion = models.BooleanField(default=False)
+	fondo_promocion 	= models.BooleanField(default=False)
+	gasto_comun 		= models.BooleanField(default=False)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	propuesta	= models.ForeignKey(Propuesta_Contrato)
+	tipo 		= models.ForeignKey(Contrato_Tipo)
+	cliente 	= models.ForeignKey(Cliente)
+	locales 	= models.ManyToManyField(Local)
+
+	def __str__(self):
+		return self.nombre_local
+
+	class Meta:
+		verbose_name 		= "Versione de Propuesta"
+		verbose_name_plural = "Versiones de Propuestas"
+
+
+# modelos (conceptos)
 class Multa(models.Model):
 
 	MESES = (

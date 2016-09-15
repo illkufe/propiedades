@@ -16,19 +16,10 @@ from notificaciones.models import Alerta, Alerta_Miembro
 import pyrebase
 
 from django.db.models import Sum, Q
-
-
-
-
-# FIN PRUEBA
-
+from utilidades.views import *
 
 @login_required
 def dashboard(request):
-
-	
-
-
 
 
 

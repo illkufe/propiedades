@@ -26,6 +26,27 @@ modulo 	= 'Contrato'
 
 
 # tipo de contrato
+class ContratoTipoList(ListView):
+
+	model 			= Contrato_Tipo
+	template_name 	= 'contrato_tipo_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ContratoTipoList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'tipos de contratos'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/contrato-tipo/list'
+		
+		return context
+
+	def get_queryset(self):
+
+		queryset = Contrato_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		return queryset
+
 class ContratoTipoMixin(object):
 
 	template_name 	= 'contrato_tipo_new.html'
@@ -67,41 +88,6 @@ class ContratoTipoNew(ContratoTipoMixin, FormView):
 
 		return context
 
-class ContratoTipoList(ListView):
-
-	model 			= Contrato_Tipo
-	template_name 	= 'contrato_tipo_list.html'
-
-	def get_context_data(self, **kwargs):
-
-		context 			= super(ContratoTipoList, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'tipos de contratos'
-		context['name'] 	= 'lista'
-		context['href'] 	= '/contrato-tipo/list'
-		
-		return context
-
-	def get_queryset(self):
-
-		queryset = Contrato_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
-
-		return queryset
-
-class ContratoTipoDelete(DeleteView):
-
-	model 		= Contrato_Tipo
-	success_url = reverse_lazy('/contrato-tipo/list')
-
-	def delete(self, request, *args, **kwargs):
-		self.object 		= self.get_object()
-		self.object.visible = False
-		self.object.save()
-
-		payload = {'delete': 'ok'}
-
-		return JsonResponse(payload, safe=False)
-
 class ContratoTipoUpdate(UpdateView):
 
 	model 			= Contrato_Tipo
@@ -120,8 +106,48 @@ class ContratoTipoUpdate(UpdateView):
 
 		return context
 
+class ContratoTipoDelete(DeleteView):
+
+	model 		= Contrato_Tipo
+	success_url = reverse_lazy('/contrato-tipo/list')
+
+	def delete(self, request, *args, **kwargs):
+		self.object 		= self.get_object()
+		self.object.visible = False
+		self.object.save()
+
+		data = {'delete': 'ok'}
+
+		return JsonResponse(data, safe=False)
+
 
 # contrato
+class ContratoList(ListView):
+
+	model 			= Contrato
+	template_name 	= 'contrato_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ContratoList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Contrato'
+		context['name'] 	= 'Lista'
+		context['href'] 	= '/contrato/list'
+
+		return context
+
+	def get_queryset(self):
+
+		queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		for item in queryset:
+			item.fecha_inicio  	= item.fecha_inicio.strftime('%d/%m/%Y')
+			item.fecha_termino 	= item.fecha_termino.strftime('%d/%m/%Y')
+			item.cantidad 		= len(item.conceptos.all()) # {cantidad de conceptos}
+
+		return queryset
+
 class ContratoMixin(object):
 
 	template_name 	= 'contrato_new.html'
@@ -191,47 +217,6 @@ class ContratoNew(ContratoMixin, FormView):
 		
 		return context
 
-class ContratoList(ListView):
-
-	model 			= Contrato
-	template_name 	= 'contrato_list.html'
-
-	def get_context_data(self, **kwargs):
-
-		context 			= super(ContratoList, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'Contrato'
-		context['name'] 	= 'Lista'
-		context['href'] 	= '/contrato/list'
-
-		return context
-
-	def get_queryset(self):
-
-		queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
-
-		for item in queryset:
-			item.fecha_inicio  	= item.fecha_inicio.strftime('%d/%m/%Y')
-			item.fecha_termino 	= item.fecha_termino.strftime('%d/%m/%Y')
-			item.cantidad 		= len(item.conceptos.all()) # {cantidad de conceptos}
-
-		return queryset
-
-class ContratoDelete(DeleteView):
-
-	model 		= Contrato
-	success_url = reverse_lazy('/contrato/list')
-
-	def delete(self, request, *args, **kwargs):
-
-		self.object 		= self.get_object()
-		self.object.visible = False
-		self.object.save()
-
-		payload = {'delete': 'ok'}
-
-		return JsonResponse(payload, safe=False)
-
 class ContratoUpdate(ContratoMixin, UpdateView):
 
 	model 			= Contrato
@@ -270,11 +255,26 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 
 		return context
 
+class ContratoDelete(DeleteView):
 
-# contrato
+	model 		= Contrato
+	success_url = reverse_lazy('/contrato/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object 		= self.get_object()
+		self.object.visible = False
+		self.object.save()
+
+		payload = {'delete': 'ok'}
+
+		return JsonResponse(payload, safe=False)
+
+
+# propuesta
 class PropuestaList(ListView):
 
-	model 			= Contrato
+	model 			= Propuesta_Version
 	template_name 	= 'propuesta_list.html'
 
 	def get_context_data(self, **kwargs):
@@ -289,19 +289,23 @@ class PropuestaList(ListView):
 
 	def get_queryset(self):
 
-		queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		queryset 	= []
+		propuestas 	= Propuesta_Contrato.objects.filter(visible=True)
 
-		for item in queryset:
-			item.fecha_inicio  	= item.fecha_inicio.strftime('%d/%m/%Y')
-			item.fecha_termino 	= item.fecha_termino.strftime('%d/%m/%Y')
-			item.cantidad 		= len(item.conceptos.all()) # {cantidad de conceptos}
+		for propuesta in propuestas:
+
+			ultima_version 					= propuesta.propuesta_version_set.all().order_by('-id').first()			
+			ultima_version.fecha_inicio 	= ultima_version.fecha_inicio.strftime('%d/%m/%Y') if ultima_version.fecha_inicio is not None else '---'
+			ultima_version.fecha_termino 	= ultima_version.fecha_termino.strftime('%d/%m/%Y') if ultima_version.fecha_termino is not None else '---'
+
+			queryset.append(ultima_version)
 
 		return queryset
 
 class PropuestaMixin(object):
 
 	template_name 	= 'propuesta_new.html'
-	form_class 		= ContratoForm
+	form_class 		= PropuestaForm
 	success_url 	= '/propuesta/list'
 
 	def get_form_kwargs(self):
@@ -321,25 +325,23 @@ class PropuestaMixin(object):
 
 	def form_valid(self, form):
 
-		context 		= self.get_context_data()
-		form_garantia 	= context['form_garantia']
+		obj = form.save(commit=False)
 
-		obj 			= form.save(commit=False)
-		obj.empresa 	= self.request.user.userprofile.empresa
+		if self.kwargs.pop('pk', None) is None:
 
-		# comprobar si tiene estado
-		try:
-			obj.estado
-		except Exception:
-			obj.estado = Contrato_Estado.objects.get(id=1)
+			propuesta 			= Propuesta_Contrato(numero=form.cleaned_data['numero'])
+			propuesta.empresa 	= self.request.user.userprofile.empresa
+			propuesta.save()
 
-		obj.save()
-		form.save_m2m()
+			obj.propuesta 	= propuesta
 
-		if form_garantia.is_valid():
-			self.object = form.save(commit=False)
-			form_garantia.instance = self.object
-			form_garantia.save()
+			obj.save()
+			form.save_m2m()
+
+		else:
+			obj.pk = None
+			obj.save()
+			form.save_m2m()
 
 		response = super(PropuestaMixin, self).form_valid(form)
 
@@ -360,17 +362,12 @@ class PropuestaNew(PropuestaMixin, FormView):
 		context['href'] 	= '/propuesta/list'
 		context['accion'] 	= 'create'
 
-		if self.request.POST:
-			context['form_garantia'] = GarantiaFormSet(self.request.POST)
-		else:
-			context['form_garantia'] = GarantiaFormSet()
-		
 		return context
 
 class PropuestaDelete(DeleteView):
 
-	model 		= Contrato
-	success_url = reverse_lazy('/propusta/list')
+	model 		= Propuesta_Contrato
+	success_url = reverse_lazy('/propuesta/list')
 
 	def delete(self, request, *args, **kwargs):
 
@@ -384,23 +381,22 @@ class PropuestaDelete(DeleteView):
 
 class PropuestaUpdate(PropuestaMixin, UpdateView):
 
-	model 			= Contrato
-	form_class 		= ContratoForm
+	model 			= Propuesta_Version
+	form_class 		= PropuestaForm
 	template_name 	= 'propuesta_new.html'
 	success_url 	= '/propuesta/list'
 
 	def get_object(self, queryset=None):
 
-		queryset = Contrato.objects.get(id=int(self.kwargs['pk']))
-
-		queryset.fecha_contrato 	= queryset.fecha_contrato.strftime('%d/%m/%Y')
-		queryset.fecha_inicio 		= queryset.fecha_inicio.strftime('%d/%m/%Y')
-		queryset.fecha_termino 		= queryset.fecha_termino.strftime('%d/%m/%Y')
-		queryset.fecha_habilitacion = queryset.fecha_habilitacion.strftime('%d/%m/%Y')
-		queryset.fecha_renovacion 	= queryset.fecha_renovacion.strftime('%d/%m/%Y')
+		queryset = Propuesta_Version.objects.get(id=int(self.kwargs['pk']))
+		
+		queryset.fecha_inicio 		= queryset.fecha_inicio.strftime('%d/%m/%Y') if queryset.fecha_inicio is not None else ''
+		queryset.fecha_termino 		= queryset.fecha_termino.strftime('%d/%m/%Y') if queryset.fecha_termino is not None else ''
+		queryset.fecha_habilitacion = queryset.fecha_habilitacion.strftime('%d/%m/%Y') if queryset.fecha_habilitacion is not None else ''
+		queryset.fecha_renovacion 	= queryset.fecha_renovacion.strftime('%d/%m/%Y') if queryset.fecha_renovacion is not None else ''
 		queryset.fecha_remodelacion = queryset.fecha_remodelacion.strftime('%d/%m/%Y') if queryset.fecha_remodelacion is not None else ''
 		queryset.fecha_plazo 		= queryset.fecha_plazo.strftime('%d/%m/%Y') if queryset.fecha_plazo is not None else ''
-		queryset.fecha_aviso 		= queryset.fecha_aviso.strftime('%d/%m/%Y')
+		queryset.fecha_aviso 		= queryset.fecha_aviso.strftime('%d/%m/%Y') if queryset.fecha_aviso is not None else ''
 
 		return queryset
 
@@ -413,15 +409,65 @@ class PropuestaUpdate(PropuestaMixin, UpdateView):
 		context['href'] 	= '/propuesta/list'
 		context['accion'] 	= 'update'
 
-		if self.request.POST:
-			context['form_garantia'] = GarantiaFormSet(self.request.POST, instance=self.object)
-		else:
-			context['form_garantia'] = GarantiaFormSet(instance=self.object)
-
 		return context
 
 
+# propuesta historial
+class PropuestaHistorialList(ListView):
+
+	model 			= Propuesta_Version
+	template_name 	= 'propuesta_historial.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(PropuestaHistorialList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'propuesta'
+		context['name'] 	= 'historial'
+		context['href'] 	= '/propuesta/list'
+
+		return context
+
+	def get_queryset(self):
+
+		# queryset 	= list()
+		propuesta 	= Propuesta_Contrato.objects.get(id=self.kwargs['pk'])
+		versiones 	= propuesta.propuesta_version_set.all()
+		queryset 	= versiones
+
+		# for propuesta in propuestas:
+
+		# 	ultima_version 					= propuesta.propuesta_version_set.all().order_by('-id').first()
+		# 	ultima_version.fecha_inicio  	= ultima_version.fecha_inicio.strftime('%d/%m/%Y')
+		# 	ultima_version.fecha_termino 	= ultima_version.fecha_termino.strftime('%d/%m/%Y')
+
+		# 	queryset.append(ultima_version)
+
+		return queryset
+
+
 # tipo de multa
+class MultaTipoList(ListView):
+
+	model 			= Multa_Tipo
+	template_name 	= 'multa_tipo_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(MultaTipoList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'tipos de multa'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/multa-tipo/list'
+		
+		return context
+
+	def get_queryset(self):
+		
+		queryset = Multa_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		return queryset
+
 class MultaTipoMixin(object):
 
 	template_name 	= 'multa_tipo_new.html'
@@ -462,41 +508,6 @@ class MultaTipoNew(MultaTipoMixin, FormView):
 
 		return context
 
-class MultaTipoList(ListView):
-
-	model 			= Multa_Tipo
-	template_name 	= 'multa_tipo_list.html'
-
-	def get_context_data(self, **kwargs):
-
-		context 			= super(MultaTipoList, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'tipos de multa'
-		context['name'] 	= 'lista'
-		context['href'] 	= '/multa-tipo/list'
-		
-		return context
-
-	def get_queryset(self):
-		
-		queryset = Multa_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
-
-		return queryset
-
-class MultaTipoDelete(DeleteView):
-
-	model 		= Multa_Tipo
-	success_url = reverse_lazy('/multa-tipo/list')
-
-	def delete(self, request, *args, **kwargs):
-
-		self.object 		= self.get_object()
-		self.object.visible = False
-		self.object.save()
-		payload = {'delete': 'ok'}
-
-		return JsonResponse(payload, safe=False)
-
 class MultaTipoUpdate(MultaTipoMixin, UpdateView):
 
 	model 			= Multa_Tipo
@@ -515,8 +526,46 @@ class MultaTipoUpdate(MultaTipoMixin, UpdateView):
 
 		return context
 
+class MultaTipoDelete(DeleteView):
+
+	model 		= Multa_Tipo
+	success_url = reverse_lazy('/multa-tipo/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object 		= self.get_object()
+		self.object.visible = False
+		self.object.save()
+		payload = {'delete': 'ok'}
+
+		return JsonResponse(payload, safe=False)
+
 
 # multa
+class MultaList(ListView):
+
+	model 			= Multa
+	template_name 	= 'multa_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(MultaList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'multas'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/multa/list'
+
+		return context
+
+	def get_queryset(self):
+
+		queryset = Multa.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		for item in queryset:
+			item.valor = item.valor * item.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+		return queryset
+
 class MultaMixin(object):
 
 	template_name 	= 'multa_new.html'
@@ -566,44 +615,6 @@ class MultaNew(MultaMixin, FormView):
 
 		return context
 
-class MultaList(ListView):
-
-	model 			= Multa
-	template_name 	= 'multa_list.html'
-
-	def get_context_data(self, **kwargs):
-
-		context 			= super(MultaList, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'multas'
-		context['name'] 	= 'lista'
-		context['href'] 	= '/multa/list'
-
-		return context
-
-	def get_queryset(self):
-
-		queryset = Multa.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
-
-		for item in queryset:
-			item.valor = item.valor * item.moneda.moneda_historial_set.all().order_by('-id').first().valor
-
-		return queryset
-
-class MultaDelete(DeleteView):
-
-	model 		= Multa
-	success_url = reverse_lazy('/contrato-multa/list')
-
-	def delete(self, request, *args, **kwargs):
-
-		self.object 		= self.get_object()
-		self.object.visible = False
-		self.object.save()
-		payload = {'delete': 'ok'}
-
-		return JsonResponse(payload, safe=False)
-
 class MultaUpdate(MultaMixin, UpdateView):
 
 	model 			= Multa
@@ -622,9 +633,22 @@ class MultaUpdate(MultaMixin, UpdateView):
 
 		return context
 
+class MultaDelete(DeleteView):
+
+	model 		= Multa
+	success_url = reverse_lazy('/contrato-multa/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object 		= self.get_object()
+		self.object.visible = False
+		self.object.save()
+		payload = {'delete': 'ok'}
+
+		return JsonResponse(payload, safe=False)
 
 
-# CONTRATO_CONCEPTO
+# conceptos de contrato
 class ContratoConceptoMixin(object):
 
 	template_name 	= 'contrato_concepto_new.html'
@@ -766,6 +790,7 @@ class ContratoConceptoMixin(object):
 			return JsonResponse(data)
 		else:
 			return response
+
 
 class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
@@ -1041,7 +1066,7 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 		return context
 
 
-# CONTRATO_INCATIVOS
+# contratos inactivos
 class ContratosInactivosList(ListView):
 
 	model 			= Contrato
@@ -1067,7 +1092,8 @@ class ContratosInactivosList(ListView):
 
 		return queryset
 
-# API
+
+# get
 class CONTRATO(View):
 	http_method_names = ['get']
 	
@@ -1133,15 +1159,16 @@ class CONTRATO(View):
 
 		return JsonResponse(data, safe=False)
 
-class CONTRATO_CONCEPTOS(View):
+class PROPUESTA_CONTRATO(View):
+
 	http_method_names = ['get']
 	
 	def get(self, request, id=None):
 
 		if id == None:
-			self.object_list = Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+			self.object_list = Propuesta_Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		else:
-			self.object_list = Contrato.objects.filter(pk=id)
+			self.object_list = Propuesta_Contrato.objects.filter(pk=id)
 
 		if request.is_ajax():
 			return self.json_to_response()
@@ -1153,53 +1180,74 @@ class CONTRATO_CONCEPTOS(View):
 
 		data = list()
 
-		for contrato in self.object_list:
+		for propuesta in self.object_list:
 
-			data_locales 	= list()
-			data_conceptos 	= list()
+			versiones 		= propuesta.propuesta_version_set.all()
+			data_versiones 	= list()
 
-			locales 		= contrato.locales.all()
-			conceptos 		= contrato.conceptos.all()
+			for version in versiones:
 
-			for local in locales:
-				data_locales.append({
-					'id'	: local.id,
-					'nombre': local.nombre,
-					'tipo'	: local.local_tipo.nombre,
-					})
-
-			for concepto in conceptos:
-				data_conceptos.append({
-					'id'	: concepto.id,
-					'nombre': concepto.nombre,
+				data_versiones.append({
+					'id' 					: version.id,
+					'numero'				: version.numero,
+					'nombre_local'			: version.nombre_local,
+					'fecha_inicio'			: version.fecha_inicio if version.fecha_inicio is not None else None,
+					'fecha_termino'			: version.fecha_termino if version.fecha_termino is not None else None,
+					'meses'					: version.meses if version.meses is not None else None,
+					'fecha_habilitacion'	: version.fecha_habilitacion if version.fecha_habilitacion is not None else None,
+					'fecha_activacion'		: version.fecha_activacion if version.fecha_activacion is not None else None,
+					'fecha_renovacion'		: version.fecha_renovacion if version.fecha_renovacion is not None else None,
+					'fecha_remodelacion'	: version.fecha_remodelacion if version.fecha_remodelacion is not None else None,
+					'fecha_aviso'			: version.fecha_aviso if version.fecha_aviso is not None else None,
+					'fecha_plazo'			: version.fecha_plazo if version.fecha_plazo is not None else None,
+					'dias_salida'			: version.dias_salida if version.dias_salida is not None else None,
+					'destino_comercial'		: version.destino_comercial if version.destino_comercial is not None else None,
+					'creado_en' 			: version.creado_en
 					})
 
 			data.append({
-				'id' 					: contrato.id,
-				'numero' 				: contrato.numero,
-				'fecha_contrato' 		: contrato.fecha_contrato,
-				'nombre_local' 			: contrato.nombre_local,
-				'fecha_inicio' 			: contrato.fecha_inicio.strftime('%d/%m/%Y'),
-				'fecha_termino' 		: contrato.fecha_termino.strftime('%d/%m/%Y'),
-				'fecha_habilitacion' 	: contrato.fecha_habilitacion.strftime('%d/%m/%Y'),
-				'fecha_activacion' 		: contrato.fecha_activacion.strftime('%d/%m/%Y') if contrato.fecha_activacion is not None else None,
-				'fecha_renovacion' 		: contrato.fecha_renovacion.strftime('%d/%m/%Y'),
-				'fecha_remodelacion' 	: contrato.fecha_remodelacion.strftime('%d/%m/%Y') if contrato.fecha_remodelacion is not None else None,
-				'fecha_aviso' 			: contrato.fecha_aviso.strftime('%d/%m/%Y'),
-				'fecha_plazo' 			: contrato.fecha_plazo.strftime('%d/%m/%Y') if contrato.fecha_plazo is not None else None,
-				'bodega' 				: contrato.bodega,
-				'metros_bodega' 		: contrato.metros_bodega,
-				'tipo' 					: {'id': contrato.contrato_tipo.id, 'nombre': contrato.contrato_tipo.nombre},
-				'estado' 				: {'id': contrato.estado.id, 'nombre': contrato.estado.nombre},
-				'cliente' 				: {'id': contrato.cliente.id, 'nombre': contrato.cliente.nombre},
-				'locales' 				: data_locales,
-				'conceptos' 			: data_conceptos,
+				'id' 		: propuesta.id,
+				'versiones' : data_versiones,
 				})
 
 		return JsonResponse(data, safe=False)
 
 
-# FUNCIONES
+# funciones
+def propuesta_enviar_correo(request):
+
+	var_post 		= request.POST.copy()
+	contenido 		= var_post['contenido']
+	propuesta_id 	= var_post['propuesta_id']
+
+	configuracion = {
+		'contenido' 		: contenido,
+		'asunto' 			: 'Propuesta',
+		'destinatarios' 	: ['juan.mieres.s@gmail.com', 'egomez@informat.cl'],
+		'id'				: '1',
+	}
+
+	response = enviar_correo(configuracion)
+
+	return JsonResponse(response, safe=False)
+
+def propuesta_duplicar(request):
+
+	var_post 		= request.POST.copy()
+	contenido 		= var_post['contenido']
+	propuesta_id 	= var_post['propuesta_id']
+
+	configuracion = {
+		'contenido' 		: contenido,
+		'asunto' 			: 'Propuesta',
+		'destinatarios' 	: ['juan.mieres.s@gmail.com', 'egomez@informat.cl'],
+		'id'				: '1',
+	}
+
+	response = enviar_correo(configuracion)
+
+	return JsonResponse(response, safe=False)
+
 def contrato_activar(request, contrato_id):
 
 	try:
@@ -1319,5 +1367,6 @@ def contrato_pdf(request, contrato_id):
 	pdf.close()
 
 	return response
+
 
 

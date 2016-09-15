@@ -6,16 +6,15 @@ from django.views.decorators.csrf import csrf_exempt
 from . import views
 
 urlpatterns = [
-	
-	# api
-	url(r'^contratos/$', csrf_exempt(views.CONTRATO.as_view()),name='contrato'),
-	url(r'^contratos/(?P<id>\d+)$', csrf_exempt(views.CONTRATO.as_view()),name='contrato_con_id'),
 
 	# propuesta
 	url(r'^propuesta/list$', views.PropuestaList.as_view(), name='propuesta_list'),
 	url(r'^propuesta/new$', views.PropuestaNew.as_view(), name='propuesta_new'),
 	url(r'^propuesta/delete/(?P<pk>\d+)$', views.PropuestaDelete.as_view(), name='propuesta_delete'),
 	url(r'^propuesta/update/(?P<pk>\d+)$', views.PropuestaUpdate.as_view(), name='propuesta_update'),
+
+	# propuesta historial
+	url(r'^propuesta/historial/(?P<pk>\d+)$', views.PropuestaHistorialList.as_view(), name='propuesta_historial'),
 
 	# contrato
 	url(r'^contrato/list$', views.ContratoList.as_view(), name='contrato_list'),
@@ -41,12 +40,21 @@ urlpatterns = [
 	url(r'^multa/delete/(?P<pk>\d+)$',views.MultaDelete.as_view(), name='multa_delete'),
 	url(r'^multa/update/(?P<pk>\d+)$',views.MultaUpdate.as_view(), name='multa_update'),
 
-	# contrato_concepto
+	# conceptos contrato
 	url(r'^contrato-concepto/(?P<contrato_id>\d+)$', views.ContratoConceptoNew.as_view(), name='contrato_concepto_new'),
 
 	# funciones
 	url(r'^contratos/inactivos/list$', views.ContratosInactivosList.as_view(), name='contratos_inactivos_list'),
 	url(r'^contratos/(?P<contrato_id>\d+)/pdf$', views.contrato_pdf, name='contrato_pdf'),
 	url(r'^contratos/(?P<contrato_id>\d+)/activar$', views.contrato_activar, name='contrato_activar'),
+	url(r'^funcion/propuesta/enviar_correo$', views.propuesta_enviar_correo, name='propuesta_enviar_correo'),
+
+	# get - contratos
+	url(r'^get/contratos/$', csrf_exempt(views.CONTRATO.as_view()),name='get_contratos'),
+	url(r'^get/contratos/(?P<id>\d+)$', csrf_exempt(views.CONTRATO.as_view()),name='get_contratos'),
+
+	# get - propuestas contrato
+	url(r'^get/propuestas-contrato$', csrf_exempt(views.PROPUESTA_CONTRATO.as_view()),name='get_propuestas'),
+	url(r'^get/propuestas-contrato/(?P<id>\d+)$', csrf_exempt(views.PROPUESTA_CONTRATO.as_view()),name='get_propuestas'),	
 
 ]

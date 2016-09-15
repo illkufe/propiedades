@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.forms.models import inlineformset_factory
-from django.contrib.auth.models import User
-from utilidades.views import NumberField, primer_dia, ultimo_dia
 
-from accounts.models import UserProfile
 from administrador.models import Cliente
 from activos.models import Activo
 from locales.models import Local
 from conceptos.models import Concepto
 from utilidades.models import Moneda
 
-from datetime import datetime, timedelta
-
 from .models import *
+
+from utilidades.views import *
+from datetime import datetime, timedelta
 
 class ContratoTipoForm(forms.ModelForm):
 
@@ -483,6 +481,84 @@ class FondoPromocionForm(forms.ModelForm):
 
 		help_texts = {
 			'periodicidad'	: 'periodicidad',
+		}
+
+
+# propuesta
+class PropuestaForm(forms.ModelForm):
+
+	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
+	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
+	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
+	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
+	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
+	fecha_remodelacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
+	fecha_plazo			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
+	fecha_aviso			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'}, label='Fecha aviso comercial')
+
+	def __init__(self, *args, **kwargs):
+
+		self.request 	= kwargs.pop('request')
+		activos 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa).values_list('id', flat=True)
+
+		super(PropuestaForm, self).__init__(*args, **kwargs)
+
+		if self.instance.pk is not None:
+			locales_id = Contrato.objects.values_list('locales', flat=True).filter(estado=4, visible=True).exclude(id=self.instance.pk)
+		else:
+			locales_id = Contrato.objects.values_list('locales', flat=True).filter(estado=4, visible=True)
+
+		self.fields['locales'].queryset = Local.objects.filter(activo__in=activos, visible=True).exclude(id__in=locales_id)
+		self.fields['cliente'].queryset = Cliente.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		self.fields['tipo'].queryset 	= Contrato_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+	class Meta:
+		model 	= Propuesta_Version
+		fields 	= '__all__'
+		exclude = ['creado_en', 'visible', 'empresa', 'propuesta']
+
+		widgets = {
+			'arriendo_minimo'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'arriendo_variable'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'arriendo_bodega'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'cuota_incorporacion'	: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'fondo_promocion'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'gasto_comun'			: forms.CheckboxInput(attrs={'class': 'form-control'}),
+
+			'numero'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'meses'				: forms.NumberInput(attrs={'class': 'form-control'}),
+			'dias_salida'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'nombre_local'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'destino_comercial'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
+			'tipo' 				: forms.Select(attrs={'class': 'form-control'}),
+			'cliente'			: forms.Select(attrs={'class': 'form-control'}),
+			'locales'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			'conceptos'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+		}
+
+		error_messages = {
+			'numero'			: {'required': 'campo requerido', 'invalid': 'campo invalido'},
+			'nombre_local'		: {'required': 'campo requerido'},
+			'destino_comercial'	: {'required': 'campo requerido'},
+			'meses'				: {'required': 'campo requerido'},
+			'dias_salida'		: {'required': 'campo requerido'},
+			'tipo'				: {'required': 'campo requerido'},
+			'cliente'			: {'required': 'campo requerido'},
+			'locales'			: {'required': 'campo requerido'},
+			'conceptos'			: {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'numero'			: 'Nº Contrato',
+			'nombre_local'		: 'Marca Comercial',
+			'fecha_renovacion'	: 'Fecha Renovación',
+			'tipo' 				: 'Tipo de Contrato',
+		}
+
+		help_texts = {
+			'numero'			: 'numero',
+			'nombre_local' 		: 'nombre local',
+			'destino_comercial' : 'Destino Comercial',
 		}
 
 

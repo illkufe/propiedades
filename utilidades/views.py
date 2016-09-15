@@ -1,14 +1,16 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.template import Context, loader
 from django.template.loader import get_template 
 from django import forms
 from datetime import date, datetime, timedelta
 from suds.client import Client
+from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
 
 import pdfkit
 import calendar
-
-
 
 # variables globales
 def variables_globales(request):
@@ -99,6 +101,24 @@ def formato_numero(valor):
 
 	return moneda
 
+
+def enviar_correo(configuracion):
+
+	try:
+		msg = EmailMultiAlternatives(configuracion['asunto'], 'mensaje', settings.EMAIL_HOST_USER, configuracion['destinatarios'])
+		msg.attach_file('public/media/contratos/propuestas/propuesta_version_'+configuracion['id']+'.pdf')
+		msg.attach_alternative(configuracion['contenido'], "text/html")
+		msg.send()
+
+		estado 	= True
+		mensaje = None
+
+	except Exception as error:
+
+		estado 	= False
+		mensaje = error
+
+	return {'estado':estado, 'mensaje':mensaje}
 
 # funciones globales (pdf)
 def generar_pdf(configuration, data):

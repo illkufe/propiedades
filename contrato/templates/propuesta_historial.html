@@ -1,0 +1,108 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Historial de Propuestas</h5>
+				</div>
+
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table id="tabla-contratos" class="table table-striped table-bordered table-hover" style="width:100%">
+							<thead></thead>
+							<tbody>
+								{% for item in object_list %}
+								<tr>
+									<td>{{ item.id }}</td>
+									<td>{{ item.numero }}</td>
+									<td>{{ item.cliente.nombre }}</td>
+									<td>{{ item.nombre_local }}</td>
+									<td class="text-center"><span class="label">{{ item.tipo }}</span></td>
+									<td class="text-right">{{ item.fecha_inicio }}</td>
+									<td class="text-right">{{ item.fecha_termino }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+var tabla_contratos;
+
+$(document).ready(function(){
+
+	load_tabla_contratos()
+
+});
+
+function load_tabla_contratos(){
+
+	var configuracion = {
+		'searching'	: false,
+		'paginate'	: false,
+		'buttons'	: [],
+	}
+
+	var columns = [
+	{		
+		'data': 'id',
+		'visible': false,
+	},
+	{
+		'width': '5%',
+		'data': 'numero',
+		'title': 'Nº',
+		'orderable': false,
+	},
+	{
+		'width': '15%',
+		'data': 'cliente',
+		'title': 'Cliente',
+		'orderable': false,
+	},
+	{
+		'width': '20%',
+		'data': 'nombre',
+		'title': 'Marca Comercial',
+		'orderable': false,
+	},
+	{
+		'width': '12.5%',
+		'data': 'tipo',
+		'title': 'Tipo',
+		'orderable': false,
+	},
+	{
+		'width': '10%',
+		'data': 'fecha_inicio',
+		'title': 'F.inicio',
+		'orderable': false,
+	},
+	{
+		'width': '10%',
+		'data': 'fecha_termino',
+		'title': 'F.termino',
+		'orderable': false,
+	}];
+
+	tabla_contratos = load_table('#tabla-contratos', columns, configuracion)
+}
+
+</script>
+{% endblock scripts %}
