@@ -1,0 +1,56 @@
+{
+	'fecha_emision': '2016-07-27', 
+	'secuencia': 1, 
+	'control_folios': [{
+							'tipo_documento_cf': '39', 
+							'monto_neto_cf': '1000',
+							'monto_iva_cf': '190', 
+							'tasa_iva_cf': '19',
+							'monto_exento_cf': '0', 
+							'monto_total_cf': '1190', 
+							'folios_emitidos_cf': '334', 
+							'folios_anulados_cf': '100',
+							'folios_utilizados_cf': '434'	
+						},
+						{
+							'tipo_documento_cf': '41', 
+							'monto_neto_cf': '0',
+							'monto_iva_cf': '0', 
+							'tasa_iva_cf': '0',
+							'monto_exento_cf': '0', 
+							'monto_total_cf': '0', 
+							'folios_emitidos_cf': '0', 
+							'folios_anulados_cf': '0',
+							'folios_utilizados_cf': '0'	
+						}], 
+	'rango_anulado': [{
+								'id_rango_anulado': '1', 
+								'tipo_doc_rango_a': '39',
+								'folio_inicial_rango_a': '1', 
+								'folio_final_rango_a': '50'
+							},
+							{
+								'id_rango_anulado': '2', 
+								'tipo_doc_rango_a': '39',
+								'folio_inicial_rango_a': '301', 
+								'folio_final_rango_a': '434'
+							},
+							{
+								'id_rango_anulado': '1', 
+								'tipo_doc_rango_a': '61',
+								'folio_inicial_rango_a': '1', 
+								'folio_final_rango_a': '4'
+							}], 
+	'rango_utilizado': [{
+								'id_rango_utilizado': '1', 
+								'tipo_doc_rango_util': '39',
+								'folio_inicial_rango_util': '1', 
+								'folio_final_rango_util': '50'
+							},
+							{
+								'id_rango_utilizado': '2', 
+								'tipo_doc_rango_util': '39',
+								'folio_inicial_rango_util': '301', 
+								'folio_final_rango_util': '349'
+							}]
+}

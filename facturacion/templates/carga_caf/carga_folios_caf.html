@@ -1,0 +1,126 @@
+{% extends 'index.html' %}
+{% load  staticfiles%}
+{% block section %}
+    {% include 'partials/breadcrumbs-bar.html' %}
+        <div class="row wrapper wrapper-content animated fadeInRight">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Lista de Precios</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <form method="post"  enctype="multipart/form-data" role="form" id="form_carga">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Carga de CAF</label>
+                                        <input type="file" class="filestyle" data-buttonText="Archivo" data-buttonName="btn-primary" name="file" id="file" accept="application/xml">
+                                        <div class="text-danger" id="validacion">
+                                            {{ errores|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <a href="{% url 'facturacion:visualizar_folios_electronicos' %}" class="btn btn-cancel" role="button">
+                                        Cancelar
+                                    </a>
+                                </div>
+                                <div class=" text-right col-md-4 col-md-offset-4">
+                                    <button type="button" onclick="cargar_xml()" class="btn btn-primary">Grabar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock section %}
+{% block Javascript %}
+    <script>
+        $(document).ready(function(){
+            $(":file").filestyle({buttonText: "Find file"});
+
+            $('#file').on("click", function () {
+                $('#validacion').empty();
+            });
+        });
+
+        function cargar_xml() {
+            $('#validacion').empty();
+
+            if(validacion()) {
+                $('#form_carga').ajaxSubmit({
+                    dataType: 'json',
+                    beforeSubmit: function () {
+                        console.log('enviado');
+                    },
+                    success: function (data) {
+                        if (data.success == false) {
+
+                            if (data.funcion == "obtener_datos_conexion"){
+                                var html = "";
+                                html+= data.error + '&nbsp;&nbsp;&nbsp;<a class="btn btn-primary btn-xs" style="width: 115px" href="{% url 'facturacion:crear_configuracion' %}" target="_blank"><i class="fa fa-plus"></i>Crear Conexión</a>';
+                            }
+                            else{
+                                var html = "";
+                                html = data.error
+                            }
+                            swal({
+                                title: "Error Carga CAF",
+                                text: html,
+                                type: "error",
+                                html: true
+                            });
+                        } else {
+                            swal({
+                                title: "Exito",
+                                text: 'Folios cargados exitosamente.',
+                                type: "success",
+                                html: true
+                            });
+                            window.location.href='{% url 'facturacion:visualizar_folios_electronicos' %}'
+                        }
+                    },
+                    error: function (x,y,z) {
+                        console.log(x,y,z);
+                        swal({
+                            title: "Error",
+                            text: y.toString(),
+                            type: "error",
+                            html: true
+                        });
+                    }
+                });
+            }
+            else {
+                html = '';
+                html += '<ul>';
+                for (var i in errores){
+                    html += '<li>' + errores[i] + '</li><br>';
+                }
+                html += '</ul>';
+                $('#validacion').html(html);
+            }
+        }
+
+        function validacion() {
+            errores=[];
+
+            var file = $('#file').val();
+            var flag = true;
+            if (file ==''){
+                var error = 'Debe seleccionar un archivo XML.';
+                errores.push(error);
+                flag=false;
+            }
+            return flag;
+        }
+    </script>
+{% endblock %}
