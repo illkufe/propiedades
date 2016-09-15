@@ -5,10 +5,13 @@ from .models import *
 class ConfiguracionInline(admin.StackedInline):
 	model = Configuracion
 
-class ConfiguracionAdmin(admin.ModelAdmin):
-	inlines = [ ConfiguracionInline, ]
+class ConexionInline(admin.StackedInline):
+	model = Conexion
 
-admin.site.register(Empresa, ConfiguracionAdmin)
+class SettingAdmin(admin.ModelAdmin):
+	inlines = [ ConfiguracionInline, ConexionInline]
+
+admin.site.register(Empresa, SettingAdmin)
 admin.site.register(Cliente)
 admin.site.register(Representante)
 admin.site.register(Conexion)

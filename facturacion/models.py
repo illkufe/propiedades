@@ -8,6 +8,7 @@ class ParametrosFacturacion(models.Model):
     id_fiscal_persona   = models.CharField(max_length=20, null=True, blank=True)
     nombre_persona      = models.CharField(max_length=100, null=True, blank=True)
     codigo_conexion     = models.CharField(max_length=100)
+    motor_emision       = models.ForeignKey('MotorFacturacion', on_delete=models.PROTECT)
 
     class Meta:
         ordering = ["codigo_conexion"]
@@ -64,6 +65,18 @@ class MotorFacturacion(models.Model):
     def __str__(self):
         return '%s' % (self.nombre)
 
+class CodigoConcepto(models.Model):
+
+    codigo      = models.IntegerField()
+    nombre      = models.CharField(max_length=250)
+    descripcion = models.CharField(max_length=250)
+
+    class Meta:
+        ordering = ["nombre"]
+        verbose_name_plural = "Codigos de Conceptos"
+
+    def __str__(self):
+        return '%s' % (self.nombre)
 
 # class DetalleDocumentosEmitidos(models.Model):
 #     aplicacion = models.CharField(max_length=20)

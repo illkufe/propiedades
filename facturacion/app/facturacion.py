@@ -1,7 +1,10 @@
 from django.db import transaction
 from suds.client import Client
 from xml.etree.ElementTree import *
-from facturacion.models import FoliosDocumentosElectronicos, ConexionFacturacion
+
+from facturacion.app.parametros_facturacion import calculo_iva_total_documento
+from facturacion.models import FoliosDocumentosElectronicos, ConexionFacturacion, CodigoConcepto
+from datetime import datetime
 
 import xml.etree.ElementTree as etree
 import sys
@@ -9,6 +12,8 @@ import os
 import suds
 
 
+from procesos.models import Factura
+from utilidades.views import formato_numero_sin_miles
 
 suds_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(suds_path)
@@ -1970,3 +1975,238 @@ def get_log_errores_lcv(client, id_dte_empresa, id_hist_lcv, traza):
     log_errores_lcv = client.service.get_log_errores(id_dte_empresa, id_hist_lcv, traza)
 
     return log_errores_lcv
+
+
+
+## --------- FUNCIONES DE INET
+
+def obtener_datos_conexion_ws_inet(url):
+    """
+        función que permite realizar la obtención de los parametros de conexión para un web service
+        determinado de IDTE
+    :param url: recibe la url
+    :return: retorna un objeto con los datos de conexión
+    """
+    error       = ''
+    conexion    = ''
+
+    try:
+        conexion = ConexionFacturacion.objects.get(codigo_contexto__iexact=url, parametro_facturacion__motor_emision_id=1)
+    except Exception as e:
+        error = "No existen datos de conexión "+str(url)+" del servidor de INET."
+
+    return error, conexion
+
+def armar_xml_inet(request):
+    var_post = request.POST.copy()
+
+    data = list()
+    factura = Factura.objects.get(id=var_post['id'])
+    # obtener datos de conexión
+
+    SDT_DocVentaExt = etree.Element('SDT_DocVentaExt')
+    SDT_DocVentaExt.set('xmlns', 'http://www.informat.cl/ws')
+
+    # SDT_DocVentaExt
+    EncDoc = etree.SubElement(SDT_DocVentaExt, 'EncDoc')
+    DetDoc = etree.SubElement(SDT_DocVentaExt, 'DetDoc')
+    ResumenDoc = etree.SubElement(SDT_DocVentaExt, 'ResumenDoc')
+    Recaudacion = etree.SubElement(SDT_DocVentaExt, 'Recaudacion')
+
+    # SDT_DocVentaExt/EncDoc
+    # SDT_DocVentaExt/EncDoc
+    RefDoc = etree.SubElement(EncDoc, 'RefDoc')
+    Cliente = etree.SubElement(EncDoc, 'Cliente')
+
+    # SDT_DocVentaExt/EncDoc/RefDoc
+    etree.SubElement(RefDoc, 'NroRefCliente').text  = str(factura.numero_documento)+ '-' + str(factura.contrato.empresa.conexion.cod_sucursal) +'-' + datetime.now().__str__()
+    etree.SubElement(RefDoc, 'Modulo').text         = 'IPRO'
+    etree.SubElement(RefDoc, 'NroOrdCom')
+
+    # SDT_DocVentaExt/EncDoc/RefDoc
+    Identificacion = etree.SubElement(Cliente, 'Identificacion')
+    Facturacion = etree.SubElement(Cliente, 'Facturacion')
+
+    # SDT_DocVentaExt/EncDoc/RefDoc/Identificacion
+    etree.SubElement(Identificacion, 'IdCliente').text          = factura.contrato.cliente.rut[:-2].replace('.','')  # SIN DIGITO VERIFICADOR
+    etree.SubElement(Identificacion, 'Nombre_Completo').text    = factura.contrato.cliente.nombre
+    etree.SubElement(Identificacion, 'Secuencia').text          = '0'  # IDENTIIFCAR SI ES CLIENTE O PROVEEDOR
+    etree.SubElement(Identificacion, 'Direccion').text          = factura.contrato.cliente.direccion
+    etree.SubElement(Identificacion, 'Comuna').text             = factura.contrato.cliente.comuna
+    etree.SubElement(Identificacion, 'Ciudad').text             = factura.contrato.cliente.ciudad
+    etree.SubElement(Identificacion, 'Telefono').text           = factura.contrato.cliente.telefono
+    etree.SubElement(Identificacion, 'Email').text              = factura.contrato.cliente.email
+
+    # SDT_DocVentaExt/EncDoc/RefDoc/Facturacion
+    etree.SubElement(Facturacion, 'Moneda').text            = '1'
+    etree.SubElement(Facturacion, 'Tasa').text              = '1'
+    etree.SubElement(Facturacion, 'CondVenta').text         = factura.contrato.empresa.conexion.cod_condicion_venta  # SI ES CONTADO, EN CREDITO ETC
+    etree.SubElement(Facturacion, 'Origen').text            = '2'
+    etree.SubElement(Facturacion, 'DocAGenerar').text       = factura.numero_documento
+    etree.SubElement(Facturacion, 'DocRef').text            = '0'
+    etree.SubElement(Facturacion, 'NroDocRef').text         = '0'
+    etree.SubElement(Facturacion, 'NroDoc').text            = '0'
+    etree.SubElement(Facturacion, 'Estado').text            = '0'
+    etree.SubElement(Facturacion, 'Equipo').text            = '0'  # AVERIGUAR QUE ES
+    etree.SubElement(Facturacion, 'Bodega_Salida').text     = factura.contrato.empresa.conexion.cod_bodega_salida
+    etree.SubElement(Facturacion, 'IdVendedor').text        = factura.contrato.empresa.conexion.cod_vendedor
+    etree.SubElement(Facturacion, 'Sucursal_Cod').text      = factura.contrato.empresa.conexion.cod_sucursal
+    etree.SubElement(Facturacion, 'ListaPrecio_Cod').text   = factura.contrato.empresa.conexion.cod_lista_precio
+    etree.SubElement(Facturacion, 'Fecha_Atencion').text    = '2016-08-19' ## ver fecha
+    etree.SubElement(Facturacion, 'Fecha_Documento').text   = '2016-08-19' ## ver fecha
+
+    # SDT_DocVentaExtDetDoc/DetDoc
+    Items = etree.SubElement(DetDoc, 'Items')
+
+    ## Recuperar detalle de productos de la factura.
+
+    detalle     = factura.factura_detalle_set.all()
+    linea       = 1
+    total_linea = 0
+
+    for d in detalle:
+
+        # SDT_DocVentaExtDetDoc/DetDoc/Items
+        Item = etree.SubElement(Items, 'Item')
+
+        etree.SubElement(Item, 'NumItem').text      = str(linea)
+        etree.SubElement(Item, 'FechaEntrega').text = '0'
+        etree.SubElement(Item, 'PrecioRef').text    = formato_numero_sin_miles(d.total)
+        etree.SubElement(Item, 'Cantidad').text     = '1'
+        etree.SubElement(Item, 'PorcUno').text      = '0'
+        etree.SubElement(Item, 'MontoUno').text     = formato_numero_sin_miles(d.total)
+        etree.SubElement(Item, 'DescDos_Cod').text  = '0'
+        etree.SubElement(Item, 'DescTre_Cod').text  = '0'
+        etree.SubElement(Item, 'MontoImpUno').text  = '0'
+        etree.SubElement(Item, 'PorcImpUno').text   = '0'
+        etree.SubElement(Item, 'MontoImpDos').text  = '0'
+        etree.SubElement(Item, 'PorcImpDos').text   = '0'
+        etree.SubElement(Item, 'TotalDocLin').text  = formato_numero_sin_miles(d.total)
+
+        Producto = etree.SubElement(Item, 'Producto')
+
+        Producto_Vta = etree.SubElement(Producto, 'Producto_Vta').text  = d.concepto.codigo_producto
+        Unidad = etree.SubElement(Producto, 'Unidad').text              = 'Unid'
+
+        linea       += 1
+        total_linea += d.total
+
+    # SDT_DocVentaExtDetDoc/ResumenDoc
+    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = '0'
+    etree.SubElement(ResumenDoc, 'CodigoDescuento').text            = '0'
+    etree.SubElement(ResumenDoc, 'TotalDescuento').text             = '0'
+    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = '0'
+    etree.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text        = '0'
+    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = '-1'
+    TotalConceptos = etree.SubElement(ResumenDoc, 'TotalConceptos')
+
+    # SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
+
+    conceptos   = CodigoConcepto.objects.all().order_by('id')
+    valores     = calculo_iva_total_documento(total_linea, 19)
+    aux         = 0
+    for a in conceptos:
+        # CREAR UN FOR
+        Conceptos = etree.SubElement(TotalConceptos, 'Conceptos')
+        etree.SubElement(Conceptos, 'Concepto_Cod').text    = a.codigo
+        etree.SubElement(Conceptos, 'ValorConcepto').text   = valores[aux]
+        aux += 1
+
+
+    # Recaudacion
+    Encabezado = etree.SubElement(Recaudacion, 'Encabezado')
+    Detalle = etree.SubElement(Recaudacion, 'Detalle')
+
+    # Recaudacion/Encabezado
+    etree.SubElement(Encabezado, 'IdCajero')
+    etree.SubElement(Encabezado, 'Tipo_Vuelto')
+    etree.SubElement(Encabezado, 'IdCliente')
+    etree.SubElement(Encabezado, 'DigitoVerificador')
+    etree.SubElement(Encabezado, 'NombreCompleto')
+    etree.SubElement(Encabezado, 'Direccion')
+    etree.SubElement(Encabezado, 'Ciudad')
+    etree.SubElement(Encabezado, 'Comuna')
+    etree.SubElement(Encabezado, 'Telefono')
+    etree.SubElement(Encabezado, 'Email')
+    etree.SubElement(Encabezado, 'TotalaRecaudar')
+    RecaudacionEnc_ext = etree.SubElement(Encabezado, 'RecaudacionEnc_ext')
+
+    # Recaudacion/Encabezado/RecaudacionEnc_ext
+    REnExt_Item = etree.SubElement(RecaudacionEnc_ext, 'REnExt_Item')
+    etree.SubElement(REnExt_Item, 'RecEnc_opcion')
+    etree.SubElement(REnExt_Item, 'RecEnd_datos')
+
+    # Recaudacion/Detalle/FormaPago
+    FormaPago = etree.SubElement(Detalle, 'FormaPago')
+    etree.SubElement(FormaPago, 'Cod_FormaPago')
+    etree.SubElement(FormaPago, 'Cod_MonedaFP')
+    etree.SubElement(FormaPago, 'NroCheque')
+    etree.SubElement(FormaPago, 'FechaCheque')
+    etree.SubElement(FormaPago, 'FechaVencto')
+    etree.SubElement(FormaPago, 'Cod_Banco')
+    etree.SubElement(FormaPago, 'Cod_Plaza')
+    etree.SubElement(FormaPago, 'Referencia')
+    etree.SubElement(FormaPago, 'MontoaRec')
+    etree.SubElement(FormaPago, 'ParidadRec')
+
+    xml = etree.tostring(SDT_DocVentaExt, short_empty_elements=False, method='xml')
+    error = ''
+    resultado = [
+        error,
+        xml
+    ]
+
+    return resultado
+
+def url_web_service_inet(**kwargs):
+    """
+        función que permite realizar el armado de la url a conectarse al web services en especifico
+    :param kwargs: datos de conexión del web service
+    :return: url de conexión
+    """
+    error           = ''
+    url_conexion    = ''
+    try:
+        codigo = kwargs['codigo_contexto']
+        host = kwargs['host']
+        url  = kwargs['url']
+        puerto = kwargs['puerto']
+
+        url_conexion = 'http://' + str(host).strip() + ':' + str(puerto).strip() + '/' + str(url).strip() + '/servlet/' + str(codigo).strip() + '?wsdl'
+    except Exception:
+        error = "Error al realizar el armado de la URL de conexión Web Service INET"
+
+    resultado = [
+        error,
+        url_conexion
+    ]
+    return resultado
+
+def call_service_inet(url):
+    """
+        esta funcion realiza la conexión con el servidor que contiene los Web Services de IDTE.
+    :param url: url de conexión del WSDL
+    :return: retorna el client con la conexion y una variable de error.
+    """
+    error = ''
+    client = ''
+
+    try:
+        client = Client(url, timeout=15)
+    except suds.WebFault as detail:
+        error = str(detail.fault)
+    except Exception as e:
+        error = "No se pudo realizar la conexion con el servidor de INET, por favor verifique los datos."
+
+    resultado = [
+        error,
+        client
+
+    ]
+    return resultado
+
+def envio_documento_inet(client1, xml_documento):
+
+    response_ws = client1.service.Execute(xml_documento.decode())
+
+    return response_ws

@@ -5,4 +5,6 @@ from facturacion.models import *
 admin.site.register(ParametrosFacturacion)
 admin.site.register(ConexionFacturacion)
 admin.site.register(FoliosDocumentosElectronicos)
+admin.site.register(MotorFacturacion)
+admin.site.register(CodigoConcepto)
 

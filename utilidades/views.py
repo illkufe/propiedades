@@ -99,6 +99,15 @@ def formato_numero(valor):
 
 	return moneda
 
+def formato_numero_sin_miles(valor):
+
+	moneda = '{:.2f}'.format(valor)
+    #
+	# moneda = moneda.replace('.', ',')
+
+
+	return moneda
+
 
 # funciones globales (pdf)
 def generar_pdf(configuration, data):

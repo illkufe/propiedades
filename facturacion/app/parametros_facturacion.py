@@ -3,25 +3,31 @@ from django.db.models import *
 from django.db import transaction
 import json
 
+from utilidades.views import formato_numero_sin_miles
+from administrador.views import Cliente
+
+
 @transaction.atomic()
 def guarda_parametros_facturacion(**kwargs):
 
-    persona = kwargs['persona']
-    codigo_conexion = kwargs['codigo_conexion']
-    detalle_conexion = kwargs['detalle_conexion']
+    persona             = kwargs['persona']
+    codigo_conexion     = kwargs['codigo_conexion']
+    motor_emision       = kwargs['motor_emision']
+    detalle_conexion    = kwargs['detalle_conexion']
     id_parametro = 0
     error = ''
 
     detalle = json.loads(detalle_conexion)
 
     try:
-        datos_persona = Personas.objects.get(id=persona)
+        datos_persona = Cliente.objects.get(id=persona)
 
         parametro = ParametrosFacturacion()
-        parametro.persona_id = persona
-        parametro.id_fiscal_persona = datos_persona.id_Fiscal
-        parametro.nombre_persona = datos_persona.Razon_Social
-        parametro.codigo_conexion = codigo_conexion
+        parametro.persona_id            = persona
+        parametro.id_fiscal_persona     = datos_persona.id_Fiscal
+        parametro.nombre_persona        = datos_persona.Razon_Social
+        parametro.codigo_conexion       = codigo_conexion
+        parametro.motor_emision_id      = motor_emision
         parametro.save()
 
         id_parametro = parametro.id
@@ -34,10 +40,10 @@ def guarda_parametros_facturacion(**kwargs):
             for a in detalle:
                 conexion = ConexionFacturacion()
                 conexion.parametro_facturacion_id = id_parametro
-                conexion.codigo_contexto = a['codigo_contexto']
-                conexion.host = a['host']
-                conexion.url = a['url']
-                conexion.puerto = a['puerto']
+                conexion.codigo_contexto    = a['codigo_contexto']
+                conexion.host               = a['host']
+                conexion.url                = a['url']
+                conexion.puerto             = a['puerto']
                 conexion.save()
 
         except Exception as e:
@@ -48,22 +54,24 @@ def guarda_parametros_facturacion(**kwargs):
 @transaction.atomic()
 def editar_parametros_facturacion(**kwargs):
 
-    persona = kwargs['persona']
-    codigo_conexion = kwargs['codigo_conexion']
-    detalle_conexion = kwargs['detalle_conexion']
-    id_parametro = kwargs['id_parametro']
+    persona             = kwargs['persona']
+    codigo_conexion     = kwargs['codigo_conexion']
+    detalle_conexion    = kwargs['detalle_conexion']
+    motor_emision       = kwargs['motor_emision']
+    id_parametro        = kwargs['id_parametro']
     error = ''
 
     detalle = json.loads(detalle_conexion)
 
     try:
-        datos_persona = Personas.objects.get(id=persona)
+        datos_persona = Cliente.objects.get(id=persona)
 
         parametro = ParametrosFacturacion.objects.get(id=id_parametro)
-        parametro.persona_id = persona
+        parametro.persona_id        = persona
         parametro.id_fiscal_persona = datos_persona.id_Fiscal
-        parametro.nombre_persona = datos_persona.Razon_Social
-        parametro.codigo_conexion = codigo_conexion
+        parametro.nombre_persona    = datos_persona.Razon_Social
+        parametro.codigo_conexion   = codigo_conexion
+        parametro.motor_emision_id  = motor_emision
         parametro.save()
 
     except Exception as e:
@@ -77,10 +85,10 @@ def editar_parametros_facturacion(**kwargs):
                 if a['id_detalle'] == '':
                     nuevo_conexion = ConexionFacturacion()
                     nuevo_conexion.parametro_facturacion_id = id_parametro
-                    nuevo_conexion.codigo_contexto = a['codigo_contexto']
-                    nuevo_conexion.host = a['host']
-                    nuevo_conexion.url = a['url']
-                    nuevo_conexion.puerto = a['puerto']
+                    nuevo_conexion.codigo_contexto  = a['codigo_contexto']
+                    nuevo_conexion.host             = a['host']
+                    nuevo_conexion.url              = a['url']
+                    nuevo_conexion.puerto           = a['puerto']
                     nuevo_conexion.save()
 
                 else:
@@ -89,11 +97,11 @@ def editar_parametros_facturacion(**kwargs):
                         delete_conexion.delete()
                     else:
                         editar_conexion = ConexionFacturacion(id=a['id_detalle'])
-                        editar_conexion.parametro_facturacion_id = id_parametro
-                        editar_conexion.codigo_contexto = a['codigo_contexto']
-                        editar_conexion.host = a['host']
-                        editar_conexion.url = a['url']
-                        editar_conexion.puerto = a['puerto']
+                        editar_conexion.parametro_facturacion_id    = id_parametro
+                        editar_conexion.codigo_contexto             = a['codigo_contexto']
+                        editar_conexion.host                        = a['host']
+                        editar_conexion.url                         = a['url']
+                        editar_conexion.puerto                      = a['puerto']
                         editar_conexion.save()
 
         except Exception as e:
@@ -107,8 +115,9 @@ def calculo_iva_total_documento(valor_neto, tasa_iva):
     valor_total = valor_neto + valor_iva
 
     valores = [
-        valor_iva,
-        valor_total
+        formato_numero_sin_miles(valor_neto),
+        formato_numero_sin_miles(valor_iva),
+        formato_numero_sin_miles(valor_total)
     ]
 
     return valores

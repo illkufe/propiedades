@@ -122,8 +122,8 @@ class ActivoUpdate(ActivoMixin, UpdateView):
 
 		queryset = Activo.objects.get(id=int(self.kwargs['pk']))
 
-		if queryset.fecha_firma_nomina:
-			queryset.fecha_firma_nomina = queryset.fecha_firma_nomina.strftime('%d/%m/%Y')
+		# if queryset.fecha_firma_nomina:
+		# 	queryset.fecha_firma_nomina = queryset.fecha_firma_nomina.strftime('%d/%m/%Y')
 		if queryset.fecha_escritura:
 			queryset.fecha_escritura = queryset.fecha_escritura.strftime('%d/%m/%Y')
 		if queryset.fecha_adquisicion:

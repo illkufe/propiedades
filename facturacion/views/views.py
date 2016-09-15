@@ -14,6 +14,7 @@ from facturacion.models import *
 
 from administrador.views import Cliente, Empresa
 from procesos.models import Factura
+from utilidades.views import formato_numero_sin_miles
 
 from datetime import timedelta
 
@@ -23,6 +24,7 @@ import xml.etree.ElementTree as etree
 
 
 ##-------------------------TIPOS DE PRODUCTOS---------------------------------------------------------------------------
+
 
 
 def visualizar_configuracion(request):
@@ -96,6 +98,7 @@ def crear_configuracion(request):
             kwargs['persona'] = request.POST.get('persona')
             kwargs['codigo_conexion'] = request.POST.get('codigo_conexion')
             kwargs['detalle_conexion'] = request.POST.get('detalle_conexion')
+            kwargs['motor_emision'] = request.POST.get('motor_emision')
 
             error = guarda_parametros_facturacion(**kwargs)
             if not error:
@@ -162,10 +165,11 @@ def editar_configuracion(request, pk):
         parametro = ParametrosFacturacionForms(request.POST, instance=parametro)
         if parametro.is_valid():
 
-            kwargs['id_parametro'] = request.POST.get('id_parametro')
-            kwargs['persona'] = request.POST.get('persona')
-            kwargs['codigo_conexion'] = request.POST.get('codigo_conexion')
-            kwargs['detalle_conexion'] = request.POST.get('detalle_conexion')
+            kwargs['id_parametro']      = request.POST.get('id_parametro')
+            kwargs['persona']           = request.POST.get('persona')
+            kwargs['codigo_conexion']   = request.POST.get('codigo_conexion')
+            kwargs['motor_emision']     = request.POST.get('motor_emision')
+            kwargs['detalle_conexion']  = request.POST.get('detalle_conexion')
 
             error = editar_parametros_facturacion(**kwargs)
 
@@ -1488,6 +1492,7 @@ def envio_documento_tributario_electronico(**kwargs):
 
                                                                 ##Actualizacion del folio en la base de datos ----------
                                                                 transaction.commit()
+                                                                transaction.connections.close_all()
                                                                 #-------------------------------------------------------
 
                                                                 datos_estado = estado.valor.split('|')
@@ -1503,6 +1508,7 @@ def envio_documento_tributario_electronico(**kwargs):
                                                                     if archivo.dio_error == False:
                                                                         data = {
                                                                             'success': True,
+                                                                            'folio' : folio_documento,
                                                                             'error': '',
                                                                             'estado_sii': '',
                                                                             'msg_sii': '',
@@ -1558,7 +1564,9 @@ def envio_documento_tributario_electronico(**kwargs):
                                                             return data
                                                     else:
                                                         ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
+                                                        # connection.rollback()
                                                         transaction.rollback()
+                                                        transaction.connections.close_all()
                                                         ##------------------------------------------------------------------
                                                         data = {
                                                             'success': False,
@@ -1572,8 +1580,8 @@ def envio_documento_tributario_electronico(**kwargs):
                                                         return data
                                                 except suds.WebFault as w:
                                                     ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla----
-                                                    connection.rollback()
-                                                    connection.close()
+                                                    transaction.rollback()
+                                                    transaction.connections.close_all()
                                                     ##----------------------------------------------------------------------
                                                     error = w.args[0].decode("utf-8")
                                                     data = {
@@ -1589,6 +1597,7 @@ def envio_documento_tributario_electronico(**kwargs):
                                             else:
                                                 ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                                                 transaction.rollback()
+                                                transaction.connections.close_all()
                                                 ##------------------------------------------------------------------
                                                 data = {
                                                     'success': False,
@@ -1603,6 +1612,7 @@ def envio_documento_tributario_electronico(**kwargs):
                                         except suds.WebFault as w:
                                             ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                                             transaction.rollback()
+                                            transaction.connections.close_all()
                                             ##------------------------------------------------------------------
                                             error = w.args[0].decode("utf-8")
                                             data = {
@@ -1620,6 +1630,7 @@ def envio_documento_tributario_electronico(**kwargs):
 
                                         ##Actualizacion del folio en la base de datos --------------------------------------
                                         transaction.commit()
+                                        transaction.connections.close_all()
                                         # ----------------------------------------------------------------------------------
 
                                         datos_estado = estado.valor.split('|')
@@ -1654,6 +1665,7 @@ def envio_documento_tributario_electronico(**kwargs):
                                 except suds.WebFault as w:
                                     ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                                     transaction.rollback()
+                                    transaction.connections.close_all()
                                     ##------------------------------------------------------------------
                                     error = w.args[0].decode("utf-8")
                                     data = {
@@ -1670,6 +1682,7 @@ def envio_documento_tributario_electronico(**kwargs):
                             else:
                                 ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                                 transaction.rollback()
+                                transaction.connections.close_all()
                                 ##------------------------------------------------------------------
                                 data = {
                                     'success': False,
@@ -1685,6 +1698,7 @@ def envio_documento_tributario_electronico(**kwargs):
                         else:
                             ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                             transaction.rollback()
+                            transaction.connections.close_all()
                             ##------------------------------------------------------------------
                             data = {
                                 'success': False,
@@ -1700,6 +1714,7 @@ def envio_documento_tributario_electronico(**kwargs):
                     else:
                         ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                         transaction.rollback()
+                        transaction.connections.close_all()
                         ##------------------------------------------------------------------
                         data = {
                             'success': False,
@@ -1715,6 +1730,7 @@ def envio_documento_tributario_electronico(**kwargs):
                 else:
                     ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                     transaction.rollback()
+                    transaction.connections.close_all()
                     ##------------------------------------------------------------------
                     data = {
                         'success': False,
@@ -1729,6 +1745,7 @@ def envio_documento_tributario_electronico(**kwargs):
             else:
                 ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                 transaction.rollback()
+                transaction.connections.close_all()
                 ##------------------------------------------------------------------
                 data = {
                     'success': False,
@@ -3758,188 +3775,90 @@ def consulta_estado_control_folios(fecha_emision, secuencia):
 
 
 ##---------------------------- MANEJO DE FACTURACION LEASE -------------------------------------------------------------
-def propuesta_enviar(request):
-    var_post = request.POST.copy()
+def envio_factura_inet(request):
 
-    data = list()
-    factura = Factura.objects.get(id=var_post['id'])
-    # obtener datos de conexión
+    datos_conexion      = {}
+    resultado_xml = armar_xml_inet(request)
 
-    SDT_DocVentaExt = etree.Element('SDT_DocVentaExt')
-    SDT_DocVentaExt.set('xmlns', 'http://www.informat.cl/ws')
+    if not resultado_xml[0]:
 
-    # SDT_DocVentaExt
-    EncDoc = etree.SubElement(SDT_DocVentaExt, 'EncDoc')
-    DetDoc = etree.SubElement(SDT_DocVentaExt, 'DetDoc')
-    ResumenDoc = etree.SubElement(SDT_DocVentaExt, 'ResumenDoc')
-    Recaudacion = etree.SubElement(SDT_DocVentaExt, 'Recaudacion')
+        ##Obtener datos de conexion IDTE -------------------------------------------------------------------------------
+        error, conexion = obtener_datos_conexion_ws_inet('axmldocvtaext')
 
-    # SDT_DocVentaExt/EncDoc
-    # SDT_DocVentaExt/EncDoc
-    RefDoc = etree.SubElement(EncDoc, 'RefDoc')
-    Cliente = etree.SubElement(EncDoc, 'Cliente')
+        if not error:
+            datos_conexion['codigo_contexto'] = conexion.codigo_contexto
+            datos_conexion['host'] = conexion.host
+            datos_conexion['url'] = conexion.url
+            datos_conexion['puerto'] = conexion.puerto
 
-    # SDT_DocVentaExt/EncDoc/RefDoc
-    etree.SubElement(RefDoc, 'NroRefCliente')
-    etree.SubElement(RefDoc, 'Modulo')
-    etree.SubElement(RefDoc, 'NroOrdCom')
+            # Armar URL de conexion del Web Services -------------------------------------------------------------------
+            resultado_url = url_web_service_inet(**datos_conexion)
 
-    # SDT_DocVentaExt/EncDoc/RefDoc
-    Identificacion = etree.SubElement(Cliente, 'Identificacion')
-    Facturacion = etree.SubElement(Cliente, 'Facturacion')
+            if not resultado_url[0]:
 
-    # SDT_DocVentaExt/EncDoc/RefDoc/Identificacion
-    etree.SubElement(Identificacion, 'IdCliente').text = '77304990'
-    etree.SubElement(Identificacion, 'Nombre_Completreeo').text = 'VALVERDE NORAMBUENA SPA'
-    etree.SubElement(Identificacion, 'Secuencia').text = '1'  # IDENTIIFCAR SI ES CLIENTE O PROVEEDOR
-    etree.SubElement(Identificacion, 'Direccion').text = 'JOSE M.ESCRIBA BALAGER 13105, OF 813'
-    etree.SubElement(Identificacion, 'Comuna').text = 'LO BARNECHEA'
-    etree.SubElement(Identificacion, 'Ciudad').text = 'SANTIAGO'
-    etree.SubElement(Identificacion, 'Telefono')
-    etree.SubElement(Identificacion, 'Email')
+                ## Conectarse a Web Service de IDTE---------------------------------------------------------------------
 
-    # SDT_DocVentaExt/EncDoc/RefDoc/Facturacion
-    etree.SubElement(Facturacion, 'Moneda').text = '1'
-    etree.SubElement(Facturacion, 'Tasa').text = '1'
-    etree.SubElement(Facturacion, 'CondVenta').text = '0'  # SI ES CONTADO, EN CREDITO ETC
-    etree.SubElement(Facturacion, 'Origen').text = '0'
-    etree.SubElement(Facturacion, 'DocAGenerar').text = '200'
-    etree.SubElement(Facturacion, 'DocRef').text = '0'
-    etree.SubElement(Facturacion, 'NroDocRef').text = '0'
-    etree.SubElement(Facturacion, 'NroDoc').text = '0'
-    etree.SubElement(Facturacion, 'Estado').text = '0'
-    etree.SubElement(Facturacion, 'Equipo').text = '1'  # AVERIGUAR QUE ES
-    etree.SubElement(Facturacion, 'Bodega_Salida').text = '1'
-    etree.SubElement(Facturacion, 'IdVendedor').text = '6395133'
-    etree.SubElement(Facturacion, 'Sucursal_Cod').text = '1'
-    etree.SubElement(Facturacion, 'ListaPrecio_Cod')
-    etree.SubElement(Facturacion, 'Fecha_Atencion').text = '2016-08-19'
-    etree.SubElement(Facturacion, 'Fecha_Documento').text = '2016-08-19'
+                resultado_call = call_service_inet(resultado_url[1])
 
-    # SDT_DocVentaExtDetDoc/DetDoc
-    Items = etree.SubElement(DetDoc, 'Items')
+                if not resultado_call[0]:
 
-    # SDT_DocVentaExtDetDoc/DetDoc/Items
-    Item = etree.SubElement(Items, 'Item')
 
-    etree.SubElement(Item, 'NumItem').text = '1'
-    etree.SubElement(Item, 'FechaEntrega').text = '0'
-    etree.SubElement(Item, 'PrecioRef').text = '1000'
-    etree.SubElement(Item, 'Cantidad').text = '1'
-    etree.SubElement(Item, 'PorcUno').text = '0'
-    etree.SubElement(Item, 'MontoUno').text = '1000'
-    etree.SubElement(Item, 'DescDos_Cod').text = '0'
-    etree.SubElement(Item, 'DescTre_Cod')
-    etree.SubElement(Item, 'MontoImpUno').text = '0'
-    etree.SubElement(Item, 'PorcImpUno').text = '0'
-    etree.SubElement(Item, 'MontoImpDos').text = '0'
-    etree.SubElement(Item, 'PorcImpDos').text = '0'
-    etree.SubElement(Item, 'TotalDocLin').text = '1000'
+                    try:
+                        response_ws = envio_documento_inet(resultado_call[1], resultado_xml[1])
+                        data = {
+                            'success': True,
+                            'error': '',
+                            'respuesta': response_ws
+                        }
+                        return data
 
-    Producto = etree.SubElement(Item, 'Producto')
 
-    Producto_Vta = etree.SubElement(Producto, 'Producto_Vta').text = '01010045001217'
-    Unidad = etree.SubElement(Producto, 'Unidad').text = 'Unid'
+                    except suds.WebFault as w:
+                        ##----------------------------------------------------------------------------------------------
+                        error = w.args[0].decode("utf-8")
+                        data = {
+                            'success': False,
+                            'error': error,
+                        }
 
-    # SDT_DocVentaExtDetDoc/ResumenDoc
-    etree.SubElement(ResumenDoc, 'TotalNeto').text = '1000'
-    etree.SubElement(ResumenDoc, 'CodigoDescuento')
-    etree.SubElement(ResumenDoc, 'TotalDescuento').text = '0'
-    etree.SubElement(ResumenDoc, 'TotalIVA').text = '190'
-    etree.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text = '0'
-    etree.SubElement(ResumenDoc, 'TotalDoc').text = '1190'
-    TotalConceptos = etree.SubElement(ResumenDoc, 'TotalConceptos')
+                        return data
+                else:
 
-    # SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
-    # CREAR UN FOR
-    Conceptos = etree.SubElement(TotalConceptos, 'Conceptos')
-    etree.SubElement(Conceptos, 'Concepto_Cod').text = '200'
-    etree.SubElement(Conceptos, 'ValorConcepto').text = '1190'
+                    ##--------------------------------------------------------------------------------------------------
+                    data = {
+                        'success'   : False,
+                        'error'     : resultado_call[0],
+                    }
 
-    Conceptos = etree.SubElement(TotalConceptos, 'Conceptos')
-    etree.SubElement(Conceptos, 'Concepto_Cod').text = '170'
-    etree.SubElement(Conceptos, 'ValorConcepto').text = '190'
-
-    Conceptos = etree.SubElement(TotalConceptos, 'Conceptos')
-    etree.SubElement(Conceptos, 'Concepto_Cod').text = '100'
-    etree.SubElement(Conceptos, 'ValorConcepto').text = '1000'
-
-    # Recaudacion
-    Encabezado = etree.SubElement(Recaudacion, 'Encabezado')
-    Detalle = etree.SubElement(Recaudacion, 'Detalle')
-
-    # Recaudacion/Encabezado
-    etree.SubElement(Encabezado, 'IdCajero')
-    etree.SubElement(Encabezado, 'Tipo_Vuelto')
-    etree.SubElement(Encabezado, 'IdCliente')
-    etree.SubElement(Encabezado, 'DigitoVerificador')
-    etree.SubElement(Encabezado, 'NombreCompleto')
-    etree.SubElement(Encabezado, 'Direccion')
-    etree.SubElement(Encabezado, 'Ciudad')
-    etree.SubElement(Encabezado, 'Comuna')
-    etree.SubElement(Encabezado, 'Telefono')
-    etree.SubElement(Encabezado, 'Email')
-    etree.SubElement(Encabezado, 'TotalaRecaudar')
-    RecaudacionEnc_ext = etree.SubElement(Encabezado, 'RecaudacionEnc_ext')
-
-    # Recaudacion/Encabezado/RecaudacionEnc_ext
-    REnExt_Item = etree.SubElement(RecaudacionEnc_ext, 'REnExt_Item')
-    etree.SubElement(REnExt_Item, 'RecEnc_opcion')
-    etree.SubElement(REnExt_Item, 'RecEnd_datos')
-
-    # Recaudacion/Detalle/FormaPago
-    FormaPago = etree.SubElement(Detalle, 'FormaPago')
-    etree.SubElement(FormaPago, 'Cod_FormaPago')
-    etree.SubElement(FormaPago, 'Cod_MonedaFP')
-    etree.SubElement(FormaPago, 'NroCheque')
-    etree.SubElement(FormaPago, 'FechaCheque')
-    etree.SubElement(FormaPago, 'FechaVencto')
-    etree.SubElement(FormaPago, 'Cod_Banco')
-    etree.SubElement(FormaPago, 'Cod_Plaza')
-    etree.SubElement(FormaPago, 'Referencia')
-    etree.SubElement(FormaPago, 'MontoaRec')
-    etree.SubElement(FormaPago, 'ParidadRec')
-
-    xml = etree.tostring(SDT_DocVentaExt, short_empty_elements=False, method='xml')
-    url = 'http://192.168.231.114:8080/ws_inet_clp/servlet/axmldocvtaext?wsdl'
-    client1 = Client(url)
-    response_ws = client1.service.Execute(xml.decode())
-    response = list()
-
-    if len(response_ws.SDT_ERRORES_ERROR) == 1:
-        for error in response_ws.SDT_ERRORES_ERROR:
-            if int(error.NUMERROR) == 0:
-                estado = True
-                root = etree.fromstring(error.DESCERROR)
-                response.append({
-                    'codigo': root.find('{http://www.informat.cl/ws}ATENUMREA').text,
-                    'estado': root.find('{http://www.informat.cl/ws}COD_ESTADO').text,
-                })
-                factura.estado_id = 2
+                    return data
             else:
-                estado = False
-                response.append({
-                    'numero' 	: error.NUMERROR,
-                    'descripcion' 	: error.DESCERROR,
-                })
-                factura.estado_id = 3
+
+                ##------------------------------------------------------------------------------------------------------
+                data = {
+                    'success'   : False,
+                    'error'     : resultado_url[0],
+                }
+
+                return data
+        else:
+
+            ##----------------------------------------------------------------------------------------------------------
+            data = {
+                'success': False,
+                'error': error,
+            }
+
+            return data
     else:
-        estado = False
-        factura.estado_id = 3
-        for error in response_ws.SDT_ERRORES_ERROR:
-            response.append({
-                'numero' 		: error.NUMERROR,
-                'descripcion' 	: error.DESCERROR,
-            })
-
-    factura.save()
-    data.append({'estado'	: estado,
-        'response'	:response,
-    })
-
-    return JsonResponse(data, safe=False)
+        ##--------------------------------------------------------------------------------------------------------------
+        data = {
+            'success'   : False,
+            'error'     : resultado_xml[0],
+        }
+        return data
 
 def armar_dict_documento(request):
+    #TODO cambiar giro de empresa
 
     try:
 
@@ -3950,21 +3869,19 @@ def armar_dict_documento(request):
         lista_detalle       = list()
         lista_total         = list()
         lista_referencias   = list()
+        error               = ''
 
         kwargs              = {}
-        data                = {}
 
         var_post    = request.POST.copy()
-        factura     = Factura.objects.get(id=var_post['id'])
+        factura_xml = Factura.objects.get(id=var_post['id'])
 
         profile = UserProfile.objects.get(user=request.user)
         empresa = Empresa.objects.get(id=profile.empresa_id)
 
 
-
-
         lista_cabecera.append({
-            'fecha_emision'             : factura.fecha_inicio.strftime('%Y-%m-%d'), ## fecha emision contable
+            'fecha_emision'             : factura_xml.fecha_inicio.strftime('%Y-%m-%d'), ## fecha emision contable
             'ind_no_rebaja'             : str(0), ## Solo nota de credito
             'tipo_despacho'             : str(0), ## Acompaña despacho de productos por vendedor
             'indicador_traslado'        : str(0), ## Solo para guias de despacho
@@ -3985,7 +3902,7 @@ def armar_dict_documento(request):
             'termino_pago_codigo'       : '',     ## codigo acordado empresas, ind terminos de referencia fecha recep factura o fecha entrega mercaderia
             'termino_pago_glosa'        : '',     ## GLosa describe las condiciones de pago
             'termino_pago_dias'         : '',     ## Cant. dias termino pago
-            'fecha_vecimiento'          : factura.fecha_termino.strftime('%Y-%m-%d'), ##fecha vencimiento
+            'fecha_vecimiento'          : factura_xml.fecha_termino.strftime('%Y-%m-%d'), ##fecha vencimiento
             'rut_mandante'              : '',
             'rut_solicitante'           : '',
             'indicador_monto_neto'      : '0',
@@ -3994,11 +3911,11 @@ def armar_dict_documento(request):
 
         lista_emisor.append({
             'rut_emisor'                : str(empresa.rut).replace('.', '').upper(),
-            'razon_social_emisor'       : str(empresa.razon_social).upper(),
-            'giro_emisor'               : 'ARRIENDO DE INMUEBLES AMOBLADOS O CON EQUIPOS Y MAQUINARIAS', #str(empresa.giro.descripcion)
+            'razon_social_emisor'       : str(empresa.nombre).upper(),
+            'giro_emisor'               : str(empresa.giro.descripcion), #'ARRIENDO DE INMUEBLES AMOBLADOS O CON EQUIPOS Y MAQUINARIAS',
             'telefono_emisor'           : str(empresa.telefono),
-            'correo_emisor'             : '',
-            'acteco'                    : '701001', #str(empresa.giro.codigo)
+            'correo_emisor'             : str(empresa.email),
+            'acteco'                    : str(empresa.giro.codigo),  #'701001'
             'codigo_traslado'           : '0',
             'folio_autorizado'          : '0',
             'fecha_autorizacion'        : '0',
@@ -4007,56 +3924,58 @@ def armar_dict_documento(request):
             'codigo_adicional_suc'      : '',
             'direccion_emisor'          : str(empresa.direccion),
             'comuna_origen'             : str(empresa.comuna),
-            'ciudad_origen'             : str(empresa.cuidad),
+            'ciudad_origen'             : str(empresa.ciudad),
             'codigo_vendedor'           : '',
             'ident_adicional_emisor'    : '',
         })
 
         lista_receptor.append({
-            'rut_receptor'              : str(factura.contrato.cliente.rut).replace('.', '').upper(),
-            'codigo_interno_receptor'   : str(factura.contrato.cliente.rut).upper(),
-            'razon_receptor'            : str(factura.contrato.cliente.razon_social).upper(),
+            'rut_receptor'              : str(factura_xml.contrato.cliente.rut).replace('.', '').upper(),
+            'codigo_interno_receptor'   : str(factura_xml.contrato.cliente.rut).replace('.', '').upper(),
+            'razon_receptor'            : str(factura_xml.contrato.cliente.razon_social).upper(),
             'num_ident_extranjero'      : '',
             'nacionalidad'              : '',
             'ident_adicional_receptor'  : '',
-            'giro_receptor'             : str(factura.contrato.cliente.giro).upper(),
+            'giro_receptor'             : str(factura_xml.contrato.cliente.giro).upper(),
             'contacto_receptor'         : '',
-            'correo_receptor'           : str(factura.contrato.cliente.email),
-            'direccion_receptor'        : str(factura.contrato.cliente.direccion).upper(),
-            'comuna_receptor'           : str(factura.contrato.cliente.comuna).upper(),
-            'cuidad_receptor'           : str(factura.contrato.cliente.ciudad).upper(),
+            'correo_receptor'           : str(factura_xml.contrato.cliente.email),
+            'direccion_receptor'        : str(factura_xml.contrato.cliente.direccion).upper(),
+            'comuna_receptor'           : str(factura_xml.contrato.cliente.comuna).upper(),
+            'cuidad_receptor'           : str(factura_xml.contrato.cliente.ciudad).upper(),
             'direccion_postal'          : '',
             'comuna_postal'             : '',
             'cuidad_postal'             : '',
         })
 
 
-        detalle = factura.factura_detalle_set.all()
+        detalle = factura_xml.factura_detalle_set.all()
 
-        linea = 1
+        linea       = 1
+        total_linea = 0
+
         for d in detalle:
 
             lista_detalle.append({
                 'nro_linea'                 : str(linea),
                 'tipo_documento_liq'        : '',
                 'ind_exencion'              : '0',
-                'nombre_item'               : str(d.producto.descripcion).upper(),
-                'descripcion_item'          : str(d.producto.detalle).upper(),
-                'cantidad_referencia'       : str(d.cantidad),
-                'unidad_medida_ref'         : str(d.unidad_medida),
-                'precio_referencia'         : str(d.precio),
-                'cantidad_item'             : str(d.cantidad),
+                'nombre_item'               : str(d.concepto.nombre).upper(),
+                'descripcion_item'          : str(d.concepto.descripcion).upper(),
+                'cantidad_referencia'       : '1',
+                'unidad_medida_ref'         : '',#str(d.concepto)
+                'precio_referencia'         : formato_numero_sin_miles(d.total),
+                'cantidad_item'             : '1',
                 'fecha_elaboracion'         : '',
                 'fecha_vencimiento_prod'    : '',
-                'unidad_medida'             : '',
-                'precio_unitario'           : str(d.precio),
+                'unidad_medida'             : 'UNI',
+                'precio_unitario'           : formato_numero_sin_miles(d.total),
                 'descuento_porcentaje'      : '0',
                 'descuento_monto'           : '0',
                 'recargo_porcentaje'        : '0',
                 'recargo_monto'             : '0',
                 'cod_imp_adic_1'            : '0',
                 'cod_imp_adic_2'            : '0',
-                'monto_item'                : str(d.total),
+                'monto_item'                : formato_numero_sin_miles(d.total),
                 'item_espectaculo'          : '',
                 'rut_mandante_b'            : '',
                 'codigos_items'             : '',  # lista_codigos_items,
@@ -4068,18 +3987,19 @@ def armar_dict_documento(request):
                 'subrecargo_detalle'        : '',  # lista_subrecargo,
             })
 
-            linea += 1
+            total_linea += d.total
+            linea       += 1
 
         valores = calculo_iva_total_documento(total_linea, 19)
 
         lista_total.append({
             'tipo_moneda'           : '',           ##Tipo de moneda de los montos
-            'monto_neto'            : str(total_linea),    ## Monto neto
+            'monto_neto'            : valores[0],   ## Monto neto
             'monto_exento'          : '0',          ## Monto exento
             'monto_base'            : '0',          ## Monto Informado >0
             'monto_margen_comerc'   : '0',          ## Monto informado
             'tasa_iva'              : '19',         ## Tasa iva
-            'iva'                   : str(valores[0]),     ## Monto neto * tasa IVA
+            'iva'                   : valores[1],     ## Monto neto * tasa IVA
             'iva_propio'            : '0',          ## < que IVA
             'iva_terceros'          : '0',          ## < que IVA
             'iva_no_retenido'       : '0',          ## IVA - IVA retenido
@@ -4088,7 +4008,7 @@ def armar_dict_documento(request):
             'valor_comision_neto'   : '0',          ## Suma detalles valores comision
             'valor_comision_exento' : '0',          ## Suma detalles valores comisiones y otros cargos no afectos o exentos
             'valor_comision_iva'    : '0',          ## Suma detalle iva valor comision y otros cargos
-            'monto_total'           : str(valores[1]), ## Monto total documento
+            'monto_total'           : valores[2], ## Monto total documento
             'monto_no_facturable'   : '0',          ## Suma monto bienes o servicios con indicador facturacion
             'monto_periodo'         : '0',          ## Monto total + monto no facturable
             'saldo_anterior'        : '0',          ## Saldo anterior. * Solo con fines de ilustrar claridad de cobros
@@ -4098,14 +4018,14 @@ def armar_dict_documento(request):
 
 
 
-        kwargs['tipo_documento']            = '33'
-        kwargs['aplicacion']                = 'ASGARD'
+        kwargs['tipo_documento']            = factura_xml.numero_documento
+        kwargs['aplicacion']                = 'lease'
         kwargs['ID1_ERP']                   = ''
         kwargs['ID2_ERP']                   = ''
         kwargs['ID3_ERP']                   = ''
         kwargs['ID4_ERP']                   = ''
-        kwargs['emails_PDF']                = str('cmunoz@informat.cl')
-        kwargs['emails_XML']                = str('cmunoz@informat.cl')
+        kwargs['emails_PDF']                = factura_xml.contrato.cliente.email
+        kwargs['emails_XML']                = factura_xml.contrato.cliente.email
 
         kwargs['encabezado']                = lista_cabecera
         kwargs['emisor']                    = lista_emisor
@@ -4121,8 +4041,13 @@ def armar_dict_documento(request):
         kwargs['subtotales']                = ''  # lista_subtotales
         kwargs['transporte']                = ''  # lista_transporte
         kwargs['extra_documento']           = ''  # lista_extra_documento
+        kwargs['error']                     = error
+
 
     except Exception as e:
-        error = str(e)
+        kwargs['error'] = str(e)
 
     return kwargs
+
+
+

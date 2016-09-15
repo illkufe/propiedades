@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from facturacion.views.views import *
 
-app_name = 'facturacion'
+# app_name = 'facturacion'
 
 urlpatterns = [
 

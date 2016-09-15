@@ -6,7 +6,7 @@ from facturacion.models import *
 class ParametrosFacturacionForms(ModelForm):
     class Meta:
         model = ParametrosFacturacion
-        fields = ('id', 'persona', 'codigo_conexion')
+        fields = ('id', 'persona', 'codigo_conexion', 'motor_emision')
 
         widgets = {
             "persona": forms.TextInput(attrs={'class': 'form-control', 'type': 'hidden'}),
@@ -17,6 +17,12 @@ class ParametrosFacturacionForms(ModelForm):
     codigo_conexion = forms.CharField(
                                         widget=forms.TextInput(attrs={'class': 'form-control'}),
                                         label='Código Conexión')
+
+    motor_emision =forms.ModelChoiceField(
+        queryset=MotorFacturacion.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control chosen-single'}),
+        empty_label='', label="Motor de Facturación"
+    )
 
 
 class ConexionFacturacionForms(ModelForm):

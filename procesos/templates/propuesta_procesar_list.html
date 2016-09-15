@@ -130,13 +130,13 @@
 
 				<div class="ibox-content">
 					<div class="table-responsive">
-						<table id="tabla-facturas-procesadas" class="table table-striped table-bordered table-hover dataTables-example" >
+						<table id="tabla-facturas-procesadas" class="table table-striped table-bordered table-hover dataTables-example" style="width: 100% !important;">
 							<thead></thead>
 							<tbody>
 								{% for item in facturas_procesadas %}
 								<tr>
 									<td>{{ item.id }}</td>
-									<td>{{ item.numero }}</td>
+									<td>{{ item.numero_pedido}}</td>
 									<td>{{ item.propuesta.nombre }}</td>
 									<td>{{ item.propuesta.creado_en|date:"d/m/Y" }}</td>
 									<td>{{ item.fecha_inicio|date:"d/m/Y" }} - {{ item.fecha_termino|date:"d/m/Y" }}</td>
@@ -408,16 +408,53 @@ function enviar_propuesta(id){
 		dataType: 'json',
 		data:{
 			id 	: id,
-			csrfmiddlewaretoken: getCookie('csrftoken'),
+			csrfmiddlewaretoken: getCookie('csrftoken')
 		},
 		beforeSend: function(){
 			loading(true)
 		},
 		success: function(data){
-			loading(false)
-			console.log(data)
+			loading(false);
+			if (data[0].estado == true) {
+                swal({
+                    title 	: 'Documento Enviado',
+                    // text 	: '',
+                    type 	: 'success',
+                    html 	: '<a href="'+data[0].response[0].archivo_pdf+'" target="_blank"><span style="color:#575757">Descargar PDF<span>',
+                    showCancelButton 	: false,
+                    confirmButtonColor 	: '#FCC491',
+                    confirmButtonText 	: 'Cancelar',
+                    allowOutsideClick 	: false,
+                    allowEscapeKey 		: false
+                }).then(function() {
+                    console.log('enviar')
+                });
+{#                location.reload();#}
+            }else{
+
+                var error = '<div class="text-left" style="font-size:12px">';
+                for ( var a in data[0].response){
+                    error +='<p style="margin-bottom: 5px">'+ data[0].response[a].descripcion+ '</p>'
+                }
+                error += '</div>';
+
+                swal({
+                    title 	: 'Error Envio',
+                    type 	: 'error',
+                    html 	: error,
+                    showCancelButton 	: true,
+                    confirmButtonColor 	: '#FCC491',
+                    confirmButtonText 	: 'Cancelar',
+                    cancelButtonText 	: 'OK',
+                    allowOutsideClick 	: false,
+                    allowEscapeKey 		: false
+                }).then(function() {
+                    console.log('enviar')
+                });
+            }
 		},
-		error: function(){
+		error: function(x,y,z){
+            console.log(x,y,z);
 			loading(false)
 		}
 	})

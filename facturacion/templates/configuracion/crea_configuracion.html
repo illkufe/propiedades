@@ -46,7 +46,7 @@
                         </div>
                         <br>
                         <div class="row">
-                            <div class="col-sm-5 form-group">
+                            <div class="col-sm-6 form-group">
                                 <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="right" title="" ></i>
                                 <label for="{{ parametros.codigo_conexion.id_for_label }}">
                                      {{ parametros.codigo_conexion.label_tag }}
@@ -54,6 +54,16 @@
                                 {{ parametros.codigo_conexion}}
                                 <div class="container-error">
                                     {{ parametros.codigo_conexion.errors }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="right" title="" ></i>
+                                <label for="{{ parametros.motor_emision.id_for_label }}">
+                                     {{ parametros.motor_emision.label_tag }}
+                                </label>
+                                {{ parametros.motor_emision}}
+                                <div class="container-error">
+                                    {{ parametros.motor_emision.errors }}
                                 </div>
                             </div>
                         </div>
@@ -508,7 +518,8 @@
         var data = {
             detalle_conexion    :   JSON.stringify(lista_conexion),
             persona             :   parseInt($('#id_persona').val()),
-            codigo_conexion     :   $('#id_codigo_conexion').val()
+            codigo_conexion     :   $('#id_codigo_conexion').val(),
+            motor_emision       :   $('#id_motor_emision').find("option:selected").val()
         };
         $.ajax({
             type: 'post',
