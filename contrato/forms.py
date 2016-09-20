@@ -483,7 +483,6 @@ class FondoPromocionForm(forms.ModelForm):
 			'periodicidad'	: 'periodicidad',
 		}
 
-
 # propuesta
 class PropuestaForm(forms.ModelForm):
 
@@ -561,6 +560,125 @@ class PropuestaForm(forms.ModelForm):
 			'destino_comercial' : 'Destino Comercial',
 		}
 
+class FormPropuestaArriendoMinimo(forms.ModelForm):
+
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	valor_reajuste 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	moneda_valor 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+	moneda_reajuste = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+
+	class Meta:
+		model 	= Propuesta_Arriendo_Minimo
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en', 'propuesta']
+
+		widgets = {
+			'meses_reajuste' 	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'metro_cuadrado' 	: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'reajuste' 			: forms.CheckboxInput(attrs={'class': 'form-control'}),
+		}
+
+		labels = {
+			'metro_cuadrado' 	: 'Por m²',
+			'reajuste' 			: 'c/reajuste',
+		}
+
+		help_texts = {
+			'metro_cuadrado' 	: 'Por Metros Cuadrados',
+			'reajuste' 			: 'Con Reajuste',
+		}
+
+class FormPropuestaArriendoVariable(forms.ModelForm):
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, required=False)
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'}, required=False)
+
+	class Meta:
+		model 	= Propuesta_Arriendo_Variable
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en', 'propuesta']
+
+class FormPropuestaArriendoBodega(forms.ModelForm):
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, required=False)
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'}, required=False)
+
+	class Meta:
+		model 	= Propuesta_Arriendo_Bodega
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en', 'propuesta']
+
+		widgets = {
+			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control'}),
+		}
+
+		labels = {
+			'metro_cuadrado' : 'Por Metros Cuadrados',
+		}
+
+		help_texts = {
+			'metro_cuadrado' : 'Por Metros Cuadrados',
+		}
+		
+
+class FormPropuestaCuotaIncorporacion(forms.ModelForm):
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+
+	class Meta:
+		model 	= Propuesta_Cuota_Incorporacion
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en', 'propuesta']
+
+		widgets = {
+			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control'}),
+		}
+
+		labels = {
+			'metro_cuadrado' : 'Por Metros Cuadrados',
+		}
+
+		help_texts = {
+			'metro_cuadrado' : 'Por Metros Cuadrados',
+		}
+
+class FormPropuestaFondoPromocion(forms.ModelForm):
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+
+	class Meta:
+		model 	= Propuesta_Fondo_Promocion
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en', 'propuesta']
+
+class FormPropuestaGastoComun(forms.ModelForm):
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+
+	class Meta:
+		model 	= Propuesta_Gasto_Comun
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en', 'propuesta']
+
+		widgets = {
+			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control'}),
+		}
+
+		labels = {
+			'metro_cuadrado' : 'Por Metros Cuadrados',
+		}
+
+		help_texts = {
+			'metro_cuadrado' : 'Por Metros Cuadrados',
+		}
+
+
+
+
+
 
 ArriendoVariableFormSet 	= inlineformset_factory(Contrato, Arriendo_Variable, form=ArriendoVariableForm, extra=1, can_delete=True)
 GastoComunFormSet 			= inlineformset_factory(Contrato, Gasto_Comun, form=GastoComunForm, extra=1, can_delete=True)
@@ -570,5 +688,3 @@ ArriendoBodegaFormSet 		= inlineformset_factory(Contrato, Arriendo_Bodega, form=
 GarantiaFormSet 			= inlineformset_factory(Contrato, Garantia, form=GarantiaForm, extra=1, can_delete=True)
 ArriendoDetalleFormSet 		= inlineformset_factory(Arriendo, Arriendo_Detalle, form=ArriendoDetalleForm, extra=1, can_delete=True)
 FondoPromocionFormSet 		= inlineformset_factory(Contrato, Fondo_Promocion, form=FondoPromocionForm, extra=1, can_delete=True)
-
-

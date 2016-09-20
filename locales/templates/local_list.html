@@ -118,7 +118,7 @@ function cambiar_url(obj){
 
 function load_select_activo(){
 	$.ajax({
-		url: '/empresa/1/activos', // {falta: poner el id de la empresa}
+		url: '/empresa/{{request.user.userprofile.empresa.id}}/activos',
 		type: 'get',
 		dataType: 'json',
 		success: function(data){

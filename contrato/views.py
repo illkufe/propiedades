@@ -4,6 +4,7 @@ from django.template import Context, loader
 from django.template.loader import get_template 
 from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
+from django.db import transaction
 from django.db.models import Sum
 from django.views.generic import View, ListView, FormView, CreateView, DeleteView, UpdateView
 
@@ -325,23 +326,99 @@ class PropuestaMixin(object):
 
 	def form_valid(self, form):
 
-		obj = form.save(commit=False)
+		transaction.set_autocommit(False)
 
+		context = self.get_context_data()
+		obj 	= form.save(commit=False)
+
+		form_arriendo_minimo 		= context['form_arriendo_minimo']
+		form_arriendo_variable 		= context['form_arriendo_variable']
+		form_arriendo_bodega 		= context['form_arriendo_bodega']
+		form_cuota_incorporacion 	= context['form_cuota_incorporacion']
+		form_fondo_promocion 		= context['form_fondo_promocion']
+		form_gasto_comun 			= context['form_gasto_comun']
+		
+		# if form_arriendo_minimo.is_valid() and form_arriendo_variable.is_valid() and form_arriendo_bodega.is_valid() and form_cuota_incorporacion.is_valid() and form_fondo_promocion.is_valid() and form_gasto_comun.is_valid():
+
+		# propuesta new
 		if self.kwargs.pop('pk', None) is None:
 
 			propuesta 			= Propuesta_Contrato(numero=form.cleaned_data['numero'])
 			propuesta.empresa 	= self.request.user.userprofile.empresa
 			propuesta.save()
-
-			obj.propuesta 	= propuesta
-
+			obj.propuesta 		= propuesta
 			obj.save()
 			form.save_m2m()
 
+		# propuesta update
 		else:
 			obj.pk = None
 			obj.save()
 			form.save_m2m()
+
+
+
+
+
+		if obj.arriendo_variable is True:
+			if form_arriendo_variable.is_valid():
+				formulario 				= form_arriendo_variable.save(commit=False)
+				formulario.propuesta 	= obj
+				formulario.save()
+			else:
+				transaction.rollback()
+				transaction.connections.close_all()
+				return self.render_to_response(self.get_context_data(form=form))
+
+		if obj.arriendo_bodega is True:
+			if form_arriendo_bodega.is_valid():
+				formulario 				= form_arriendo_bodega.save(commit=False)
+				formulario.propuesta 	= obj
+				formulario.save()
+			else:
+				transaction.rollback()
+				transaction.connections.close_all()
+				return self.render_to_response(self.get_context_data(form=form))
+
+		# if form_arriendo_bodega.is_valid() and obj.arriendo_bodega is True:
+		# 	# # arriendo variable
+		# 	# formulario 				= form_arriendo_minimo.save(commit=False)
+		# 	# formulario.propuesta 	= obj
+		# 	# formulario.save()
+
+		# 	# # arriendo variable
+		# 	# formulario 				= form_arriendo_variable.save(commit=False)
+		# 	# formulario.propuesta 	= obj
+		# 	# formulario.save()
+
+		# 	# arriendo variable
+		# 	formulario 				= form_arriendo_bodega.save(commit=False)
+		# 	formulario.propuesta 	= obj
+		# 	formulario.save()
+
+		# 	# # arriendo variable
+		# 	# formulario 				= form_cuota_incorporacion.save(commit=False)
+		# 	# formulario.propuesta 	= obj
+		# 	# formulario.save()
+
+		# 	# # arriendo variable
+		# 	# formulario 				= form_fondo_promocion.save(commit=False)
+		# 	# formulario.propuesta 	= obj
+		# 	# formulario.save()
+
+		# 	# # arriendo bodega
+		# 	# formulario 				= form_gasto_comun.save(commit=False)
+		# 	# formulario.propuesta 	= obj
+		# 	# formulario.save()
+		# else:
+		# 	transaction.rollback()
+		# 	transaction.connections.close_all()
+		# 	print ('else 2')
+		# 	return self.render_to_response(self.get_context_data(form=form))
+
+		transaction.commit()
+		transaction.connections.close_all()
+
 
 		response = super(PropuestaMixin, self).form_valid(form)
 
@@ -362,22 +439,22 @@ class PropuestaNew(PropuestaMixin, FormView):
 		context['href'] 	= '/propuesta/list'
 		context['accion'] 	= 'create'
 
+		if self.request.POST:
+			context['form_arriendo_minimo'] 	= FormPropuestaArriendoMinimo(self.request.POST, prefix="arriendo_minimo")
+			context['form_arriendo_variable'] 	= FormPropuestaArriendoVariable(self.request.POST, prefix="arriendo_variable")
+			context['form_arriendo_bodega'] 	= FormPropuestaArriendoBodega(self.request.POST, prefix="arriendo_bodega")
+			context['form_cuota_incorporacion'] = FormPropuestaCuotaIncorporacion(self.request.POST, prefix="cuota_incorporacion")
+			context['form_fondo_promocion'] 	= FormPropuestaFondoPromocion(self.request.POST, prefix="fondo_promocion")
+			context['form_gasto_comun'] 		= FormPropuestaGastoComun(self.request.POST, prefix="gasto_comun")
+		else:
+			context['form_arriendo_minimo'] 	= FormPropuestaArriendoMinimo(prefix="arriendo_minimo")
+			context['form_arriendo_variable'] 	= FormPropuestaArriendoVariable(prefix="arriendo_variable")
+			context['form_arriendo_bodega'] 	= FormPropuestaArriendoBodega(prefix="arriendo_bodega")
+			context['form_cuota_incorporacion'] = FormPropuestaCuotaIncorporacion(prefix="cuota_incorporacion")			
+			context['form_fondo_promocion'] 	= FormPropuestaFondoPromocion(prefix="fondo_promocion")
+			context['form_gasto_comun'] 		= FormPropuestaGastoComun(prefix="gasto_comun")			
+
 		return context
-
-class PropuestaDelete(DeleteView):
-
-	model 		= Propuesta_Contrato
-	success_url = reverse_lazy('/propuesta/list')
-
-	def delete(self, request, *args, **kwargs):
-
-		self.object 		= self.get_object()
-		self.object.visible = False
-		self.object.save()
-
-		payload = {'delete': 'ok'}
-
-		return JsonResponse(payload, safe=False)
 
 class PropuestaUpdate(PropuestaMixin, UpdateView):
 
@@ -409,7 +486,42 @@ class PropuestaUpdate(PropuestaMixin, UpdateView):
 		context['href'] 	= '/propuesta/list'
 		context['accion'] 	= 'update'
 
+		if self.request.POST:
+
+			context['form_arriendo_minimo'] 	= FormPropuestaArriendoMinimo(self.request.POST, prefix="arriendo_minimo")
+			context['form_arriendo_variable'] 	= FormPropuestaArriendoVariable(self.request.POST, prefix="arriendo_variable")
+			context['form_arriendo_bodega'] 	= FormPropuestaArriendoBodega(self.request.POST, prefix="arriendo_bodega")
+			context['form_cuota_incorporacion'] = FormPropuestaCuotaIncorporacion(self.request.POST, prefix="cuota_incorporacion")
+			context['form_fondo_promocion'] 	= FormPropuestaFondoPromocion(self.request.POST, prefix="fondo_promocion")
+			context['form_gasto_comun'] 		= FormPropuestaGastoComun(self.request.POST, prefix="gasto_comun")
+
+		else:
+
+			propuesta = Propuesta_Version.objects.get(id=int(self.kwargs['pk']))
+
+			context['form_arriendo_minimo'] 	= FormPropuestaArriendoMinimo(instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo")
+			context['form_arriendo_variable'] 	= FormPropuestaArriendoVariable(instance=propuesta.propuesta_arriendo_variable_set.first(), prefix="arriendo_variable")
+			context['form_arriendo_bodega'] 	= FormPropuestaArriendoBodega(instance=propuesta.propuesta_arriendo_bodega_set.first(), prefix="arriendo_bodega")
+			context['form_cuota_incorporacion'] = FormPropuestaCuotaIncorporacion(instance=propuesta.propuesta_cuota_incorporacion_set.first(), prefix="cuota_incorporacion")
+			context['form_fondo_promocion'] 	= FormPropuestaFondoPromocion(instance=propuesta.propuesta_fondo_promocion_set.first(), prefix="fondo_promocion")
+			context['form_gasto_comun'] 		= FormPropuestaGastoComun(instance=propuesta.propuesta_gasto_comun_set.first(), prefix="gasto_comun")
+
 		return context
+
+class PropuestaDelete(DeleteView):
+
+	model 		= Propuesta_Contrato
+	success_url = reverse_lazy('/propuesta/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object 		= self.get_object()
+		self.object.visible = False
+		self.object.save()
+
+		payload = {'delete': 'ok'}
+
+		return JsonResponse(payload, safe=False)
 
 
 # propuesta historial
@@ -790,7 +902,6 @@ class ContratoConceptoMixin(object):
 			return JsonResponse(data)
 		else:
 			return response
-
 
 class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
@@ -1182,7 +1293,7 @@ class PROPUESTA_CONTRATO(View):
 
 		for propuesta in self.object_list:
 
-			versiones 		= propuesta.propuesta_version_set.all()
+			versiones 		= propuesta.propuesta_version_set.all().order_by('-id')
 			data_versiones 	= list()
 
 			for version in versiones:
@@ -1213,7 +1324,7 @@ class PROPUESTA_CONTRATO(View):
 		return JsonResponse(data, safe=False)
 
 
-# funciones
+# funciones - propuesta contrato
 def propuesta_enviar_correo(request):
 
 	var_post 		= request.POST.copy()
@@ -1231,20 +1342,16 @@ def propuesta_enviar_correo(request):
 
 	return JsonResponse(response, safe=False)
 
-def propuesta_duplicar(request):
 
-	var_post 		= request.POST.copy()
-	contenido 		= var_post['contenido']
-	propuesta_id 	= var_post['propuesta_id']
+def propuesta_restaurar_version(request, id=None):
 
-	configuracion = {
-		'contenido' 		: contenido,
-		'asunto' 			: 'Propuesta',
-		'destinatarios' 	: ['juan.mieres.s@gmail.com', 'egomez@informat.cl'],
-		'id'				: '1',
-	}
+	response 	= list()
+	version 	= Propuesta_Version.objects.get(id=id)
+	locales 	= version.locales.all()
 
-	response = enviar_correo(configuracion)
+	# version.id 		= None
+	# version.locales = locales
+	# version.save()
 
 	return JsonResponse(response, safe=False)
 

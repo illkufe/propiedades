@@ -47,7 +47,9 @@ urlpatterns = [
 	url(r'^contratos/inactivos/list$', views.ContratosInactivosList.as_view(), name='contratos_inactivos_list'),
 	url(r'^contratos/(?P<contrato_id>\d+)/pdf$', views.contrato_pdf, name='contrato_pdf'),
 	url(r'^contratos/(?P<contrato_id>\d+)/activar$', views.contrato_activar, name='contrato_activar'),
+
 	url(r'^funcion/propuesta/enviar_correo$', views.propuesta_enviar_correo, name='propuesta_enviar_correo'),
+	url(r'^funcion/propuesta/restaurar_version/(?P<id>\d+)$', views.propuesta_restaurar_version, name='propuesta_restaurar_version'),
 
 	# get - contratos
 	url(r'^get/contratos/$', csrf_exempt(views.CONTRATO.as_view()),name='get_contratos'),

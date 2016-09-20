@@ -121,6 +121,7 @@ class Multa_Tipo(models.Model):
 		return self.nombre
 
 
+# modelos (propuesta)
 class Propuesta_Contrato(models.Model):
 
 	# atributos (generales)
@@ -139,7 +140,6 @@ class Propuesta_Contrato(models.Model):
 	class Meta:
 		verbose_name 		= "Propuesta"
 		verbose_name_plural = "Propuestas"
-
 
 class Propuesta_Version(models.Model):
 
@@ -182,6 +182,109 @@ class Propuesta_Version(models.Model):
 		verbose_name 		= "Versione de Propuesta"
 		verbose_name_plural = "Versiones de Propuestas"
 
+class Propuesta_Arriendo_Minimo(models.Model):
+
+	# atributos (generales)
+	valor			= models.FloatField()
+	metro_cuadrado 	= models.BooleanField(default=False)
+	reajuste 		= models.BooleanField(default=False)
+	meses_reajuste 	= models.IntegerField(default=0)
+	valor_reajuste	= models.FloatField()
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	propuesta 		= models.ForeignKey(Propuesta_Version)
+	moneda_valor 	= models.ForeignKey(Moneda, related_name='propuesta_minimo_moneda_valor')
+	moneda_reajuste = models.ForeignKey(Moneda, related_name='propuesta_minimo_moneda_reajuste')
+
+	def __str__(self):
+		return self.propuesta.numero
+
+class Propuesta_Arriendo_Variable(models.Model):
+
+	# atributos (generales)
+	valor = models.FloatField(null=True, blank=True)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	propuesta 	= models.ForeignKey(Propuesta_Version)
+	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
+
+	def __str__(self):
+		return self.propuesta.numero
+
+class Propuesta_Arriendo_Bodega(models.Model):
+
+	# atributos (generales)
+	valor 			= models.FloatField(null=True, blank=True)
+	metro_cuadrado 	= models.BooleanField(default=False)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	propuesta 	= models.ForeignKey(Propuesta_Version)
+	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
+
+	def __str__(self):
+		return str(self.propuesta.numero)
+
+class Propuesta_Cuota_Incorporacion(models.Model):
+
+	# atributos (generales)
+	valor 			= models.FloatField()
+	metro_cuadrado 	= models.BooleanField(default=False)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	propuesta 	= models.ForeignKey(Propuesta_Version)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.propuesta.numero
+
+class Propuesta_Fondo_Promocion(models.Model):
+
+	# atributos (generales)
+	valor 			= models.FloatField()
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	propuesta 	= models.ForeignKey(Propuesta_Version)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.propuesta.numero
+
+class Propuesta_Gasto_Comun(models.Model):
+
+	# atributos (generales)
+	valor 			= models.FloatField()
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	propuesta 	= models.ForeignKey(Propuesta_Version)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.propuesta.numero
+
 
 # modelos (conceptos)
 class Multa(models.Model):
@@ -222,7 +325,7 @@ class Multa(models.Model):
 
 class Arriendo(models.Model):
 
-	# atributos (generales
+	# atributos (generales)
 	reajuste 		= models.BooleanField(default=False)
 	por_meses 		= models.BooleanField(default=False)
 	meses 			= models.IntegerField(default=0)
@@ -426,3 +529,5 @@ class Fondo_Promocion(models.Model):
 
 	def __str__(self):
 		return self.contrato.nombre_local
+
+

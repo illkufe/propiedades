@@ -29,7 +29,6 @@ from datetime import datetime, timedelta
 import os
 import json
 import pdfkit
-import psycopg2
 
 
 class PropuestaGenerarList(ListView):

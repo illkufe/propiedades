@@ -7,7 +7,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
-				<form id="form-contrato-new" role="form" action="" method="post">
+				<form id="form-propuesta-new" role="form" action="" method="post">
 					{% csrf_token %}
 
 					<div class="ibox-title">
@@ -235,101 +235,275 @@
 										{{ form.dias_salida.errors|striptags }}
 									</div>
 								</div>
-
 							</div>
 						</div>
 					</div>
 
 					<div class="ibox-title">
-						<h5>Concepto</h5>
+						<div class="checkbox checkbox-primary">
+							{{ form.arriendo_minimo }}
+							<label for="checkbox2">
+								<h5>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_minimo.help_text }}" ></i>
+									Concepto: Arriendo Mínimo
+								</h5>
+							</label>
+						</div>
 					</div>
 
 					<div class="ibox-content">
 						<div class="row">
 
-							<div class="col-xs-12">
-								<div class="form-group col-sm-3">
+							<div class="form-group col-sm-2">
+								{{ form_arriendo_minimo.valor.label_tag }}
+								{{ form_arriendo_minimo.valor }}
+								<div class="container-error">
+									{{ form_arriendo_minimo.valor.errors|striptags }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								{{ form_arriendo_minimo.moneda_valor.label_tag }}
+								{{ form_arriendo_minimo.moneda_valor }}
+								<div class="container-error">
+									{{ form_arriendo_minimo.moneda_valor.errors|striptags }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-1">
+								{{ form_arriendo_minimo.metro_cuadrado.label_tag }}
+								{{ form_arriendo_minimo.metro_cuadrado }}
+								<div class="container-error">
+									{{ form_arriendo_minimo.metro_cuadrado.errors|striptags }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-1">
+								{{ form_arriendo_minimo.reajuste.label_tag }}
+								{{ form_arriendo_minimo.reajuste }}
+								<div class="container-error">
+									{{ form_arriendo_minimo.reajuste.errors|striptags }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								{{ form_arriendo_minimo.meses_reajuste.label_tag }}
+								{{ form_arriendo_minimo.meses_reajuste }}
+								<div class="container-error">
+									{{ form_arriendo_minimo.meses_reajuste.errors|striptags }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								{{ form_arriendo_minimo.valor_reajuste.label_tag }}
+								{{ form_arriendo_minimo.valor_reajuste }}
+								<div class="container-error">
+									{{ form_arriendo_minimo.valor_reajuste.errors|striptags }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								{{ form_arriendo_minimo.moneda_reajuste.label_tag }}
+								{{ form_arriendo_minimo.moneda_reajuste }}
+								<div class="container-error">
+									{{ form_arriendo_minimo.moneda_reajuste.errors|striptags }}
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<div class="checkbox checkbox-primary">
+							{{ form.arriendo_variable }}
+							<label for="checkbox2">
+								<h5>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_minimo.help_text }}" ></i>
-									{{ form.arriendo_minimo.label_tag }}
-									<div class="checkbox checkbox-primary">
-										{{ form.arriendo_minimo }}
-										<label for="checkbox2"></label>
-									</div>
-									<div class="container-error">
-										{{ form.arriendo_minimo.errors|striptags }}
-									</div>
+									Concepto: Arriendo Variable
+								</h5>
+							</label>
+						</div>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="form-group col-sm-2">
+								{{ form_arriendo_variable.valor.label_tag }}
+								{{ form_arriendo_variable.valor }}
+								<div class="container-error">
+									{{ form_arriendo_variable.valor.errors|striptags }}
 								</div>
 							</div>
 
-							<div class="col-xs-12">
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_variable.help_text }}" ></i>
-									{{ form.arriendo_variable.label_tag }}
-									<div class="checkbox checkbox-primary">
-										{{ form.arriendo_variable }}
-										<label for="checkbox2"></label>
-									</div>
-									<div class="container-error">
-										{{ form.arriendo_variable.errors|striptags }}
-									</div>
+							<div class="form-group col-sm-2">
+								{{ form_arriendo_variable.moneda.label_tag }}
+								{{ form_arriendo_variable.moneda }}
+								<div class="container-error">
+									{{ form_arriendo_variable.moneda.errors|striptags }}
 								</div>
 							</div>
 
-							<div class="col-xs-12">
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_bodega.help_text }}" ></i>
-									{{ form.arriendo_bodega.label_tag }}
-									<div class="checkbox checkbox-primary">
-										{{ form.arriendo_bodega }}
-										<label for="checkbox2"></label>
-									</div>
-									<div class="container-error">
-										{{ form.arriendo_bodega.errors|striptags }}
-									</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<div class="checkbox checkbox-primary">
+							{{ form.arriendo_bodega }}
+							<label for="checkbox2">
+								<h5>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_minimo.help_text }}" ></i>
+									Concepto: Arriendo Bodega
+								</h5>
+							</label>
+						</div>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="form-group col-sm-2">
+								{{ form_arriendo_bodega.valor.label_tag }}
+								{{ form_arriendo_bodega.valor }}
+								<div class="container-error">
+									{{ form_arriendo_bodega.valor.errors|striptags }}
 								</div>
 							</div>
 
-							<div class="col-xs-12">
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cuota_incorporacion.help_text }}" ></i>
-									{{ form.cuota_incorporacion.label_tag }}
-									<div class="checkbox checkbox-primary">
-										{{ form.cuota_incorporacion }}
-										<label for="checkbox2"></label>
-									</div>
-									<div class="container-error">
-										{{ form.cuota_incorporacion.errors|striptags }}
-									</div>
+							<div class="form-group col-sm-2">
+								{{ form_arriendo_bodega.moneda.label_tag }}
+								{{ form_arriendo_bodega.moneda }}
+								<div class="container-error">
+									{{ form_arriendo_bodega.moneda.errors|striptags }}
 								</div>
 							</div>
 
-							<div class="col-xs-12">
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fondo_promocion.help_text }}" ></i>
-									{{ form.fondo_promocion.label_tag }}
-									<div class="checkbox checkbox-primary">
-										{{ form.fondo_promocion }}
-										<label for="checkbox2"></label>
-									</div>
-									<div class="container-error">
-										{{ form.fondo_promocion.errors|striptags }}
-									</div>
+							<div class="form-group col-sm-3">
+								{{ form_arriendo_bodega.metro_cuadrado.label_tag }}
+								{{ form_arriendo_bodega.metro_cuadrado }}
+								<div class="container-error">
+									{{ form_arriendo_bodega.metro_cuadrado.errors|striptags }}
 								</div>
 							</div>
 
-							<div class="col-xs-12">
-								<div class="form-group col-sm-3">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.gasto_comun.help_text }}" ></i>
-									{{ form.gasto_comun.label_tag }}
-									<div class="checkbox checkbox-primary">
-										{{ form.gasto_comun }}
-										<label for="checkbox2"></label>
-									</div>
-									<div class="container-error">
-										{{ form.gasto_comun.errors|striptags }}
-									</div>
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<div class="checkbox checkbox-primary">
+							{{ form.cuota_incorporacion }}
+							<label for="checkbox2">
+								<h5>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_minimo.help_text }}" ></i>
+									Concepto: Cuota de Incorporación
+								</h5>
+							</label>
+						</div>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="form-group col-sm-2">
+								{{ form_cuota_incorporacion.valor.label_tag }}
+								{{ form_cuota_incorporacion.valor }}
+								<div class="container-error">
+									{{ form_cuota_incorporacion.valor.errors|striptags }}
 								</div>
 							</div>
+
+							<div class="form-group col-sm-2">
+								{{ form_cuota_incorporacion.moneda.label_tag }}
+								{{ form_cuota_incorporacion.moneda }}
+								<div class="container-error">
+									{{ form_cuota_incorporacion.moneda.errors|striptags }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-3">
+								{{ form_cuota_incorporacion.metro_cuadrado.label_tag }}
+								{{ form_cuota_incorporacion.metro_cuadrado }}
+								<div class="container-error">
+									{{ form_cuota_incorporacion.metro_cuadrado.errors|striptags }}
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<div class="checkbox checkbox-primary">
+							{{ form.fondo_promocion }}
+							<label for="checkbox2">
+								<h5>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_minimo.help_text }}" ></i>
+									Concepto: Fondo de Promoción
+								</h5>
+							</label>
+						</div>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="form-group col-sm-2">
+								{{ form_fondo_promocion.valor.label_tag }}
+								{{ form_fondo_promocion.valor }}
+								<div class="container-error">
+									{{ form_fondo_promocion.valor.errors|striptags }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								{{ form_fondo_promocion.moneda.label_tag }}
+								{{ form_fondo_promocion.moneda }}
+								<div class="container-error">
+									{{ form_fondo_promocion.moneda.errors|striptags }}
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="ibox-title">
+						<div class="checkbox checkbox-primary">
+							{{ form.gasto_comun }}
+							<label for="checkbox2">
+								<h5>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_minimo.help_text }}" ></i>
+									Concepto: Gasto Común
+								</h5>
+							</label>
+						</div>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="form-group col-sm-2">
+								{{ form_gasto_comun.valor.label_tag }}
+								{{ form_gasto_comun.valor }}
+								<div class="container-error">
+									{{ form_gasto_comun.valor.errors|striptags }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-2">
+								{{ form_gasto_comun.moneda.label_tag }}
+								{{ form_gasto_comun.moneda }}
+								<div class="container-error">
+									{{ form_gasto_comun.moneda.errors|striptags }}
+								</div>
+							</div>
+
+							<div class="form-group col-sm-3">
+								{{ form_gasto_comun.metro_cuadrado.label_tag }}
+								{{ form_gasto_comun.metro_cuadrado }}
+								<div class="container-error">
+									{{ form_gasto_comun.metro_cuadrado.errors|striptags }}
+								</div>
+							</div>
+
 						</div>
 					</div>
 
@@ -338,7 +512,7 @@
 							<div class="col-sm-12">
 								<a href='{% url "propuesta_list" %}'><button class="btn btn-w-m btn-sm btn-default" type="button" style="margin-right: 15px;">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-contrato-new')">GUARDAR Y SEGUIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-propuesta-new')">GUARDAR Y SEGUIR</button>
 							</div>
 						</div>
 					</div>
@@ -358,6 +532,7 @@ var tabla_locales = []
 $(document).ready(function(){
 
 	initialize()
+	guardar_formulario_propuesta()
 
 });
 
@@ -408,6 +583,39 @@ function initialize(){
 		}
 	})
 
+}
+
+
+
+
+function guardar_formulario_propuesta(){
+
+	// $.validator.addMethod("notEqualTo", function (value, element) {
+	// 	password_actual = $('#form-update-password input[name="password_actual"]').val()
+	// 	password_nueva 	= $('#form-update-password input[name="password_nueva"]').val()
+	// 	if (password_actual == password_nueva) {
+	// 		return false;
+	// 	}
+	// 	else{
+	// 		return true;
+	// 	}
+	// }, 'campo requerido');
+
+
+	$("#form-propuesta-new").validate({
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group").find('.container-error'));
+		}
+	})
+
+	$("[name^=arriendo_bodega]").each(function () {
+		$(this).rules("add", {
+			required: true,
+			messages: {
+				required: "campo requerido",
+			}
+		});
+	});
 }
 
 </script>
