@@ -337,8 +337,6 @@ class PropuestaMixin(object):
 		form_cuota_incorporacion 	= context['form_cuota_incorporacion']
 		form_fondo_promocion 		= context['form_fondo_promocion']
 		form_gasto_comun 			= context['form_gasto_comun']
-		
-		# if form_arriendo_minimo.is_valid() and form_arriendo_variable.is_valid() and form_arriendo_bodega.is_valid() and form_cuota_incorporacion.is_valid() and form_fondo_promocion.is_valid() and form_gasto_comun.is_valid():
 
 		# propuesta new
 		if self.kwargs.pop('pk', None) is None:
@@ -356,9 +354,16 @@ class PropuestaMixin(object):
 			obj.save()
 			form.save_m2m()
 
-
-
-
+		# conceptos
+		if obj.arriendo_minimo is True:
+			if form_arriendo_minimo.is_valid():
+				formulario 				= form_arriendo_minimo.save(commit=False)
+				formulario.propuesta 	= obj
+				formulario.save()
+			else:
+				transaction.rollback()
+				transaction.connections.close_all()
+				return self.render_to_response(self.get_context_data(form=form))
 
 		if obj.arriendo_variable is True:
 			if form_arriendo_variable.is_valid():
@@ -380,41 +385,35 @@ class PropuestaMixin(object):
 				transaction.connections.close_all()
 				return self.render_to_response(self.get_context_data(form=form))
 
-		# if form_arriendo_bodega.is_valid() and obj.arriendo_bodega is True:
-		# 	# # arriendo variable
-		# 	# formulario 				= form_arriendo_minimo.save(commit=False)
-		# 	# formulario.propuesta 	= obj
-		# 	# formulario.save()
+		if obj.cuota_incorporacion is True:
+			if form_cuota_incorporacion.is_valid():
+				formulario 				= form_cuota_incorporacion.save(commit=False)
+				formulario.propuesta 	= obj
+				formulario.save()
+			else:
+				transaction.rollback()
+				transaction.connections.close_all()
+				return self.render_to_response(self.get_context_data(form=form))
 
-		# 	# # arriendo variable
-		# 	# formulario 				= form_arriendo_variable.save(commit=False)
-		# 	# formulario.propuesta 	= obj
-		# 	# formulario.save()
+		if obj.fondo_promocion is True:
+			if form_fondo_promocion.is_valid():
+				formulario 				= form_fondo_promocion.save(commit=False)
+				formulario.propuesta 	= obj
+				formulario.save()
+			else:
+				transaction.rollback()
+				transaction.connections.close_all()
+				return self.render_to_response(self.get_context_data(form=form))
 
-		# 	# arriendo variable
-		# 	formulario 				= form_arriendo_bodega.save(commit=False)
-		# 	formulario.propuesta 	= obj
-		# 	formulario.save()
-
-		# 	# # arriendo variable
-		# 	# formulario 				= form_cuota_incorporacion.save(commit=False)
-		# 	# formulario.propuesta 	= obj
-		# 	# formulario.save()
-
-		# 	# # arriendo variable
-		# 	# formulario 				= form_fondo_promocion.save(commit=False)
-		# 	# formulario.propuesta 	= obj
-		# 	# formulario.save()
-
-		# 	# # arriendo bodega
-		# 	# formulario 				= form_gasto_comun.save(commit=False)
-		# 	# formulario.propuesta 	= obj
-		# 	# formulario.save()
-		# else:
-		# 	transaction.rollback()
-		# 	transaction.connections.close_all()
-		# 	print ('else 2')
-		# 	return self.render_to_response(self.get_context_data(form=form))
+		if obj.gasto_comun is True:
+			if form_gasto_comun.is_valid():
+				formulario 				= form_gasto_comun.save(commit=False)
+				formulario.propuesta 	= obj
+				formulario.save()
+			else:
+				transaction.rollback()
+				transaction.connections.close_all()
+				return self.render_to_response(self.get_context_data(form=form))
 
 		transaction.commit()
 		transaction.connections.close_all()
@@ -541,12 +540,25 @@ class PropuestaHistorialList(ListView):
 		return context
 
 	def get_queryset(self):
-
+		data 				= list()
+		data_numero 		= list()
+		data_fecha_inicio 	= list()
+		data_fecha_termino 	= list()
 		# queryset 	= list()
 		propuesta 	= Propuesta_Contrato.objects.get(id=self.kwargs['pk'])
 		versiones 	= propuesta.propuesta_version_set.all()
 		queryset 	= versiones
 
+
+		for version in versiones:
+			data_numero.append(version.numero)
+			data_fecha_inicio.append(version.fecha_inicio)
+			data_fecha_termino.append(version.fecha_termino)
+
+		data.append({'item': 'Número', 'data':data_numero})
+		data.append({'item': 'Fecha Inicio', 'data':data_fecha_inicio})
+		data.append({'item': 'Fecha Término', 'data':data_fecha_termino})
+		return data
 		# for propuesta in propuestas:
 
 		# 	ultima_version 					= propuesta.propuesta_version_set.all().order_by('-id').first()
@@ -555,7 +567,7 @@ class PropuestaHistorialList(ListView):
 
 		# 	queryset.append(ultima_version)
 
-		return queryset
+		# return queryset
 
 
 # tipo de multa
@@ -1210,7 +1222,7 @@ class CONTRATO(View):
 	
 	def get(self, request, id=None):
 
-		if id == None:
+		if id is None:
 			self.object_list = Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True, estado__in=[1])
 		else:
 			self.object_list = Contrato.objects.filter(pk=id)

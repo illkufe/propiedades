@@ -185,11 +185,11 @@ class Propuesta_Version(models.Model):
 class Propuesta_Arriendo_Minimo(models.Model):
 
 	# atributos (generales)
-	valor			= models.FloatField()
+	valor			= models.FloatField(null=True, blank=True)
 	metro_cuadrado 	= models.BooleanField(default=False)
 	reajuste 		= models.BooleanField(default=False)
-	meses_reajuste 	= models.IntegerField(default=0)
-	valor_reajuste	= models.FloatField()
+	meses_reajuste 	= models.IntegerField(null=True, blank=True)
+	valor_reajuste	= models.FloatField(null=True, blank=True)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -197,8 +197,8 @@ class Propuesta_Arriendo_Minimo(models.Model):
 
 	# relaciones
 	propuesta 		= models.ForeignKey(Propuesta_Version)
-	moneda_valor 	= models.ForeignKey(Moneda, related_name='propuesta_minimo_moneda_valor')
-	moneda_reajuste = models.ForeignKey(Moneda, related_name='propuesta_minimo_moneda_reajuste')
+	moneda_valor 	= models.ForeignKey(Moneda, related_name='propuesta_minimo_moneda_valor', null=True, blank=True)
+	moneda_reajuste = models.ForeignKey(Moneda, related_name='propuesta_minimo_moneda_reajuste', null=True, blank=True)
 
 	def __str__(self):
 		return self.propuesta.numero
@@ -239,7 +239,7 @@ class Propuesta_Arriendo_Bodega(models.Model):
 class Propuesta_Cuota_Incorporacion(models.Model):
 
 	# atributos (generales)
-	valor 			= models.FloatField()
+	valor 			= models.FloatField(null=True, blank=True)
 	metro_cuadrado 	= models.BooleanField(default=False)
 
 	# atributos (por defecto)
@@ -248,7 +248,7 @@ class Propuesta_Cuota_Incorporacion(models.Model):
 
 	# relaciones
 	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda)
+	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
 
 	def __str__(self):
 		return self.propuesta.numero
@@ -256,7 +256,7 @@ class Propuesta_Cuota_Incorporacion(models.Model):
 class Propuesta_Fondo_Promocion(models.Model):
 
 	# atributos (generales)
-	valor 			= models.FloatField()
+	valor = models.FloatField(null=True, blank=True)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -264,7 +264,7 @@ class Propuesta_Fondo_Promocion(models.Model):
 
 	# relaciones
 	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda)
+	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
 
 	def __str__(self):
 		return self.propuesta.numero
@@ -272,7 +272,7 @@ class Propuesta_Fondo_Promocion(models.Model):
 class Propuesta_Gasto_Comun(models.Model):
 
 	# atributos (generales)
-	valor 			= models.FloatField()
+	valor = models.FloatField(null=True, blank=True)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -280,7 +280,7 @@ class Propuesta_Gasto_Comun(models.Model):
 
 	# relaciones
 	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda)
+	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
 
 	def __str__(self):
 		return self.propuesta.numero

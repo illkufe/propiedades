@@ -517,12 +517,12 @@ class PropuestaForm(forms.ModelForm):
 		exclude = ['creado_en', 'visible', 'empresa', 'propuesta']
 
 		widgets = {
-			'arriendo_minimo'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
-			'arriendo_variable'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
-			'arriendo_bodega'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
-			'cuota_incorporacion'	: forms.CheckboxInput(attrs={'class': 'form-control'}),
-			'fondo_promocion'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
-			'gasto_comun'			: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'arriendo_minimo'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'arriendo_minimo'}),
+			'arriendo_variable'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'arriendo_variable'}),
+			'arriendo_bodega'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'arriendo_bodega'}),
+			'cuota_incorporacion'	: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'cuota_incorporacion'}),
+			'fondo_promocion'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'fondo_promocion'}),
+			'gasto_comun'			: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'gasto_comun'}),
 
 			'numero'			: forms.NumberInput(attrs={'class': 'form-control'}),
 			'meses'				: forms.NumberInput(attrs={'class': 'form-control'}),
@@ -562,10 +562,10 @@ class PropuestaForm(forms.ModelForm):
 
 class FormPropuestaArriendoMinimo(forms.ModelForm):
 
-	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	valor_reajuste 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	moneda_valor 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
-	moneda_reajuste = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	valor_reajuste 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	moneda_valor 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	moneda_reajuste = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
 
 	class Meta:
 		model 	= Propuesta_Arriendo_Minimo
@@ -573,9 +573,9 @@ class FormPropuestaArriendoMinimo(forms.ModelForm):
 		exclude = ['visible', 'creado_en', 'propuesta']
 
 		widgets = {
-			'meses_reajuste' 	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'metro_cuadrado' 	: forms.CheckboxInput(attrs={'class': 'form-control'}),
-			'reajuste' 			: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'meses_reajuste' 	: forms.NumberInput(attrs={'class': 'form-control field-required', 'disabled':'disabled'}),
+			'metro_cuadrado' 	: forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
+			'reajuste' 			: forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
 		}
 
 		labels = {
@@ -590,8 +590,8 @@ class FormPropuestaArriendoMinimo(forms.ModelForm):
 
 class FormPropuestaArriendoVariable(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, required=False)
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'}, required=False)
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
 
 	class Meta:
 		model 	= Propuesta_Arriendo_Variable
@@ -600,8 +600,8 @@ class FormPropuestaArriendoVariable(forms.ModelForm):
 
 class FormPropuestaArriendoBodega(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, required=False)
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'}, required=False)
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
 
 	class Meta:
 		model 	= Propuesta_Arriendo_Bodega
@@ -609,7 +609,7 @@ class FormPropuestaArriendoBodega(forms.ModelForm):
 		exclude = ['visible', 'creado_en', 'propuesta']
 
 		widgets = {
-			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
 		}
 
 		labels = {
@@ -623,8 +623,8 @@ class FormPropuestaArriendoBodega(forms.ModelForm):
 
 class FormPropuestaCuotaIncorporacion(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
 
 	class Meta:
 		model 	= Propuesta_Cuota_Incorporacion
@@ -632,7 +632,7 @@ class FormPropuestaCuotaIncorporacion(forms.ModelForm):
 		exclude = ['visible', 'creado_en', 'propuesta']
 
 		widgets = {
-			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
 		}
 
 		labels = {
@@ -645,8 +645,8 @@ class FormPropuestaCuotaIncorporacion(forms.ModelForm):
 
 class FormPropuestaFondoPromocion(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
 
 	class Meta:
 		model 	= Propuesta_Fondo_Promocion
@@ -655,8 +655,8 @@ class FormPropuestaFondoPromocion(forms.ModelForm):
 
 class FormPropuestaGastoComun(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'})
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
 
 	class Meta:
 		model 	= Propuesta_Gasto_Comun
@@ -664,7 +664,7 @@ class FormPropuestaGastoComun(forms.ModelForm):
 		exclude = ['visible', 'creado_en', 'propuesta']
 
 		widgets = {
-			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
 		}
 
 		labels = {

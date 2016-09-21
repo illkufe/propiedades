@@ -3058,3 +3058,64 @@ def propuesta_pdf(proceso, pk=None):
 	pdf.close()
 
 	return response
+
+// 
+
+	// var mensaje = 'campo requerido'
+
+	// $.validator.addMethod("field_required_arriendo_minimo", function (value, element) {
+	// 	console.log('field_required_arriendo_minimo')
+	// 	var response = true
+	// 	if ($('input[name=arriendo_minimo]').prop('checked'))
+	// 		response = false
+	// 	return response
+	// }, mensaje);
+
+	// $.validator.addMethod("field_required_arriendo_variable", function (value, element) {
+	// 	console.log('field_required_arriendo_variable')
+	// 	var response = true
+	// 	// if ($('input[name=arriendo_variable]').prop('checked')){
+	// 	// 	if ($("input[name=arriendo_variable-valor].field-required").val() != "" && $("select[name=arriendo_variable-moneda].field-required").val() != ""){
+	// 	// 		response = true
+	// 	// 	}else{
+	// 	// 		response = false
+	// 	// 	}
+	// 	// }
+
+	// 	if ($("input[name=arriendo_variable-valor].field-required").val() != "")
+	// 		response = false
+	// 	console.log(response)
+	// 	return response
+	// }, mensaje);
+
+	// $.validator.addMethod("field_required_arriendo_bodega", function (value, element) {
+	// 	console.log('field_required_arriendo_bodega')
+	// 	var response = true
+	// 	if ($('input[name=arriendo_bodega]').prop('checked'))
+	// 		response = false
+	// 	return response
+	// }, mensaje);
+
+	// $.validator.addMethod("field_required_cuota_incorporacion", function (value, element) {
+	// 	console.log('field_required_cuota_incorporacion')
+	// 	var response = true
+	// 	if ($('input[name=cuota_incorporacion]').prop('checked'))
+	// 		response = false
+	// 	return response
+	// }, mensaje);
+
+	// $.validator.addMethod("field_required_fondo_promocion", function (value, element) {
+	// 	console.log('field_required_fondo_promocion')
+	// 	var response = true
+	// 	if ($('input[name=fondo_promocion]').prop('checked'))
+	// 		response = false
+	// 	return response
+	// }, mensaje);
+
+	// $.validator.addMethod("field_required_gasto_comun", function (value, element) {
+	// 	console.log('field_required_gasto_comun')
+	// 	var response = true
+	// 	if ($('input[name=gasto_comun]').prop('checked'))
+	// 		response = false
+	// 	return response
+	// }, mensaje);

@@ -940,7 +940,6 @@ def validar_fondo_de_promocion(contrato, concepto, periodo):
 			contrato 		= contrato,
 		).save()
 
-
 	return {
 		'estado'	: True,
 		'mensaje'	: 'correcto',

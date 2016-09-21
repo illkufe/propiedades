@@ -17,7 +17,6 @@
 					<div class="ibox-content">
 						<div class="row">
 							<div class="col-sm-12">
-
 								<div class="form-group col-sm-3">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.numero.help_text }}" ></i>
 									{{ form.numero.label_tag }}
@@ -96,7 +95,6 @@
 					<div class="ibox-content">
 						<div class="row">
 							<div class="col-sm-12">
-
 								<div class="form-group col-sm-3">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_contrato.help_text }}" ></i>
 									{{ form.fecha_contrato.label_tag }}
@@ -253,7 +251,6 @@
 
 					<div class="ibox-content">
 						<div class="row">
-
 							<div class="form-group col-sm-2">
 								{{ form_arriendo_minimo.valor.label_tag }}
 								{{ form_arriendo_minimo.valor }}
@@ -309,7 +306,6 @@
 									{{ form_arriendo_minimo.moneda_reajuste.errors|striptags }}
 								</div>
 							</div>
-
 						</div>
 					</div>
 
@@ -327,7 +323,6 @@
 
 					<div class="ibox-content">
 						<div class="row">
-
 							<div class="form-group col-sm-2">
 								{{ form_arriendo_variable.valor.label_tag }}
 								{{ form_arriendo_variable.valor }}
@@ -343,7 +338,6 @@
 									{{ form_arriendo_variable.moneda.errors|striptags }}
 								</div>
 							</div>
-
 						</div>
 					</div>
 
@@ -361,7 +355,6 @@
 
 					<div class="ibox-content">
 						<div class="row">
-
 							<div class="form-group col-sm-2">
 								{{ form_arriendo_bodega.valor.label_tag }}
 								{{ form_arriendo_bodega.valor }}
@@ -385,7 +378,6 @@
 									{{ form_arriendo_bodega.metro_cuadrado.errors|striptags }}
 								</div>
 							</div>
-
 						</div>
 					</div>
 
@@ -403,7 +395,6 @@
 
 					<div class="ibox-content">
 						<div class="row">
-
 							<div class="form-group col-sm-2">
 								{{ form_cuota_incorporacion.valor.label_tag }}
 								{{ form_cuota_incorporacion.valor }}
@@ -427,7 +418,6 @@
 									{{ form_cuota_incorporacion.metro_cuadrado.errors|striptags }}
 								</div>
 							</div>
-
 						</div>
 					</div>
 
@@ -445,7 +435,6 @@
 
 					<div class="ibox-content">
 						<div class="row">
-
 							<div class="form-group col-sm-2">
 								{{ form_fondo_promocion.valor.label_tag }}
 								{{ form_fondo_promocion.valor }}
@@ -461,7 +450,6 @@
 									{{ form_fondo_promocion.moneda.errors|striptags }}
 								</div>
 							</div>
-
 						</div>
 					</div>
 
@@ -479,7 +467,6 @@
 
 					<div class="ibox-content">
 						<div class="row">
-
 							<div class="form-group col-sm-2">
 								{{ form_gasto_comun.valor.label_tag }}
 								{{ form_gasto_comun.valor }}
@@ -503,7 +490,6 @@
 									{{ form_gasto_comun.metro_cuadrado.errors|striptags }}
 								</div>
 							</div>
-
 						</div>
 					</div>
 
@@ -512,7 +498,6 @@
 							<div class="col-sm-12">
 								<a href='{% url "propuesta_list" %}'><button class="btn btn-w-m btn-sm btn-default" type="button" style="margin-right: 15px;">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-propuesta-new')">GUARDAR Y SEGUIR</button>
 							</div>
 						</div>
 					</div>
@@ -538,69 +523,27 @@ $(document).ready(function(){
 
 function initialize(){
 
-	// cambio en fecha inicio
-	$('input[name="fecha_inicio"]').change(function(){
-		var fecha_inicio = $(this).val().split('/')
-		if ($('input[name="fecha_termino"]').val() != '') {
-
-			var fecha_termino 	= $('input[name="fecha_termino"]').val().split('/')
-			fecha_inicio 		= new Date(parseInt(fecha_inicio[2]), parseInt(fecha_inicio[1]-1), parseInt(fecha_inicio[0]));
-			fecha_termino 		= new Date(parseInt(fecha_termino[2]), parseInt(fecha_termino[1]-1), parseInt(fecha_termino[0]));
-
-			var meses = diferencia_entre_meses(fecha_inicio, fecha_termino)
-			$('input[name="meses"]').val(meses)
+	$(".activar-concepto").click(function(){
+		var concepto = $(this).attr('data-concepto')
+		if($(this).prop('checked')){
+			$(".ibox-content [name^="+concepto+"]").attr('disabled', false)
+		}
+		else{
+			$(".ibox-content [name^="+concepto+"]").attr('disabled', true)
+			$(".ibox-content [name^="+concepto+"]").val('')
 		}
 	})
 
-	// cambio en fecha término
-	$('input[name="fecha_termino"]').change(function(){
-		var fecha_termino = $(this).val().split('/')
-		if ($('input[name="fecha_inicio"]').val() != '') {
-
-			var fecha_inicio 	= $('input[name="fecha_inicio"]').val().split('/')
-			fecha_inicio 		= new Date(parseInt(fecha_inicio[2]), parseInt(fecha_inicio[1]-1), parseInt(fecha_inicio[0]));
-			fecha_termino 		= new Date(parseInt(fecha_termino[2]), parseInt(fecha_termino[1]-1), parseInt(fecha_termino[0]));
-
-			var meses = diferencia_entre_meses(fecha_inicio, fecha_termino)
-			$('input[name="meses"]').val(meses)
+	$(".activar-concepto").each(function () {
+		var concepto = $(this).attr('data-concepto')
+		if($(this).prop('checked')){
+			$(".ibox-content [name^="+concepto+"]").attr('disabled', false)
 		}
-	})
-
-	// cambio en los meses
-	$('input[name="meses"]').change(function(){
-		var meses =  $(this).val()
-		if ($('input[name="fecha_inicio"]').val() != '') {
-
-			var fecha 	= $('input[name="fecha_inicio"]').val().split('/')
-			fecha 		= new Date(parseInt(fecha[2]), parseInt(fecha[1]-1), parseInt(fecha[0]));
-			fecha.setMonth(fecha.getMonth() + parseInt(meses));
-
-			var dia  = fecha.getDate() < 10 ? '0'+fecha.getDate() : fecha.getDate()
-			var mes  = fecha.getMonth()+1 < 10 ? '0'+(fecha.getMonth()+1) : fecha.getMonth()+1
-			var anio = fecha.getFullYear()
-
-			$('input[name="fecha_termino"]').val(dia+'/'+mes+'/'+anio)
-		}
-	})
+	});
 
 }
 
-
-
-
 function guardar_formulario_propuesta(){
-
-	// $.validator.addMethod("notEqualTo", function (value, element) {
-	// 	password_actual = $('#form-update-password input[name="password_actual"]').val()
-	// 	password_nueva 	= $('#form-update-password input[name="password_nueva"]').val()
-	// 	if (password_actual == password_nueva) {
-	// 		return false;
-	// 	}
-	// 	else{
-	// 		return true;
-	// 	}
-	// }, 'campo requerido');
-
 
 	$("#form-propuesta-new").validate({
 		errorPlacement: function(error, element) {
@@ -608,7 +551,52 @@ function guardar_formulario_propuesta(){
 		}
 	})
 
-	$("[name^=arriendo_bodega]").each(function () {
+	$("[name^=arriendo_minimo].field-required").each(function () {
+		$(this).rules("add", {
+			required: true,
+			messages: {
+				required: "campo requerido",
+			}
+		});
+	});
+
+	$("[name^=arriendo_variable].field-required").each(function () {
+		$(this).rules("add", {
+			required: true,
+			messages: {
+				required: "campo requerido",
+			}
+		});
+	});
+
+	$("[name^=arriendo_bodega].field-required").each(function () {
+		$(this).rules("add", {
+			required: true,
+			messages: {
+				required: "campo requerido",
+			}
+		});
+	});
+
+	$("[name^=cuota_incorporacion].field-required").each(function () {
+		$(this).rules("add", {
+			required: true,
+			messages: {
+				required: "campo requerido",
+			}
+		});
+	});
+
+	$("[name^=fondo_promocion].field-required").each(function () {
+		$(this).rules("add", {
+			required: true,
+			messages: {
+				required: "campo requerido",
+			}
+		});
+	});
+
+	$("[name^=gasto_comun].field-required").each(function () {
 		$(this).rules("add", {
 			required: true,
 			messages: {
