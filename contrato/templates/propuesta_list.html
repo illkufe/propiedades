@@ -30,7 +30,7 @@
 									<td class="text-center">
 										<a class="btn btn-edit btn-bitbucket" href='{% url "propuesta_update" item.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.propuesta.id}}, 'propuesta', 'tabla-propuestas', 'Propusta')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-download btn-bitbucket"><i class="fa fa-download"></i></a>
+										<a class="btn btn-download btn-bitbucket" href='{% url "propuesta_generar_pdf" item.id %}'><i class="fa fa-download"></i></a>
 										<a class="btn btn-config btn-bitbucket" onclick="propuesta_ver_versiones({{item.propuesta.id}})"><i class="fa fa-history"></i></a>
 										<a class="btn btn-send btn-bitbucket" data-toggle="modal" data-target="#m-propuesta-enviar-correo"><i class="fa fa-paper-plane"></i></a>
 										<a class="btn btn-view btn-bitbucket" href='{% url "propuesta_historial" item.propuesta.id %}'><i class="fa fa-clock-o"></i></a>
@@ -130,7 +130,16 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title" id="myModalLabel">Versiones</h4>
 			</div>
-			<div class="modal-body"></div>
+			<div class="modal-body">
+
+				<div class="text-center">
+					<p style="color:#ff8100; font-size:100px">
+						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+					</p>
+					<p>Error</p>
+				</div>
+				
+			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">CERRAR</button>
 			</div>
@@ -265,7 +274,7 @@ function propuesta_ver_versiones(id){
 
 function template_modal_propuesta_versiones(propuesta){
 
-	$('#m-versiones-propuesta .modal-body').html('')
+	// $('#m-versiones-propuesta .modal-body').html('')
 
 	var template = ''
 

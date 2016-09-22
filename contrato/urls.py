@@ -50,6 +50,8 @@ urlpatterns = [
 
 	url(r'^funcion/propuesta/enviar_correo$', views.propuesta_enviar_correo, name='propuesta_enviar_correo'),
 	url(r'^funcion/propuesta/restaurar_version/(?P<id>\d+)$', views.propuesta_restaurar_version, name='propuesta_restaurar_version'),
+	url(r'^funcion/propuesta/historial/(?P<id>\d+)$', views.propuesta_historial_tabla, name='propuesta_historial_tabla'),
+	url(r'^funcion/propuesta/pdf/(?P<id>\d+)$', views.propuesta_generar_pdf, name='propuesta_generar_pdf'),
 
 	# get - contratos
 	url(r'^get/contratos/$', csrf_exempt(views.CONTRATO.as_view()),name='get_contratos'),

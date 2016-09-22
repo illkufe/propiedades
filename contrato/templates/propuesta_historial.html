@@ -10,28 +10,9 @@
 				<div class="ibox-title">
 					<h5>Historial de Propuestas</h5>
 				</div>
-
 				<div class="ibox-content">
 					<div class="table-responsive">
-						<table id="tabla-contratos" class="table table-striped table-bordered table-hover" style="width:100%">
-							<thead>
-								<tr>
-									<th>items</th>
-									{% for item in object_list %}
-									<th>{{ item.item }}</th>
-									{% endfor %}
-								</tr>
-							</thead>
-							<tbody>
-								{% for item in object_list %}
-								<tr>
-									<td>{{ item.item }}</td>
-									{% for data in item.data %}
-									<td>{{ data }}</td>
-									{% endfor %}
-								</tr>
-								{% endfor %}
-							</tbody>
+						<table id="tabla-versiones" class="table table-striped table-bordered table-hover" style="width:100%">
 						</table>
 					</div>
 				</div>
@@ -45,15 +26,28 @@
 {% block scripts %}
 <script>
 
-var tabla_contratos;
+var tabla_versiones;
 
 $(document).ready(function(){
-
-	load_tabla_contratos()
-
+	cargar_tabla_versiones()
 });
 
-function load_tabla_contratos(){
+
+
+function cargar_tabla_versiones(){
+
+	$.ajax({
+		url: '/funcion/propuesta/historial/{{propuesta_id}}',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+			load_tabla_versiones(data.head)
+			data_tabla_versiones(data.body)
+		}
+	})
+}
+
+function load_tabla_versiones(versiones){
 
 	var configuracion = {
 		'ordering'	: false,
@@ -62,8 +56,46 @@ function load_tabla_contratos(){
 		'buttons'	: [],
 	}
 
-	tabla_contratos = load_table('#tabla-contratos', null, configuracion)
+	var columns = [
+	{
+		'data'		: 'item',
+		'title'		: '<p style="margin-bottom:0px;text-align:center;"><span class="badge">item</span></p>',
+	}];
+
+	var columnas = []
+
+	for (var i = 0; i < versiones.length; i++) {
+
+		columna = {}
+
+		columna.data 	= versiones[i].data
+		columna.title 	= '<div class="text-center">'+versiones[i].title+'</div>'
+		columns.push(columna)
+	};
+
+	tabla_versiones = load_table('#tabla-versiones', columns, configuracion)
 }
+
+function data_tabla_versiones(versiones){
+
+	tabla_versiones.clear().draw();
+
+	rows = [];
+
+	for (var i = 0; i < versiones.length; i++) {
+
+		row = {}
+
+		for (var j = 0; j < versiones[i].length; j++) {
+			row[versiones[i][j].data] = versiones[i][j].value
+		};
+
+		rows.push(row)
+	};
+
+	tabla_versiones.rows.add(rows).draw();
+}
+
 
 </script>
 {% endblock scripts %}

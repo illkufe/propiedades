@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template import Context, loader
 from django.template.loader import get_template 
@@ -111,6 +112,7 @@ def formato_numero_sin_miles(valor):
 	return moneda
 
 
+# funciones globales (correo)
 def enviar_correo(configuracion):
 
 	try:
@@ -129,33 +131,26 @@ def enviar_correo(configuracion):
 
 	return {'estado':estado, 'mensaje':mensaje}
 
+
 # funciones globales (pdf)
-def generar_pdf(configuration, data):
+def generar_pdf(configuracion, data):
 
-	options = {
-		'margin-top': '0.75in',
-		'margin-right': '0.75in',
-		'margin-bottom': '0.55in',
-		'margin-left': '0.75in',
-		'encoding': "UTF-8",
-		'no-outline': None,
-		}
-
-	css = ['static/assets/css/bootstrap.min.css']
-
+	context = Context(data)
+	
 	try:
-		template = get_template(configuration['html'])
-	except Exception as asd:
-		template = get_template(configuration['default'])
-
-	context = Context({
-		'data' : data,
-	})
+		template = get_template(configuracion['template'])
+	except Exception:
+		template = get_template('pdf/default.html')
 
 	html = template.render(context)
-	pdfkit.from_string(html, configuration['destination']+''+configuration['nombre_pdf']+'.pdf', options=options, css=css)
+	pdfkit.from_string(html, configuracion['archive']['directory']+'/'+configuracion['archive']['name']+'.pdf', options=configuracion['options'], css=configuracion['css'])
+	pdf 		= open(configuracion['archive']['directory']+'/'+configuracion['archive']['name']+'.pdf', 'rb')
+	response 	= HttpResponse(pdf.read(), content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename='+configuracion['archive']['name']+'.pdf'
+	pdf.close()
 
-	return True
+	return response
+
 
 
 # funciones conectar web service

@@ -531,43 +531,14 @@ class PropuestaHistorialList(ListView):
 
 	def get_context_data(self, **kwargs):
 
-		context 			= super(PropuestaHistorialList, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'propuesta'
-		context['name'] 	= 'historial'
-		context['href'] 	= '/propuesta/list'
+		context 				= super(PropuestaHistorialList, self).get_context_data(**kwargs)
+		context['title'] 		= modulo
+		context['subtitle'] 	= 'propuesta'
+		context['name'] 		= 'historial'
+		context['href'] 		= '/propuesta/list'
+		context['propuesta_id'] = self.kwargs['pk']
 
 		return context
-
-	def get_queryset(self):
-		data 				= list()
-		data_numero 		= list()
-		data_fecha_inicio 	= list()
-		data_fecha_termino 	= list()
-		# queryset 	= list()
-		propuesta 	= Propuesta_Contrato.objects.get(id=self.kwargs['pk'])
-		versiones 	= propuesta.propuesta_version_set.all()
-		queryset 	= versiones
-
-
-		for version in versiones:
-			data_numero.append(version.numero)
-			data_fecha_inicio.append(version.fecha_inicio)
-			data_fecha_termino.append(version.fecha_termino)
-
-		data.append({'item': 'Número', 'data':data_numero})
-		data.append({'item': 'Fecha Inicio', 'data':data_fecha_inicio})
-		data.append({'item': 'Fecha Término', 'data':data_fecha_termino})
-		return data
-		# for propuesta in propuestas:
-
-		# 	ultima_version 					= propuesta.propuesta_version_set.all().order_by('-id').first()
-		# 	ultima_version.fecha_inicio  	= ultima_version.fecha_inicio.strftime('%d/%m/%Y')
-		# 	ultima_version.fecha_termino 	= ultima_version.fecha_termino.strftime('%d/%m/%Y')
-
-		# 	queryset.append(ultima_version)
-
-		# return queryset
 
 
 # tipo de multa
@@ -1354,7 +1325,6 @@ def propuesta_enviar_correo(request):
 
 	return JsonResponse(response, safe=False)
 
-
 def propuesta_restaurar_version(request, id=None):
 
 	response 	= list()
@@ -1367,6 +1337,192 @@ def propuesta_restaurar_version(request, id=None):
 
 	return JsonResponse(response, safe=False)
 
+def propuesta_historial_tabla(request, id=None):
+
+	head = list()
+	body = list()
+
+	propuesta 	= Propuesta_Contrato.objects.get(id=id)
+	versiones 	= propuesta.propuesta_version_set.all()
+
+	numero 				= list()
+	fecha_inicio 		= list()
+	fecha_termino 		= list()
+	arriendo_minimo 	= list()
+	arriendo_variable 	= list()
+	arriendo_bodega 	= list()
+	cuota_incorporacion = list()
+	fondo_promocion 	= list()
+	gasto_comun 		= list()
+
+	# datos generales
+	numero.append({'data':'item', 'value': 'Número'})
+	fecha_inicio.append({'data':'item', 'value': 'Fecha Inicio'})
+	fecha_termino.append({'data':'item', 'value': 'Fecha Término'})
+
+	# conceptos
+	arriendo_minimo.append({'data':'item', 'value': 'Arriendo Minimo'})
+	arriendo_variable.append({'data':'item', 'value': 'Arriendo Variable'})
+	arriendo_bodega.append({'data':'item', 'value': 'Arriendo de Bodega'})
+	cuota_incorporacion.append({'data':'item', 'value': 'Cuota de Incorporación'})
+	fondo_promocion.append({'data':'item', 'value': 'Fondo de Promoción'})
+	gasto_comun.append({'data':'item', 'value': 'Gasto Común'})
+
+	# datos de conceptos {falta: ajuste arriendo minimo, doble en diciembre}
+
+	for version in versiones:
+
+		value_arriendo_minimo 		= 'No Aplica'
+		value_arriendo_variable 	= 'No Aplica'
+		value_arriendo_bodega 		= 'No Aplica'
+		value_cuota_incorporacion 	= 'No Aplica'
+		value_fondo_promocion 		= 'No Aplica'
+		value_gasto_comun 			= 'No Aplica'
+
+		# conceptos
+		if version.arriendo_minimo is True:
+			value_arriendo_minimo = str(version.propuesta_arriendo_minimo_set.first().valor)+' '+str(version.propuesta_arriendo_minimo_set.first().moneda)
+		if version.arriendo_variable is True:
+			value_arriendo_variable = str(version.propuesta_arriendo_variable_set.first().valor)+' '+str(version.propuesta_arriendo_variable_set.first().moneda)
+		if version.arriendo_bodega is True:
+			value_arriendo_bodega = str(version.propuesta_arriendo_bodega_set.first().valor)+' '+str(version.propuesta_arriendo_bodega_set.first().moneda)
+		if version.cuota_incorporacion is True:
+			value_cuota_incorporacion = str(version.propuesta_cuota_incorporacion_set.first().valor)+' '+str(version.propuesta_cuota_incorporacion_set.first().moneda)
+		if version.fondo_promocion is True:
+			value_fondo_promocion = str(version.propuesta_fondo_promocion_set.first().valor)+' '+str(version.propuesta_fondo_promocion_set.first().moneda)
+		if version.gasto_comun is True:
+			value_gasto_comun = str(version.propuesta_gasto_comun_set.first().valor)+' '+str(version.propuesta_gasto_comun_set.first().moneda)
+
+		head.append({'data':version.id, 'title': version.creado_en.strftime('%d/%m/%Y %H:%M')})
+		numero.append({'data':version.id, 'value': version.numero})
+		fecha_inicio.append({'data':version.id, 'value': version.fecha_inicio})
+		fecha_termino.append({'data':version.id, 'value': version.fecha_termino})
+		arriendo_minimo.append({'data':version.id, 'value': value_arriendo_minimo})
+		arriendo_variable.append({'data':version.id, 'value': value_arriendo_variable})
+		arriendo_bodega.append({'data':version.id, 'value': value_arriendo_bodega})
+		cuota_incorporacion.append({'data':version.id, 'value': value_cuota_incorporacion})
+		fondo_promocion.append({'data':version.id, 'value': value_fondo_promocion})
+		gasto_comun.append({'data':version.id, 'value': value_gasto_comun})
+
+	body.append(numero)
+	body.append(fecha_inicio)
+	body.append(fecha_termino)
+	body.append(arriendo_minimo)
+	body.append(arriendo_variable)
+	body.append(arriendo_bodega)
+	body.append(cuota_incorporacion)
+	body.append(fondo_promocion)
+	body.append(gasto_comun)
+
+	return JsonResponse({'head':head, 'body':body}, safe=False)
+
+def propuesta_generar_pdf(request, id=None):
+
+	version 			= Propuesta_Version.objects.get(id=id)
+	representantes 		= list()
+	locales 			= list()
+	arriendo_minimo 	= 'No Aplica'
+	arriendo_variable 	= 'No Aplica'
+	arriendo_bodega 	= 'No Aplica'
+	cuota_incorporacion = 'No Aplica'
+	fondo_promocion 	= 'No Aplica'
+	gasto_comun 		= 'No Aplica'
+
+	for local in version.locales.all():
+		locales.append({
+			'id' 		: local.id,
+			'nombre' 	: local.nombre,
+			'activo' 	: {'id':local.activo.id, 'nombre':local.activo.nombre},
+			})
+
+	for representante in version.cliente.representante_set.all():
+		representantes.append({
+			'id' 			: representante.id,
+			'nombre' 		: representante.nombre,
+			'rut' 			: representante.rut,
+			'nacionalidad' 	: representante.nacionalidad,
+			'profesion' 	: representante.profesion,
+			'domicilio' 	: representante.domicilio,
+			'estado_civil' 	: {'id':representante.estado_civil.id, 'nombre':representante.estado_civil.nombre} ,
+			})
+
+	empresa = {
+		'id' 		: version.propuesta.empresa.id,
+		'nombre'	: version.propuesta.empresa.nombre,
+	}
+
+	cliente = {
+		'id' 				: version.cliente.id,
+		'nombre'			: version.cliente.nombre,
+		'rut'				: version.cliente.rut,
+		'email'				: version.cliente.email,
+		'razon_social'		: version.cliente.razon_social,
+		'region'			: version.cliente.region,
+		'comuna'			: version.cliente.comuna,
+		'ciudad'			: version.cliente.ciudad,
+		'direccion'			: version.cliente.direccion,
+		'telefono'			: version.cliente.telefono,
+		'representantes'	: representantes,
+		'giro'				: {'id':version.cliente.giro.id, 'descripcion':version.cliente.giro.descripcion},
+	}
+
+	if version.arriendo_minimo is True:
+		arriendo_minimo = str(version.propuesta_arriendo_minimo_set.first().valor)+' '+str(version.propuesta_arriendo_minimo_set.first().moneda)
+	if version.arriendo_variable is True:
+		arriendo_variable = str(version.propuesta_arriendo_variable_set.first().valor)+' '+str(version.propuesta_arriendo_variable_set.first().moneda)
+	if version.arriendo_bodega is True:
+		arriendo_bodega = str(version.propuesta_arriendo_bodega_set.first().valor)+' '+str(version.propuesta_arriendo_bodega_set.first().moneda)
+	if version.cuota_incorporacion is True:
+		cuota_incorporacion = str(version.propuesta_cuota_incorporacion_set.first().valor)+' '+str(version.propuesta_cuota_incorporacion_set.first().moneda)
+	if version.fondo_promocion is True:
+		fondo_promocion = str(version.propuesta_fondo_promocion_set.first().valor)+' '+str(version.propuesta_fondo_promocion_set.first().moneda)
+	if version.gasto_comun is True:
+		gasto_comun = str(version.propuesta_gasto_comun_set.first().valor)+' '+str(version.propuesta_gasto_comun_set.first().moneda)
+
+	data = {
+		'id'					: version.id,
+		# 'fecha_contrato'		: version.fecha_contrato,
+		'fecha_inicio'			: version.fecha_inicio,
+		'fecha_termino'			: version.fecha_termino,
+		'arriendo_minimo' 		: arriendo_minimo,
+		'arriendo_variable' 	: arriendo_variable,
+		'arriendo_bodega' 		: arriendo_bodega,
+		'cuota_incorporacion' 	: cuota_incorporacion,
+		'fondo_promocion' 		: fondo_promocion,
+		'gasto_comun' 			: gasto_comun,
+		'empresa'				: empresa,
+		'cliente'				: cliente,
+		'locales'				: locales,
+		}
+
+	# configuracion pdf
+	css 		= ['static/assets/css/bootstrap.min.css']
+	template 	= 'pdf/template_propuesta.html'
+	options  	= {
+		'margin-top': '0.75in',
+		'margin-right': '0.75in',
+		'margin-bottom': '0.55in',
+		'margin-left': '0.75in',
+		'encoding': "UTF-8",
+		'no-outline': None,
+	}
+	archive 	= {
+		'directory' :'public/media/propuestas',
+		'name' 		:'propuesta_'+str(version.id),
+	} 
+
+	configuracion = {
+		'options'	: options,
+		'template' 	: template,
+		'css'       : css,
+		'archive' 	: archive,
+	}
+
+	# return JsonResponse(data, safe=False)
+	return generar_pdf(configuracion, data)
+	
+
+# funciones - contrato
 def contrato_activar(request, contrato_id):
 
 	try:
@@ -1457,7 +1613,7 @@ def contrato_pdf(request, contrato_id):
 	try:
 		template = get_template('pdf/contratos/contrato_'+str(contrato.contrato_tipo_id)+'.html')
 	except Exception:
-		template = get_template('pdf/contratos/contrato_default.html')
+		template = get_template('pdf/default.html')
 
 	context = Context({
 		'meses'				: meses,
@@ -1468,9 +1624,9 @@ def contrato_pdf(request, contrato_id):
 		'cliente'			: cliente,
 		'representantes' 	: representantes,
 		'renovacion'		: renovacion,
-		'garantias_total'   : garantias_total,
+		'garantias_total' 	: garantias_total,
 		'arriendo' 			: arriendo,
-		'arriendo_detalle'  : arriendo_detalle,
+		'arriendo_detalle' 	: arriendo_detalle,
 		'gasto_comun' 		: gasto_comun,
 		'cuota'				: cuota,
 		'arriendo_variable' : arriendo_variable,

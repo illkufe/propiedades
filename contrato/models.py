@@ -201,7 +201,7 @@ class Propuesta_Arriendo_Minimo(models.Model):
 	moneda_reajuste = models.ForeignKey(Moneda, related_name='propuesta_minimo_moneda_reajuste', null=True, blank=True)
 
 	def __str__(self):
-		return self.propuesta.numero
+		return str(self.propuesta.numero)
 
 class Propuesta_Arriendo_Variable(models.Model):
 
@@ -217,7 +217,7 @@ class Propuesta_Arriendo_Variable(models.Model):
 	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
 
 	def __str__(self):
-		return self.propuesta.numero
+		return str(self.propuesta.numero)
 
 class Propuesta_Arriendo_Bodega(models.Model):
 
@@ -251,7 +251,7 @@ class Propuesta_Cuota_Incorporacion(models.Model):
 	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
 
 	def __str__(self):
-		return self.propuesta.numero
+		return str(self.propuesta.numero)
 
 class Propuesta_Fondo_Promocion(models.Model):
 
@@ -267,7 +267,7 @@ class Propuesta_Fondo_Promocion(models.Model):
 	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
 
 	def __str__(self):
-		return self.propuesta.numero
+		return str(self.propuesta.numero)
 
 class Propuesta_Gasto_Comun(models.Model):
 
@@ -283,7 +283,7 @@ class Propuesta_Gasto_Comun(models.Model):
 	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
 
 	def __str__(self):
-		return self.propuesta.numero
+		return str(self.propuesta.numero)
 
 
 # modelos (conceptos)
