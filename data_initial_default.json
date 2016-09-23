@@ -526,5 +526,40 @@
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
+},
+{
+	"model": "administrador.tipo_clasificacion",
+	"pk": 1,
+	"fields": {
+		"nombre": "Local"
+	}
+},
+{
+	"model": "administrador.tipo_clasificacion",
+	"pk": 2,
+	"fields": {
+		"nombre": "Cliente"
+	}
+},
+{
+	"model": "accounts.usertype",
+	"pk": 1,
+	"fields": {
+		"nombre": "Administrador"
+	}
+},
+{
+	"model": "accounts.usertype",
+	"pk": 2,
+	"fields": {
+		"nombre": "Cliente"
+	}
+},
+{
+	"model": "accounts.usertype",
+	"pk": 3,
+	"fields": {
+		"nombre": "Comercial"
+	}
 }
 ]

@@ -145,6 +145,28 @@
 						</div>
 					</div>
 
+                    <div class="ibox-title">
+						<h5>CLASIFICACIÓN</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+                            {% for clasificacion in clasificaciones %}
+
+                                <div class="form-group col-sm-3">
+                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title=".." ></i>
+                                    {{ clasificacion.nombre }}
+                                    <select class="select2" multiple="multiple" name="clasificaciones" id="id_clasificaciones">
+                                        {% for detalles in clasificacion.detalle %}
+                                            <option value="{{ detalles.id }}" {% if detalles.select %} selected="selected" {% endif %}>{{ detalles.nombre}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                            {% endfor %}
+						</div>
+					</div>
+
 					<div class="ibox-title">
 						<h5>MEDIDORES DE ELECTRICIDAD</h5>
 					</div>

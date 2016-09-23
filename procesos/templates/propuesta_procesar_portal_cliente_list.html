@@ -1,0 +1,322 @@
+{% extends 'index.html' %}
+{% block section %}
+{% load extra_tags %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<!-- moda -->
+<div class="modal fade" id="info-factura-propuesta" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" >Información Propuesta Facturada</h4>
+			</div>
+			<div class="modal-body">
+
+				<div class="row">
+					<div class="col-lg-12">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<div class="col-sm-3"><strong>Estado</strong></div>
+								<div class="col-sm-9"><span class="label label-primary">Propuesta</span></div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3"><strong>Nº Contrato</strong></div>
+								<div class="col-sm-9">: 7481</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3"><strong>Cliente</strong></div>
+								<div class="col-sm-9">: Falabella Retail S.A</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3"><strong>Rut Cliente</strong></div>
+								<div class="col-sm-9">: 77.261.280-K</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3"><strong>Marca Comercial</strong></div>
+								<div class="col-sm-9">: Falabella</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<div class="row m-b-lg m-t-lg">
+					<div class="col-md-8">
+						<small>Conceptos Facturados</small>
+						<table class="table small m-b-xs">
+							<tbody>
+								<tr>
+									<td>Arriendo Mínimo</td>
+									<td>$ <strong>22</strong></td>
+								</tr>
+								<tr>
+									<td>Arriendo Bodega</td>
+									<td>$<strong>54</strong></td>
+								</tr>
+								<tr>
+									<td>Gastos Comunes</td>
+									<td>$<strong>32</strong></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-4">
+						<small>Total</small>
+						<h2 class="no-margins">$206.480</h2>
+						<ul class="list-unstyled project-files">
+							<li><a href=""><i class="fa fa-file"></i> Propuesta_Factura.ppt</a></li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<!-- facturas procesadas -->
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Propuestas Facturadas</h5>
+				</div>
+
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table id="tabla-facturas-procesadas" class="table table-striped table-bordered table-hover dataTables-example" style="width: 100% !important;">
+							<thead></thead>
+							<tbody>
+								{% for item in facturas_procesadas %}
+								<tr>
+									<td>{{ item.id }}</td>
+									<td>{{ item.numero_pedido}}</td>
+                                    <td>{{ item.estado.nombre}}</td>
+                                    <td>{{ item.motor_emision.nombre}}</td>
+									<td>{{ item.propuesta.nombre }}</td>
+									<td>{{ item.propuesta.creado_en|date:"d/m/Y" }}</td>
+									<td>{{ item.fecha_inicio|date:"d/m/Y" }} - {{ item.fecha_termino|date:"d/m/Y" }}</td>
+									<td>{{ item.contrato.numero }}</td>
+									<td>{{ item.contrato.cliente.nombre }}</td>
+									<td class="text-right">{{ item.total|calculo_total }}</td>
+									<td class="text-center">
+										<a class="btn btn-view btn-bitbucket" onclick="visualizar_propuesta({{item.id}})"><i class="fa fa-eye"></i></a>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<style>
+
+#info-factura-propuesta .m-b-lg{
+	margin-bottom: 20px;
+}
+
+#info-factura-propuesta .modal-header .modal-title{
+	font-weight: 300;
+}
+
+
+#info-factura-propuesta .form-group{
+	margin-bottom: 5px;
+}
+
+#info-factura-propuesta .project-files li a{
+	margin-top: 5px;
+	margin-left: 0px;
+}
+
+</style>
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+var tabla_facturas_enviadas;
+
+$(document).ready(function(){
+
+	initializar_datos()
+	load_tabla_facturas_procesadas()
+
+});
+
+function initializar_datos(){
+}
+
+function load_tabla_facturas_procesadas(){
+
+	var configuracion = {
+		'order'	: [[1, 'desc']],
+	} 
+
+	var columns = [
+	{
+		'data': 'id',
+		'visible': false,
+	},
+	{
+		'width': '10%',
+		'data': 'numero_pedido',
+		'title': 'Nº Pedido',
+	},
+    {
+		'width': '10%',
+		'data': 'estado_factura',
+		'title': 'Estado',
+	},
+    {
+		'width': '10%',
+		'data': 'motor_factura',
+		'title': 'Motor Facturación',
+	},
+    {
+		'width': '20%',
+		'data': 'nombre_propuesta',
+		'title': 'Nombre Propuesta',
+	},
+	{
+		'data': 'fecha',
+		'title': 'Fecha',
+		'visible': false,
+	},
+	{
+		'width': '15%',
+		'data': 'periodo',
+		'title': 'Periodo',
+	},
+	{
+		'width': '10%',
+		'data': 'contato',
+		'title': 'Nº Contrato',
+	},
+	{
+		'width': '15%',
+		'data': 'cliente',
+		'title': 'Cliente',
+	},
+	{
+		'width': '10%',
+		'data': 'total',
+		'title': 'Total',
+	},
+	{
+		'width': '5%',
+		'data': 'opciones',
+		'orderable': false,
+		'title': '<div class="text-center">Opciones</div>',
+	}];
+
+	tabla_facturas_enviadas = load_table('#tabla-facturas-procesadas', columns, configuracion)
+}
+
+function visualizar_propuesta(id){
+
+	$.ajax({
+		url: '/api/factura/'+id,
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+			$('#info-factura-propuesta .modal-body').append(template_modal_info_factura(data[0]))
+			$('#info-factura-propuesta').modal('show')
+		}
+	})
+}
+
+function template_modal_info_factura(factura){
+
+	$('#info-factura-propuesta .modal-body').html('')
+
+	var template = ''
+
+	template += '<div class="row">'
+	template += '<div class="col-lg-12">'
+	template += '<form class="form-horizontal">'
+	template += '<div class="form-group">'
+	template += '<div class="col-sm-9">'
+	template += '<span class="label" style="color:#fff; background:@estado_color">@estado_nombre</span>'
+	template += '</div>'
+	template += '</div>'
+	template += '<div class="form-group">'
+	template += '<div class="col-sm-3"><strong>Nº Contrato</strong></div>'
+	template += '<div class="col-sm-9">: @contato_numero</div>'
+	template += '</div>'
+	template += '<div class="form-group">'
+	template += '<div class="col-sm-3"><strong>Cliente</strong></div>'
+	template += '<div class="col-sm-9">: @cliente_nombre</div>'
+	template += '</div>'
+	template += '<div class="form-group">'
+	template += '<div class="col-sm-3"><strong>Rut Cliente</strong></div>'
+	template += '<div class="col-sm-9">: @cliente_rut</div>'
+	template += '</div>'
+	template += '<div class="form-group">'
+	template += '<div class="col-sm-3"><strong>Marca Comercial</strong></div>'
+	template += '<div class="col-sm-9">: @contato_nombre_local</div>'
+	template += '</div>'
+	template += '</form>'
+	template += '</div>'
+	template += '</div>'
+
+	template += '<div class="row m-b-lg m-t-lg">'
+	template += '<div class="col-md-7">'
+	template += '<small>Conceptos Facturados</small>'
+	template += '<table class="table small m-b-xs">'
+	template += '<tbody>'
+
+
+	for (var i = 0; i < factura.detalles.length; i++) {
+
+		template += '<tr>'
+		template += '<td>@concepto_nombre</td>'
+		template += '<td class="text-right"><strong>@concepto_subtotal</strong></td>'
+		template += '</tr>'
+
+		template = template.replace(/@concepto_nombre/g, 	factura.detalles[i].nombre);
+		template = template.replace(/@concepto_subtotal/g, 	factura.detalles[i].total);
+	};
+
+	template += '</tbody>'
+	template += '</table>'
+	template += '</div>'
+	template += '<div class="col-md-5">'
+	template += '<small>Neto</small>'
+	template += '<h4 class="no-margins">@neto</h4>'
+	template += '<small>I.V.A.</small>'
+	template += '<h4 class="no-margins">@iva</h4>'
+	template += '<small>Total</small>'
+	template += '<h2 class="no-margins">@total</h2>'
+	template += '<ul class="list-unstyled project-files">'
+	template += '<li><a href="@url_documento"><i class="fa fa-file"></i> Factura Propuesta.pdf</a></li>'
+	template += '</ul>'
+	template += '</div>'
+	template += '</div>'
+
+	template = template.replace(/@estado_nombre/g, 			factura.estado.nombre)
+	template = template.replace(/@estado_color/g, 			factura.estado.color)
+	template = template.replace(/@contato_numero/g, 		factura.contrato.numero)
+	template = template.replace(/@contato_nombre_local/g, 	factura.contrato.nombre_local)
+	template = template.replace(/@cliente_nombre/g, 		factura.contrato.cliente.nombre)
+	template = template.replace(/@cliente_rut/g, 			factura.contrato.cliente.rut)
+    template = template.replace(/@neto/g, 					factura.neto)
+    template = template.replace(/@iva/g, 					factura.iva)
+	template = template.replace(/@total/g, 					factura.total)
+    template = template.replace(/@url_documento/g, 			factura.url_documento)
+
+	return template
+}
+</script>
+
+{% endblock scripts %}

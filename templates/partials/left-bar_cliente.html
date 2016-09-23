@@ -1,0 +1,71 @@
+{% load static %}
+{% load avatar_tags %}
+
+<nav class="navbar-default navbar-static-side" role="navigation">
+	<div class="sidebar-collapse">
+		<ul class="nav metismenu" id="side-menu">
+
+			<li class="nav-header">
+				<figure>
+					<img class="img-responsive" src="/static/assets/img/logo_blanco.png" alt="logo informat">
+				</figure>
+
+				<div class="dropdown profile-element">
+					<span>
+						<img src="{% avatar_url request.user %}" class="img-circle" alt="" width="60" height="60">
+					</span>
+					<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+						<span class="clear">
+							<span class="block m-t-xs">
+								<strong class="font-bold"> {{ request.user.first_name }} {{ request.user.last_name }}</strong>
+							</span>
+							<span class="text-muted text-xs block">{{ request.user.userprofile.cargo }}
+								<b class="caret"></b>
+							</span>
+						</span>
+					</a>
+					<ul class="dropdown-menu animated fadeInRight m-t-xs">
+						<li><a href="/perfil">Perfil</a></li>
+						<li><a href="{% url "accounts:logout" %}">Salir</a></li>
+					</ul>
+				</div>
+				<div class="logo-element">
+					IN+
+				</div>
+			</li>
+			<li>
+				<a href="/"><i class="fa fa-home"></i> <span class="nav-label">Dashboard</span></a>
+			</li>
+            {% if request.user.userprofile.cliente_id != None %}
+                <li>
+                    <a href="{% url "cliente_update_portal" pk=request.user.userprofile.cliente_id%}"><i class="fa fa-user"></i> <span class="nav-label">Datos Generales</span></a>
+                </li>
+            {% else %}
+                <li>
+                    <a onclick="error_sin_cliente()"><i class="fa fa-user"></i> <span class="nav-label">Datos Generales</span></a>
+                </li>
+            {% endif %}
+            <li>
+				<a href="{% url "propuesta_procesar_portal_cliente_list" %}"><i class="fa fa-edit"></i> <span class="nav-label">Facturas/Pedidos</span></a>
+			</li>
+            <li>
+				<a href="{% url "ventas_list" %}"><i class="fa fa-shopping-cart"></i> <span class="nav-label">Ventas</span></a>
+			</li>
+		</ul>
+	</div>
+</nav>
+
+{% block scripts %}
+    <script>
+        function error_sin_cliente(){
+
+            var configuracion = {
+                'toast_type' : 'warning',
+                'toast_text' : 'Usuario sin cliente asociado',
+                'toast_title' : 'Advertencia'
+            };
+
+            notification_toast(configuracion)
+        }
+    </script>
+{% endblock scripts %}

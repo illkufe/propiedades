@@ -20,7 +20,7 @@
 							<div class="col-sm-12">
 
 								<div class="row">
-									<div class="form-group col-sm-3">
+									<div class="form-group col-sm-3 hide">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
 										{{ form.tipo.label_tag }}
 										{{ form.tipo }}
@@ -223,7 +223,7 @@
 
 						<div class="row">
 							<div class="col-sm-12">
-                                <a href="/clientes/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+                                <a href="/"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-cliente-new')">GUARDAR Y SEGUIR</button>
 							</div>
@@ -243,6 +243,7 @@
 $(document).ready(function(){
 
 	initialize()
+    edit_data_client()
 
 });
 
@@ -256,6 +257,21 @@ function initialize(){
 			$('.dato-juridica').addClass('hide')
 		}
 	})
+}
+
+function edit_data_client(){
+    {% if facturas %}
+        $('#form-cliente-new').find(':input').prop('disabled', true);
+        $('.btn-delete').attr('onclick','').unbind('click');
+
+        var configuracion = {
+            'toast_type' : 'warning',
+            'toast_text' : 'Cliente tiene asociado documentos generados',
+            'toast_title' : 'Advertencia'
+        };
+
+        notification_toast(configuracion)
+    {% endif %}
 }
 
 function agregar_representante(){

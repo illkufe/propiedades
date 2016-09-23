@@ -1,0 +1,189 @@
+{% extends 'index.html' %}
+{% block section %}
+
+<div class="wrapper wrapper-content">
+	<div class="row flags">
+
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12 s-vacancia">
+			<div class="ibox float-e-margins">
+
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+
+{% block scripts %}
+<script>
+$(document).ready(function(){
+
+	load_section_vacant(null, 0)
+
+	load_flag_currencies()
+	load_flag_commercial()
+
+});
+
+
+
+
+function load_flag_currencies(){
+
+	$.ajax({
+		url: '/flag_currencies',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			for (var i = 0; i < data.length; i++) {
+
+				template = ''
+				template += '<div class="item">'
+				template += '<h1 class="no-margins truncate">$'+data[i].value+'</h1>'
+				template += '<div class="stat-percent font-bold text-success"></div>'
+				template += '<small>'+data[i].abrev+'</small>'
+				template += '</div>'
+
+				$('.carousel-monedas').append(template)
+			}
+
+			$('.carousel-monedas').owlCarousel({
+				items		:1,
+				loop		: true,
+				autoplay	: true,
+			})
+		}
+	})
+}
+
+
+function load_flag_commercial(){
+	$.ajax({
+		url: '/flag_commercial',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			if (data.length > 0) {
+				for (var i = 0; i < data.length; i++) {
+
+					var template = ''
+					template += '<div class="item">'
+					template += '<h1 class="no-margins truncate">'+data[i].nombre+'</h1>'
+					template += '<div class="stat-percent font-bold text-success"></div>'
+					template += '<small>'+data[i].activo+'</small>'
+					template += '</div>'
+
+					$('.carousel-locales').append(template)
+				}
+				$('.carousel-locales').owlCarousel({
+					items		:1,
+					loop		: true,
+					autoplay	: true,
+				})
+			}else{
+				var template = ''
+				template += '<div class="item">'
+				template += '<h1 class="no-margins truncate">Sin Disponibilidad</h1>'
+				template += '<div class="stat-percent font-bold text-success"></div>'
+				template += '<small>Todos los locales ocupados</small>'
+				template += '</div>'
+
+				$('.carousel-locales').append(template)
+				$('.carousel-locales').owlCarousel({
+					items:1,
+				})
+			}
+			$(".carousel-locales h1.truncate").dotdotdot();
+		}
+	})
+}
+
+function load_flag_locales(){
+	console.log('traer locales disponibles')
+}
+
+
+
+function load_section_vacant(obj, add_month){
+	if (obj == null) {
+		$(".s-vacancia h5.title span").text('Actual')
+	}
+	else{
+		$(".s-vacancia h5.title span").text($(obj).text())
+	}
+
+	
+
+	var fecha_actual = new Date();
+
+	fecha_actual.setMonth(fecha_actual.getMonth() + add_month);
+
+	var dia 	= fecha_actual.getDate()
+	var mes 	= fecha_actual.getMonth() + 1
+	var anio 	= fecha_actual.getFullYear()
+
+	$.ajax({
+		url: '/dashboard/vacancia/',
+		type: 'post',
+		dataType: 'json',
+		data:{
+			dia 	: dia,
+			mes 	: mes,
+			anio 	: anio,
+			csrfmiddlewaretoken: getCookie('csrftoken'),
+		},
+		success: function(data){
+
+			$('#tabla-vacancia tbody').html('')
+
+			for (var i = 0; i < data.table.data.length; i++) {
+				ocupado = data.table.data[i].metros_ocupados/data.table.data[i].metros_totales
+				desocupado = data.table.data[i].metros_disponibles/data.table.data[i].metros_totales				
+
+				temp_body = ''
+				temp_body += '<tr>'
+				temp_body += '<td>'+data.table.data[i].nombre+'</td>'
+				temp_body += '<td>'+data.table.data[i].metros_totales+'</td>'
+				temp_body += '<td>'+data.table.data[i].metros_ocupados+'</td>'
+				temp_body += '<td>'+data.table.data[i].metros_disponibles+'</td>'
+				temp_body += '<td><span class="pie">'+ocupado+','+desocupado+'</span></td>'
+				temp_body += '</tr>'
+
+				$('#tabla-vacancia tbody').append(temp_body)
+			};
+
+			
+			$("span.pie").peity("pie", {
+				fill: ['#1ab394', '#d7d7d7', '#ffffff']
+			})
+
+			c3.generate({
+				size: {
+					height: 220,
+				},
+				bindto: '#pie',
+				data:{
+					columns: data.chart.data,
+					colors:{
+						ocupado: '#1ab394',
+						disponible: '#BABABA'
+					},
+					type : 'donut'
+				}
+			});
+		}
+	})
+}
+
+
+
+
+</script>
+{% endblock scripts %}
+

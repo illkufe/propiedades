@@ -5,7 +5,11 @@
 
 <div id="wrapper">
 
-	{% include 'partials/left-bar.html' %}
+    {% if request.user.userprofile.tipo_id == 2  %}
+	    {% include 'partials/left-bar_cliente.html' %}
+    {% else %}
+        {% include 'partials/left-bar.html' %}
+    {% endif %}
 
 	<div id="page-wrapper" class="gray-bg">
 
@@ -23,4 +27,5 @@
 
 
 {% block scripts %}
+
 {% endblock scripts %}

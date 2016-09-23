@@ -39,3 +39,12 @@ def formato_boolean(valor):
 		return 'Si'
 	else:
 		return 'No'
+
+@register.filter
+def calculo_total(valor):
+	#TODO eliminar cuando se creen atributos en la tabla Facturas.
+
+	valor_iva	= valor * (19 / 100)
+	valor_total	= valor + valor_iva
+
+	return formato_moneda(valor_total)

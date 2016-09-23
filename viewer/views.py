@@ -18,52 +18,10 @@ from utilidades.views import *
 @login_required
 def dashboard(request):
 
-
-
-
-	# configuración firebase
-	# config = {
-	# 	"apiKey": "AIzaSyAj7z483ospf7R-8vGshCjCWcanGJLkwDI",
-	# 	"authDomain": "lease-61711.firebaseapp.com",
-	# 	"databaseURL": "https://lease-61711.firebaseio.com",
-	# 	"storageBucket": "lease-61711.appspot.com",
-	# 	"serviceAccount": "lease-5c67010de9d1.json",
-	# }
-
-	# # instanciar firebase
-	# firebase 	= pyrebase.initialize_app(config)
-	# db 			= firebase.database()
-
-	# alertas = Alerta.objects.all()
-	# date 	= datetime.now()
-
-	# for alerta in alertas:
-
-	# 	if date >= alerta.fecha:
-
-	# 		alerta_miembros = alerta.alerta_miembro_set.all()
-
-	# 		for alerta_miembro in alerta_miembros:
-	# 			if alerta_miembro.estado is False:
-					
-	# 				# crear alerta firebase
-	# 				data = {
-	# 					"mensaje"		: alerta.nombre,
-	# 					"descripcion"	: alerta.descripcion,
-	# 					"emisor"		: alerta.creador.first_name
-	# 					}
-
-	# 				db.child("alertas/"+str(alerta_miembro.user.id)).push(data)
-
-	# 				# cambiar estado
-	# 				alerta_miembro.estado = True
-	# 				alerta_miembro.save()
-	# 			else:
-	# 				pass
-	# 	else:
-	# 		pass
-
-	return render(request, 'viewer/dashboard.html')
+	if request.user.userprofile.tipo_id == 2:
+		return render(request, 'viewer/dashboard_cliente.html')
+	else:
+		return render(request, 'viewer/dashboard.html')
 
 
 

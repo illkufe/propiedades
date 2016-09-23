@@ -10,6 +10,7 @@ from django.views.generic import View, ListView, FormView, DeleteView, UpdateVie
 from accounts.models import *
 from administrador.models import *
 from activos.models import *
+from contrato.models import Contrato
 
 from .forms import *
 from .models import *
@@ -79,34 +80,34 @@ class LocalTipMixin(object):
 
 class LocalTipoNew(LocalTipMixin, FormView):
 
-	def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):
 
-		context 			= super(LocalTipoNew, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'tipo de local'
-		context['name'] 	= 'nuevo'
-		context['href'] 	= '/locales-tipo/list'
-		context['accion'] 	= 'create'
+        context 			= super(LocalTipoNew, self).get_context_data(**kwargs)
+        context['title'] 	= modulo
+        context['subtitle'] = 'tipo de local'
+        context['name'] 	= 'nuevo'
+        context['href'] 	= '/locales-tipo/list'
+        context['accion'] 	= 'create'
 
-		return context
+        return context
 
 class LocalTipoUpdate(UpdateView):
 
-	model 			= Local_Tipo
-	form_class 		= LocalTipoForm
-	template_name 	= 'local_tipo_new.html'
-	success_url 	= '/locales-tipo/list'
+    model 			= Local_Tipo
+    form_class 		= LocalTipoForm
+    template_name 	= 'local_tipo_new.html'
+    success_url 	= '/locales-tipo/list'
 
-	def get_context_data(self, **kwargs):
-		
-		context 			= super(LocalTipoUpdate, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'tipo de local'
-		context['name'] 	= 'editar'
-		context['href'] 	= '/locales-tipo/list'
-		context['accion'] 	= 'update'
+    def get_context_data(self, **kwargs):
 
-		return context
+        context 			= super(LocalTipoUpdate, self).get_context_data(**kwargs)
+        context['title'] 	= modulo
+        context['subtitle'] = 'tipo de local'
+        context['name'] 	= 'editar'
+        context['href'] 	= '/locales-tipo/list'
+        context['accion'] 	= 'update'
+
+        return context
 
 class LocalTipoDelete(DeleteView):
 
@@ -149,109 +150,119 @@ class LocalList(ListView):
 
 class LocalMixin(object):
 
-	template_name 	= 'local_new.html'
-	form_class 		= LocalForm
-	success_url 	= '/locales/list'
+    template_name 	= 'local_new.html'
+    form_class 		= LocalForm
+    success_url 	= '/locales/list'
 
-	def get_form_kwargs(self):
+    def get_form_kwargs(self):
 
-		kwargs = super(LocalMixin, self).get_form_kwargs()
+        kwargs = super(LocalMixin, self).get_form_kwargs()
 
-		kwargs['request'] 	= self.request
-		kwargs['activo_id'] = self.kwargs['activo_id']
+        kwargs['request'] 	= self.request
+        kwargs['activo_id'] = self.kwargs['activo_id']
 
-		return kwargs
+        return kwargs
 
-	def form_invalid(self, form):
-		response = super(LocalMixin, self).form_invalid(form)
-		if self.request.is_ajax():
-			return JsonResponse(form.errors, status=400)
-		else:
-			return response
+    def form_invalid(self, form):
+        response = super(LocalMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
 
-	def form_valid(self, form):
+    def form_valid(self, form):
 
-		context 		= self.get_context_data()
-		obj 			= form.save(commit=False)
-		obj.activo_id 	= self.kwargs['activo_id']
-		obj.save()
+        context 		= self.get_context_data()
+        obj 			= form.save(commit=False)
+        obj.activo_id 	= self.kwargs['activo_id']
+        obj.save()
+        form.save_m2m()
 
-		form_electricidad 	= context['form_electricidad']
-		form_gas 			= context['form_gas']
-		form_agua 			= context['form_agua']
+        form_electricidad 	= context['form_electricidad']
+        form_gas 			= context['form_gas']
+        form_agua 			= context['form_agua']
 
-		if form_electricidad.is_valid():
-			self.object 				= form.save(commit=False)
-			form_electricidad.instance 	= self.object
-			form_electricidad.save()
+        if form_electricidad.is_valid():
+            self.object 				= form.save(commit=False)
+            form_electricidad.instance 	= self.object
+            form_electricidad.save()
 
-		if form_gas.is_valid():
-			self.object 		= form.save(commit=False)
-			form_gas.instance 	= self.object
-			form_gas.save()
+        if form_gas.is_valid():
+            self.object 		= form.save(commit=False)
+            form_gas.instance 	= self.object
+            form_gas.save()
 
-		if form_agua.is_valid():
-			self.object 		= form.save(commit=False)
-			form_agua.instance 	= self.object
-			form_agua.save()
+        if form_agua.is_valid():
+            self.object 		= form.save(commit=False)
+            form_agua.instance 	= self.object
+            form_agua.save()
 
-		response = super(LocalMixin, self).form_valid(form)
+        response = super(LocalMixin, self).form_valid(form)
 
-		if self.request.is_ajax():
-			data = {'estado': True,}
-			return JsonResponse(data)
-		else:
-			return response
+        if self.request.is_ajax():
+            data = {'estado': True,}
+            return JsonResponse(data)
+        else:
+            return response
 
 class LocalNew(LocalMixin, FormView):
 
-	def get_context_data(self, **kwargs):
-		
-		context 			= super(LocalNew, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'local'
-		context['name'] 	= 'nuevo'
-		context['href'] 	= '/locales/list'
-		context['accion'] 	= 'create'
+    def get_context_data(self, **kwargs):
 
-		if self.request.POST:
-			context['form_electricidad'] 	= ElectricidadFormSet(self.request.POST)
-			context['form_agua'] 			= AguaFormSet(self.request.POST)
-			context['form_gas']				= GasFormSet(self.request.POST)
-		else:
-			context['form_electricidad'] 	= ElectricidadFormSet()
-			context['form_agua'] 			= AguaFormSet()
-			context['form_gas'] 			= GasFormSet()
+        context 			= super(LocalNew, self).get_context_data(**kwargs)
+        context['title'] 	= modulo
+        context['subtitle'] = 'local'
+        context['name'] 	= 'nuevo'
+        context['href'] 	= '/locales/list'
+        context['accion'] 	= 'create'
 
-		return context
+        if self.request.POST:
+            context['form_electricidad'] 	= ElectricidadFormSet(self.request.POST)
+            context['form_agua'] 			= AguaFormSet(self.request.POST)
+            context['form_gas']				= GasFormSet(self.request.POST)
+        else:
+            context['form_electricidad'] 	= ElectricidadFormSet()
+            context['form_agua'] 			= AguaFormSet()
+            context['form_gas'] 			= GasFormSet()
+
+
+        local_id                    = self.kwargs.pop('pk', None)
+        data                        = obtener_clasificacion(self, local_id)
+        context['clasificaciones']  = data
+
+        return context
 
 class LocalUpdate(LocalMixin, UpdateView):
 
-	model 			= Local
-	form_class 		= LocalForm
-	template_name 	= 'local_new.html'
-	success_url 	= '/locales/list'
+    model 			= Local
+    form_class 		= LocalForm
+    template_name 	= 'local_new.html'
+    success_url 	= '/locales/list'
 
 
-	def get_context_data(self, **kwargs):
-		
-		context 			= super(LocalUpdate, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'local'
-		context['name'] 	= 'editar'
-		context['href'] 	= '/locales/list'
-		context['accion'] 	= 'update'
+    def get_context_data(self, **kwargs):
 
-		if self.request.POST:
-			context['form_electricidad'] 	= ElectricidadFormSet(self.request.POST, instance=self.object)
-			context['form_agua'] 			= AguaFormSet(self.request.POST, instance=self.object)
-			context['form_gas'] 			= GasFormSet(self.request.POST, instance=self.object)
-		else:
-			context['form_electricidad'] 	= ElectricidadFormSet(instance=self.object)
-			context['form_agua'] 			= AguaFormSet(instance=self.object)
-			context['form_gas'] 			= GasFormSet(instance=self.object)
+        context 			= super(LocalUpdate, self).get_context_data(**kwargs)
+        context['title'] 	= modulo
+        context['subtitle'] = 'local'
+        context['name'] 	= 'editar'
+        context['href'] 	= '/locales/list'
+        context['accion'] 	= 'update'
 
-		return context
+        if self.request.POST:
+            context['form_electricidad'] 	= ElectricidadFormSet(self.request.POST, instance=self.object)
+            context['form_agua'] 			= AguaFormSet(self.request.POST, instance=self.object)
+            context['form_gas'] 			= GasFormSet(self.request.POST, instance=self.object)
+        else:
+            context['form_electricidad'] 	= ElectricidadFormSet(instance=self.object)
+            context['form_agua'] 			= AguaFormSet(instance=self.object)
+            context['form_gas'] 			= GasFormSet(instance=self.object)
+
+        local_id                    = self.kwargs.pop('pk', None)
+        data                        = obtener_clasificacion(self, local_id)
+        context['clasificaciones']  = data
+
+        return context
 
 class LocalDelete(DeleteView):
 
@@ -268,6 +279,51 @@ class LocalDelete(DeleteView):
 		return JsonResponse(data, safe=False)
 
 
+def obtener_clasificacion(self, local_id):
+    cabeceras   = self.request.user.userprofile.empresa.clasificacion_set.filter(visible=True, tipo_clasificacion=1)
+    cabecera    = list()
+
+    if local_id is None:
+
+        for c in cabeceras:
+
+            detalles    = Clasificacion_Detalle.objects.filter(clasificacion=c)
+            detalle     = list()
+
+            for d in detalles:
+                detalle.append({
+                    'id'        : d.id,
+                    'nombre'    : d.nombre,
+                    'select'    : False
+                })
+
+            cabecera.append({
+                'id'        : c.id,
+                'nombre'    : c.nombre,
+                'detalle'   : detalle
+            })
+    else:
+        for c in cabeceras:
+
+            detalles    = Clasificacion_Detalle.objects.filter(clasificacion=c)
+            detalle     = list()
+
+            for d in detalles:
+                detalle.append({
+                    'id'        : d.id,
+                    'nombre'    : d.nombre,
+                    'select'    : False if not d.local_set.filter(id=local_id).exists() else True
+                })
+
+            cabecera.append({
+                'id'        : c.id,
+                'nombre'    : c.nombre,
+                'detalle'   : detalle
+            })
+
+    return cabecera
+
+
 # ventas
 class VentaList(ListView):
 
@@ -282,8 +338,12 @@ class VentaList(ListView):
 		context['name'] 	= 'lista'
 		context['href'] 	= 'locales'
 
-		activos 			= Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
-		locales 			= Local.objects.filter(activo_id__in=activos, visible=True)
+		if self.request.user.userprofile.tipo_id == 2:
+			contrato	= Contrato.objects.filter(cliente_id=self.request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
+			locales 	= Local.objects.filter(id__in=contrato, visible=True)
+		else:
+			activos 			= Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
+			locales 			= Local.objects.filter(activo_id__in=activos, visible=True)
 		context['locales'] 	= locales
 
 		return context
@@ -327,25 +387,40 @@ class VENTAS(View):
 		estado = 'ok'
 
 		for i in dict_list:
-
+			list_error = list()
 			try:
-				fecha_inicio 	= datetime(*xlrd.xldate_as_tuple(i['Fecha Inicio'], 0))
-				fecha_termino 	= datetime(*xlrd.xldate_as_tuple(i['Fecha Termino'], 0))
-				valor 			= i['Total']
 
-				if Venta.objects.filter(fecha_inicio=fecha_inicio, fecha_termino=fecha_termino, local_id=local).exists():
-					venta 		= Venta.objects.get(fecha_inicio=fecha_inicio, fecha_termino=fecha_termino, local_id=local)
-					venta.valor = valor
-					venta.save()
+				list_error = self.validate_data(i['Fecha Inicio'], i['Fecha Termino'], i['Total'])
+
+				if not list_error:
+					fecha_inicio 	= datetime(*xlrd.xldate_as_tuple(i['Fecha Inicio'], 0))
+					fecha_termino 	= datetime(*xlrd.xldate_as_tuple(i['Fecha Termino'], 0))
+					valor 			= i['Total']
+
+					if Venta.objects.filter(fecha_inicio=fecha_inicio, fecha_termino=fecha_termino, local_id=local).exists():
+						venta 		= Venta.objects.get(fecha_inicio=fecha_inicio, fecha_termino=fecha_termino, local_id=local)
+						venta.valor = valor
+						venta.save()
+					else:
+						venta = Venta(
+							fecha_inicio		= fecha_inicio,
+							fecha_termino		= fecha_termino,
+							valor				= valor,
+							local_id 			= local,
+							periodicidad		= 3,
+							)
+						venta.save()
 				else:
-					venta = Venta(
-						fecha_inicio		= fecha_inicio,
-						fecha_termino		= fecha_termino,
-						valor				= valor,
-						local_id 			= local,
-						periodicidad		= 3,
-						)
-					venta.save()
+					estado = 'error'
+
+					errors.append({
+						'row'			: cont,
+						'fecha_inicio'	: i['Fecha Inicio'],
+						'fecha_termino'	: i['Fecha Termino'],
+						'valor'			: i['Total'],
+						'error'			: list_error
+					})
+
 			except ValueError:
 				estado = 'error'
 
@@ -354,6 +429,7 @@ class VENTAS(View):
 					'fecha_inicio'	: i['Fecha Inicio'],
 					'fecha_termino'	: i['Fecha Termino'],
 					'valor'			: i['Total'],
+					'error'			: list_error
 				})
 			cont +=1
 
@@ -366,8 +442,30 @@ class VENTAS(View):
 		else:
 			return render(request, 'viewer/locales/venta_list.html')
 	
+	def validate_data(self, fecha_inicio, fecha_termino, valor):
 
+		list_error = list()
 
+		fechas =[
+			fecha_inicio,
+			fecha_termino
+		]
+
+		for a in fechas:
+			try:
+				datetime(*xlrd.xldate_as_tuple(a, 0))
+			except Exception:
+				error = "Formato fecha no válido."
+				if not error in list_error:
+					list_error.append(error)
+
+		try:
+			float(valor)
+		except Exception:
+			error = "Valor no válido."
+			list_error.append(error)
+
+		return list_error
 
 	def delete(self, request, project_id, module_id, id):
 		venta = Venta.objects.get(pk=id)

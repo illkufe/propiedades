@@ -64,6 +64,7 @@ class LocalForm(forms.ModelForm):
 			'sector'					: forms.Select(attrs={'class': 'form-control'}),
 			'nivel'						: forms.Select(attrs={'class': 'form-control'}),
 			'local_tipo'				: forms.Select(attrs={'class': 'form-control'}),
+			'clasificaciones'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple': 'multiple'}),
 		}
 
 		error_messages = {

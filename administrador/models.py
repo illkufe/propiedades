@@ -67,8 +67,9 @@ class Cliente(models.Model):
 	creado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	empresa = models.ForeignKey(Empresa)
-	giro 	= models.ForeignKey(Giro, null=True, blank=True)
+	empresa 		= models.ForeignKey(Empresa)
+	giro 			= models.ForeignKey(Giro, null=True, blank=True)
+	clasificaciones = models.ManyToManyField('Clasificacion_Detalle', )
 
 	def __str__(self):
 		return self.nombre
@@ -143,3 +144,51 @@ class Conexion(models.Model):
 		verbose_name 		= "Parametro de Conexion"
 		verbose_name_plural = "Parametros de Conexion"
 
+class Tipo_Clasificacion(models.Model):
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+
+	def __str__(self):
+		return self.nombre
+
+	class Meta:
+		verbose_name = "Tipo de Clasificación"
+		verbose_name_plural = "Tipos de Clasificaciones"
+
+
+class Clasificacion(models.Model):
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+	descripcion = models.CharField(max_length=250)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	empresa 			= models.ForeignKey(Empresa)
+	tipo_clasificacion	= models.ForeignKey(Tipo_Clasificacion)
+
+	def __str__(self):
+		return self.nombre
+
+	class Meta:
+		verbose_name = "Clasificación"
+		verbose_name_plural = "Clasificaciones"
+
+class Clasificacion_Detalle(models.Model):
+
+	# atributos (generales)
+	nombre = models.CharField(max_length=250)
+
+	# relaciones
+	clasificacion 	= models.ForeignKey(Clasificacion)
+
+	def __str__(self):
+		return self.nombre
+
+	class Meta:
+		verbose_name = "Detalle Clasificación"
+		verbose_name_plural = "Detalles de Clasificaciones"

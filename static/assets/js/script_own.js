@@ -71,7 +71,15 @@ var language = {
 
 $(".select2").select2();
 
-$('[data-toggle="tooltip"]').tooltip()
+$('[data-toggle="tooltip"]').tooltip();
+
+$('.format-ip').mask('0ZZ.0ZZ.0ZZ.0ZZ', {
+    translation: {
+      'Z': {
+        pattern: /[0-9]/, optional: true
+      }
+    }
+});
 
 
 
@@ -210,6 +218,29 @@ function open_modal_delete_child(obj, text){
 	});	
 }
 
+function open_modal_delete_child_final(obj, text, tipo){
+
+	swal({
+		title: '¿ Eliminar '+text+' ?',
+		text: '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#F8BB86',
+		cancelButtonColor: '#D0D0D0',
+		confirmButtonText: 'Si, eliminar',
+		cancelButtonText: 'Cancelar',
+		closeOnConfirm: true,
+	}).then(function() {
+		if(tipo == 'new'){
+			$(obj).closest('tr').remove()
+
+		}else{
+			$(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
+			$(obj).closest('tr').addClass('hide')
+		}
+	});	
+}
+
 function guardar_formulario_final(accion, entidad){
 
 	$.ajax({
@@ -332,10 +363,26 @@ function agregar_fila(tabla, entidad){
 	$('#id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
 }
 
+function agregar_fila_final(tabla, entidad){
 
+	var count 	= $('#'+tabla+' tbody').children().length;
+	var $tr 	= $('#'+tabla+' tbody tr:first');
+	var $clone 	= $tr.clone();
+	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count).replace(/update/g, 'new');
 
+	var $row 	= $(row)
 
+	$row.find('input').val('');
+	$row.find('select option:first-child').attr("selected", "selected");
+	$row.find('input:checkbox').prop('checked',false);
 
+	$('#'+tabla+' tbody').append('<tr></tr>')
+	$('#'+tabla+' tbody tr:last').append($row)
+
+	var cantidad = parseInt($('#id_'+entidad+'_set-TOTAL_FORMS').val())
+	cantidad += 1
+	$('#id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
+}
 
 // funciones factorizadas
 function getCookie(name){

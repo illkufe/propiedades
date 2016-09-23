@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
 from conceptos.models import Concepto
+from procesos.models import Factura
 
 from .models import *
 from .forms import *
@@ -39,50 +40,57 @@ class ClienteList(ListView):
 
 class ClienteMixin(object):
 
-	template_name 	= 'cliente_new.html'
-	form_class 		= ClienteForm
-	success_url 	= '/clientes/list'
+    template_name 	= 'cliente_new.html'
+    form_class 		= ClienteForm
+    success_url 	= '/clientes/list'
 
-	def form_invalid(self, form):
+    def form_invalid(self, form):
 
-		response = super(ClienteMixin, self).form_invalid(form)
-		if self.request.is_ajax():
-			return JsonResponse(form.errors, status=400)
-		else:
-			return response
+        response = super(ClienteMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
 
-	def form_valid(self, form):
+    def form_valid(self, form):
 
-		context 			= self.get_context_data()
-		form_representante 	= context['representante_form']
+        context 			= self.get_context_data()
+        form_representante 	= context['representante_form']
 
-		obj 		= form.save(commit=False)
-		obj.empresa = self.request.user.userprofile.empresa
-		obj.save()
+        obj 		= form.save(commit=False)
+        obj.empresa = self.request.user.userprofile.empresa
+        obj.save()
+        form.save_m2m()
 
-		if form_representante.is_valid():
-			self.object 				= form.save(commit=False)
-			form_representante.instance = self.object
-			form_representante.save()
 
-		response = super(ClienteMixin, self).form_valid(form)
 
-		if self.request.is_ajax():
-			data = {'estado' : True,}
-			return JsonResponse(data)
-		else:
-			return response
+        if form_representante.is_valid():
+            self.object 				= form.save(commit=False)
+            form_representante.instance = self.object
+            form_representante.save()
+
+        response = super(ClienteMixin, self).form_valid(form)
+
+        if self.request.is_ajax():
+            data = {'estado' : True,}
+            return JsonResponse(data)
+        else:
+            return response
 
 class ClienteNew(ClienteMixin, FormView):
 
 	def get_context_data(self, **kwargs):
-		
-		context 			= super(ClienteNew, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'clientes'
-		context['name'] 	= 'nuevo'
-		context['href'] 	= '/clientes/list'
-		context['accion'] 	= 'create'
+
+		context 					= super(ClienteNew, self).get_context_data(**kwargs)
+		context['title'] 			= modulo
+		context['subtitle'] 		= 'clientes'
+		context['name'] 			= 'nuevo'
+		context['href'] 			= '/clientes/list'
+		context['accion'] 			= 'create'
+
+		cliente_id  				= self.kwargs.pop('pk', None)
+		data        				= obtener_clasificacion(self, cliente_id)
+		context['clasificaciones'] 	= data
 
 		if self.request.POST:
 			context['representante_form'] = ClienteFormSet(self.request.POST)
@@ -99,13 +107,47 @@ class ClienteUpdate(ClienteMixin, UpdateView):
 	success_url 	= '/clientes/list'
 
 	def get_context_data(self, **kwargs):
-		
-		context 			= super(ClienteUpdate, self).get_context_data(**kwargs)
-		context['title'] 	= modulo
-		context['subtitle'] = 'cliente'
-		context['name'] 	= 'editar'
-		context['href'] 	= '/clientes/list'
-		context['accion'] 	= 'update'
+
+		context 					= super(ClienteUpdate, self).get_context_data(**kwargs)
+		context['title'] 			= modulo
+		context['subtitle'] 		= 'cliente'
+		context['name'] 			= 'editar'
+		context['href'] 			= '/clientes/list'
+		context['accion'] 			= 'update'
+
+		cliente_id  				= self.kwargs.pop('pk', None)
+		data        				= obtener_clasificacion(self, cliente_id)
+		context['clasificaciones'] 	= data
+
+
+		if self.request.POST:
+			context['representante_form'] = ClienteFormSet(self.request.POST, instance=self.object)
+		else:
+			context['representante_form'] = ClienteFormSet(instance=self.object)
+
+		return context
+
+class ClienteUpdatePortal(ClienteMixin, UpdateView):
+
+	model 			= Cliente
+	form_class 		= ClienteForm
+	template_name 	= 'cliente_portal_new.html'
+	success_url 	= '/'
+
+	def get_context_data(self, **kwargs):
+
+		context 					= super(ClienteUpdatePortal, self).get_context_data(**kwargs)
+		context['title'] 			= 'Datos Generales'
+		context['subtitle'] 		= 'cliente'
+		context['name'] 			= 'editar'
+		context['href'] 			= ''
+		context['accion'] 			= 'update'
+
+		cliente_id  				= self.kwargs.pop('pk', None)
+		data        				= obtener_clasificacion(self, cliente_id)
+		context['clasificaciones'] 	= data
+		context['facturas']			= facturas_generadas(self)
+
 
 		if self.request.POST:
 			context['representante_form'] = ClienteFormSet(self.request.POST, instance=self.object)
@@ -124,6 +166,60 @@ class ClienteDelete(DeleteView):
 		self.object.save()
 		payload = {'delete': 'ok'}
 		return JsonResponse(payload, safe=False)
+
+def obtener_clasificacion(self, cliente_id):
+    cabeceras = self.request.user.userprofile.empresa.clasificacion_set.filter(visible=True, tipo_clasificacion=2)
+    cabecera = list()
+
+    if cliente_id is None:
+
+        for c in cabeceras:
+
+            detalles = Clasificacion_Detalle.objects.filter(clasificacion=c)
+            detalle = list()
+
+            for d in detalles:
+                detalle.append({
+                    'id': d.id,
+                    'nombre': d.nombre,
+                    'select': False
+                })
+
+            cabecera.append({
+                'id': c.id,
+                'nombre': c.nombre,
+                'detalle': detalle
+            })
+    else:
+        for c in cabeceras:
+
+            detalles = Clasificacion_Detalle.objects.filter(clasificacion=c)
+            detalle = list()
+
+            for d in detalles:
+                detalle.append({
+                    'id': d.id,
+                    'nombre': d.nombre,
+                    'select': False if not d.cliente_set.filter(id=cliente_id).exists() else True
+                })
+
+            cabecera.append({
+                'id': c.id,
+                'nombre': c.nombre,
+                'detalle': detalle
+            })
+
+    return cabecera
+
+def facturas_generadas(self):
+	contratos_cliente = self.request.user.userprofile.cliente.contrato_set.values_list('id', flat=True)
+	try:
+		facturas = Factura.objects.filter(contrato_id__in=contratos_cliente, estado_id=2).__bool__()
+	except Exception:
+		facturas = False
+
+	return facturas
+
 
 # conexion parametro
 class CONEXION_PARAMETRO(View):
@@ -347,3 +443,114 @@ class CONEXION_CONCEPTO(View):
 				})
 
 		return JsonResponse(data, safe=False)
+
+
+# clasificacion
+class ClasificacionList(ListView):
+    model = Clasificacion
+    template_name = 'clasificacion_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ClasificacionList, self).get_context_data(**kwargs)
+        context['title'] = modulo
+        context['subtitle'] = 'clasificacion'
+        context['name'] = 'lista'
+        context['href'] = '/clasificacion/list'
+
+        return context
+
+    def get_queryset(self):
+        queryset = Clasificacion.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+        return queryset
+
+
+class ClasificacionMixin(object):
+    template_name = 'clasificacion_new.html'
+    form_class = ClasificacionForm
+    success_url = '/clasificacion/list'
+
+    def form_invalid(self, form):
+
+        response = super(ClasificacionMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+    def form_valid(self, form):
+
+        context = self.get_context_data()
+        form_clasificacion_detalle = context['clasificacion_detalle_form']
+
+        obj = form.save(commit=False)
+        obj.empresa = self.request.user.userprofile.empresa
+        obj.save()
+
+        if form_clasificacion_detalle.is_valid():
+            self.object = form.save(commit=False)
+            form_clasificacion_detalle.instance = self.object
+            form_clasificacion_detalle.save()
+
+        response = super(ClasificacionMixin, self).form_valid(form)
+
+        if self.request.is_ajax():
+            data = {'estado': True,}
+            return JsonResponse(data)
+        else:
+            return response
+
+
+class ClasificacionNew(ClasificacionMixin, FormView):
+    def get_context_data(self, **kwargs):
+
+        context = super(ClasificacionNew, self).get_context_data(**kwargs)
+        context['title'] = modulo
+        context['subtitle'] = 'clasificacion'
+        context['name'] = 'nuevo'
+        context['href'] = '/clasificacion/list'
+        context['accion'] = 'create'
+
+        if self.request.POST:
+            context['clasificacion_detalle_form'] = ClasificacionFormSet(self.request.POST)
+        else:
+            context['clasificacion_detalle_form'] = ClasificacionFormSet()
+
+        return context
+
+
+class ClasificacionUpdate(ClasificacionMixin, UpdateView):
+    model = Clasificacion
+    form_class = ClasificacionForm
+    template_name = 'clasificacion_new.html'
+    success_url = '/clasificacion/list'
+
+    def get_context_data(self, **kwargs):
+
+        context = super(ClasificacionUpdate, self).get_context_data(**kwargs)
+        context['title'] = modulo
+        context['subtitle'] = 'clasificacion'
+        context['name'] = 'editar'
+        context['href'] = '/clasificacion/list'
+        context['accion'] = 'update'
+
+        if self.request.POST:
+            context['clasificacion_detalle_form'] = ClasificacionFormSet(self.request.POST, instance=self.object)
+        else:
+            context['clasificacion_detalle_form'] = ClasificacionFormSet(instance=self.object)
+
+        return context
+
+
+class ClasificacionDelete(DeleteView):
+    model = Clasificacion
+    success_url = reverse_lazy('/clasificacion/list')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.visible = False
+        self.object.save()
+        payload = {'delete': 'ok'}
+        return JsonResponse(payload, safe=False)
+
+

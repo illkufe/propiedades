@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
-from administrador.models import Empresa
+from administrador.models import Empresa, Clasificacion_Detalle
 from activos.models import Activo, Sector, Nivel
 from utilidades.models import Tarifa_Electricidad
 
@@ -48,6 +48,7 @@ class Local(models.Model):
 	sector 					= models.ForeignKey(Sector)
 	nivel 					= models.ForeignKey(Nivel)
 	local_tipo 				= models.ForeignKey(Local_Tipo)
+	clasificaciones  		= models.ManyToManyField(Clasificacion_Detalle)
 
 	def __str__(self):
 		return self.nombre

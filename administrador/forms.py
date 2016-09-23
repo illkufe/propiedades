@@ -7,23 +7,30 @@ from .models import *
 
 class ClienteForm(forms.ModelForm):
 
+
+	def __init__(self, *args, **kwargs):
+		super(ClienteForm, self).__init__(*args, **kwargs)
+
+		self.fields['clasificaciones'].required = False
+
 	class Meta:
 		model 	= Cliente
 		fields	= '__all__'
 		exclude = ['creado_en', 'visible', 'empresa']
 
 		widgets = {
-			'tipo'			: forms.Select(attrs={'class': 'form-control'}),
-			'rut'			: forms.TextInput(attrs={'class': 'form-control format-rut'}),
-			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'razon_social'	: forms.TextInput(attrs={'class': 'form-control'}),
-			'email'			: forms.EmailInput(attrs={'class': 'form-control'}),
-			'giro'			: forms.Select(attrs={'class': 'form-control'}),
-			'region'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'ciudad'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'comuna'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'direccion'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'telefono'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'tipo'			    : forms.Select(attrs={'class': 'form-control'}),
+			'rut'			    : forms.TextInput(attrs={'class': 'form-control format-rut'}),
+			'nombre'		    : forms.TextInput(attrs={'class': 'form-control'}),
+			'razon_social'	    : forms.TextInput(attrs={'class': 'form-control'}),
+			'email'			    : forms.EmailInput(attrs={'class': 'form-control'}),
+			'giro'			    : forms.Select(attrs={'class': 'form-control'}),
+			'region'		    : forms.TextInput(attrs={'class': 'form-control'}),
+			'ciudad'		    : forms.TextInput(attrs={'class': 'form-control'}),
+			'comuna'		    : forms.TextInput(attrs={'class': 'form-control'}),
+			'direccion'		    : forms.TextInput(attrs={'class': 'form-control'}),
+			'telefono'		    : forms.TextInput(attrs={'class': 'form-control'}),
+			'clasificaciones'	: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 		}
 
 		error_messages = {
@@ -96,3 +103,54 @@ class RepresentanteForm(forms.ModelForm):
 
 ClienteFormSet = inlineformset_factory(Cliente, Representante, form=RepresentanteForm, extra=1, can_delete=True)
 
+class ClasificacionForm(forms.ModelForm):
+
+	class Meta:
+		model 	= Clasificacion
+		fields	= '__all__'
+		exclude = ['creado_en', 'visible', 'empresa']
+
+		widgets = {
+			'nombre'	            : forms.TextInput(attrs={'class': 'form-control'}),
+			'tipo_clasificacion'    : forms.Select(attrs={'class': 'form-control'}),
+			'descripcion'	        : forms.TextInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'nombre' 	            : {'required': 'campo requerido'},
+			'tipo_clasificacion' 	: {'required': 'campo requerido'},
+			'descripcion' 	        : {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'tipo_clasificacion'	: 'Tipo de Clasificación',
+		}
+
+		help_texts = {
+			'nombre'		        : 'nombre',
+			'tipo_clasificacion'    : 'tipo clasificación',
+			'descripcion'		    : 'descripción',
+		}
+
+class ClasificacionDetalleForm(forms.ModelForm):
+    class Meta:
+        model = Clasificacion_Detalle
+        fields = '__all__'
+        exclude = ['clasificacion']
+
+        widgets = {
+            'nombre'	: forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+        error_messages = {
+            'nombre' 		: {'required': 'campo requerido'},
+        }
+
+        help_texts = {
+            'nombre'		: 'nombre',
+        }
+
+        labels = {
+        }
+
+ClasificacionFormSet = inlineformset_factory(Clasificacion, Clasificacion_Detalle, form=ClasificacionDetalleForm, extra=1, can_delete=True)

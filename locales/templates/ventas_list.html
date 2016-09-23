@@ -1,6 +1,7 @@
 {% extends 'index.html' %}
 {% block section %}
 {% load extra_tags %}
+{% load static %}
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
@@ -14,15 +15,15 @@
 
 					<div class="ibox-title">
 						<h5>Subir Plantilla de Ventas</h5>
+                        <div class="ibox-tools">
+                            <a href="/media/formatos/formato_ventas.xls" class="btn btn-primary btn-xs" role="button"><i class="fa fa-download"></i>
+                                Descargar Plantilla
+                            </a>
+                        </div>
 					</div>
 
 					<div class="ibox-content">
 						<div class="row">
-							<div class="col-xs-12">
-								<p>
-									<!-- {falta: poner descripcion del archivo a subir y poner un link con el formato}-->
-								</p>
-							</div>
 
 							<div class="col-sm-12">
 								<div class="row">
@@ -54,7 +55,7 @@
 									<div class="form-group col-sm-4">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_cuota.help_text }}" ></i>
 										<label for="">Archivo</label>
-										<input type="file" id="file" name="file" class="filestyle" data-buttonText="" accept="application/vnd.ms-excel , .csv" >
+										<input type="file" id="file" name="file" class="filestyle" data-buttonText="" accept="application/vnd.ms-excel" >
 										<div class="container-error">
 										</div>
 									</div>
@@ -88,7 +89,23 @@
 		</div>
 	</div>
 </div>
-
+<div class="modal inmodal fade" id="modalError" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Archivo Cargado</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <p class="text-center">
+                    <button type="button" class="btn btn-w-m btn-sm btn-primary" data-dismiss="modal">OK</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock section %}
 
 {% block scripts %}
@@ -138,6 +155,7 @@ $(document).ready(function(){
 	$("#file").filestyle({buttonText: "Find file"});
 
 	guardar_ventas()
+
 });
 
 function guardar_ventas(){
@@ -178,7 +196,14 @@ function guardar_ventas(){
 					console.log(data)
 					if (data.estado == 'error') {
 						var template = ''
-						template += '<p>Error en los siguientes datos</p>'
+                        template += '<div class="row">'
+                        template += '<div class="text-center">'
+                        template += '<p style="color:#ff8100; font-size:100px">'
+                        template += '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>'
+                        template += '</p>'
+						template += '<h4>Error en los siguientes datos</h4>'
+                        template += '</div>'
+                        template += '<br>'
 						template += '<table class="table table-striped table-bordered table-hover">'
 						template += '<thead>'
 						template += '<tr>'
@@ -186,6 +211,7 @@ function guardar_ventas(){
 						template += '<th>fecha inicio</th>'
 						template += '<th>fecha termino</th>'
 						template += '<th>valor</th>'
+                        template += '<th>error</th>'
 						template += '</tr>'
 						template += '</thead>'
 						template += '<tbody>'
@@ -196,19 +222,36 @@ function guardar_ventas(){
 							template += '<td>'+data.errors[i].fecha_inicio+'</td>'
 							template += '<td>'+data.errors[i].fecha_termino+'</td>'
 							template += '<td>'+data.errors[i].valor+'</td>'
+
+                            var template_error = ''
+                            for(var a = 0; a < data.errors[i].error.length; a++){
+                                template_error += '<p>'+data.errors[i].error[a]+'</p>'
+                            }
+                            template += '<td>'+template_error+'</td>'
 							template += '</tr>'
 						};
 
-						template += '</tbody></table>'
+						template += '</tbody></table></div>'
 					}else{
-						template = 'OK'
+                        var template = ''
+                        template += '<div class="row">'
+                        template += '<div class="text-center">'
+                        template += '<p style="color:#a5dc86; font-size:100px">'
+                        template += '<i class="fa fa-check-circle" aria-hidden="true"></i>'
+                        template += '</p>'
+						template += '<p style="font-size: 20px;font-weight: bold">OK</p>'
+                        template += '</div>'
 					}
 
-					swal({
-						title: "Archivo <small>cargado</small>",
-						text: template,
-						type: "success",
-					});
+
+                    $('#modalError').find('.modal-body').html(template);
+                    $('#modalError').modal('show');
+
+{#					swal({#}
+{#						title: "Archivo <small>cargado</small>",#}
+{#						text: template,#}
+{#						type: "success",#}
+{#					});#}
 
 					load_tabla_ventas()
 
