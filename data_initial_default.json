@@ -532,7 +532,7 @@
 	"pk": 6,
 	"fields": {
 		"nombre": "Error Inesperado",
-		"color": "##F44336",
+		"color": "#F44336",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}
