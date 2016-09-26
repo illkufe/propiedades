@@ -24,8 +24,8 @@ def guarda_parametros_facturacion(**kwargs):
 
         parametro = ParametrosFacturacion()
         parametro.persona_id            = persona
-        parametro.id_fiscal_persona     = datos_persona.id_Fiscal
-        parametro.nombre_persona        = datos_persona.Razon_Social
+        parametro.id_fiscal_persona     = datos_persona.rut
+        parametro.nombre_persona        = datos_persona.nombre
         parametro.codigo_conexion       = codigo_conexion
         parametro.motor_emision_id      = motor_emision
         parametro.save()
@@ -68,8 +68,8 @@ def editar_parametros_facturacion(**kwargs):
 
         parametro = ParametrosFacturacion.objects.get(id=id_parametro)
         parametro.persona_id        = persona
-        parametro.id_fiscal_persona = datos_persona.id_Fiscal
-        parametro.nombre_persona    = datos_persona.Razon_Social
+        parametro.id_fiscal_persona = datos_persona.rut
+        parametro.nombre_persona    = datos_persona.nombre
         parametro.codigo_conexion   = codigo_conexion
         parametro.motor_emision_id  = motor_emision
         parametro.save()
@@ -111,7 +111,7 @@ def editar_parametros_facturacion(**kwargs):
 
 def calculo_iva_total_documento(valor_neto, tasa_iva):
 
-    valor_iva   = valor_neto * (tasa_iva /100)
+    valor_iva   = round(valor_neto * (tasa_iva /100),0)
     valor_total = valor_neto + valor_iva
 
     valores = [

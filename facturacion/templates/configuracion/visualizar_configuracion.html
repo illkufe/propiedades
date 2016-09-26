@@ -7,7 +7,7 @@
                 <div class="ibox float-e-margins">
                     <div class="ibox-content">
                         <div class="ibox-tools">
-                            <a href="{% url 'facturacion:crear_configuracion' %}" class="btn btn-primary btn-xs "><i class="fa fa-plus"></i> Nueva Configuración Facturación</a>
+                            <a href="{% url 'crear_configuracion' %}" class="btn btn-primary btn-xs "><i class="fa fa-plus"></i> Nueva Configuración Facturación</a>
                         </div>
                         <form id="filtrocondicion" method="post" action="" enctype="multipart/form-data" role="form">
                             <div class="row">
@@ -38,7 +38,7 @@
                                             <td>{{ e.id }}</td>
                                             <td>{{ e.codigo_conexion}}</td>
                                             <td class="text-center">
-                                                <a class="btn btn-edit btn-sm btn-bitbucket" href="{% url 'facturacion:editar_configuracion' pk=e.id %}"><i class="fa fa-edit"></i></a>
+                                                <a class="btn btn-edit btn-sm btn-bitbucket" href="{% url 'editar_configuracion' pk=e.id %}"><i class="fa fa-edit"></i></a>
                                                 <a class="btn btn-delete btn-sm btn-bitbucket" onclick="eliminar_configuración(this, {{ e.id }})"><i class="fa fa-trash"></i></a>
                                             </td>
                                         </tr>
@@ -53,32 +53,19 @@
     </div>
 {% endblock section %}
 
-{% block Javascript %}
+{% block scripts %}
     <script>
+
+        var tabla_parametros;
+
         $(document).ready(function(){
-            var configuracion = {
-                'searching': true,
-                'order': [[1, 'asc']],
-                'paginate': true,
-                'bLengthChange': true,
-                'bInfo': true,
-                'buttons': [
-                {
-                    extend: 'excel',
-                    title: 'ExampleFile'
-                },
-                {
-                    extend: 'pdf', title: 'ExampleFile',text:'Imprimir'
-                },
-                {
-                    extend: 'print',
-                    customize: function (win){
-                        $(win.document.body).addClass('white-bg');
-                        $(win.document.body).css('font-size', '10px');
-                        $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
-                    }
-                }]
-            };
+
+            load_tabla_parametros();
+
+        });
+
+        function load_tabla_parametros() {
+
 
             var columns= [
                 {
@@ -97,26 +84,19 @@
                     'data': 'options',
                     'orderable': false,
                     'title': 'Opciones'
-                }],
-            table = generar_tabla('#tablaParametrosFacturacion', columns, configuracion);
-        });
+                }];
 
-        function search_column_table_reference_products(obj, form){
-            // obtener columna
-            var index = $(obj).attr('data-column');
-            var value = $(form).find('.col'+index+'_filter').val();
-
-            // buscar dentro de la columna
-            $('#tablaParametrosFacturacion').DataTable().column(index).search(value).draw()
+            tabla_parametros = load_table('#tablaParametrosFacturacion', columns, {});
         }
+
 
         function eliminar_configuración(row, id_parametro) {
 
             var col  = $(row).closest('tr');
 
             swal({
-                title: '¿ Eliminar parametrización de facturación.?',
-                text: '',
+                title: '',
+                text: '¿ Eliminar parametrización de facturación?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#F68793',
@@ -124,9 +104,9 @@
                 cancelButtonText: 'Cancelar',
                 closeOnConfirm      : false,
                 closeOnCancel       : true
-                }, function(){
+                }).then( function(){
                     $.ajax({
-                        url:  '{% url 'facturacion:eliminar_configuracion' %}',
+                        url:  '{% url 'eliminar_configuracion' %}',
                         type: 'POST',
                         data: {
                             'id_parametro': id_parametro
@@ -135,17 +115,20 @@
                             if(response.success){
                                 var tabla_conexion = $('#tablaParametrosFacturacion').DataTable();
                                 tabla_conexion.row($(col)).remove().draw();
-                                swal({
-                                    title: 'Exito!',
-                                    text: 'Eliminado correctamente.',
-                                    type: 'success'
-                                });
+                                var configuracion = {
+                                    'toast_type'	: 'success',
+                                    'toast_text' 	: 'eliminado correctamente',
+                                    'toast_title' 	: 'Éxito'
+                                };
+                                notification_toast(configuracion)
                             }else{
-                                swal({
-                                    title: 'Error!',
-                                    text: response.error,
-                                    type: 'error'
-                                });
+
+                                var configuracion = {
+                                    'toast_type'	: 'error',
+                                    'toast_text' 	: response.error,
+                                    'toast_title' 	: 'Error'
+                                };
+				                notification_toast(configuracion);
                             }
 
                         },
@@ -157,7 +140,6 @@
                             });
                         }
                     })
-
                 }
             );
         }

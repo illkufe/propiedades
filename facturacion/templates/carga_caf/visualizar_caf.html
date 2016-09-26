@@ -1,4 +1,5 @@
 {% extends 'index.html' %}
+{% load extra_tags %}
 {% block section %}
     {% include 'partials/breadcrumbs-bar.html' %}
     <div class="wrapper wrapper-content">
@@ -9,30 +10,9 @@
                     <div class="ibox-content">
                         <div class="ibox-tools">
                             <button onclick="autorizar_caf()" class="btn btn-primary btn-xs" id="autoriza"><i class="fa fa-plus"></i> Autorizar Folios CAF</button>
-                            <a href="{% url 'facturacion:carga_folios_electronicos' %}" class="btn btn-primary btn-xs "><i class="fa fa-plus"></i> Cargar Folios CAF</a>
+                            <a href="{% url 'carga_folios_electronicos' %}" class="btn btn-primary btn-xs "><i class="fa fa-plus"></i> Cargar Folios CAF</a>
                         </div>
-                        <form id="filtrofolio" method="post" action="" enctype="multipart/form-data" role="form">
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <div class="">
-                                        {{ filtro_folios.tipo_dte.label_tag }}
-                                        {{ filtro_folios.tipo_dte}}
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="">
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="">
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="">
-                                    </div>
-                                </div>
-                            </div>
-                        </form><br>
+                        <br>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover" id="tablaFoliosElectronicos" style="width: 100%!important">
                                 <thead></thead>
@@ -47,7 +27,7 @@
                                             <td>{{ e.rango_final }}</td>
                                             <td>{{ e.folio_actual}}</td>
                                             <td>{{ e.fecha_ingreso_caf|date:"d/m/Y"}}</td>
-                                            <td>{{ e.operativo|yesno}}</td>
+                                            <td>{{ e.operativo| formato_boolean }}</td>
                                             <td>{{ e.usuario_creacion.username}}</td>
                                         </tr>
                                     {% endfor %}
@@ -61,13 +41,18 @@
     </div>
 {% endblock section %}
 
-{% block Javascript %}
+{% block scripts %}
     <script>
+
         $(document).ready(function(){
 
             folio_seleccionado = 0;
             $('#autoriza').attr('disabled', true);
 
+            load_table_caf();
+        });
+
+        function load_table_caf() {
             var configuracion = {
                 'searching': true,
                 'order': [[1, 'asc'],[2, 'asc']],
@@ -145,24 +130,13 @@
                     'data': 'usuario_creacion',
                     'title': 'Usuario Creación'
                 }],
-            table = generar_tabla('#tablaFoliosElectronicos', columns, configuracion);
-
-        });
-
-
-        function search_column_table_reference_products(obj, form){
-            // obtener columna
-            var index = $(obj).attr('data-column');
-            var value = $(form).find('.col'+index+'_filter').val();
-
-            // buscar dentro de la columna
-            $('#tablaFoliosElectronicos').DataTable().column(index).search(value).draw()
+            table = load_table('#tablaFoliosElectronicos', columns, configuracion);
         }
 
         function autorizar_caf() {
 
             $.ajax({
-                url: '{% url 'facturacion:autorizar_folios_electronicos' %}',
+                url: '{% url 'autorizar_folios_electronicos' %}',
                 type: 'POST',
                 data: {
                     folio_seleccionado:folio_seleccionado
@@ -205,6 +179,7 @@
                 }
             });
         }
+
         function recupera_id_producto(row) {
 
             $('#autoriza').attr('disabled', true);

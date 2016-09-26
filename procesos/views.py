@@ -384,10 +384,10 @@ def propuesta_enviar(request):
 		response_ws = envio_factura_inet(request)
 
 		if response_ws['success'] == True:
-			prueba = response_ws['respuesta']
+			respuesta = response_ws['respuesta']
 
-			if len(prueba.SDT_ERRORES_ERROR) == 1:
-				for error in prueba.SDT_ERRORES_ERROR:
+			if len(respuesta.SDT_ERRORES_ERROR) == 1:
+				for error in respuesta.SDT_ERRORES_ERROR:
 					if int(error.NUMERROR) == 0:
 						estado = True
 						root = etree.fromstring(error.DESCERROR)
@@ -407,7 +407,7 @@ def propuesta_enviar(request):
 			else:
 				estado = False
 				factura.estado_id = 3
-				for error in prueba.SDT_ERRORES_ERROR:
+				for error in respuesta.SDT_ERRORES_ERROR:
 					response.append({
 						'descripcion'  : str(error.NUMERROR) + ': '+ error.DESCERROR,
 					})

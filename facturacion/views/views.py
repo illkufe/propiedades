@@ -29,10 +29,10 @@ import xml.etree.ElementTree as etree
 
 def visualizar_configuracion(request):
 
-    name = ['Lista']
+    name = 'Lista'
     title = 'Facturación'
     subtitle = 'Parametros de Configuración'
-    href = '/facturacion/configuracion/visualizar/'
+    href = '/configuracion/visualizar/'
     parametros = ParametrosFacturacion.objects.all()
 
     return render(request, 'configuracion/visualizar_configuracion.html', {
@@ -46,7 +46,7 @@ def visualizar_configuracion(request):
 class AjaxableResponseMixinParametroFacturacion(object):
     template_name = 'configuracion/crea_configuracion.html'
     form_class = ParametrosFacturacionForms
-    success_url =  '/facturacion/configuracion/list'
+    success_url =  '/configuracion/list'
 
     def form_valid(self, form):
 
@@ -65,7 +65,7 @@ class ParametroFacturacionNew(AjaxableResponseMixinParametroFacturacion, FormVie
         context['title'] = 'Facturación'
         context['subtitle'] = 'Parametros de Facturación'
         context['name'] = ['Nuevo']
-        context['href'] = '/facturacion/configuracion/list'
+        context['href'] = 'configuracion/list'
         context['accion'] = 'create'
 
         # if self.request.POST:
@@ -81,10 +81,10 @@ class ParametroFacturacionNew(AjaxableResponseMixinParametroFacturacion, FormVie
 @login_required
 @csrf_exempt
 def crear_configuracion(request):
-    name = ['Nuevo']
+    name = 'Nuevo'
     title = 'Facturación'
     subtitle = 'Parametros de Configuración'
-    href = '/facturacion/configuracion/visualizar/'
+    href = '/configuracion/visualizar/'
 
     po = request.method
     lista_error = list()
@@ -150,13 +150,41 @@ def busca_personas(request):
 
     return JsonResponse({'lista_cliente':lista_cliente})
 
+@csrf_exempt
+def valida_rut_cliente(request):
+
+    id_fiscal = request.POST.get('id_fiscal')
+    id = request.POST.get('id_cliente')
+    tipo = request.POST.get('type')
+    list_error = list()
+    context = {}
+
+    try:
+            persona = Cliente.objects.filter(Q(rut=id_fiscal) | Q(id=id), visible=True).get()
+
+            context = {
+                'error': list_error,
+                'id': persona.id,
+                'id_fiscal': persona.rut,
+                'razon': persona.razon_social,
+                'nombre': persona.nombre
+            }
+    except Exception as e:
+        error = "No se encuentra el Cliente ingresado."
+        list_error.append(error)
+        context = {
+            'error': list_error
+        }
+
+    return JsonResponse(context)
+
 @login_required
 @csrf_exempt
 def editar_configuracion(request, pk):
-    name = ['Edita', pk]
+    name = 'Edita'
     title = 'Facturación'
     subtitle = 'Parametros de Configuración'
-    href = '/facturacion/configuracion/visualizar/'
+    href = '/configuracion/visualizar/'
     kwargs = {}
 
     parametro = get_object_or_404(ParametrosFacturacion, pk=pk)
@@ -241,21 +269,21 @@ def eliminar_configuracion(request):
     try:
         id_parametro = request.POST.get('id_parametro')
 
-        parametro = ParametrosFacturacion.objects.filter(id=id_parametro)
-        conexion = ConexionFacturacion.objects.filter(parametro_facturacion_id=id_parametro)
+        parametro   = ParametrosFacturacion.objects.filter(id=id_parametro)
+        conexion    = ConexionFacturacion.objects.filter(parametro_facturacion_id=id_parametro)
 
         conexion.delete()
         parametro.delete()
 
         context = {
-            'success':True,
-            'error': error
+            'success'   :False,
+            'error'     : error
         }
     except Exception as e:
         error = str(e)
         context = {
-            'success': False,
-            'error': error
+            'success'   : False,
+            'error'     : error
         }
 
     return JsonResponse(context)
@@ -1093,10 +1121,10 @@ def carga_folios_electronicos(request):
     """
     # TODO revizar la funcion secuencia en duro y decode archivo leido
 
-    name = ['Carga CAF']
+    name = 'Carga CAF'
     title = 'Facturacion'
     subtitle = 'Lista de Folios Electronicos'
-    href = '/facturacion/folios_electronicos/visualizar/'
+    href = '/folios_electronicos/visualizar/'
 
     rut_empresa = ''
     flag = 0
@@ -1215,10 +1243,10 @@ def visualizar_folios_electronicos(request):
 
     folios = FoliosDocumentosElectronicos.objects.all()
 
-    name = ['Lista']
+    name = 'Lista'
     title = 'Facturación'
     subtitle = 'Folios Electrónicos'
-    href = '/facturacion/folios_electronicos/visualizar'
+    href = '/folios_electronicos/visualizar'
 
     error = ""
     filtro_folios = FiltroFoliosDocumentosForm()
@@ -1780,384 +1808,151 @@ def envio_documento_tributario_electronico(**kwargs):
         }
         return data
 
-# def actualizar_estados_documentos_sii():
-#
-#     #TODO el tipo de documento SII esta en duro cambiar por el tipo de documento que corresponda de forma dinamica.
-#
-#     """
-#         función que permite realizar la actualización de estados del S.I.I. esta funcion realiza la actualizacion de
-#         documentos en el siguiente orden:
-#
-#                 Asgard                  IDTE                            FechaBusqueda
-#         ----------------------------------------------------------------------------------------------------------------
-#             1) Digitado             Aceptado- Rechazado         fecha_creacion >= fecha_actual - 30
-#             2) Emitido              Aceptado- Rechazado         fecha_creacion >= fecha_actual - 30
-#             3) Centralizado         Aceptado- Rechazado         fecha_creacion >= fecha_actual - 30
-#             4) Digitado             Enviado                     NO
-#             5) Emitido              Enviado                     NO
-#             6) Centralizado         Enviado                     NO
-#
-#         esta se utiliza con crontab cada 1 hora se debe ejecutar.
-#
-#     :return: retorna objeto con success true o false y error en caso de existir.
-#     """
-#     nievel_traza        = 2  # Nivel completo de traza
-#     formato_documento   = 2  # PDF
-#     tipo_documento      = 33 #Tipo documento Electronico del S.I.I.
-#     id_dte_empresa      = ''
-#     documentos          = ''
-#     date_busqueda       = ''
-#     accion              = 1  # Procesar y enviar
-#     datos_conexion      = {}
-#
-#
-#
-#     error, conexion     = obtener_datos_conexion('wsDTE')
-#
-#     if not error:
-#
-#         datos_conexion['codigo_contexto']   = conexion.codigo_contexto
-#         datos_conexion['host']              = conexion.host
-#         datos_conexion['url']               = conexion.url
-#         datos_conexion['puerto']            = conexion.puerto
-#
-#         id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
-#         error_url, url_conexion = url_web_service(**datos_conexion)
-#
-#         if not error_url:
-#
-#             ## Conectarse a Web Service de IDTE-------------------------------------------------------------------------
-#
-#             error, client = call_service(url_conexion)
-#             date_busqueda = datetime.datetime.now() - timedelta(days=30)
-#
-#             if not error:
-#
-#                 ## IDTE estado_sii ----------------------------------------------------------------------
-#                 # 1 Pendiente
-#                 # 2 Registrado (Boletas)
-#                 # 3 Enviado al SII sin estado
-#                 # 4 Anulado
-#                 # 5 Aceptado
-#                 # 6 Rechazado
-#
-#                 ## Electronicos respuesta_estado (comercial_estadosdocumentosventas)----------------
-#                 # 6	No Enviado
-#                 # 7	En Proceso de Envio
-#                 # 8	Error Envío
-#                 # 9	Error Inesperado
-#                 # 10 No Existe
-#                 # 11 Existe, pero es de otro cliente o por otro monto
-#                 # 12 Enviado
-#                 # 13 Aceptado
-#                 # 14 Rechazado
-#
-#                 #Actualizacion de documentos estado Asgard Digitado y IDTE Aceptado - Rechazado-------------------------
-#
-#
-#                 documentos = CabecerasDocumentosVentas.objects.filter(Q(estado_sii_id__in=6) | Q(estado_sii_id=7),
-#                                                                       estado_documento_id=2,
-#                                                                       fecha_creacion__gte=date_busqueda)
-#
-#                 for a in documentos:
-#
-#                     try:
-#                         ##Consultar estado Documento -------------------------------------------------------------------
-#
-#                         estado = get_estado_documento(client, id_dte_empresa, tipo_documento, a.folio, nievel_traza)
-#
-#                         if estado.valor != "ERROR":
-#
-#                             datos_estado        = estado.valor.split('|')
-#                             estado_sii          = datos_estado[15]
-#                             msg_sii             = datos_estado[16]
-#                             receptor            = datos_estado[22]
-#                             total_dte           = datos_estado[9]
-#
-#                             if estado_sii == 1:
-#                                 respuesta_estado = 12
-#                             elif estado_sii == 2 or estado_sii == 5:
-#                                 respuesta_estado = 13
-#                             elif estado_sii == 3:
-#                                 respuesta_estado = 8
-#                             elif estado_sii == 6:
-#                                 respuesta_estado = 14
-#                             else:
-#                                 respuesta_estado =9
-#
-#
-#                             if respuesta_estado == 12 or respuesta_estado == 13:
-#
-#                                 if a.id_fiscal_cliente != receptor or a.detallesdocumentosventas_set.get(concepto_id=5).total != total_dte:
-#                                     respuesta_estado = 11
-#
-#                             update_estado_sii = CabecerasDocumentosVentas.objects.get(folio=a.folio, id=a.id)
-#                             update_estado_sii.estado_documento_id = respuesta_estado
-#                             update_estado_sii.mensaje_sii = msg_sii
-#                             update_estado_sii.save()
-#
-#                     except suds.WebFault as w:
-#                         error = w.args[0].decode("utf-8")
-#                         data = {
-#                             'success'       : False,
-#                             'error'         : error,
-#                             'estado_sii'    : '',
-#                             'msg_sii'       : '',
-#                             'tipo_error'    : 'Obtención Datos',
-#                             'funcion_error' : 'get_estado_documento'
-#                         }
-#
-#                         return data
-#
-#
-#                 # Actualizacion de documentos estado Asgard Emitido y IDTE Aceptado - Rechazado-----------------------------
-#
-#                 documentos = CabecerasDocumentosVentas.objects.filter(Q(estado_sii_id__in=6) | Q(estado_sii_id=7),
-#                                                                           estado_documento_id=3,
-#                                                                           fecha_creacion__gte=date_busqueda)
-#
-#                 for a in documentos:
-#
-#                     ##Consultar estado Documento ---------------------------------------------------------------------------
-#
-#                     estado = get_estado_documento(client, id_dte_empresa, tipo_documento, a.folio, nievel_traza)
-#
-#                     if estado.valor != "ERROR":
-#
-#                         datos_estado    = estado.valor.split('|')
-#                         estado_sii      = datos_estado[15]
-#                         msg_sii         = datos_estado[16]
-#                         receptor        = datos_estado[22]
-#                         total_dte       = datos_estado[9]
-#
-#                         if estado_sii == 1:
-#                             respuesta_estado = 12
-#                         elif estado_sii == 2 or estado_sii == 5:
-#                             respuesta_estado = 13
-#                         elif estado_sii == 3:
-#                             respuesta_estado = 8
-#                         elif estado_sii == 6:
-#                             respuesta_estado = 14
-#                         else:
-#                             respuesta_estado = 9
-#
-#                         if respuesta_estado == 12 or respuesta_estado == 13:
-#
-#                             if a.id_fiscal_cliente != receptor or a.detallesdocumentosventas_set.get(
-#                                     concepto_id=5).total != total_dte:
-#                                 respuesta_estado = 11
-#
-#                         update_estado_sii = CabecerasDocumentosVentas.objects.get(folio=a.folio, id=a.id)
-#                         update_estado_sii.estado_documento_id = respuesta_estado
-#                         update_estado_sii.mensaje_sii = msg_sii
-#                         update_estado_sii.save()
-#
-#
-#                 # Actualizacion de documentos estado Asgard Centralizado y IDTE Aceptado - Rechazado------------------------
-#
-#                 documentos = CabecerasDocumentosVentas.objects.filter(Q(estado_sii_id__in=6) | Q(estado_sii_id=7),
-#                                                                           estado_documento_id=5,
-#                                                                           fecha_creacion__gte=date_busqueda)
-#
-#                 for a in documentos:
-#
-#                     ##Consultar estado Documento ---------------------------------------------------------------------------
-#
-#                     estado = get_estado_documento(client, id_dte_empresa, tipo_documento, a.folio, nievel_traza)
-#
-#                     if estado.valor != "ERROR":
-#
-#                         datos_estado    = estado.valor.split('|')
-#                         estado_sii      = datos_estado[15]
-#                         msg_sii         = datos_estado[16]
-#                         receptor        = datos_estado[22]
-#                         total_dte       = datos_estado[9]
-#
-#                         if estado_sii == 1:
-#                             respuesta_estado = 12
-#                         elif estado_sii == 2 or estado_sii == 5:
-#                             respuesta_estado = 13
-#                         elif estado_sii == 3:
-#                             respuesta_estado = 8
-#                         elif estado_sii == 6:
-#                             respuesta_estado = 14
-#                         else:
-#                             respuesta_estado = 9
-#
-#                         if respuesta_estado == 12 or respuesta_estado == 13:
-#
-#                             if a.id_fiscal_cliente != receptor or a.detallesdocumentosventas_set.get(
-#                                     concepto_id=5).total != total_dte:
-#                                 respuesta_estado = 11
-#
-#                         update_estado_sii = CabecerasDocumentosVentas.objects.get(folio=a.folio, id=a.id)
-#                         update_estado_sii.estado_documento_id = respuesta_estado
-#                         update_estado_sii.mensaje_sii = msg_sii
-#                         update_estado_sii.save()
-#
-#                 # Actualizacion de documentos estado Asgard Digitado y IDTE Enviado ---------------------------------------
-#
-#                 documentos = CabecerasDocumentosVentas.objects.filter(estado_sii_id=6, estado_documento_id=2)
-#
-#                 for a in documentos:
-#
-#                     ##Consultar estado Documento ---------------------------------------------------------------------------
-#
-#                     estado = get_estado_documento(client, id_dte_empresa, tipo_documento, a.folio, nievel_traza)
-#
-#                     if estado.valor != "ERROR":
-#
-#                         datos_estado    = estado.valor.split('|')
-#                         estado_sii      = datos_estado[15]
-#                         msg_sii         = datos_estado[16]
-#                         receptor        = datos_estado[22]
-#                         total_dte       = datos_estado[9]
-#
-#                         if estado_sii == 1:
-#                             respuesta_estado = 12
-#                         elif estado_sii == 2 or estado_sii == 5:
-#                             respuesta_estado = 13
-#                         elif estado_sii == 3:
-#                             respuesta_estado = 8
-#                         elif estado_sii == 6:
-#                             respuesta_estado = 14
-#                         else:
-#                             respuesta_estado = 9
-#
-#                         if respuesta_estado == 12 or respuesta_estado == 13:
-#
-#                             if a.id_fiscal_cliente != receptor or a.detallesdocumentosventas_set.get(
-#                                     concepto_id=5).total != total_dte:
-#                                 respuesta_estado = 11
-#
-#                         update_estado_sii = CabecerasDocumentosVentas.objects.get(folio=a.folio, id=a.id)
-#                         update_estado_sii.estado_documento_id = respuesta_estado
-#                         update_estado_sii.mensaje_sii = msg_sii
-#                         update_estado_sii.save()
-#
-#
-#                 # Actualizacion de documentos estado Asgard Emitido y IDTE Enviado-----------------------------
-#
-#                 documentos = CabecerasDocumentosVentas.objects.filter(estado_sii_id__in=6, estado_documento_id=3)
-#
-#                 for a in documentos:
-#
-#                     ##Consultar estado Documento ---------------------------------------------------------------------------
-#
-#                     estado = get_estado_documento(client, id_dte_empresa, tipo_documento, a.folio, nievel_traza)
-#
-#                     if estado.valor != "ERROR":
-#
-#                         datos_estado    = estado.valor.split('|')
-#                         estado_sii      = datos_estado[15]
-#                         msg_sii         = datos_estado[16]
-#                         receptor        = datos_estado[22]
-#                         total_dte       = datos_estado[9]
-#
-#                         if estado_sii == 1:
-#                             respuesta_estado = 12
-#                         elif estado_sii == 2 or estado_sii == 5:
-#                             respuesta_estado = 13
-#                         elif estado_sii == 3:
-#                             respuesta_estado = 8
-#                         elif estado_sii == 6:
-#                             respuesta_estado = 14
-#                         else:
-#                             respuesta_estado = 9
-#
-#                         if respuesta_estado == 12 or respuesta_estado == 13:
-#
-#                             if a.id_fiscal_cliente != receptor or a.detallesdocumentosventas_set.get(
-#                                     concepto_id=5).total != total_dte:
-#                                 respuesta_estado = 11
-#
-#                         update_estado_sii = CabecerasDocumentosVentas.objects.get(folio=a.folio, id=a.id)
-#                         update_estado_sii.estado_documento_id = respuesta_estado
-#                         update_estado_sii.mensaje_sii = msg_sii
-#                         update_estado_sii.save()
-#
-#
-#                 # Actualizacion de documentos estado Asgard Centralizado y IDTE Emitido ------------------------------------
-#
-#                 documentos = CabecerasDocumentosVentas.objects.filter(estado_sii_id__in=6, estado_documento_id=5)
-#
-#                 for a in documentos:
-#
-#                     ##Consultar estado Documento ---------------------------------------------------------------------------
-#
-#                     estado = get_estado_documento(client, id_dte_empresa, tipo_documento, a.folio, nievel_traza)
-#
-#                     if estado.valor != "ERROR":
-#
-#                         datos_estado    = estado.valor.split('|')
-#                         estado_sii      = datos_estado[15]
-#                         msg_sii         = datos_estado[16]
-#                         receptor        = datos_estado[22]
-#                         total_dte       = datos_estado[9]
-#
-#                         if estado_sii == 1:
-#                             respuesta_estado = 12
-#                         elif estado_sii == 2 or estado_sii == 5:
-#                             respuesta_estado = 13
-#                         elif estado_sii == 3:
-#                             respuesta_estado = 8
-#                         elif estado_sii == 6:
-#                             respuesta_estado = 14
-#                         else:
-#                             respuesta_estado = 9
-#
-#                         if respuesta_estado == 12 or respuesta_estado == 13:
-#
-#                             if a.id_fiscal_cliente != receptor or a.detallesdocumentosventas_set.get(
-#                                     concepto_id=5).total != total_dte:
-#                                 respuesta_estado = 11
-#
-#                         update_estado_sii = CabecerasDocumentosVentas.objects.get(folio=a.folio, id=a.id)
-#                         update_estado_sii.estado_documento_id = respuesta_estado
-#                         update_estado_sii.mensaje_sii = msg_sii
-#                         update_estado_sii.save()
-#
-#                 data = {
-#                     'success'       : True,
-#                     'error'         : '',
-#                     'estado_sii'    : '',
-#                     'msg_sii'       : '',
-#                     'tipo_error'    : '',
-#                     'funcion_error' : ''
-#                 }
-#                 return data
-#             else:
-#                 data = {
-#                     'success'       : False,
-#                     'error'         : error,
-#                     'estado_sii'    : '',
-#                     'msg_sii'       : '',
-#                     'tipo_error'    : 'Obtención Datos',
-#                     'funcion_error' : 'url_web_service'
-#                 }
-#
-#                 return data
-#         else:
-#             data = {
-#                 'success'       : False,
-#                 'error'         : error_url,
-#                 'estado_sii'    : '',
-#                 'msg_sii'       : '',
-#                 'tipo_error'    : 'Armado URL',
-#                 'funcion_error' : 'url_web_service'
-#             }
-#             return data
-#     else:
-#         data = {
-#             'success'       : False,
-#             'error'         : error,
-#             'estado_sii'    : '',
-#             'msg_sii'       : '',
-#             'tipo_error'    : 'Obtención Datos',
-#             'funcion_error' : 'obtener_datos_conexion'
-#         }
-#
-#         return data
+
+def actualizar_estados_documentos_sii_lease():
+
+    #TODO el tipo de documento SII esta en duro cambiar por el tipo de documento que corresponda de forma dinamica.
+
+    """
+        función que permite realizar la actualización de estados del S.I.I. esta funcion realiza la actualizacion de
+        documentos en el siguiente orden:
+
+                Lease                       FechaBusqueda
+        ----------------------------------------------------------------------------------------------------------------
+            1) Enviado         fecha_creacion >= fecha_actual - 30
+            2) Error Envio     fecha_creacion >= fecha_actual - 30
+
+
+        esta se utiliza con crontab cada 1 hora se debe ejecutar.
+
+    :return: retorna objeto con success true o false y error en caso de existir.
+    """
+    nievel_traza        = 2  # Nivel completo de traza
+    id_dte_empresa      = ''
+    date_busqueda       = ''
+    datos_conexion      = {}
+    list_error          = list()
+
+
+
+    error, conexion     = obtener_datos_conexion('wsDTE')
+
+    if not error:
+
+        datos_conexion['codigo_contexto']   = conexion.codigo_contexto
+        datos_conexion['host']              = conexion.host
+        datos_conexion['url']               = conexion.url
+        datos_conexion['puerto']            = conexion.puerto
+
+        id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
+        error_url, url_conexion = url_web_service(**datos_conexion)
+
+        if not error_url:
+
+            ## Conectarse a Web Service de IDTE-------------------------------------------------------------------------
+
+            error, client = call_service(url_conexion)
+            date_busqueda = datetime.datetime.now() - timedelta(days=30)
+
+            if not error:
+
+                ## IDTE estado_sii -------------------------------------------------------------------------------------
+                # 1 Pendiente
+                # 2 Registrado (Boletas)
+                # 3 Enviado al SII sin estado
+                # 4 Anulado
+                # 5 Aceptado
+                # 6 Rechazado
+
+                ## Estados Facturas Lease (procesos_factura_estado)-----------------------------------------------------
+                #1 Propuesta
+                #2 Enviada
+                #3 Error Envio
+                #4 Aceptada
+                #5 Rechazada
+                #6 Error Inesperado
+                #7 Error Envío
+
+                #Actualizacion de documentos estado --------------------------------------------------------------------
+
+                facturas   = Factura.objects.filter(estado_id__in=[2, 3],
+                                                    creado_en__gte=date_busqueda,
+                                                    motor_emision_id=2
+                                                    )
+
+                for a in facturas:
+
+                    try:
+                        ##Consultar estado Documento -------------------------------------------------------------------
+
+                        estado = get_estado_documento(client, id_dte_empresa, a.numero_documento, a.numero_pedido, nievel_traza)
+
+                        if estado.valor != "ERROR":
+
+                            datos_estado        = estado.valor.split('|')
+                            estado_sii          = datos_estado[15]
+                            msg_sii             = datos_estado[16]
+                            receptor            = datos_estado[22]
+                            total_dte           = datos_estado[9]
+
+                            if estado_sii == 1:
+                                respuesta_estado = 2
+                            elif estado_sii == 2 or estado_sii == 5:
+                                respuesta_estado = 4
+                            elif estado_sii == 3:
+                                respuesta_estado = 7
+                            elif estado_sii == 6:
+                                respuesta_estado = 5
+                            else:
+                                respuesta_estado =6
+
+                            update_estado_sii = Factura.objects.get(numero_documento=a.numero_documento, id= a.id, motor_emision_id=2)
+                            update_estado_sii.estado_id = respuesta_estado
+                            update_estado_sii.save()
+
+                    except suds.WebFault as w:
+                        error = w.args[0].decode("utf-8")
+                        list_error.append({
+                            'success'       : False,
+                            'error'         : error,
+                            'estado_sii'    : '',
+                            'msg_sii'       : '',
+                            'tipo_error'    : 'Obtención Datos',
+                            'funcion_error' : 'get_estado_documento'
+                        })
+
+                        return list_error
+            else:
+                list_error.append({
+                    'success'       : False,
+                    'error'         : error,
+                    'estado_sii'    : '',
+                    'msg_sii'       : '',
+                    'tipo_error'    : 'Obtención Datos',
+                    'funcion_error' : 'url_web_service'
+                })
+
+                return list_error
+        else:
+            list_error.append({
+                'success'       : False,
+                'error'         : error_url,
+                'estado_sii'    : '',
+                'msg_sii'       : '',
+                'tipo_error'    : 'Armado URL',
+                'funcion_error' : 'url_web_service'
+            })
+            return list_error
+    else:
+        list_error.append({
+            'success'       : False,
+            'error'         : error,
+            'estado_sii'    : '',
+            'msg_sii'       : '',
+            'tipo_error'    : 'Obtención Datos',
+            'funcion_error' : 'obtener_datos_conexion'
+        })
+        return list_error
 
 def consulta_estado_documento_sii(tipo_documento, folio_documento):
 
@@ -3777,8 +3572,8 @@ def consulta_estado_control_folios(fecha_emision, secuencia):
 ##---------------------------- MANEJO DE FACTURACION LEASE -------------------------------------------------------------
 def envio_factura_inet(request):
 
-    datos_conexion      = {}
-    resultado_xml = armar_xml_inet(request)
+    datos_conexion  = {}
+    resultado_xml   = armar_xml_inet(request)
 
     if not resultado_xml[0]:
 
@@ -3801,7 +3596,6 @@ def envio_factura_inet(request):
                 resultado_call = call_service_inet(resultado_url[1])
 
                 if not resultado_call[0]:
-
 
                     try:
                         response_ws = envio_documento_inet(resultado_call[1], resultado_xml[1])

@@ -511,7 +511,7 @@
 	"model": "procesos.factura_estado",
 	"pk": 4,
 	"fields": {
-		"nombre": "Reenviada",
+		"nombre": "Aceptada",
 		"color": "#2196F3",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
@@ -521,8 +521,18 @@
 	"model": "procesos.factura_estado",
 	"pk": 5,
 	"fields": {
-		"nombre": "Pagada",
+		"nombre": "Rechazada",
 		"color": "#43A047",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "procesos.factura_estado",
+	"pk": 6,
+	"fields": {
+		"nombre": "Error Inesperado",
+		"color": "##F44336",
 		"descripcion": "",
 		"creado_en": "2016-01-01 00:00:00"
 	}

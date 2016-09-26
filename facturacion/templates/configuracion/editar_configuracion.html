@@ -23,7 +23,7 @@
                                 {{ parametros.persona.label_tag }}
                                 {{ parametros.persona }}
                                 <div class="input-group">
-                                    <input id="id_codigo_persona" class="form-control input-sm" type="text" onkeydown="busca_persona(this, event, '#form_parametro_facturacion')" name="codigo_persona" maxlength="100">
+                                    <input id="id_codigo_persona" class="form-control input-sm format-rut" type="text" onkeydown="busca_persona(this, event, '#form_parametro_facturacion')" name="codigo_persona" maxlength="100">
                                     <span class="input-group-btn">
                                         <button type="button" class="btn btn-sm btn-primary" onclick="llena_modal_persona()"><i class="fa fa-plus"></i></button>
                                     </span>
@@ -112,7 +112,7 @@
                         </div>
                         <br>
                         <div class="ibox-tools">
-                            <a id="crear_conexion"  class="btn btn-primary btn-xs "><i class="fa fa-plus"></i> Crear configuración</a>
+                            <a id="crear_conexion"  class="btn btn-primary btn-xs " onclick="new_conexion()"><i class="fa fa-plus"></i> Crear configuración</a>
                             <div class="hr-line-dashed"></div>
                         </div>
                         <br>
@@ -128,7 +128,7 @@
                         <br>
                         <div class="row">
                             <div class="col-sm-4">
-                                <a href="{% url 'facturacion:visualizar_configuracion' %}" class="btn btn-cancel" role="button">
+                                <a href="{% url 'visualizar_configuracion' %}" class="btn btn-w-m btn-sm btn-default" role="button">
                                     Cancelar
                                 </a>
                             </div>
@@ -136,9 +136,6 @@
                                 <button type="button" onclick="enviar_form('form_parametro_facturacion')" class="btn btn-w-m btn-sm btn-primary pull-right">
                                     GUARDAR
                                 </button>
-{#                                <button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" style="margin-right: 15px;" onclick="enviar_form('{{accion}}')">#}
-{#                                    GUARDAR Y SEGUIR#}
-{#                                </button>#}
                             </div>
                         </div>
                     </form>
@@ -163,14 +160,13 @@
         </div>
     </div>
 {% endblock section %}
-{% block Javascript %}
+{% block scripts %}
     <script>
     $(document).ready(function(){
         if($('#readonly_codigo').val()=='True'){
            $('#id_codigo').attr('readonly',true);
         }
 
-        $('#id_codigo_persona').mask("##.###.###-A", {reverse: true, maxlength: 9});
         lista_conexion = new Array();
 
         var id_persona = parseInt($('#id_persona').val());
@@ -178,9 +174,14 @@
             recupera_informacion_Persona(id_persona);
         }
 
+        load_tabla_conexion();
+        recuperaDataParametros();
+    });
+
+    function load_tabla_conexion() {
         var configuracion = {
-            'searching'     : true,
-            'order'         : [[1, 'asc']],
+            'searching'     : false,
+            'order'         : [[0, 'asc']],
             'paginate'      : false,
             'bLengthChange' : false,
             'bInfo'         : false,
@@ -215,31 +216,27 @@
                 'title'     : 'Opciones'
             }];
 
-        tabla_conexion = generar_tabla('#tablaConexion', columns, configuracion);
-        recuperaDataParametros();
+        tabla_conexion = load_table('#tablaConexion', columns, configuracion);
+    }
 
-        $('#crear_conexion').on('click', function () {
+    function new_conexion() {
+        var codigo  =   $('#id_codigo_contexto').val();
+        var host    =   $('#id_host').val();
+        var url     =   $('#id_url').val();
+        var puerto  =   $('#id_puerto').val();
 
-            var codigo  =   $('#id_codigo_contexto').val();
-            var host    =   $('#id_host').val();
-            var url     =   $('#id_url').val();
-            var puerto  =   $('#id_puerto').val();
-
-            agregar_conexion(codigo, host, url, puerto);
-
-        })
-    });
+        agregar_conexion(codigo, host, url, puerto);
+    }
 
     function busca_persona(obj, event, form){
             $('#errores').empty();
 
             if (event.which == 9 || event.which == 13) {
                 $.ajax({
-                    url: '{% url 'comercial:valida_idfiscal_persona' %}',
+                    url: '{% url 'valida_rut_cliente' %}',
                     type: 'POST',
                     data: {
-                        id_fiscal: obj.value,
-                        type:''
+                        id_fiscal: obj.value
                     },
                     success: function (response) {
                         if (response.error.length != 0) {
@@ -278,33 +275,10 @@
     function llena_modal_persona(){
             $.ajax({
                 type: 'POST',
-                url: '{% url 'facturacion:busca_personas' %}',
+                url: '{% url 'busca_personas' %}',
                 success: function (data, textStatus, jqXHR) {
 
                     var html = "";
-                    var formu ="#filtro_persona";
-                    var tabla ="#tablaModalPersona";
-                    html+='<form id="filtro_persona" role="form" enctype="multipart/form-data" action="" method="post">';
-                    html+='<div class="row">';
-                    html+='<div class="col-sm-4">';
-                    html+='<div class="">';
-                    html+='<label for="id_codigo">R.U.T</label>';
-                    html+='<input id="id_codigo" class="form-control col2_filter" type="text" placeholder="r.u.t." onkeyup="search_column_table_reference_products(this, \''+formu+'\', \''+tabla+'\')" name="id_fiscal" maxlength="100" data-column="2">';
-                    html+='</div>';
-                    html+='</div>';
-                    html+='<div class="col-sm-4">';
-                    html+='<div class="">';
-                    html+='<label for="id_razon">Razón Social</label>';
-                    html+='<input id="id_razon" class="form-control col3_filter" type="text" placeholder="razón" name="razon_social" data-column="3" onkeyup="search_column_table_reference_products(this, \''+formu+'\', \''+tabla+'\')">';
-                    html+='</div></div>';
-                    html+='<div class="col-sm-4">';
-                    html+='<div class="">';
-                    html+='<label for="id_nombre">Nombre Fantasia</label>';
-                    html+='<input id="id_nombre" class="form-control col4_filter" type="text" placeholder="nombre" name="nombre_fantasia" data-column="4" onkeyup="search_column_table_reference_products(this, \''+formu+'\', \''+tabla+'\')">';
-                    html+='</div></div>';
-                    html+='</div>';
-                    html+='</form>';
-
                     html+='<div class="table-responsive">';
                     html+='<table id="tablaModalPersona" class="table table-striped table-bordered" style="width: 100% !important;">';
                     html+='<thead>';
@@ -314,7 +288,7 @@
                     for(var i in data.lista_cliente){
                         html+='<tr>';
                         html+='<td>'+data.lista_cliente[i].id+'</td>';
-                        html+='<td class="text-center"><button type="button" class="btn btn-info btn-xs" onclick="seleccionarPersonas( \''+data.lista_cliente[i].id_fiscal+'\' , \''+data.lista_cliente[i].razon_social+'\', \''+data.lista_cliente[i].id+'\' )"><i class="fa fa-eye"></i> Seleccionar</button></a></td>';
+                        html+='<td class="text-center"><button type="button" class="btn btn-info btn-xs" onclick="seleccionarPersonas( \''+data.lista_cliente[i].id_fiscal+'\' , \''+data.lista_cliente[i].nombre_fantasia+'\', \''+data.lista_cliente[i].id+'\' )"><i class="fa fa-eye"></i> Seleccionar</button></a></td>';
                         html+='<td class="">'+data.lista_cliente[i].id_fiscal+'</td>';
                         html+='<td>'+data.lista_cliente[i].nombre_fantasia+'</td>';
                         html+='<td>'+data.lista_cliente[i].razon_social+'</td>';
@@ -365,7 +339,7 @@
                             'title': 'Nombre Fantasia'
                         }];
 
-                    var tabla = generar_tabla('#tablaModalPersona', columns, configuracion);
+                    var tabla = load_table('#tablaModalPersona', columns, configuracion);
                     $('#modalPersona').modal('show');
                 },
                 error:function (x, y, z) {
@@ -375,21 +349,19 @@
             });
         }
 
-    function seleccionarPersonas(id_fiscal, razon, id) {
+    function seleccionarPersonas(id_fiscal, nombre, id) {
             $('#form_parametro_facturacion').find('#id_codigo_persona').val(id_fiscal);
-            $('#form_parametro_facturacion').find('#id_descripcion_persona').val(razon);
+            $('#form_parametro_facturacion').find('#id_descripcion_persona').val(nombre);
             $('#form_parametro_facturacion').find('#id_persona').val(id);
             $('#modalPersona').modal('hide');
     }
 
     function recupera_informacion_Persona(id_persona) {
-            var codigo = 0;
             $.ajax({
-                url: '{% url 'comercial:valida_idfiscal_persona' %}',
+                url: '{% url 'valida_rut_cliente' %}',
                 type: 'POST',
                 data: {
-                    id_cliente: id_persona,
-                    codigo : codigo
+                    id_cliente: id_persona
                 },
                 success: function (response) {
                     if (response.error.length != 0) {
@@ -408,7 +380,7 @@
                         $('#errores').empty();
 
                         $('#form_parametro_facturacion').find('#id_codigo_persona').val(response.id_fiscal);
-                        $('#form_parametro_facturacion').find('#id_descripcion_persona').val(response.razon);
+                        $('#form_parametro_facturacion').find('#id_descripcion_persona').val(response.nombre);
                         $('#form_parametro_facturacion').find('#id_persona').val(response.id);
                     }
                 },
@@ -618,17 +590,18 @@
         };
         $.ajax({
             type: 'post',
-            url: '{% url 'facturacion:editar_configuracion' pk=id %}',
+            url: '{% url 'editar_configuracion' pk=id %}',
             data: data,
             success: function(response) {
                 if(response.success==true){
                     clear_errors_form('#'+form);
+                    notification_toast('success', 'ÉXITO', 'Configuración editada correctamente.')
                     swal({
                         title: "Exito!",
                         text: "Configuración editada correctamente",
-                        type: "success",
+                        type: "success"
                     });
-                    window.location.href='{% url 'facturacion:visualizar_configuracion' %}';
+                    window.location.href='{% url 'visualizar_configuracion' %}';
                 }else{
                     swal({
                         title: "Error!",
@@ -642,7 +615,7 @@
 {#                }#}
 {#                clear_errors_form('#form_parametro_facturacion');#}
 {##}
-{#                notification_toast('success', 'ÉXITO', 'Guardado correctamente.')#}
+{#                #}
             },
             error: function(data, textStatus, jqXHR) {
                 clear_errors_form('#form_parametro_facturacion');
@@ -657,7 +630,7 @@
 
     function recuperaDataParametros() {
         $.ajax({
-            url:'{% url 'facturacion:recupera_data_parametros' pk=id %}',
+            url:'{% url 'recupera_data_parametros' pk=id %}',
             type:'POST',
             data:'',
             success: function (response) {

@@ -6,7 +6,7 @@
             <div class="col-lg-12">
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Lista de Precios</h5>
+                        <h5>Carga Folios CAF</h5>
                     </div>
                     <div class="ibox-content">
                         <form method="post"  enctype="multipart/form-data" role="form" id="form_carga">
@@ -28,7 +28,7 @@
                             <br>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <a href="{% url 'facturacion:visualizar_folios_electronicos' %}" class="btn btn-cancel" role="button">
+                                    <a href="{% url 'visualizar_folios_electronicos' %}" class="btn btn-w-m btn-sm btn-default" role="button">
                                         Cancelar
                                     </a>
                                 </div>
@@ -42,7 +42,7 @@
             </div>
         </div>
 {% endblock section %}
-{% block Javascript %}
+{% block scripts %}
     <script>
         $(document).ready(function(){
             $(":file").filestyle({buttonText: "Find file"});
@@ -66,7 +66,7 @@
 
                             if (data.funcion == "obtener_datos_conexion"){
                                 var html = "";
-                                html+= data.error + '&nbsp;&nbsp;&nbsp;<a class="btn btn-primary btn-xs" style="width: 115px" href="{% url 'facturacion:crear_configuracion' %}" target="_blank"><i class="fa fa-plus"></i>Crear Conexión</a>';
+                                html+= data.error + '&nbsp;&nbsp;&nbsp;<a class="btn btn-primary btn-xs" style="width: 115px" href="{% url 'crear_configuracion' %}" target="_blank"><i class="fa fa-plus"></i>Crear Conexión</a>';
                             }
                             else{
                                 var html = "";
@@ -85,7 +85,7 @@
                                 type: "success",
                                 html: true
                             });
-                            window.location.href='{% url 'facturacion:visualizar_folios_electronicos' %}'
+                            window.location.href='{% url 'visualizar_folios_electronicos' %}'
                         }
                     },
                     error: function (x,y,z) {
