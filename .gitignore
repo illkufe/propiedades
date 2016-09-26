@@ -114,14 +114,14 @@ facturacion/migrations
 
 
 #Ignora archivos de la carpeta media
-media/avatars/
-media/contratos/
-media/facturas/
+public/media/avatars/
+public/media/contratos/
+public/media/facturas/
 media/formatos/
-media/gastos-servicios/
-media/lectura-medidor/
-media/propuestas/
-media/reportes/
+public/media/gastos-servicios/
+public/media/lectura-medidor/
+public/media/propuestas/
+public/media/reportes/
 
 
 #Ignora carpeta de virtualenv
