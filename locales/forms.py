@@ -52,6 +52,8 @@ class LocalForm(forms.ModelForm):
 		self.fields['sector'].queryset 		= Sector.objects.filter(activo=activo)
 		self.fields['nivel'].queryset 		= Nivel.objects.filter(activo=activo)
 
+		self.fields['clasificaciones'].required = False
+
 	class Meta:
 		model 	= Local
 		fields 	= '__all__'

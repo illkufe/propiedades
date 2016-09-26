@@ -160,7 +160,7 @@ class Clasificacion(models.Model):
 
 	# atributos (generales)
 	nombre 		= models.CharField(max_length=250)
-	descripcion = models.CharField(max_length=250)
+	descripcion = models.TextField(blank=True)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
