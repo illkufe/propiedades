@@ -465,14 +465,14 @@ class PropuestaUpdate(PropuestaMixin, UpdateView):
 	def get_object(self, queryset=None):
 
 		queryset = Propuesta_Version.objects.get(id=int(self.kwargs['pk']))
-		
+
+		queryset.fecha_contrato 	= queryset.fecha_contrato.strftime('%d/%m/%Y') if queryset.fecha_contrato is not None else ''
 		queryset.fecha_inicio 		= queryset.fecha_inicio.strftime('%d/%m/%Y') if queryset.fecha_inicio is not None else ''
 		queryset.fecha_termino 		= queryset.fecha_termino.strftime('%d/%m/%Y') if queryset.fecha_termino is not None else ''
+		queryset.fecha_inicio_renta = queryset.fecha_inicio_renta.strftime('%d/%m/%Y') if queryset.fecha_inicio_renta is not None else ''
+		queryset.fecha_entrega 		= queryset.fecha_entrega.strftime('%d/%m/%Y') if queryset.fecha_entrega is not None else ''
 		queryset.fecha_habilitacion = queryset.fecha_habilitacion.strftime('%d/%m/%Y') if queryset.fecha_habilitacion is not None else ''
 		queryset.fecha_renovacion 	= queryset.fecha_renovacion.strftime('%d/%m/%Y') if queryset.fecha_renovacion is not None else ''
-		queryset.fecha_remodelacion = queryset.fecha_remodelacion.strftime('%d/%m/%Y') if queryset.fecha_remodelacion is not None else ''
-		queryset.fecha_plazo 		= queryset.fecha_plazo.strftime('%d/%m/%Y') if queryset.fecha_plazo is not None else ''
-		queryset.fecha_aviso 		= queryset.fecha_aviso.strftime('%d/%m/%Y') if queryset.fecha_aviso is not None else ''
 
 		return queryset
 
@@ -1285,17 +1285,16 @@ class PROPUESTA_CONTRATO(View):
 					'id' 					: version.id,
 					'numero'				: version.numero,
 					'nombre_local'			: version.nombre_local,
+					'destino_comercial'		: version.destino_comercial if version.destino_comercial is not None else None,
 					'fecha_inicio'			: version.fecha_inicio if version.fecha_inicio is not None else None,
 					'fecha_termino'			: version.fecha_termino if version.fecha_termino is not None else None,
-					'meses'					: version.meses if version.meses is not None else None,
+					'fecha_inicio_renta'	: version.fecha_inicio_renta if version.fecha_inicio_renta is not None else None,
+					'fecha_entrega'			: version.fecha_entrega if version.fecha_entrega is not None else None,
+					'meses_contrato'		: version.meses_contrato if version.meses_contrato is not None else None,
+					'meses_aviso_comercial'	: version.meses_aviso_comercial if version.meses_aviso_comercial is not None else None,
+					'meses_remodelacion'	: version.meses_remodelacion if version.meses_remodelacion is not None else None,
 					'fecha_habilitacion'	: version.fecha_habilitacion if version.fecha_habilitacion is not None else None,
-					'fecha_activacion'		: version.fecha_activacion if version.fecha_activacion is not None else None,
 					'fecha_renovacion'		: version.fecha_renovacion if version.fecha_renovacion is not None else None,
-					'fecha_remodelacion'	: version.fecha_remodelacion if version.fecha_remodelacion is not None else None,
-					'fecha_aviso'			: version.fecha_aviso if version.fecha_aviso is not None else None,
-					'fecha_plazo'			: version.fecha_plazo if version.fecha_plazo is not None else None,
-					'dias_salida'			: version.dias_salida if version.dias_salida is not None else None,
-					'destino_comercial'		: version.destino_comercial if version.destino_comercial is not None else None,
 					'creado_en' 			: version.creado_en
 					})
 
@@ -1342,25 +1341,45 @@ def propuesta_historial_tabla(request, id=None):
 	head = list()
 	body = list()
 
-	propuesta 	= Propuesta_Contrato.objects.get(id=id)
-	versiones 	= propuesta.propuesta_version_set.all()
+	propuesta = Propuesta_Contrato.objects.get(id=id)
+	versiones = propuesta.propuesta_version_set.all()
 
-	numero 				= list()
-	fecha_inicio 		= list()
-	fecha_termino 		= list()
-	arriendo_minimo 	= list()
-	arriendo_variable 	= list()
-	arriendo_bodega 	= list()
-	cuota_incorporacion = list()
-	fondo_promocion 	= list()
-	gasto_comun 		= list()
+	# datos informacion
+	numero 					= list()
+	# datos periodo
+	fecha_contrato 			= list()
+	fecha_inicio 			= list()
+	fecha_termino 			= list()
+	fecha_inicio_renta 		= list()
+	fecha_entrega 			= list()
+	fecha_habilitacion 		= list()
+	fecha_renovacion 		= list()
+	meses_contrato 			= list()
+	meses_aviso_comercial 	= list()
+	meses_remodelacion 		= list()
+	# datos conceptos
+	arriendo_minimo 		= list()
+	arriendo_variable 		= list()
+	arriendo_bodega 		= list()
+	cuota_incorporacion 	= list()
+	fondo_promocion 		= list()
+	gasto_comun 			= list()
 
-	# datos generales
-	numero.append({'data':'item', 'value': 'Número'})
-	fecha_inicio.append({'data':'item', 'value': 'Fecha Inicio'})
-	fecha_termino.append({'data':'item', 'value': 'Fecha Término'})
 
-	# conceptos
+	# datos informacion
+	numero.append({'data':'item', 'value': 'Número Contrato'})
+	# datos periodo
+	fecha_contrato.append({'data':'item', 'value': 'Fecha de Contrato'})
+	fecha_inicio.append({'data':'item', 'value': 'Fecha de Inicio'})
+	fecha_termino.append({'data':'item', 'value': 'Fecha de Término'})
+	fecha_inicio_renta.append({'data':'item', 'value': 'Fecha de Inicio de Renta'})
+	fecha_entrega.append({'data':'item', 'value': 'Fecha de Entrega'})
+	fecha_habilitacion.append({'data':'item', 'value': 'Fecha de Habilitación'})
+	fecha_renovacion.append({'data':'item', 'value': 'Fecha de Remodelación'})
+	meses_contrato.append({'data':'item', 'value': 'Meses de Arriendo'})
+	meses_aviso_comercial.append({'data':'item', 'value': 'Meses Aviso Comercial'})
+	meses_remodelacion.append({'data':'item', 'value': 'Meses de Remodelacion'})
+	# datos conceptos {falta: ajuste arriendo minimo, doble en diciembre}
 	arriendo_minimo.append({'data':'item', 'value': 'Arriendo Minimo'})
 	arriendo_variable.append({'data':'item', 'value': 'Arriendo Variable'})
 	arriendo_bodega.append({'data':'item', 'value': 'Arriendo de Bodega'})
@@ -1368,16 +1387,14 @@ def propuesta_historial_tabla(request, id=None):
 	fondo_promocion.append({'data':'item', 'value': 'Fondo de Promoción'})
 	gasto_comun.append({'data':'item', 'value': 'Gasto Común'})
 
-	# datos de conceptos {falta: ajuste arriendo minimo, doble en diciembre}
-
 	for version in versiones:
 
-		value_arriendo_minimo 		= 'No Aplica'
-		value_arriendo_variable 	= 'No Aplica'
-		value_arriendo_bodega 		= 'No Aplica'
-		value_cuota_incorporacion 	= 'No Aplica'
-		value_fondo_promocion 		= 'No Aplica'
-		value_gasto_comun 			= 'No Aplica'
+		value_arriendo_minimo 		= '<span class="badge">no aplica</span>'
+		value_arriendo_variable 	= '<span class="badge">no aplica</span>'
+		value_arriendo_bodega 		= '<span class="badge">no aplica</span>'
+		value_cuota_incorporacion 	= '<span class="badge">no aplica</span>'
+		value_fondo_promocion 		= '<span class="badge">no aplica</span>'
+		value_gasto_comun 			= '<span class="badge">no aplica</span>'
 
 		# conceptos
 		if version.arriendo_minimo is True:
@@ -1394,19 +1411,41 @@ def propuesta_historial_tabla(request, id=None):
 			value_gasto_comun = str(version.propuesta_gasto_comun_set.first().valor)+' '+str(version.propuesta_gasto_comun_set.first().moneda)
 
 		head.append({'data':version.id, 'title': version.creado_en.strftime('%d/%m/%Y %H:%M')})
-		numero.append({'data':version.id, 'value': version.numero})
-		fecha_inicio.append({'data':version.id, 'value': version.fecha_inicio})
-		fecha_termino.append({'data':version.id, 'value': version.fecha_termino})
-		arriendo_minimo.append({'data':version.id, 'value': value_arriendo_minimo})
-		arriendo_variable.append({'data':version.id, 'value': value_arriendo_variable})
-		arriendo_bodega.append({'data':version.id, 'value': value_arriendo_bodega})
-		cuota_incorporacion.append({'data':version.id, 'value': value_cuota_incorporacion})
-		fondo_promocion.append({'data':version.id, 'value': value_fondo_promocion})
-		gasto_comun.append({'data':version.id, 'value': value_gasto_comun})
+		# datos informacion
+		numero.append({'data':version.id, 'value': version.numero, 'type': 'informacion'})
+		# datos periodo
+		fecha_contrato.append({'data':version.id, 'value': version.fecha_contrato.strftime('%d/%m/%Y') if version.fecha_contrato is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		fecha_inicio.append({'data':version.id, 'value': version.fecha_inicio.strftime('%d/%m/%Y') if version.fecha_inicio is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		fecha_termino.append({'data':version.id, 'value': version.fecha_termino.strftime('%d/%m/%Y') if version.fecha_termino is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		fecha_inicio_renta.append({'data':version.id, 'value': version.fecha_inicio_renta.strftime('%d/%m/%Y') if version.fecha_inicio_renta is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		fecha_entrega.append({'data':version.id, 'value': version.fecha_entrega.strftime('%d/%m/%Y') if version.fecha_entrega is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		fecha_habilitacion.append({'data':version.id, 'value': version.fecha_habilitacion.strftime('%d/%m/%Y') if version.fecha_habilitacion is not None else '', 'type': 'periodo'})
+		fecha_renovacion.append({'data':version.id, 'value': version.fecha_renovacion.strftime('%d/%m/%Y') if version.fecha_renovacion is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		meses_contrato.append({'data':version.id, 'value': version.meses_contrato if version.meses_contrato is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		meses_aviso_comercial.append({'data':version.id, 'value': version.meses_aviso_comercial if version.meses_aviso_comercial is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		meses_remodelacion.append({'data':version.id, 'value': version.meses_remodelacion if version.meses_remodelacion is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		# datos conceptos
+		arriendo_minimo.append({'data':version.id, 'value': value_arriendo_minimo, 'type': 'concepto'})
+		arriendo_variable.append({'data':version.id, 'value': value_arriendo_variable, 'type': 'concepto'})
+		arriendo_bodega.append({'data':version.id, 'value': value_arriendo_bodega, 'type': 'concepto'})
+		cuota_incorporacion.append({'data':version.id, 'value': value_cuota_incorporacion, 'type': 'concepto'})
+		fondo_promocion.append({'data':version.id, 'value': value_fondo_promocion, 'type': 'concepto'})
+		gasto_comun.append({'data':version.id, 'value': value_gasto_comun, 'type': 'concepto'})
 
+	# datos informacion
 	body.append(numero)
+	# datos periodo
+	body.append(fecha_contrato)
 	body.append(fecha_inicio)
 	body.append(fecha_termino)
+	body.append(fecha_inicio_renta)
+	body.append(fecha_entrega)
+	body.append(fecha_habilitacion)
+	body.append(fecha_renovacion)
+	body.append(meses_contrato)
+	body.append(meses_aviso_comercial)
+	body.append(meses_remodelacion)
+	# datos conceptos
 	body.append(arriendo_minimo)
 	body.append(arriendo_variable)
 	body.append(arriendo_bodega)

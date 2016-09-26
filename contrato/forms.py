@@ -488,14 +488,13 @@ class FondoPromocionForm(forms.ModelForm):
 # propuesta
 class PropuestaForm(forms.ModelForm):
 
-	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
-	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
-	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
-	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
-	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
-	fecha_remodelacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
-	fecha_plazo			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'})
-	fecha_aviso			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'}, label='Fecha aviso comercial')
+	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'}, label='Fecha de Contrato')
+	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'}, label='Fecha de Inicio de Contrato')
+	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'}, label='Fecha de Término de Contrato')
+	fecha_inicio_renta	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'}, label='Fecha de Incio de Renta')
+	fecha_entrega		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'}, label='Fecha de Entrega Local')
+	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'}, label='Fecha de Habilitación')
+	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False, error_messages={'invalid': 'campo invalido'}, label='Fecha de Renovación')
 
 	def __init__(self, *args, **kwargs):
 
@@ -519,47 +518,67 @@ class PropuestaForm(forms.ModelForm):
 		exclude = ['creado_en', 'visible', 'empresa', 'propuesta']
 
 		widgets = {
+			'numero'				: forms.NumberInput(attrs={'class': 'form-control'}),
+			'nombre_local'			: forms.TextInput(attrs={'class': 'form-control'}),
+			'destino_comercial'		: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
+			'meses_contrato'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'meses_aviso_comercial' : forms.NumberInput(attrs={'class': 'form-control'}),
+			'meses_remodelacion' 	: forms.NumberInput(attrs={'class': 'form-control'}),
 			'arriendo_minimo'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'arriendo_minimo'}),
 			'arriendo_variable'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'arriendo_variable'}),
 			'arriendo_bodega'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'arriendo_bodega'}),
 			'cuota_incorporacion'	: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'cuota_incorporacion'}),
 			'fondo_promocion'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'fondo_promocion'}),
 			'gasto_comun'			: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'gasto_comun'}),
+			'tipo' 					: forms.Select(attrs={'class': 'form-control'}),
+			'cliente'				: forms.Select(attrs={'class': 'form-control'}),
+			'locales'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			'conceptos'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+		}
 
-			'numero'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			'meses'				: forms.NumberInput(attrs={'class': 'form-control'}),
-			'dias_salida'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'nombre_local'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'destino_comercial'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
-			'tipo' 				: forms.Select(attrs={'class': 'form-control'}),
-			'cliente'			: forms.Select(attrs={'class': 'form-control'}),
-			'locales'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
-			'conceptos'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+		labels = {
+			'numero'				: 'Número de Contrato',
+			'nombre_local'			: 'Marca Comercial',
+			'destino_comercial'		: 'Destino Comercial',
+			'meses_contrato'		: 'Meses de Arriendo',
+			'meses_aviso_comercial'	: 'Meses Aviso Comercial',
+			'meses_remodelacion'	: 'Meses de Remodelacion',
+			'arriendo_minimo'		: 'Concepto Arriendo Mínimo',
+			'arriendo_variable'		: 'Concepto Arriendo Variable',
+			'arriendo_bodega'		: 'Concepto Arriendo Bodega',
+			'cuota_incorporacion'	: 'Concepto Cuota de Incorporación',
+			'fondo_promocion'		: 'Concepto Fondo de Promoción',
+			'gasto_comun'			: 'Concepto Gasto Común',
+			'tipo'					: 'Tipo de Contrato',
+			'cliente'				: 'Cliente',
+			'locales'				: 'Locales',
+		}
+
+		help_texts = {
+			'numero'				: 'Número de Contrato',
+			'nombre_local'			: 'Marca Comercial',
+			'destino_comercial'		: 'Destino Comercial',
+			'meses_contrato'		: 'Meses de Arriendo',
+			'meses_aviso_comercial'	: 'Meses Aviso Comercial',
+			'meses_remodelacion'	: 'Meses de Remodelacion',
+			'arriendo_minimo'		: 'Concepto Arriendo Mínimo',
+			'arriendo_variable'		: 'Concepto Arriendo Variable',
+			'arriendo_bodega'		: 'Concepto Arriendo Bodega',
+			'cuota_incorporacion'	: 'Concepto Cuota de Incorporación',
+			'fondo_promocion'		: 'Concepto Fondo de Promoción',
+			'gasto_comun'			: 'Concepto Gasto Común',
+			'tipo'					: 'Tipo de Contrato',
+			'cliente'				: 'Cliente',
+			'locales'				: 'Locales',
 		}
 
 		error_messages = {
 			'numero'			: {'required': 'campo requerido', 'invalid': 'campo invalido'},
 			'nombre_local'		: {'required': 'campo requerido'},
-			'destino_comercial'	: {'required': 'campo requerido'},
-			'meses'				: {'required': 'campo requerido'},
-			'dias_salida'		: {'required': 'campo requerido'},
 			'tipo'				: {'required': 'campo requerido'},
 			'cliente'			: {'required': 'campo requerido'},
 			'locales'			: {'required': 'campo requerido'},
 			'conceptos'			: {'required': 'campo requerido'},
-		}
-
-		labels = {
-			'numero'			: 'Nº Contrato',
-			'nombre_local'		: 'Marca Comercial',
-			'fecha_renovacion'	: 'Fecha Renovación',
-			'tipo' 				: 'Tipo de Contrato',
-		}
-
-		help_texts = {
-			'numero'			: 'numero',
-			'nombre_local' 		: 'nombre local',
-			'destino_comercial' : 'Destino Comercial',
 		}
 
 class FormPropuestaArriendoMinimo(forms.ModelForm):
@@ -581,12 +600,12 @@ class FormPropuestaArriendoMinimo(forms.ModelForm):
 		}
 
 		labels = {
-			'metro_cuadrado' 	: 'Por m²',
-			'reajuste' 			: 'c/reajuste',
+			'metro_cuadrado' 	: 'Valor x m²',
+			'reajuste' 			: 'Con Reajuste',
 		}
 
 		help_texts = {
-			'metro_cuadrado' 	: 'Por Metros Cuadrados',
+			'metro_cuadrado' 	: 'Valor x m²',
 			'reajuste' 			: 'Con Reajuste',
 		}
 
@@ -611,15 +630,13 @@ class FormPropuestaArriendoBodega(forms.ModelForm):
 		exclude = ['visible', 'creado_en', 'propuesta']
 
 		widgets = {
-			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
+			'metros' 			: forms.NumberInput(attrs={'class': 'form-control field-required', 'disabled':'disabled'}),
+			'metro_cuadrado' 	: forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
 		}
 
 		labels = {
-			'metro_cuadrado' : 'Por Metros Cuadrados',
-		}
-
-		help_texts = {
-			'metro_cuadrado' : 'Por Metros Cuadrados',
+			'metros' 			: 'Total de m²',
+			'metro_cuadrado' 	: 'Valor x m²',
 		}
 		
 
@@ -638,11 +655,11 @@ class FormPropuestaCuotaIncorporacion(forms.ModelForm):
 		}
 
 		labels = {
-			'metro_cuadrado' : 'Por Metros Cuadrados',
+			'metro_cuadrado' : 'Valor x m²',
 		}
 
 		help_texts = {
-			'metro_cuadrado' : 'Por Metros Cuadrados',
+			'metro_cuadrado' : 'Valor x m²',
 		}
 
 class FormPropuestaFondoPromocion(forms.ModelForm):
@@ -670,15 +687,12 @@ class FormPropuestaGastoComun(forms.ModelForm):
 		}
 
 		labels = {
-			'metro_cuadrado' : 'Por Metros Cuadrados',
+			'metro_cuadrado' : 'Valor x m²',
 		}
 
 		help_texts = {
-			'metro_cuadrado' : 'Por Metros Cuadrados',
+			'metro_cuadrado' : 'Valor x m²',
 		}
-
-
-
 
 
 

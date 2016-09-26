@@ -35,7 +35,7 @@ class UserProfile(models.Model):
 	# relaciones
 	user 	= models.OneToOneField(User)
 	empresa = models.ForeignKey(Empresa)
-	tipo 	= models.ForeignKey(UserType)
+	tipo 	= models.ForeignKey(UserType, blank=True, null=True)
 	cliente = models.ForeignKey(Cliente, blank=True, null=True)
 
 	def __str__(self):
