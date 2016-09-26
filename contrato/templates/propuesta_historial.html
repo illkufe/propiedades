@@ -8,9 +8,39 @@
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>Historial de Propuestas</h5>
+					<h5>Historial de Propuesta</h5>
 				</div>
 				<div class="ibox-content">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="m-b-md">
+								<a href="#" class="btn btn-white btn-xs pull-right">Editar Propuesta</a>
+								<h2>Propuesta con Falabella S.A</h2>
+							</div>
+						</div>
+						
+						<div class="col-lg-5">
+							<dl class="dl-horizontal">
+								<dt>Creado por:</dt><dd>Juan Mieres</dd>
+								<dt>Cliente:</dt><dd><a href="#" class="text-navy">Falabella S.A</a></dd>
+								<dt>Marca Comercial:</dt><dd><a href="#" class="text-navy">Falabella S.A</a></dd>
+								<dt>Última Actualización:</dt><dd>16.08.2014 12:15:57</dd>
+								<dt>Creada:</dt><dd>10.07.2014 23:36:57</dd>
+							</dl>
+						</div>
+						<div class="col-lg-7" id="cluster_info">
+							<dl class="dl-horizontal">
+								<dt>Tipo:</dt> <dd><span class="label label-info">Módulo</span></dd>
+								<br>
+								<dt>Destino Comercial:</dt>
+								<dd>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+									tempor incididunt ut labore et dolore magna aliqua.
+								</dd>
+							</dl>
+						</div>
+					</div>
+
 					<div class="table-responsive">
 						<table id="tabla-versiones" class="table table-striped table-bordered table-hover" style="width:100%">
 						</table>
@@ -21,6 +51,25 @@
 	</div>
 </div>
 
+<style>
+
+table#tabla-versiones thead tr th{
+	text-align: right;
+}
+
+table#tabla-versiones thead tr th:first-child{
+	text-align: left;
+}
+
+table#tabla-versiones tbody tr td{
+	text-align: right;
+}
+
+table#tabla-versiones tbody tr td:first-child{
+	text-align: left;
+}
+</style>
+
 {% endblock section %}
 
 {% block scripts %}
@@ -29,10 +78,22 @@
 var tabla_versiones;
 
 $(document).ready(function(){
+	cargar_informacion_version()
 	cargar_tabla_versiones()
 });
 
 
+function cargar_informacion_version(){
+
+	$.ajax({
+		url: '/get/propuestas-contrato/{{propuesta_id}}',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+			version = data[0].versiones[0]
+		}
+	})
+}
 
 function cargar_tabla_versiones(){
 
@@ -43,6 +104,8 @@ function cargar_tabla_versiones(){
 		success: function(data){
 			load_tabla_versiones(data.head)
 			data_tabla_versiones(data.body)
+			$('#tabla-versiones thead tr th').last().html('')
+			$('#tabla-versiones thead tr th').last().append('<span class="label label-success">versión actual</span>')
 		}
 	})
 }
@@ -59,7 +122,8 @@ function load_tabla_versiones(versiones){
 	var columns = [
 	{
 		'data'		: 'item',
-		'title'		: '<p style="margin-bottom:0px;text-align:center;"><span class="badge">item</span></p>',
+		'title'		: 'ITEM',
+		'width'		: '180',
 	}];
 
 	var columnas = []
@@ -69,7 +133,7 @@ function load_tabla_versiones(versiones){
 		columna = {}
 
 		columna.data 	= versiones[i].data
-		columna.title 	= '<div class="text-center">'+versiones[i].title+'</div>'
+		columna.title 	= versiones[i].title
 		columns.push(columna)
 	};
 
@@ -80,20 +144,29 @@ function data_tabla_versiones(versiones){
 
 	tabla_versiones.clear().draw();
 
-	rows = [];
-
 	for (var i = 0; i < versiones.length; i++) {
 
 		row = {}
 
 		for (var j = 0; j < versiones[i].length; j++) {
 			row[versiones[i][j].data] = versiones[i][j].value
+			var tipo = versiones[i][j].type
 		};
 
-		rows.push(row)
-	};
+		if (tipo == 'informacion') {
+			var clase_tr = 'success';
+		}else if(tipo == 'periodo'){
+			var clase_tr = 'info';
+		}else if(tipo == 'concepto'){
+			var clase_tr = 'warning';
+		}else{
+			var clase_tr = 'active';
+		}
 
-	tabla_versiones.rows.add(rows).draw();
+		// var clase_tr = '';
+
+		tabla_versiones.row.add(row).draw().nodes().to$().addClass(clase_tr);
+	};
 }
 
 

@@ -34,6 +34,7 @@
 										<a class="btn btn-config btn-bitbucket" onclick="propuesta_ver_versiones({{item.propuesta.id}})"><i class="fa fa-history"></i></a>
 										<a class="btn btn-send btn-bitbucket" data-toggle="modal" data-target="#m-propuesta-enviar-correo"><i class="fa fa-paper-plane"></i></a>
 										<a class="btn btn-view btn-bitbucket" href='{% url "propuesta_historial" item.propuesta.id %}'><i class="fa fa-clock-o"></i></a>
+										<!-- {falta: porner la opcion de finalizar propuesta y crear un contrato con las condiciones de la ultima version} -->
 									</td>
 								</tr>
 								{% endfor %}

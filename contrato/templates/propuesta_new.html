@@ -145,19 +145,49 @@
 									</div>
 								</div>
 
-								<div class="form-group col-sm-2">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.meses.help_text }}" ></i>
-									{{ form.meses.label_tag }}
-									{{ form.meses }}
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.meses_contrato.help_text }}" ></i>
+									{{ form.meses_contrato.label_tag }}
+									{{ form.meses_contrato }}
 									<div class="container-error">
-										{{ form.meses.errors|striptags }}
+										{{ form.meses_contrato.errors|striptags }}
 									</div>
 								</div>
 
-								<div class="form-group col-sm-3 date" id="fecha_habilitacion">
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_inicio_renta.help_text }}" ></i>
+									{{ form.fecha_inicio_renta.label_tag }}
+									<div class="input-group">
+										{{ form.fecha_inicio_renta }}
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+
+									<div class="container-error">
+										{{ form.fecha_inicio_renta.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_entrega.help_text }}" ></i>
+									{{ form.fecha_entrega.label_tag }}
+									<div class="input-group">
+										{{ form.fecha_entrega }}
+										<span class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+
+									<div class="container-error">
+										{{ form.fecha_entrega.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-3">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_habilitacion.help_text }}" ></i>
 									{{ form.fecha_habilitacion.label_tag }}
-									<div class="input-group date">
+									<div class="input-group">
 										{{ form.fecha_habilitacion }}
 										<span class="input-group-addon">
 											<i class="fa fa-calendar"></i>
@@ -169,10 +199,10 @@
 									</div>
 								</div>
 
-								<div class="form-group col-sm-3 date" id="data_2">
+								<div class="form-group col-sm-3">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_renovacion.help_text }}" ></i>
 									{{ form.fecha_renovacion.label_tag }}
-									<div class="input-group date">
+									<div class="input-group">
 										{{ form.fecha_renovacion }}
 										<span class="input-group-addon">
 											<i class="fa fa-calendar"></i>
@@ -183,54 +213,21 @@
 									</div>
 								</div>
 
-								<div class="form-group col-sm-3 date" id="data_2">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_remodelacion.help_text }}" ></i>
-									{{ form.fecha_remodelacion.label_tag }}
-									<div class="input-group date">
-										{{ form.fecha_remodelacion }}
-										<span class="input-group-addon">
-											<i class="fa fa-calendar"></i>
-										</span>
-									</div>
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.meses_aviso_comercial.help_text }}" ></i>
+									{{ form.meses_aviso_comercial.label_tag }}
+									{{ form.meses_aviso_comercial }}
 									<div class="container-error">
-										{{ form.fecha_remodelacion.errors|striptags }}
+										{{ form.meses_aviso_comercial.errors|striptags }}
 									</div>
 								</div>
 
-								<div class="form-group col-sm-3 date" id="data_2">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_aviso.help_text }}" ></i>
-									{{ form.fecha_aviso.label_tag }}
-									<div class="input-group date">
-										{{ form.fecha_aviso }}
-										<span class="input-group-addon">
-											<i class="fa fa-calendar"></i>
-										</span>
-									</div>
+								<div class="form-group col-sm-3">
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.meses_remodelacion.help_text }}" ></i>
+									{{ form.meses_remodelacion.label_tag }}
+									{{ form.meses_remodelacion }}
 									<div class="container-error">
-										{{ form.fecha_aviso.errors|striptags }}
-									</div>
-								</div>
-
-								<div class="form-group col-sm-3 date" id="data_2">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_plazo.help_text }}" ></i>
-									{{ form.fecha_plazo.label_tag }}
-									<div class="input-group date">
-										{{ form.fecha_plazo }}
-										<span class="input-group-addon">
-											<i class="fa fa-calendar"></i>
-										</span>
-									</div>
-									<div class="container-error">
-										{{ form.fecha_plazo.errors|striptags }}
-									</div>
-								</div>
-
-								<div class="form-group col-sm-2">
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.dias_salida.help_text }}" ></i>
-									{{ form.dias_salida.label_tag }}
-									{{ form.dias_salida }}
-									<div class="container-error">
-										{{ form.dias_salida.errors|striptags }}
+										{{ form.meses_remodelacion.errors|striptags }}
 									</div>
 								</div>
 							</div>
@@ -238,7 +235,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<div class="checkbox checkbox-primary">
+						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.arriendo_minimo }}
 							<label for="checkbox2">
 								<h5>
@@ -249,7 +246,7 @@
 						</div>
 					</div>
 
-					<div class="ibox-content">
+					<div class="ibox-content form_arriendo_minimo">
 						<div class="row">
 							<div class="form-group col-sm-2">
 								{{ form_arriendo_minimo.valor.label_tag }}
@@ -310,7 +307,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<div class="checkbox checkbox-primary">
+						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.arriendo_variable }}
 							<label for="checkbox2">
 								<h5>
@@ -321,7 +318,7 @@
 						</div>
 					</div>
 
-					<div class="ibox-content">
+					<div class="ibox-content form_arriendo_variable">
 						<div class="row">
 							<div class="form-group col-sm-2">
 								{{ form_arriendo_variable.valor.label_tag }}
@@ -342,7 +339,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<div class="checkbox checkbox-primary">
+						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.arriendo_bodega }}
 							<label for="checkbox2">
 								<h5>
@@ -353,8 +350,15 @@
 						</div>
 					</div>
 
-					<div class="ibox-content">
+					<div class="ibox-content form_arriendo_bodega">
 						<div class="row">
+							<div class="form-group col-sm-2">
+								{{ form_arriendo_bodega.metros.label_tag }}
+								{{ form_arriendo_bodega.metros }}
+								<div class="container-error">
+									{{ form_arriendo_bodega.metros.errors|striptags }}
+								</div>
+							</div>
 							<div class="form-group col-sm-2">
 								{{ form_arriendo_bodega.valor.label_tag }}
 								{{ form_arriendo_bodega.valor }}
@@ -382,7 +386,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<div class="checkbox checkbox-primary">
+						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.cuota_incorporacion }}
 							<label for="checkbox2">
 								<h5>
@@ -393,7 +397,7 @@
 						</div>
 					</div>
 
-					<div class="ibox-content">
+					<div class="ibox-content form_cuota_incorporacion">
 						<div class="row">
 							<div class="form-group col-sm-2">
 								{{ form_cuota_incorporacion.valor.label_tag }}
@@ -422,7 +426,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<div class="checkbox checkbox-primary">
+						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.fondo_promocion }}
 							<label for="checkbox2">
 								<h5>
@@ -433,7 +437,7 @@
 						</div>
 					</div>
 
-					<div class="ibox-content">
+					<div class="ibox-content form_fondo_promocion">
 						<div class="row">
 							<div class="form-group col-sm-2">
 								{{ form_fondo_promocion.valor.label_tag }}
@@ -454,7 +458,7 @@
 					</div>
 
 					<div class="ibox-title">
-						<div class="checkbox checkbox-primary">
+						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.gasto_comun }}
 							<label for="checkbox2">
 								<h5>
@@ -465,7 +469,7 @@
 						</div>
 					</div>
 
-					<div class="ibox-content">
+					<div class="ibox-content form_gasto_comun">
 						<div class="row">
 							<div class="form-group col-sm-2">
 								{{ form_gasto_comun.valor.label_tag }}
@@ -531,6 +535,7 @@ function initialize(){
 		else{
 			$(".ibox-content [name^="+concepto+"]").attr('disabled', true)
 			$(".ibox-content [name^="+concepto+"]").val('')
+			$(".form_"+concepto).find('.container-error').html('')
 		}
 	})
 

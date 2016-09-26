@@ -144,20 +144,23 @@ class Propuesta_Contrato(models.Model):
 class Propuesta_Version(models.Model):
 
 	# atributos (generales)
-	numero 				= models.IntegerField()
-	nombre_local 		= models.CharField(max_length=250)
-	fecha_inicio 		= models.DateField(null=True, blank=True)
-	fecha_termino 		= models.DateField(null=True, blank=True)
-	meses 				= models.IntegerField(null=True, blank=True)
-	fecha_habilitacion 	= models.DateField(null=True, blank=True)
-	fecha_activacion 	= models.DateField(null=True, blank=True)
-	fecha_renovacion 	= models.DateField(null=True, blank=True)
-	fecha_remodelacion 	= models.DateField(null=True, blank=True)
-	fecha_aviso 		= models.DateField(null=True, blank=True)
-	fecha_plazo 		= models.DateField(null=True, blank=True)
-	dias_salida			= models.IntegerField(null=True, blank=True)
-	destino_comercial 	= models.TextField(blank=True)
+	numero 					= models.IntegerField()
+	nombre_local 			= models.CharField(max_length=250)
+	destino_comercial 		= models.TextField(blank=True)
 
+	# atributos (periodo)
+	fecha_contrato 			= models.DateField(null=True, blank=True)
+	fecha_inicio 			= models.DateField(null=True, blank=True)
+	fecha_termino 			= models.DateField(null=True, blank=True)
+	meses_contrato 			= models.IntegerField(null=True, blank=True)
+	fecha_inicio_renta 		= models.DateField(null=True, blank=True)
+	fecha_entrega 			= models.DateField(null=True, blank=True)
+	fecha_habilitacion 		= models.DateField(null=True, blank=True)
+	fecha_renovacion 		= models.DateField(null=True, blank=True)
+	meses_aviso_comercial	= models.IntegerField(null=True, blank=True)
+	meses_remodelacion 		= models.IntegerField(null=True, blank=True)
+
+	# atributos (conceptos)
 	arriendo_minimo 	= models.BooleanField(default=False)
 	arriendo_variable 	= models.BooleanField(default=False)
 	arriendo_bodega 	= models.BooleanField(default=False)
@@ -222,6 +225,7 @@ class Propuesta_Arriendo_Variable(models.Model):
 class Propuesta_Arriendo_Bodega(models.Model):
 
 	# atributos (generales)
+	metros 			= models.FloatField(null=True, blank=True)
 	valor 			= models.FloatField(null=True, blank=True)
 	metro_cuadrado 	= models.BooleanField(default=False)
 

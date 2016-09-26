@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    
+    <style>
+
+    table{
+        font-size: 12px;
+    }
+
+    table td{
+        padding: 2px 6px !important;
+        border: 1px solid #000 !important;;
+    }
+
+    p{
+        font-size: 12px;
+    }
+
+    /* utilities */
+    .page{
+        page-break-after: always;
+        padding-top: 25px;
+        /*width: 816px;
+        padding: 72px; 
+        border: 1px solid;
+        margin-top: 10px;*/
+    }
+
+    .bold{
+        font-weight: bold;
+    }
+
+    .underline{
+        text-decoration: underline;
+    }
+
+    .uppercase{
+        text-transform: uppercase;
+    }
+
+    p.text{
+        line-height: normal;
+    }
+
+    .data{
+        color: #2B80FF;
+        text-decoration: line-through;
+        font-weight: normal !important;
+    }
+
+    .container-title{
+        text-align: center;
+        margin-bottom: 16px;
+    }
+
+    .container-title p{
+        margin: 0;
+        font-weight: bold;
+        line-height: normal;
+    }
+    
+    .container-title p.title{
+        text-decoration: underline;
+    }
+
+    .section{
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .container-signatures{
+        margin-top: 45px;
+        font-size: 12px;
+    }
+
+    .container-signatures .container-lessor,
+    .container-signatures .container-lessee{
+        width: 49.7%;
+        display: inline-block;
+    }
+
+    .container-signatures .container-lessor{
+        text-align: left;
+    }
+
+    .container-signatures .container-lessee{
+        text-align: right;
+    }
+
+    .container-signatures .lessor,
+    .container-signatures .lessee{
+        border-top: 1px solid;
+        padding: 0px 60px;
+        color: #000;
+        text-decoration: none;
+    }
+
+    </style>
+</head>
+<body>
+
+    <div class="page">
+
+        <div class='container-title text-center'>
+            <p class='title'>CONTRATO DE ARRENDAMIENTO</span></p>
+            <p><span class='uppercase'>{{empresa.nombre}}</p>
+            <p>CON</p>
+            <p><span class='uppercase'>{{cliente.razon_social}}</span></p>
+        </div>
+
+
+        <p class="text">
+            En <span>Santiago</span>, <span>República de Chile</span>, a <span>{{contrato.fecha_contrato.day}}</span> de <span> {{contrato.fecha_contrato.month}}</span> de <span>{{contrato.fecha_contrato.year}}</span>, entre por una parte: <span class="bold">A) ARRENDADOR. {{empresa.nombre}}</span>, R.U.T. {{empresa.rut}}, representada por don <span>{{empresa.representante}}</span>, <span>{{empresa.representante_nacionalidad}}</span>, <span>{{empresa.representante_profesion}}</span>, cedula nacional de identificación Nº <span>{{empresa.representante_rut}}</span>, ambos domicilios en la cuidad de <span> {{empresa.cuidad}}, {{empresa.direccion}}, comuna {{empresa.comuna}}</span>,por una parte y en adelante "la Arrendadora"; y por la otra:
+        </p>
+
+        <p class="section">B) ARRENDATARIO</p>
+
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td class="bold" style="width: 30%">Razón Social</td>
+                    <td colspan="3" style="width: 70%">{{cliente.razon_social}}</td>
+                </tr>
+                <tr>
+                    <td class="bold" style="width: 25%">Giro</td>
+                    <td style="width: 30%">{{cliente.giro}}</td>
+                    <td class="bold" style="width: 20%">RUT</td>
+                    <td style="width: 25%">{{cliente.rut}}</td>
+                </tr>
+
+                {% for representante in representantes %}
+                {% if forloop.first %}
+                <tr>
+                    <td class="bold" style="width: 30%">Representante Legal {{forloop.counter}}</td>
+                    <td colspan="3">{{representante.nombre}}</td>
+                </tr>
+                <tr>
+                    <td class="bold" style="width: 30%">RUN {{forloop.counter}}</td>
+                    <td colspan="3">{{representante.rut}}</td>
+                </tr>
+                <tr>
+                    <td class="bold" style="width: 30%">Nacionalidad {{forloop.counter}}</td>
+                    <td colspan="3">{{representante.nacionalidad}}</td>
+                </tr>
+                <tr>
+                    <td class="bold" style="width: 30%">Profesión u Oficio {{forloop.counter}}</td>
+                    <td colspan="3">{{representante.profesion}}</td>
+                </tr>
+                <tr>
+                    <td class="bold" style="width: 30%">Estado Civil {{forloop.counter}}</td>
+                    <td colspan="3">{{representante.estado_civil}}</td>
+                </tr>
+                <tr>
+                    <td class="bold" style="width: 30%">Domicilio {{forloop.counter}}</td>
+                    <td colspan="3">{{representante.domicilio}}</td>
+                </tr>
+
+                {% endif %}
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        <p class="text">
+            Se ha acordado celebrar el siguiente contrato de arrendamiento sobre el inmueble que mas adelante
+            se singulariza, en los términos y condiciones que a continuación se expresa.
+        </p>
+
+        <p class="section">C) CONDICIONES PARTICULARES DE CONTRATACIÓN.</p>
+
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td colspan="2" class="bold" style="width:25%">C.1) Bien dado en arrendamiento</td>
+                    <td colspan="6" style="width:75%">
+                        {% for local in locales %}
+                        {{local.nombre}} del {{local.nivel.nombre}}, {{local.sector.nombre}} del {{local.activo.nombre}}
+                        <br>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="bold" style="width:50%" >C.2) Superficie bruta aproximadamente del local</td>
+                    <td colspan="1" style="width:12.5%">{{metros}} m2</td>
+                    <td colspan="2" class="bold" style="width:25%" >C.2.1) Otras superficies</td>
+                    <td colspan="1" style="width:12.5%">
+                        {% if contrato.bodega == None %}
+                        {{contrato.metros_bodega}}m2
+                        {% else %}
+                        No aplica
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold">C.3) Plazo del contrato</td>
+                    <td colspan="1">{{contrato.meses}} meses</td>
+                    <td colspan="4" class="bold">C.4) Renovación de plazo por períodos de</td>
+                    <td colspan="1"><span>{{renovacion}}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="7" class="bold">C.5) Anticipación del aviso por ambas partes en caso de no desear renovar contrato</td>
+                    <td colspan="1"><span >6 meses</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold">C.6) Arriendo Mínimo Local</td>
+                    <td colspan="2">
+                        <span>{{arriendo_minimo}}</span>
+                    </td>
+                    <td colspan="2" class="bold">C.6.1) Arriendo Mínimo Otras superficies</td>
+                    <td colspan="2">
+                        <span>{{arriendo_bodega}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold">C.7) Arriendo porcentual</td>
+                    <td colspan="6">
+                        <span>
+                            <span>{{arriendo_variable}}</span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="bold">C.8) Reajuste de la renta de arrendamiento</td>
+                    <td colspan="4">
+                        <span>
+                            {% if arriendo != None %}
+                            {{arriendo.valor}} % cada {{arriendo.meses}} meses
+                            {% else %}
+                            No aplica
+                            {% endif %}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold">C.9) Fondo de Promoción</td>
+                    <td colspan="2">
+                        <span>{{fondo_promocion}}</span>
+                    </td>
+                    <td colspan="2" class="bold">C.10) Cuota incorporación al fondo de promoción</td>
+                    <td colspan="2">
+                        <span>{{cuota_incorporacion}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold">C.11) Arriendo mes de Diciembte</td>
+                    <td colspan="6"><span>Doble</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold">C.12) Inicio Renta</td>
+                    <td colspan="6">
+                        <span>
+                            {% if arriendo != None %}
+                            Junto con la apertura del local o a más tardar {{contrato.fecha_habilitacion}}, lo que ocurra primero
+                            {% else %}
+                            No aplica
+                            {% endif %}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold">C.13) Gasto común Local</td>
+                    <td colspan="6">
+                        <span>{{gasto_comun}}</span>
+                    </td>
+                    
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="container-signatures">
+            <div class="container-lessor">
+                <a class="lessor">Arrendador</a>
+            </div>
+
+            <div class="container-lessee">
+                <a class="lessee">Arrendatario</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="page">
+
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <!-- <td colspan="2" class="bold" style="width:25%">C.14) Reajuste gasto común</td>
+                    <td colspan="2" style="width:25%"><span class='data'>-</span></td> -->
+                    <td colspan="2" class="bold" style="width:25%">C.15) Garantía</td>
+                    <td colspan="2" style="width:75%"><span>${{garantias_total}}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold" style="width:25%" >C.16) Destino Comercial</td>
+                    <td colspan="6" style="width:75%">{{contrato.destino_comercial}}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold" style="width:25%" >C.17) Marca Comercial</td>
+                    <td colspan="6" style="width:75%">{{contrato.nombre_local}}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold" style="width:25%" >C.18) Entrega de local</td>
+                    <td colspan="6" style="width:75%"><span>{{contrato.fecha_habilitacion}}</span></td>
+                </tr>
+                <!--
+                <tr>
+                    <td colspan="2" class="bold" style="width:25%">C.19) Renta de Habilitación</td>
+                    <td colspan="2" style="width:25%"><span class='data'>-</span></td>
+                    <td colspan="3" class="bold" style="width:37.5%">C.20) Revisión Arquitectura</td>
+                    <td colspan="1" style="width:12.5%"><span class='data'>-</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bold" style="width:25%" >C.21) Anexos</td>
+                    <td colspan="6" style="width:75%"><span class='data'>-</span></td>
+                </tr> -->
+            </tbody>
+        </table>
+
+        <p class="section underline">PRIMERO. "Bien dado en Arriendo".</p>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+
+        <p class="section underline">SEGUNDO. "Regulación de las Condiciones Particulares de Contratación".</p>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+
+        <p class="section underline">2.1.- "Duración y vigencia del contrato".</p>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+
+        <p class="section underline">2.2.- "Renta de Arrendamiento".</p>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+
+        <div class="container-signatures">
+            <div class="container-lessor">
+                <a class="lessor">Arrendador</a>
+            </div>
+
+            <div class="container-lessee">
+                <a class="lessee">Arrendatario</a>
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+</html>

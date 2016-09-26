@@ -90,7 +90,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lease.wsgi.application'
 
-# Configuración Correo
+# configuracion correo
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'juan.mieres.pruebas@gmail.com'
