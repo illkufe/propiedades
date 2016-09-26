@@ -571,5 +571,23 @@
 	"fields": {
 		"nombre": "Comercial"
 	}
+},
+{
+	"model": "facturacion.motorfacturacion",
+	"pk": 1,
+	"fields": {
+		"nombre": "INET",
+		"descripcion": "Facturación INET",
+		"activo": true
+	}
+},
+{
+	"model": "facturacion.motorfacturacion",
+	"pk": 2,
+	"fields": {
+		"nombre": "IDTE",
+		"descripcion": "Facturación IDTE",
+		"activo": true
+	}
 }
 ]
