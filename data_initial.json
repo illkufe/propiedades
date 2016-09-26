@@ -1,4 +1,596 @@
 [{
+	"model": "conceptos.concepto_tipo",
+	"pk": 1,
+	"fields": {
+		"nombre": "Arriendo Mínimo",
+		"codigo": "ARR-MIN",
+		"template": "arriendo_minimo",
+		"descripcion": "Descripción Arriendo Mínimo",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 2,
+	"fields": {
+		"nombre": "Arriendo Variable",
+		"codigo": "ARR-VAR",
+		"template": "arriendo_variable",
+		"descripcion": "Descripción Arriendo Variable",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 3,
+	"fields": {
+		"nombre": "Gasto Común",
+		"codigo": "GAS-COM",
+		"template": "gasto_comun",
+		"descripcion": "Descripción Gasto Común",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 4,
+	"fields": {
+		"nombre": "Servicios Básicos",
+		"codigo": "SER-BAS",
+		"template": "servicio_basico",
+		"descripcion": "Descripción Servicios Básicos",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 5,
+	"fields": {
+		"nombre": "Cuota de Incorporación",
+		"codigo": "CUO-INC",
+		"template": "cuota_incorporacion",
+		"descripcion": "Descripción Cuota de Incorporación",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 6,
+	"fields": {
+		"nombre": "Fondo de Promoción",
+		"codigo": "FON-PRO",
+		"template": "fondo_promocion",
+		"descripcion": "Descripción Fondo de Promoción",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 7,
+	"fields": {
+		"nombre": "Arriendo Bodega",
+		"codigo": "ARR-BOD",
+		"template": "arriendo_bodega",
+		"descripcion": "Descripción Arriendo Bodega",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 8,
+	"fields": {
+		"nombre": "Servicios Varios",
+		"codigo": "SER-VAR",
+		"template": null,
+		"descripcion": "Descripción Servicios Varios",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "conceptos.concepto_tipo",
+	"pk": 9,
+	"fields": {
+		"nombre": "Multas",
+		"codigo": "MULTAS",
+		"template": null,
+		"descripcion": "Descripción Multas",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 1,
+	"fields": {
+		"nombre": "Baja Tensión 1",
+		"codigo": "BT1",
+		"valor": 1,
+		"descripcion": "Medicion Baja Tensión 1",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 2,
+	"fields": {
+		"nombre": "Baja Tensión 2",
+		"codigo": "BT2",
+		"valor": 1,
+		"descripcion": "Medicion Baja Tensión 2",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 3,
+	"fields": {
+		"nombre": "Baja Tensión 3",
+		"codigo": "BT3",
+		"valor": 1,
+		"descripcion": "Medicion Baja Tensión 3",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 4,
+	"fields": {
+		"nombre": "Baja Tensión 4.1",
+		"codigo": "BT4.1",
+		"valor": 1,
+		"descripcion": "Medicion Baja Tensión 4.1",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 5,
+	"fields": {
+		"nombre": "Baja Tensión 4.2",
+		"codigo": "BT4.2",
+		"valor": 1,
+		"descripcion": "Medicion Baja Tensión 4.2",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 6,
+	"fields": {
+		"nombre": "Baja Tensión 4.3",
+		"codigo": "BT4.3",
+		"valor": 1,
+		"descripcion": "Medicion Baja Tensión 4.3",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 7,
+	"fields": {
+		"nombre": "Alta Tensión 2",
+		"codigo": "AT2",
+		"valor": 1,
+		"descripcion": "Medicion Alta Tensión 2",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 8,
+	"fields": {
+		"nombre": "Alta Tensión 3",
+		"codigo": "AT3",
+		"valor": 1,
+		"descripcion": "Medicion Alta Tensión 3",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 9,
+	"fields": {
+		"nombre": "Alta Tensión 4.1",
+		"codigo": "AT4.1",
+		"valor": 1,
+		"descripcion": "Medicion Alta Tensión 4.1",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 10,
+	"fields": {
+		"nombre": "Alta Tensión 4.2",
+		"codigo": "AT4.2",
+		"valor": 1,
+		"descripcion": "Medicion Alta Tensión 4.2",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.tarifa_electricidad",
+	"pk": 11,
+	"fields": {
+		"nombre": "Alta Tensión 4.3",
+		"codigo": "AT4.3",
+		"valor": 1,
+		"descripcion": "Medicion Alta Tensión 4.3",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+
+{
+	"model": "utilidades.moneda",
+	"pk": 1,
+	"fields": {
+		"nombre": "Dolar EE UU",
+		"abrev": "DOLAR",
+		"simbolo": "$",
+		"descripcion": "Moneda de EE.UU. ",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.moneda",
+	"pk": 2,
+	"fields": {
+		"nombre": "EURO",
+		"abrev": "EURO",
+		"simbolo": "€",
+		"descripcion": "Moneda europea.",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.moneda",
+	"pk": 3,
+	"fields": {
+		"nombre": "UNIDAD DE FOMENTO",
+		"abrev": "UF",
+		"simbolo": "UF",
+		"descripcion": "La unidad de fomento (UF) es una unidad de cuenta usada en Chile, reajustable de acuerdo con la inflación.",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.moneda",
+	"pk": 4,
+	"fields": {
+		"nombre": "UNIDAD TRIBUTARIA",
+		"abrev": "UTM",
+		"simbolo": "UTM",
+		"descripcion": "La unidad tributaria mensual (UTM) es una unidad de cuenta usada en Chile para efectos tributarios y de multas, actualizada según la inflación.",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.moneda",
+	"pk": 5,
+	"fields": {
+		"nombre": "PESO",
+		"abrev": "PESO CHILENO",
+		"simbolo": "PESO CHILENO",
+		"descripcion": "El peso es la moneda de curso legal de Chile. Su código es CLP,3 su número ISO 4217 es 152,3 y su símbolo, común con el de monedas que llevan el mismo nombre, es $.",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.moneda",
+	"pk": 6,
+	"fields": {
+		"nombre": "PORCENTAJE",
+		"abrev": "%",
+		"simbolo": "%",
+		"descripcion": "El peso es la moneda de curso legal de Chile. Su código es CLP,3 su número ISO 4217 es 152,3 y su símbolo, común con el de monedas que llevan el mismo nombre, es $.",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.moneda_historial",
+	"pk": 1,
+	"fields": {
+		"valor": 691.32,
+		"fecha": "2016-01-01 00:00:00",
+		"moneda_id": 1
+	}
+},
+{
+	"model": "utilidades.moneda_historial",
+	"pk": 2,
+	"fields": {
+		"valor": 776.24,
+		"fecha": "2016-01-01 00:00:00",
+		"moneda_id": 2
+	}
+},
+{
+	"model": "utilidades.moneda_historial",
+	"pk": 3,
+	"fields": {
+		"valor": 25962.93,
+		"fecha": "2016-01-01 00:00:00",
+		"moneda_id": 3
+	}
+},
+{
+	"model": "utilidades.moneda_historial",
+	"pk": 4,
+	"fields": {
+		"valor": 45497,
+		"fecha": "2016-01-01 00:00:00",
+		"moneda_id": 4
+	}
+},
+{
+	"model": "utilidades.moneda_historial",
+	"pk": 5,
+	"fields": {
+		"valor": 1,
+		"fecha": "2016-01-01 00:00:00",
+		"moneda_id": 5
+	}
+},
+{
+	"model": "utilidades.moneda_historial",
+	"pk": 6,
+	"fields": {
+		"valor": 1,
+		"fecha": "2016-01-01 00:00:00",
+		"moneda_id": 6
+	}
+},
+{
+	"model": "utilidades.estado_civil",
+	"pk": 1,
+	"fields": {
+		"nombre": "Hijo/Hija",
+		"descripcion": "Descripcion de Hijo/Hija",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.estado_civil",
+	"pk": 2,
+	"fields": {
+		"nombre": "Padre/Madre",
+		"descripcion": "Descripcion de Padre/Madre",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.estado_civil",
+	"pk": 3,
+	"fields": {
+		"nombre": "Soltero/a",
+		"descripcion": "Descripcion de Soltero/a",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.estado_civil",
+	"pk": 4,
+	"fields": {
+		"nombre": "Casado(a)",
+		"descripcion": "Descripcion de Casado(a)",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.estado_civil",
+	"pk": 5,
+	"fields": {
+		"nombre": "Viudo(a)",
+		"descripcion": "Descripcion de Viudo(a)",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.estado_civil",
+	"pk": 6,
+	"fields": {
+		"nombre": "Divorciado(a)",
+		"descripcion": "Descripcion de Divorciado(a)",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "utilidades.estado_civil",
+	"pk": 7,
+	"fields": {
+		"nombre": "Conviviente Civil",
+		"descripcion": "Descripcion de Conviviente Civil",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "contrato.contrato_estado",
+	"pk": 1,
+	"fields": {
+		"nombre": "Borrador",
+		"color": "#FFFFFF",
+		"background": "#00BCD4",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "contrato.contrato_estado",
+	"pk": 2,
+	"fields": {
+		"nombre": "Aprobado",
+		"color": "#FFFFFF",
+		"background": "#009688",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "contrato.contrato_estado",
+	"pk": 3,
+	"fields": {
+		"nombre": "Bloqueado",
+		"color": "#FFFFFF",
+		"background": "#F44336",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "contrato.contrato_estado",
+	"pk": 4,
+	"fields": {
+		"nombre": "Activo",
+		"color": "#FFFFFF",
+		"background": "#66BB6A",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "contrato.contrato_estado",
+	"pk": 5,
+	"fields": {
+		"nombre": "Terminado",
+		"color": "#FFFFFF",
+		"background": "#9E9E9E",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "contrato.contrato_estado",
+	"pk": 6,
+	"fields": {
+		"nombre": "Proceso Renovación",
+		"color": "#FFFFFF",
+		"background": "#CDDC39",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "procesos.factura_estado",
+	"pk": 1,
+	"fields": {
+		"nombre": "Propuesta",
+		"color": "#009688",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "procesos.factura_estado",
+	"pk": 2,
+	"fields": {
+		"nombre": "Enviada",
+		"color": "#2196F3",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "procesos.factura_estado",
+	"pk": 3,
+	"fields": {
+		"nombre": "Error Envio",
+		"color": "#F44336",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "procesos.factura_estado",
+	"pk": 4,
+	"fields": {
+		"nombre": "Aceptada",
+		"color": "#2196F3",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "procesos.factura_estado",
+	"pk": 5,
+	"fields": {
+		"nombre": "Rechazada",
+		"color": "#43A047",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "procesos.factura_estado",
+	"pk": 6,
+	"fields": {
+		"nombre": "Error Inesperado",
+		"color": "#F44336",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "administrador.tipo_clasificacion",
+	"pk": 1,
+	"fields": {
+		"nombre": "Local"
+	}
+},
+{
+	"model": "administrador.tipo_clasificacion",
+	"pk": 2,
+	"fields": {
+		"nombre": "Cliente"
+	}
+},
+{
+	"model": "accounts.usertype",
+	"pk": 1,
+	"fields": {
+		"nombre": "Administrador"
+	}
+},
+{
+	"model": "accounts.usertype",
+	"pk": 2,
+	"fields": {
+		"nombre": "Cliente"
+	}
+},
+{
+	"model": "accounts.usertype",
+	"pk": 3,
+	"fields": {
+		"nombre": "Comercial"
+	}
+},
+{
+	"model": "facturacion.motorfacturacion",
+	"pk": 1,
+	"fields": {
+		"nombre": "INET",
+		"descripcion": "Facturación INET",
+		"activo": true
+	}
+},
+{
+	"model": "facturacion.motorfacturacion",
+	"pk": 2,
+	"fields": {
+		"nombre": "IDTE",
+		"descripcion": "Facturación IDTE",
+		"activo": true
+	}
+},
+{
 	"model": "utilidades.giro", 
 	"pk": 1, 
 	"fields": { 

@@ -69,7 +69,7 @@ class Cliente(models.Model):
 	# relaciones
 	empresa 		= models.ForeignKey(Empresa)
 	giro 			= models.ForeignKey(Giro, null=True, blank=True)
-	clasificaciones = models.ManyToManyField('Clasificacion_Detalle', )
+	clasificaciones = models.ManyToManyField('Clasificacion_Detalle')
 
 	def __str__(self):
 		return self.nombre
@@ -155,7 +155,6 @@ class Tipo_Clasificacion(models.Model):
 	class Meta:
 		verbose_name = "Tipo de Clasificación"
 		verbose_name_plural = "Tipos de Clasificaciones"
-
 
 class Clasificacion(models.Model):
 

@@ -83,7 +83,7 @@ function data_tabla_contratos(){
 	tabla_contratos.clear().draw();
 
 	$.ajax({
-		url: '/contratos',
+		url: '/get/contratos',
 		type: 'get',
 		dataType: 'json',
 		success: function(data){
@@ -92,7 +92,7 @@ function data_tabla_contratos(){
 
 			for (var i = 0; i < data.length; i++) {
 
-				if (data[i].fecha_activacion == null) {
+				if (data[i].estado.id == 1) {
 
 					var template = ''
 					template += '<div class="text-center">'
@@ -132,7 +132,7 @@ function activar_contrato(id){
 		closeOnConfirm: true 
 	}).then(function() {
 		$.ajax({
-			url: '/contratos/'+id+'/activar',
+			url: '/funcion/activar/contrato/'+id+'',
 			type: 'POST',
 			data: {csrfmiddlewaretoken: getCookie('csrftoken')},
 			success: function(data){

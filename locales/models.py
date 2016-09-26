@@ -12,7 +12,7 @@ class Local_Tipo(models.Model):
 	# atributos (generales)
 	nombre  	= models.CharField(max_length=250)
 	descripcion = models.TextField(blank=True)
-	prorrateo 	= models.BooleanField(default=False)
+	prorrateo 	= models.BooleanField(default=False) #{falta: sacar campo}
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)

@@ -228,7 +228,7 @@ class CONEXION_PARAMETRO(View):
 
 	def get(self, request, id=None):
 
-		self.object_list = request.user.userprofile.empresa.conexion_set.all()
+		self.object_list = request.user.userprofile.empresa.conexion
 
 		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
 
@@ -292,18 +292,17 @@ class CONEXION_PARAMETRO(View):
 
 		data = list()
 
-		for item in self.object_list:
+		# for item in self.object_list:
 
-			data.append({
-				'id' 		: item.id,
-				'nombre' 	: item.nombre,
-				'codigo' 	: item.codigo,
-				'eliminar' 	: item.eliminar,
-				'codigo_1' 	: item.codigo_1,
-				'codigo_2' 	: item.codigo_2,
-				'codigo_3' 	: item.codigo_3,
-				'codigo_4' 	: item.codigo_4,
-				})
+		data.append({
+			'id' 					: self.object_list.id,
+			'cod_condicion_venta' 	: self.object_list.cod_condicion_venta,
+			'cod_bodega_salida' 	: self.object_list.cod_bodega_salida,
+			'cod_vendedor' 			: self.object_list.cod_vendedor,
+			'cod_sucursal' 			: self.object_list.cod_sucursal,
+			'cod_lista_precio' 		: self.object_list.cod_lista_precio,
+
+			})
 
 		return JsonResponse(data, safe=False)
 
@@ -464,7 +463,6 @@ class ClasificacionList(ListView):
 
         return queryset
 
-
 class ClasificacionMixin(object):
     template_name = 'clasificacion_new.html'
     form_class = ClasificacionForm
@@ -500,7 +498,6 @@ class ClasificacionMixin(object):
         else:
             return response
 
-
 class ClasificacionNew(ClasificacionMixin, FormView):
     def get_context_data(self, **kwargs):
 
@@ -517,7 +514,6 @@ class ClasificacionNew(ClasificacionMixin, FormView):
             context['clasificacion_detalle_form'] = ClasificacionFormSet()
 
         return context
-
 
 class ClasificacionUpdate(ClasificacionMixin, UpdateView):
     model = Clasificacion
@@ -540,7 +536,6 @@ class ClasificacionUpdate(ClasificacionMixin, UpdateView):
             context['clasificacion_detalle_form'] = ClasificacionFormSet(instance=self.object)
 
         return context
-
 
 class ClasificacionDelete(DeleteView):
     model = Clasificacion

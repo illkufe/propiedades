@@ -1178,7 +1178,9 @@ class ContratosInactivosList(ListView):
 
 	def get_queryset(self):
 
-		queryset 	= Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True, estado__in=[1])
+		queryset = Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True, estado__in=[1])
+
+		print(queryset)
 
 		for item in queryset:
 			item.fecha_inicio  	= item.fecha_inicio.strftime('%d/%m/%Y')
