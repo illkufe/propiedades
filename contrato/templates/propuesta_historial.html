@@ -11,39 +11,9 @@
 					<h5>Historial de Propuesta</h5>
 				</div>
 				<div class="ibox-content">
-					<div class="row">
-						<div class="col-lg-12">
-							<div class="m-b-md">
-								<a href="#" class="btn btn-white btn-xs pull-right">Editar Propuesta</a>
-								<h2>Propuesta con Falabella S.A</h2>
-							</div>
-						</div>
-						
-						<div class="col-lg-5">
-							<dl class="dl-horizontal">
-								<dt>Creado por:</dt><dd>Juan Mieres</dd>
-								<dt>Cliente:</dt><dd><a href="#" class="text-navy">Falabella S.A</a></dd>
-								<dt>Marca Comercial:</dt><dd><a href="#" class="text-navy">Falabella S.A</a></dd>
-								<dt>Última Actualización:</dt><dd>16.08.2014 12:15:57</dd>
-								<dt>Creada:</dt><dd>10.07.2014 23:36:57</dd>
-							</dl>
-						</div>
-						<div class="col-lg-7" id="cluster_info">
-							<dl class="dl-horizontal">
-								<dt>Tipo:</dt> <dd><span class="label label-info">Módulo</span></dd>
-								<br>
-								<dt>Destino Comercial:</dt>
-								<dd>
-									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-									tempor incididunt ut labore et dolore magna aliqua.
-								</dd>
-							</dl>
-						</div>
-					</div>
-
+					<div class="row informacion-version"></div>
 					<div class="table-responsive">
-						<table id="tabla-versiones" class="table table-striped table-bordered table-hover" style="width:100%">
-						</table>
+						<table id="tabla-versiones" class="table table-striped table-bordered table-hover" style="width:100%"></table>
 					</div>
 				</div>
 			</div>
@@ -90,7 +60,20 @@ function cargar_informacion_version(){
 		type: 'get',
 		dataType: 'json',
 		success: function(data){
-			version = data[0].versiones[0]
+
+			var version = {}
+
+			version.id 					= data[0].versiones[0].id
+			version.creador 			= data[0].user.first_name+' '+data[0].user.last_name
+			version.fecha_creacion 		= data[0].creado_en
+			version.fecha_actualizacion = data[0].versiones[0].creado_en
+			version.marca_comercial		= data[0].versiones[0].nombre_local
+			version.destino_comercial	= data[0].versiones[0].destino_comercial == '' ? '...' : data[0].versiones[0].destino_comercial,
+			version.cliente 			= data[0].versiones[0].cliente.nombre
+			version.tipo 				= data[0].versiones[0].tipo.nombre
+
+			$('.informacion-version').html('')
+			$('.informacion-version').append(template_informacion_version(version))
 		}
 	})
 }
@@ -163,12 +146,52 @@ function data_tabla_versiones(versiones){
 			var clase_tr = 'active';
 		}
 
-		// var clase_tr = '';
-
 		tabla_versiones.row.add(row).draw().nodes().to$().addClass(clase_tr);
 	};
 }
 
+
+function template_informacion_version(version){
+
+	var template = '';
+
+	template += '<div class="col-lg-12">'
+	template += '<div class="m-b-md">'
+	template += '<a href="/propuesta/update/@id" class="btn btn-white btn-xs pull-right" style="margin-left:10px"><i class="fa fa-edit"></i> Editar Propuesta</a>'
+	template += '<a href="/funcion/propuesta/pdf/@id" class="btn btn-white btn-xs pull-right"><i class="fa fa-download"></i> Descargar Propuesta</a>'
+	template += '<h2>Propuesta con @marca_comercial</h2>'
+	template += '</div>'
+	template += '</div>'
+	template += '<div class="col-lg-5">'
+	template += '<dl class="dl-horizontal">'
+	template += '<dt>Creado por:</dt><dd>@creador</dd>'
+	template += '<dt>Cliente:</dt><dd><a class="text-navy">@cliente</a></dd>'
+	template += '<dt>Marca Comercial:</dt><dd><a class="text-navy">@marca_comercial</a></dd>'
+	template += '<dt>Última Actualización:</dt><dd>@fecha_actualizacion</dd>'
+	template += '<dt>Creada:</dt><dd>@fecha_creacion</dd>'
+	template += '</dl>'
+	template += '</div>'
+	template += '<div class="col-lg-7" id="cluster_info">'
+	template += '<dl class="dl-horizontal">'
+	template += '<dt>Tipo:</dt> <dd><span class="label label-info">@tipo</span></dd>'
+	template += '<br>'
+	template += '<dt>Destino Comercial:</dt>'
+	template += '<dd>@destino_comercial</dd>'
+	template += '</dl>'
+	template += '</div>'
+
+	template = template.replace(/@id/g, 					version.id);
+	template = template.replace(/@creador/g, 				version.creador);
+	template = template.replace(/@fecha_creacion/g, 		version.fecha_creacion);
+	template = template.replace(/@fecha_actualizacion/g, 	version.fecha_actualizacion);
+	template = template.replace(/@marca_comercial/g, 		version.marca_comercial);
+	template = template.replace(/@destino_comercial/g, 		version.destino_comercial);
+	template = template.replace(/@cliente/g, 				version.cliente);
+	template = template.replace(/@tipo/g, 					version.tipo);
+
+	return template;
+
+}
 
 </script>
 {% endblock scripts %}

@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% block section %}
+{% load avatar_tags %}
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
@@ -13,9 +14,10 @@
 						<a href='{% url "propuesta_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nueva propuesta</button></a>
 					</div>
 				</div>
+				<!--
 				<div class="ibox-content">
 					<div class="table-responsive">
-						<table id="tabla-propuestas" class="table table-striped table-bordered table-hover" style="width:100%">
+						<table class="table table-striped table-bordered table-hover" style="width:100%">
 							<thead></thead>
 							<tbody>
 								{% for item in object_list %}
@@ -34,11 +36,32 @@
 										<a class="btn btn-config btn-bitbucket" onclick="propuesta_ver_versiones({{item.propuesta.id}})"><i class="fa fa-history"></i></a>
 										<a class="btn btn-send btn-bitbucket" data-toggle="modal" data-target="#m-propuesta-enviar-correo"><i class="fa fa-paper-plane"></i></a>
 										<a class="btn btn-view btn-bitbucket" href='{% url "propuesta_historial" item.propuesta.id %}'><i class="fa fa-clock-o"></i></a>
-										<!-- {falta: porner la opcion de finalizar propuesta y crear un contrato con las condiciones de la ultima version} -->
+										{falta: porner la opcion de finalizar propuesta y crear un contrato con las condiciones de la ultima version}
 									</td>
 								</tr>
 								{% endfor %}
 							</tbody>
+						</table>
+					</div>
+				</div> -->
+				<div class="ibox-content">
+					<div class="row m-b-sm m-t-sm">
+						<div class="col-md-1">
+							<button type="button" id="loading-example-btn" class="btn btn-white btn-sm"><i class="fa fa-refresh"></i> Actualizar</button>
+						</div>
+						<div class="col-md-11">
+							<div class="input-group">
+								<input type="text" placeholder="Buscar Propuesta..." class="input-sm form-control">
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-sm btn-primary"> Aceptar</button>
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="project-list">
+						<table id="tabla-propuestas" class="table table-hover">
+							<tbody></tbody>
 						</table>
 					</div>
 				</div>
@@ -97,16 +120,13 @@
 							</div>
 							<div class="col-sm-9">: 87738991</div>
 						</div>
-
 						<!-- <div class="form-group">
 							<div class="col-xs-12">
 								<ul class="list-unstyled project-files"><li><a href="" style="margin-left:0px; margin-top:10px; display:inline-block;"><i class="fa fa-file"></i> Factura Propuesta.pdf</a></li></ul>
 							</div>
 						</div> -->
 					</div>
-
 					<br>
-
 					<div class="row">
 						<div class="col-xs-12">
 							<div class="summernote"></div>
@@ -123,7 +143,7 @@
 	</div>
 </div>
 
-<!-- Modal -->
+<!-- modal versiones de propuesta -->
 <div class="modal fade" id="m-versiones-propuesta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -132,14 +152,6 @@
 				<h4 class="modal-title" id="myModalLabel">Versiones</h4>
 			</div>
 			<div class="modal-body">
-
-				<div class="text-center">
-					<p style="color:#ff8100; font-size:100px">
-						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-					</p>
-					<p>Error</p>
-				</div>
-				
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">CERRAR</button>
@@ -147,6 +159,14 @@
 		</div>
 	</div>
 </div>
+
+<style>
+
+table#tabla-propuestas tbody img{
+	border-radius: 50%;
+}
+
+</style>
 
 {% endblock section %}
 
@@ -158,7 +178,7 @@ var tabla_propuestas;
 $(document).ready(function(){
 
 	initialize()
-	load_tabla_propuestas()
+	data_tabla_propuestas()
 	propuesta_enviar_correo()
 
 });
@@ -168,51 +188,70 @@ function initialize(){
 	$('.summernote').summernote();
 }
 
-function load_tabla_propuestas(){
+function data_tabla_propuestas(){
 
-	var columns = [
-	{
-		'data': 'id',
-		'visible': false,
-	},
-	{
-		'width': '5%',
-		'data': 'numero',
-		'title': 'Nº',
-	},
-	{
-		'width': '15%',
-		'data': 'cliente',
-		'title': 'Cliente',
-	},
-	{
-		'width': '20%',
-		'data': 'nombre',
-		'title': 'Marca Comercial',
-	},
-	{
-		'width': '15%',
-		'data': 'tipo',
-		'title': 'Tipo',
-	},
-	{
-		'width': '10%',
-		'data': 'fecha_inicio',
-		'title': 'F.inicio',
-	},
-	{
-		'width': '10%',
-		'data': 'fecha_termino',
-		'title': 'F.termino',
-	},
-	{
-		'width': '25%',
-		'data': 'options',
-		'orderable': false,
-		'title': '<div class="text-center">Opciones</div>',
-	}];
+	$.ajax({
+		url: '/get/propuestas-contrato/workflow',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
 
-	tabla_propuestas = load_table('#tabla-propuestas', columns, {})
+			$('table#tabla-propuestas tbody').html('')
+			$('table#tabla-propuestas tbody').append(template_tabla_propuestas(data))
+			
+		}
+	})
+}
+
+function template_tabla_propuestas(data){
+
+	console.log(data)
+
+	var template = ''
+
+	for (var i = 0; i < data.length; i++) {
+	
+		template += '<tr>'
+		template += '<td class="project-status">'
+		template += '<span class="label label-primary">Propuesta</span>'
+		template += '</td>'
+		template += '<td class="project-title">'
+		template += '<a href="">@nombre_local</a>'
+		template += '<br>'
+		template += '<small>Creado 14/08/2014</small>'
+		template += '</td>'
+		template += '<td class="project-completion">'
+		template += '<a class="btn btn-edit btn-bitbucket" href="/propuesta/update/@version_id"><i class="fa fa-edit"></i></a>'
+		template += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, @propuesta_id, \'propuesta\', \'tabla-propuestas\', \'Propusta\')"><i class="fa fa-trash"></i></a>'
+		template += '<a class="btn btn-download btn-bitbucket" href="/funcion/propuesta/pdf/@version_id"><i class="fa fa-download"></i></a>'
+		template += '<a class="btn btn-config btn-bitbucket" onclick="propuesta_ver_versiones(@propuesta_id)"><i class="fa fa-history"></i></a>'
+		template += '<a class="btn btn-send btn-bitbucket" data-toggle="modal" data-target="#m-propuesta-enviar-correo"><i class="fa fa-paper-plane"></i></a>'
+		template += '<a class="btn btn-view btn-bitbucket" href="@propuesta_id"><i class="fa fa-clock-o"></i></a>'
+		template += '</td>'
+		template += '<td class="project-people">'
+
+		for (var j = 0; j < data[i].workflow.responsables.length; j++) {
+
+			console.log(data[i].workflow.responsables[j].username)
+			template += '<a href="">'
+			template += '{% avatar "egomez@informat.cl" %}'
+			template += '</a>'
+
+		};
+
+		template += '</td>'
+		template += '<td class="project-actions">'
+		template += '<a href="#" class="btn btn-white btn-sm"><i class="fa fa-check"></i> Enviar </a>'
+		template += '</td>'
+		template += '</tr>'
+
+		template = template.replace(/@propuesta_id/g, data[i].id);
+		template = template.replace(/@version_id/g, data[i].version.id);
+		template = template.replace(/@nombre_local/g, data[i].version.nombre_local);
+
+	};
+
+	return template
 }
 
 function propuesta_enviar_correo(){
@@ -266,7 +305,6 @@ function propuesta_ver_versiones(id){
 		type: 'get',
 		dataType: 'json',
 		success: function(data){
-			console.log(data)
 			$('#m-versiones-propuesta .modal-body').append(template_modal_propuesta_versiones(data[0]))
 			$('#m-versiones-propuesta').modal('show')
 		}
@@ -275,7 +313,7 @@ function propuesta_ver_versiones(id){
 
 function template_modal_propuesta_versiones(propuesta){
 
-	// $('#m-versiones-propuesta .modal-body').html('')
+	$('#m-versiones-propuesta .modal-body').html('')
 
 	var template = ''
 
@@ -283,6 +321,7 @@ function template_modal_propuesta_versiones(propuesta){
 	template += '<thead>'
 	template += '<tr>'
 	template += '<th>Fecha</th>'
+	template += '<th>Usuario</th>'
 	template += '<th class="text-center">Descargar</th>'
 	template += '<th class="text-center">Restaurar</th>'
 	template += '</tr>'
@@ -293,19 +332,19 @@ function template_modal_propuesta_versiones(propuesta){
 
 		template += '<tr>'
 		template += '<td>@fecha</td>'
-		template += '<td class="text-center"><a class="btn btn-view btn-bitbucket"><i class="fa fa-download"></i>@descargar</a></td>'
-		template += '<td class="text-center"><a class="btn btn-view btn-bitbucket" onclick="propuesta_restaurar_version(@id)"><i class="fa fa-check-circle-o"></i>@restaurar</a></td>'
-		template += '</tr>'
-
-		template = template.replace(/@id/g, 		propuesta.versiones[i].id);
-		template = template.replace(/@fecha/g, 		propuesta.versiones[i].creado_en);
-		template = template.replace(/@descargar/g, 	propuesta.versiones[i].id);
+		template += '<td>@usuario</td>'
+		template += '<td class="text-center"><a href="/funcion/propuesta/pdf/@id" class="btn btn-download btn-bitbucket"><i class="fa fa-download"></i></a></td>'
 
 		if (i==0) {
-			template = template.replace(/@restaurar/g, 	'version actual');
+			template += '<td class="text-center"><a class="btn btn-view btn-bitbucket">última versión</a></td>'
 		}else{
-			template = template.replace(/@restaurar/g, 	propuesta.versiones[i].id);
+			template += '<td class="text-center"><a class="btn btn-config btn-bitbucket" data-dismiss="modal" onclick="propuesta_restaurar_version(@id)">restaurar versión</a></td>'
 		}
+		template += '</tr>'
+
+		template = template.replace(/@usuario/g, 	propuesta.user.first_name+' '+propuesta.user.last_name);
+		template = template.replace(/@id/g, 		propuesta.versiones[i].id);
+		template = template.replace(/@fecha/g, 		propuesta.versiones[i].creado_en);
 	};
 
 	template += '</tbody>'
@@ -316,19 +355,87 @@ function template_modal_propuesta_versiones(propuesta){
 
 function propuesta_restaurar_version(id){
 
-	$.ajax({
-		url: '/funcion/propuesta/restaurar_version/'+id,
-		type: 'get',
-		dataType: 'json',
-		success: function(data){
-			console.log(data)
-			$('#m-versiones-propuesta .modal-body').append(template_modal_propuesta_versiones(data[0]))
-			$('#m-versiones-propuesta').modal('show')
-			
-		}
+	swal({
+		title: '¿ Restaurar esta versión ?',
+		text: '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#F8BB86',
+		cancelButtonColor: '#D0D0D0',
+		confirmButtonText: 'Si, restaurar',
+		cancelButtonText: 'Cancelar',
+		closeOnConfirm: true,
+	}).then(function() {
+		$.ajax({
+			url: '/funcion/propuesta/restaurar_version/'+id,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+				if (data.estado == true) {
+					var toast_type 	= 'success'
+					var toast_title = 'Éxito'
+				}else{
+					var toast_type	= 'error'
+					var toast_title = 'Error'
+				}
+				
+				var configuracion = {
+					'toast_type'	: toast_type,
+					'toast_text' 	: data.mensaje,
+					'toast_title' 	: toast_title,
+				}
+
+				notification_toast(configuracion)
+			},
+			error:function(data){
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se puedo eliminar',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
+			}
+		})
 	})
 }
 
+
+function funcion_workflow(id, tipo, estado){
+
+	$.ajax({
+		url: '/funcion/propuesta/workflow/'+id,
+		type: 'post',
+		dataType: 'json',
+		data:{
+			tipo 	: tipo,
+			estado 	: estado,
+			csrfmiddlewaretoken : getCookie('csrftoken'),
+		},
+		success: function(data){
+			if (data.estado == true) {
+				var toast_type 	= 'success'
+				var toast_title = 'Éxito'
+			}else{
+				var toast_type	= 'error'
+				var toast_title = 'Error'
+			}
+			var configuracion = {
+				'toast_type'	: toast_type,
+				'toast_text' 	: data.mensaje,
+				'toast_title' 	: toast_title,
+			}
+			notification_toast(configuracion)
+		},
+		error:function(data){
+			var configuracion = {
+				'toast_type'	: 'error',
+				'toast_text' 	: 'no se puedo eliminar',
+				'toast_title' 	: 'Error',
+			}
+			notification_toast(configuracion)
+		}
+	})
+}
 
 
 </script>

@@ -379,10 +379,7 @@ class GastoComunForm(forms.ModelForm):
 		super(GastoComunForm, self).__init__(*args, **kwargs)
 
 		if contrato is not None:
-			print ('gasto comunnnnnnnn')
 			self.fields['local'].queryset = contrato.locales.all()
-		else:
-			print ('no tengo contrato')
 
 	class Meta:
 		model 	= Gasto_Comun

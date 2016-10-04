@@ -15,11 +15,16 @@ from .forms import *
 from .models import *
 
 from utilidades.views import *
+from copy import deepcopy
 
 import base64
 import pdfkit
 import json
 import os
+
+
+from avatar.models import Avatar
+
 
 
 # variables
@@ -295,7 +300,7 @@ class PropuestaList(ListView):
 
 		for propuesta in propuestas:
 
-			ultima_version 					= propuesta.propuesta_version_set.all().order_by('-id').first()			
+			ultima_version 					= propuesta.propuesta_version_set.all().order_by('-id').first()
 			ultima_version.fecha_inicio 	= ultima_version.fecha_inicio.strftime('%d/%m/%Y') if ultima_version.fecha_inicio is not None else '---'
 			ultima_version.fecha_termino 	= ultima_version.fecha_termino.strftime('%d/%m/%Y') if ultima_version.fecha_termino is not None else '---'
 
@@ -341,7 +346,8 @@ class PropuestaMixin(object):
 		# propuesta new
 		if self.kwargs.pop('pk', None) is None:
 
-			propuesta 			= Propuesta_Contrato(numero=form.cleaned_data['numero'])
+			propuesta 			= Propuesta_Contrato(numero=form.cleaned_data['numero'])			
+			propuesta.user 		= self.request.user
 			propuesta.empresa 	= self.request.user.userprofile.empresa
 			propuesta.save()
 			obj.propuesta 		= propuesta
@@ -1283,6 +1289,20 @@ class PROPUESTA_CONTRATO(View):
 
 			for version in versiones:
 
+				version
+
+				cliente = {
+					'id' 			: version.cliente.id, 
+					'nombre' 		: version.cliente.nombre,
+				}
+
+				tipo = {
+					'id' 			: version.tipo.id, 
+					'nombre' 		: version.tipo.nombre, 
+					'codigo' 		: version.tipo.codigo, 
+					'descripcion' 	: version.tipo.descripcion, 
+				}
+
 				data_versiones.append({
 					'id' 					: version.id,
 					'numero'				: version.numero,
@@ -1297,16 +1317,122 @@ class PROPUESTA_CONTRATO(View):
 					'meses_remodelacion'	: version.meses_remodelacion if version.meses_remodelacion is not None else None,
 					'fecha_habilitacion'	: version.fecha_habilitacion if version.fecha_habilitacion is not None else None,
 					'fecha_renovacion'		: version.fecha_renovacion if version.fecha_renovacion is not None else None,
-					'creado_en' 			: version.creado_en
+					'creado_en' 			: version.creado_en.strftime('%d/%m/%Y'),
+					'cliente'				: cliente,
+					'tipo'					: tipo,
 					})
+
+			user = {
+				'id' 			: propuesta.user.id,
+				'first_name' 	: propuesta.user.first_name,
+				'last_name' 	: propuesta.user.last_name,
+			}
 
 			data.append({
 				'id' 		: propuesta.id,
+				'creado_en' : propuesta.creado_en.strftime('%d/%m/%Y'),
+				'user'		: user,
 				'versiones' : data_versiones,
 				})
 
 		return JsonResponse(data, safe=False)
 
+class PROPUESTA_CONTRATO_WORKFLOW(View):
+
+	http_method_names = ['get']
+	
+	def get(self, request, id=None):
+
+		
+		avatars = self.request.user.avatar_set.all()
+
+		# Current avatar
+		primary_avatar = avatars.order_by('-primary')[:1]
+		if primary_avatar:
+			avatar = primary_avatar[0]
+		else:
+			avatar = None
+
+		print(avatar.__dict__)
+
+
+		if id == None:
+			self.object_list = Propuesta_Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		else:
+			self.object_list = Propuesta_Contrato.objects.filter(pk=id)
+
+		if request.is_ajax():
+			return self.json_to_response()
+
+		if self.request.GET.get('format', None) == 'json':
+			return self.json_to_response()
+
+	def json_to_response(self):
+
+		data = list()
+
+		for propuesta in self.object_list:
+
+			workflow_responsables 	= list()
+			workflow_estados 		= list()
+			workflow_acciones 		= list()
+			version 				= propuesta.propuesta_version_set.all().order_by('-id').first()
+
+			user = {
+				'id'			: propuesta.user.id,
+				'first_name' 	: propuesta.user.first_name,
+				'last_name' 	: propuesta.user.last_name,
+			}
+
+			version = {
+				'id' 			: version.id,
+				'nombre_local' 	: version.nombre_local,
+				'creado_en' 	: version.creado_en.strftime('%d/%m/%Y %H:%M'),
+			}
+
+
+			workflow_responsables.append({
+				'id'			: 2,
+				'first_name'	: 'Elias',
+				'last_name'		: 'Gomez',
+				'username'		: 'egomez@informat.cl',
+				})
+
+			workflow_responsables.append({
+				'id'			: 1,
+				'first_name'	: 'Juan',
+				'last_name'		: 'Mieres',
+				'username'		: 'jmieres',
+				})
+
+			workflow_estados.append({
+				'id'		: 1,
+				'nombre' 	: 'Propuesta',
+				'color' 	: '#BBDEFB',
+				'tipo'		: {}
+				})
+
+			workflow_acciones.append({
+				'nombre' 	: 'enviar',
+				'funcion' 	: 1,
+				})
+
+			workflow = {
+				'responsables'	: workflow_responsables,
+				'estados'		: workflow_estados,
+				'acciones' 		: workflow_acciones,
+			}
+
+			data.append({
+				'id' 			: propuesta.id,
+				'creado_en' 	: propuesta.creado_en.strftime('%d/%m/%Y %H:%M'),
+				'user'			: user,
+				'version' 		: version,
+				'workflow' 		: workflow,
+			})
+
+		
+		return JsonResponse(data, safe=False)
 
 # funciones - propuesta contrato
 def propuesta_enviar_correo(request):
@@ -1327,14 +1453,66 @@ def propuesta_enviar_correo(request):
 	return JsonResponse(response, safe=False)
 
 def propuesta_restaurar_version(request, id=None):
+	
+	try:
 
-	response 	= list()
-	version 	= Propuesta_Version.objects.get(id=id)
-	locales 	= version.locales.all()
+		version 	= Propuesta_Version.objects.get(id=id)
 
-	# version.id 		= None
-	# version.locales = locales
-	# version.save()
+		clone 		= deepcopy(version)
+		clone.id 	= None
+		clone.save()
+
+		# relaciones
+		clone.locales = version.locales.all()
+		clone.save()
+
+		if version.arriendo_minimo is True:
+			concepto 	= deepcopy(version.propuesta_arriendo_minimo_set.first())
+			concepto.id = None
+			concepto.propuesta = clone
+			concepto.save()
+
+		if version.arriendo_variable is True:
+			concepto 	= deepcopy(version.propuesta_arriendo_variable_set.first())
+			concepto.id = None
+			concepto.propuesta = clone
+			concepto.save()
+
+		if version.arriendo_bodega is True:
+			concepto 	= deepcopy(version.propuesta_arriendo_bodega_set.first())
+			concepto.id = None
+			concepto.propuesta = clone
+			concepto.save()
+
+		if version.cuota_incorporacion is True:
+			concepto 	= deepcopy(version.propuesta_cuota_incorporacion_set.first())
+			concepto.id = None
+			concepto.propuesta = clone
+			concepto.save()
+
+		if version.fondo_promocion is True:
+			concepto 	= deepcopy(version.propuesta_fondo_promocion_set.first())
+			concepto.id = None
+			concepto.propuesta = clone
+			concepto.save()
+
+		if version.gasto_comun	 is True:
+			concepto 	= deepcopy(version.propuesta_gasto_comun_set.first())
+			concepto.id = None
+			concepto.propuesta = clone
+			concepto.save()
+
+		estado 	= True
+		mensaje = 'restauración correcta'
+
+	except Exception as error:
+		estado 	= False
+		mensaje = error
+
+	response = {
+		'estado'	: estado,
+		'mensaje'	: mensaje,
+	}
 
 	return JsonResponse(response, safe=False)
 
@@ -1561,7 +1739,19 @@ def propuesta_generar_pdf(request, id=None):
 
 	# return JsonResponse(data, safe=False)
 	return generar_pdf(configuracion, data)
-	
+
+def propuesta_workflow(request, id=None):
+
+	response = {
+		'estado'	: True,
+		'mensaje'	: 'todo ok',
+	}
+
+	var_post 		= request.POST.copy()
+	contenido 		= var_post['contenido']
+	propuesta_id 	= var_post['propuesta_id']
+
+	return JsonResponse(response, safe=False)
 
 # funciones - contrato
 def contrato_activar(request, contrato_id):

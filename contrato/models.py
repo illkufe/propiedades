@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.auth.models import User
 from administrador.models import Empresa, Cliente
 from locales.models import Local
 from conceptos.models import Concepto
@@ -133,6 +134,7 @@ class Propuesta_Contrato(models.Model):
 
 	# relaciones
 	empresa 	= models.ForeignKey(Empresa)
+	user 		= models.ForeignKey(User)
 
 	def __str__(self):
 		return str(self.numero)

@@ -290,7 +290,7 @@ function update_profile(){
 			$('#form-update-profile').ajaxSubmit({
 				dataType: 'json',
 				success: function(data){
-					window.location.href = "/profile";
+					window.location.href = "/perfil";
 				},
 				error: function(data, textStatus, jqXHR) {
 					clear_errors_form('#form-update-profile')
