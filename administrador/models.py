@@ -234,7 +234,7 @@ class Tipo_Estado_Proceso(models.Model):
 		verbose_name 		= "Tipo de Estado Proceso"
 		verbose_name_plural = "Tipos de Estados Procesos"
 
-class Procesos(models.Model):
+class Proceso(models.Model):
 
 	# atributos (generales)
 	nombre 		= models.CharField(max_length=250)
@@ -247,7 +247,7 @@ class Procesos(models.Model):
 	empresa 	= models.ForeignKey(Empresa)
 	responsable = models.ManyToManyField('accounts.UserProfile')
 	tipo_estado = models.ForeignKey(Tipo_Estado_Proceso)
-	antecesor  	= models.ForeignKey('self', null=True, blank=True)
+	antecesor  	= models.ManyToManyField('self', blank=True)
 
 	def __str__(self):
 		return self.nombre
@@ -264,7 +264,7 @@ class Proceso_Condicion(models.Model):
 
 	# relaciones
 	operacion 	= models.ForeignKey(Tipo_Operacion)
-	proceso 	= models.ForeignKey(Procesos)
+	proceso 	= models.ForeignKey(Proceso)
 	entidad 	= models.ForeignKey(Entidad_Asociacion)
 
 	def __str__(self):
