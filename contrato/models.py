@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
-from administrador.models import Empresa, Cliente
+from administrador.models import Empresa, Cliente, Procesos
 from locales.models import Local
 from conceptos.models import Concepto
 from utilidades.models import Moneda
@@ -135,6 +135,7 @@ class Propuesta_Contrato(models.Model):
 	# relaciones
 	empresa 	= models.ForeignKey(Empresa)
 	user 		= models.ForeignKey(User)
+	procesos 	= models.ManyToManyField(Procesos)
 
 	def __str__(self):
 		return str(self.numero)
@@ -290,6 +291,7 @@ class Propuesta_Gasto_Comun(models.Model):
 
 	def __str__(self):
 		return str(self.propuesta.numero)
+
 
 
 # modelos (conceptos)
