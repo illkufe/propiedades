@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-
 from utilidades.models import *
 from facturacion.models import MotorFacturacion
 
@@ -153,7 +152,7 @@ class Tipo_Clasificacion(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name = "Tipo de Clasificación"
+		verbose_name 		= "Tipo de Clasificación"
 		verbose_name_plural = "Tipos de Clasificaciones"
 
 class Clasificacion(models.Model):
@@ -174,7 +173,7 @@ class Clasificacion(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name = "Clasificación"
+		verbose_name 		= "Clasificación"
 		verbose_name_plural = "Clasificaciones"
 
 class Clasificacion_Detalle(models.Model):
@@ -189,5 +188,88 @@ class Clasificacion_Detalle(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name = "Detalle Clasificación"
+		verbose_name 		= "Detalle Clasificación"
 		verbose_name_plural = "Detalles de Clasificaciones"
+
+
+
+
+
+class Tipo_Operacion(models.Model):
+
+	# atributos (generales)
+	descripcion	= models.CharField(max_length=250)
+	simbolo		= models.CharField(max_length=250)
+
+	def __str__(self):
+		return self.simbolo
+
+	class Meta:
+		verbose_name 		= "Tipo de Operación"
+		verbose_name_plural = "Tipos de Operaciones"
+
+class Entidad_Asociacion(models.Model):
+
+	# atributos (generales)
+
+	nombre 				= models.CharField(max_length=250)
+	nombre_campo_tabla	= models.CharField(max_length=250)
+
+	def __str__(self):
+		return self.nombre
+
+	class Meta:
+		verbose_name 		= "Entidad Asociación"
+		verbose_name_plural = "Entidades Asociaciones"
+
+class Tipo_Estado_Proceso(models.Model):
+
+	# atributos (generales)
+	nombre = models.CharField(max_length=250)
+
+	def __str__(self):
+		return self.nombre
+
+	class Meta:
+		verbose_name 		= "Tipo de Estado Proceso"
+		verbose_name_plural = "Tipos de Estados Procesos"
+
+class Procesos(models.Model):
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	empresa 	= models.ForeignKey(Empresa)
+	responsable = models.ManyToManyField('accounts.UserProfile')
+	tipo_estado = models.ForeignKey(Tipo_Estado_Proceso)
+	antecesor  	= models.ForeignKey('self', null=True, blank=True)
+
+	def __str__(self):
+		return self.nombre
+
+	class Meta:
+		verbose_name 		= "Proceso"
+		verbose_name_plural = "Procesos"
+
+class Proceso_Condicion(models.Model):
+
+	# atributos (generales)
+	valor 		= models.CharField(max_length=250)
+	descripcion = models.CharField(max_length=250)
+
+	# relaciones
+	operacion 	= models.ForeignKey(Tipo_Operacion)
+	proceso 	= models.ForeignKey(Procesos)
+	entidad 	= models.ForeignKey(Entidad_Asociacion)
+
+	def __str__(self):
+		return self.descripcion
+
+	class Meta:
+		verbose_name 		= "Proceso Condición"
+		verbose_name_plural = "Procesos Condiciones"
