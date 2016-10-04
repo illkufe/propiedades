@@ -552,6 +552,38 @@
 	}
 },
 {
+	"model": "administrador.tipo_estado_proceso",
+	"pk": 1,
+	"fields": {
+		"nombre": "Borrador",
+		"background": "#673AB7"
+	}
+},
+{
+	"model": "administrador.tipo_estado_proceso",
+	"pk": 2,
+	"fields": {
+		"nombre": "Revisión",
+		"background": "#EF6C00"
+	}
+},
+{
+	"model": "administrador.tipo_estado_proceso",
+	"pk": 3,
+	"fields": {
+		"nombre": "Aprobado",
+		"background": "#009688"
+	}
+},
+{
+	"model": "administrador.tipo_estado_proceso",
+	"pk": 4,
+	"fields": {
+		"nombre": "Terminado",
+		"background": "#009688"
+	}
+},
+{
 	"model": "accounts.usertype",
 	"pk": 1,
 	"fields": {

@@ -225,7 +225,8 @@ class Entidad_Asociacion(models.Model):
 class Tipo_Estado_Proceso(models.Model):
 
 	# atributos (generales)
-	nombre = models.CharField(max_length=250)
+	nombre 		= models.CharField(max_length=250)
+	background 	= models.CharField(max_length=7)
 
 	def __str__(self):
 		return self.nombre

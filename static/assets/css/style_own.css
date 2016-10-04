@@ -1,4 +1,5 @@
 /* STYLE botons */
+.btn-default,
 .btn-config,
 .btn-edit,
 .btn-delete,
@@ -9,6 +10,11 @@
 	color: #FFF;
 	border: 1px solid #e7eaec;
 	padding: 4px 8px;
+	margin: 0px 2px;
+}
+
+.btn-default{
+	background: #FFFFFF;
 }
 
 .btn-config{

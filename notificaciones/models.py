@@ -37,5 +37,5 @@ class Alerta_Miembro(models.Model):
 		return self.alerta.nombre+' - '+user.firt_name
 
 	class Meta:
-		verbose_name 		= "Miembro de Alerta "
+		verbose_name 		= "Miembro de Alerta"
 		verbose_name_plural = "Miembros de Alertas"

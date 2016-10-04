@@ -6,5 +6,5 @@ admin.site.register(Contrato_Estado)
 admin.site.register(Contrato_Tipo)
 admin.site.register(Contrato)
 admin.site.register(Propuesta_Contrato)
+admin.site.register(Propuesta_Proceso)
 admin.site.register(Propuesta_Version)
-

@@ -14,47 +14,15 @@
 						<a href='{% url "propuesta_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nueva propuesta</button></a>
 					</div>
 				</div>
-				<!--
-				<div class="ibox-content">
-					<div class="table-responsive">
-						<table class="table table-striped table-bordered table-hover" style="width:100%">
-							<thead></thead>
-							<tbody>
-								{% for item in object_list %}
-								<tr>
-									<td>{{ item.id }}</td>
-									<td>{{ item.numero }}</td>
-									<td>{{ item.cliente.nombre }}</td>
-									<td>{{ item.nombre_local }}</td>
-									<td class="text-center"><span class="label">{{ item.tipo }}</span></td>
-									<td class="text-right">{{ item.fecha_inicio }}</td>
-									<td class="text-right">{{ item.fecha_termino }}</td>
-									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='{% url "propuesta_update" item.id %}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.propuesta.id}}, 'propuesta', 'tabla-propuestas', 'Propusta')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-download btn-bitbucket" href='{% url "propuesta_generar_pdf" item.id %}'><i class="fa fa-download"></i></a>
-										<a class="btn btn-config btn-bitbucket" onclick="propuesta_ver_versiones({{item.propuesta.id}})"><i class="fa fa-history"></i></a>
-										<a class="btn btn-send btn-bitbucket" data-toggle="modal" data-target="#m-propuesta-enviar-correo"><i class="fa fa-paper-plane"></i></a>
-										<a class="btn btn-view btn-bitbucket" href='{% url "propuesta_historial" item.propuesta.id %}'><i class="fa fa-clock-o"></i></a>
-										{falta: porner la opcion de finalizar propuesta y crear un contrato con las condiciones de la ultima version}
-									</td>
-								</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</div> -->
+
 				<div class="ibox-content">
 					<div class="row m-b-sm m-t-sm">
 						<div class="col-md-1">
-							<button type="button" id="loading-example-btn" class="btn btn-white btn-sm"><i class="fa fa-refresh"></i> Actualizar</button>
+							<button type="button" id="loading-example-btn" class="btn btn-white btn-sm" onclick="data_tabla_propuestas()"><i class="fa fa-refresh"></i> Actualizar</button>
 						</div>
 						<div class="col-md-11">
 							<div class="input-group">
 								<input type="text" placeholder="Buscar Propuesta..." class="input-sm form-control">
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-sm btn-primary"> Aceptar</button>
-								</span>
 							</div>
 						</div>
 					</div>
@@ -70,7 +38,6 @@
 	</div>
 </div>
 
-
 <!-- Modal -->
 <div class="modal fade" id="m-propuesta-enviar-correo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog modal-lg" role="document">
@@ -80,9 +47,7 @@
 				<h4 class="modal-title" id="myModalLabel">Enviar Propuesta</h4>
 			</div>
 			<form id="propuesta-enviar-correo" action='{% url "propuesta_enviar_correo" %}' method="POST">
-
 				{% csrf_token %}
-
 				<input type="hidden" name="contenido">
 				<input type="hidden" name="propuesta_id" value="1">
 
@@ -166,6 +131,19 @@ table#tabla-propuestas tbody img{
 	border-radius: 50%;
 }
 
+.avatar-default {
+	width: 32px;
+	height: 32px;
+	background: #286ca0;
+	display: inline-block;
+	border-radius: 50%;
+	margin: 0 auto;
+	text-align: center;
+	line-height: 32px;
+	color: #fff;
+	margin: 0px 1px;
+}
+
 </style>
 
 {% endblock section %}
@@ -198,7 +176,8 @@ function data_tabla_propuestas(){
 
 			$('table#tabla-propuestas tbody').html('')
 			$('table#tabla-propuestas tbody').append(template_tabla_propuestas(data))
-			
+			$('[data-toggle="tooltip"]').tooltip();
+
 		}
 	})
 }
@@ -208,42 +187,65 @@ function template_tabla_propuestas(data){
 	var template = ''
 
 	for (var i = 0; i < data.length; i++) {
-	
+
 		template += '<tr>'
 		template += '<td class="project-status">'
-		template += '<span class="label label-primary">Propuesta</span>'
+		template += '<span class="label label-primary" style="background:@background">@workflow_proceso_nombre</span>'
 		template += '</td>'
 		template += '<td class="project-title">'
-		template += '<a href="">@nombre_local</a>'
+		template += '<a>@nombre_local</a>'
 		template += '<br>'
-		template += '<small>Creado 14/08/2014</small>'
+		template += '<small>Creado @creado_en</small>'
 		template += '</td>'
 		template += '<td class="project-completion">'
-		template += '<a class="btn btn-edit btn-bitbucket" href="/propuesta/update/@version_id"><i class="fa fa-edit"></i></a>'
-		template += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, @propuesta_id, \'propuesta\', \'tabla-propuestas\', \'Propusta\')"><i class="fa fa-trash"></i></a>'
-		template += '<a class="btn btn-download btn-bitbucket" href="/funcion/propuesta/pdf/@version_id"><i class="fa fa-download"></i></a>'
-		template += '<a class="btn btn-config btn-bitbucket" onclick="propuesta_ver_versiones(@propuesta_id)"><i class="fa fa-history"></i></a>'
-		template += '<a class="btn btn-send btn-bitbucket" data-toggle="modal" data-target="#m-propuesta-enviar-correo"><i class="fa fa-paper-plane"></i></a>'
-		template += '<a class="btn btn-view btn-bitbucket" href="@propuesta_id"><i class="fa fa-clock-o"></i></a>'
+		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="editar propuesta" href="/propuesta/update/@version_id"><i class="fa fa-edit"></i></a>'
+		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="eliminar propuesta" onclick="open_modal_delete(this, @propuesta_id, \'propuesta\', \'tabla-propuestas\', \'Propusta\')"><i class="fa fa-trash"></i></a>'
+		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="descargar propuesta" href="/funcion/propuesta/pdf/@version_id"><i class="fa fa-download"></i></a>'
+		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="restarurar versión" onclick="propuesta_ver_versiones(@propuesta_id)"><i class="fa fa-history"></i></a>'
+		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="enviar propuesta" data-toggle="modal" data-target="#m-propuesta-enviar-correo"><i class="fa fa-paper-plane"></i></a>'
+		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="ver historial" href="@propuesta_id"><i class="fa fa-clock-o"></i></a>'
 		template += '</td>'
+		// responsables
 		template += '<td class="project-people">'
-
 		for (var j = 0; j < data[i].workflow.responsables.length; j++) {
 
-			console.log(data[i].workflow.responsables[j].username)
-			template += '<a href="">'
-			template += '{% avatar "egomez@informat.cl" %}'
-			template += '</a>'
-
+			if (data[i].workflow.responsables[j].avatar != null) {
+				template += '<a style="margin:0px 1px;">'
+				template += '<img src="/media/@avatar" alt="jmieres" width="80" height="80">'
+				template += '</a>'
+				template = template.replace(/@avatar/g, data[i].workflow.responsables[j].avatar);
+			}else{
+				template += '<a class="avatar-default">'
+				template += (data[i].workflow.responsables[j].first_name[0]+''+data[i].workflow.responsables[j].last_name[0]).toLowerCase()
+				template += '</a>'
+			}
 		};
-
 		template += '</td>'
+
+		// acciones
 		template += '<td class="project-actions">'
-		template += '<a href="#" class="btn btn-white btn-sm"><i class="fa fa-check"></i> Enviar </a>'
+		if (data[i].workflow.proceso.acciones == true) {
+			if (data[i].workflow.proceso.id == 1) {
+				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, true)"><i class="fa fa-check"></i> Enviar </a>'
+			}else if(data[i].workflow.proceso.id == 2){
+				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, true)"><i class="fa fa-check"></i> Aceptar </a>'
+				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, false)"><i class="fa fa-times"></i> Rechazar </a>'
+			}else if(data[i].workflow.proceso.id == 3){
+				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, true)"><i class="fa fa-check"></i> Aceptar </a>'
+				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, false)"><i class="fa fa-times"></i> Rechazar </a>'
+			}else if(data[i].workflow.proceso.id == 4){
+				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, true)"><i class="fa fa-check"></i> Pasar a Contrato </a>'
+			}else{
+			}
+		};
 		template += '</td>'
 		template += '</tr>'
 
+		template = template.replace(/@workflow_proceso_id/g, data[i].workflow.proceso.id);
+		template = template.replace(/@workflow_proceso_nombre/g, data[i].workflow.proceso.nombre);
+		template = template.replace(/@background/g, data[i].workflow.proceso.background);
 		template = template.replace(/@propuesta_id/g, data[i].id);
+		template = template.replace(/@creado_en/g, data[i].creado_en);
 		template = template.replace(/@version_id/g, data[i].version.id);
 		template = template.replace(/@nombre_local/g, data[i].version.nombre_local);
 
@@ -398,14 +400,16 @@ function propuesta_restaurar_version(id){
 }
 
 
-function funcion_workflow(id, tipo, estado){
+function funcion_workflow(id, estado){
+
+	//
 
 	$.ajax({
-		url: '/funcion/propuesta/workflow/'+id,
+		url: '/funcion/propuesta/workflow',
 		type: 'post',
 		dataType: 'json',
 		data:{
-			tipo 	: tipo,
+			id 		: id,
 			estado 	: estado,
 			csrfmiddlewaretoken : getCookie('csrftoken'),
 		},

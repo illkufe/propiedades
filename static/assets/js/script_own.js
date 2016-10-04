@@ -71,7 +71,7 @@ var language = {
 
 $(".select2").select2();
 
-$('[data-toggle="tooltip"]').tooltip();
+
 
 $('.format-ip').mask('0ZZ.0ZZ.0ZZ.0ZZ', {
     translation: {
@@ -449,3 +449,4 @@ function diferencia_entre_meses(fecha_inicio, fecha_termino) {
 	return months <= 0 ? 0 : months;
 }
 
+$('[data-toggle="tooltip"]').tooltip();

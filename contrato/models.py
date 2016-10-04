@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
-from administrador.models import Empresa, Cliente, Procesos
+from administrador.models import Empresa, Cliente, Proceso
 from locales.models import Local
 from conceptos.models import Concepto
 from utilidades.models import Moneda
@@ -135,7 +135,8 @@ class Propuesta_Contrato(models.Model):
 	# relaciones
 	empresa 	= models.ForeignKey(Empresa)
 	user 		= models.ForeignKey(User)
-	procesos 	= models.ManyToManyField(Procesos)
+	# procesos 	= models.ManyToManyField(Proceso)
+	procesos 	= models.ManyToManyField(Proceso, through='Propuesta_Proceso')
 
 	def __str__(self):
 		return str(self.numero)
@@ -187,6 +188,24 @@ class Propuesta_Version(models.Model):
 	class Meta:
 		verbose_name 		= "Versione de Propuesta"
 		verbose_name_plural = "Versiones de Propuestas"
+
+class Propuesta_Proceso(models.Model):
+
+	# atributos (generales)
+	estado = models.BooleanField(default=False)
+
+	# relaciones
+	propuesta 	= models.ForeignKey(Propuesta_Contrato)
+	proceso 	= models.ForeignKey(Proceso)
+	user 		= models.ForeignKey(User, null=True, blank=True)
+
+	def __str__(self):
+		return str(self.propuesta.numero)+' - '+self.proceso.nombre
+
+	class Meta:
+		verbose_name 		= "Proceso de Propuesta"
+		verbose_name_plural = "Procesos de Propuesta"
+
 
 class Propuesta_Arriendo_Minimo(models.Model):
 

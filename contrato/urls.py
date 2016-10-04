@@ -53,7 +53,7 @@ urlpatterns = [
 	url(r'^funcion/propuesta/restaurar_version/(?P<id>\d+)$', views.propuesta_restaurar_version, name='propuesta_restaurar_version'),
 	url(r'^funcion/propuesta/historial/(?P<id>\d+)$', views.propuesta_historial_tabla, name='propuesta_historial_tabla'),
 	url(r'^funcion/propuesta/pdf/(?P<id>\d+)$', views.propuesta_generar_pdf, name='propuesta_generar_pdf'),
-	url(r'^funcion/propuesta/workflow/(?P<id>\d+)$', views.propuesta_workflow, name='propuesta_workflow'),
+	url(r'^funcion/propuesta/workflow$', views.propuesta_workflow, name='propuesta_workflow'),
 
 	# get - contratos
 	url(r'^get/contratos/$', csrf_exempt(views.CONTRATO.as_view()),name='get_contratos'),

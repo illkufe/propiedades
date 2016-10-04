@@ -1343,19 +1343,6 @@ class PROPUESTA_CONTRATO_WORKFLOW(View):
 	
 	def get(self, request, id=None):
 
-		
-		avatars = self.request.user.avatar_set.all()
-
-		# Current avatar
-		primary_avatar = avatars.order_by('-primary')[:1]
-		if primary_avatar:
-			avatar = primary_avatar[0]
-		else:
-			avatar = None
-
-		print(avatar.__dict__)
-
-
 		if id == None:
 			self.object_list = Propuesta_Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		else:
@@ -1373,65 +1360,67 @@ class PROPUESTA_CONTRATO_WORKFLOW(View):
 
 		for propuesta in self.object_list:
 
-			workflow_responsables 	= list()
-			workflow_estados 		= list()
-			workflow_acciones 		= list()
-			version 				= propuesta.propuesta_version_set.all().order_by('-id').first()
+			for proceso in propuesta.procesos.all():
 
-			user = {
-				'id'			: propuesta.user.id,
-				'first_name' 	: propuesta.user.first_name,
-				'last_name' 	: propuesta.user.last_name,
-			}
+				acciones				= False
+				workflow_responsables 	= list()
+				workflow_estados 		= list()
+				version 				= propuesta.propuesta_version_set.all().order_by('-id').first()
 
-			version = {
-				'id' 			: version.id,
-				'nombre_local' 	: version.nombre_local,
-				'creado_en' 	: version.creado_en.strftime('%d/%m/%Y %H:%M'),
-			}
+				user = {
+					'id'			: propuesta.user.id,
+					'first_name' 	: propuesta.user.first_name,
+					'last_name' 	: propuesta.user.last_name,
+				}
 
+				version = {
+					'id' 			: version.id,
+					'nombre_local' 	: version.nombre_local,
+					'creado_en' 	: version.creado_en.strftime('%d/%m/%Y %H:%M'),
+				}
 
-			workflow_responsables.append({
-				'id'			: 2,
-				'first_name'	: 'Elias',
-				'last_name'		: 'Gomez',
-				'username'		: 'egomez@informat.cl',
+				# responsables
+				for responsable in proceso.responsable.all():
+
+					if responsable.user == self.request.user:
+						acciones = True					
+
+					# obtener avatar
+					primary_avatar = responsable.user.avatar_set.all().order_by('-primary')[:1]
+					if primary_avatar:
+						avatar = str(primary_avatar[0].avatar)
+					else:
+						avatar = None
+
+					workflow_responsables.append({
+						'id'			: responsable.user.id,
+						'first_name'	: responsable.user.first_name,
+						'last_name'		: responsable.user.last_name,
+						'username'		: responsable.user.username,
+						'avatar' 		: avatar,
+					})
+
+				# proceso
+				workflow_proceso = {
+					'id'			: proceso.id,
+					'nombre' 		: proceso.nombre,
+					'background' 	: proceso.tipo_estado.background,
+					'acciones'		: acciones,
+				}
+
+				workflow = {
+					'responsables'	: workflow_responsables,
+					'proceso'		: workflow_proceso,
+				}
+
+				data.append({
+					'id' 			: propuesta.id,
+					'creado_en' 	: propuesta.creado_en.strftime('%d/%m/%Y %H:%M'),
+					'user'			: user,
+					'version' 		: version,
+					'workflow' 		: workflow,
 				})
 
-			workflow_responsables.append({
-				'id'			: 1,
-				'first_name'	: 'Juan',
-				'last_name'		: 'Mieres',
-				'username'		: 'jmieres',
-				})
-
-			workflow_estados.append({
-				'id'		: 1,
-				'nombre' 	: 'Propuesta',
-				'color' 	: '#BBDEFB',
-				'tipo'		: {}
-				})
-
-			workflow_acciones.append({
-				'nombre' 	: 'enviar',
-				'funcion' 	: 1,
-				})
-
-			workflow = {
-				'responsables'	: workflow_responsables,
-				'estados'		: workflow_estados,
-				'acciones' 		: workflow_acciones,
-			}
-
-			data.append({
-				'id' 			: propuesta.id,
-				'creado_en' 	: propuesta.creado_en.strftime('%d/%m/%Y %H:%M'),
-				'user'			: user,
-				'version' 		: version,
-				'workflow' 		: workflow,
-			})
-
-		
 		return JsonResponse(data, safe=False)
 
 # funciones - propuesta contrato
@@ -1740,16 +1729,19 @@ def propuesta_generar_pdf(request, id=None):
 	# return JsonResponse(data, safe=False)
 	return generar_pdf(configuracion, data)
 
-def propuesta_workflow(request, id=None):
+def propuesta_workflow(request):
 
 	response = {
 		'estado'	: True,
 		'mensaje'	: 'todo ok',
 	}
 
-	var_post 		= request.POST.copy()
-	contenido 		= var_post['contenido']
-	propuesta_id 	= var_post['propuesta_id']
+	var_post 	= request.POST.copy()
+	id 			= var_post['id']
+	estado 		= var_post['estado']
+
+	print(id)
+	print(estado)
 
 	return JsonResponse(response, safe=False)
 
