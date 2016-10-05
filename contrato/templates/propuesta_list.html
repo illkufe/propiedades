@@ -18,11 +18,11 @@
 				<div class="ibox-content">
 					<div class="row m-b-sm m-t-sm">
 						<div class="col-md-1">
-							<button type="button" id="loading-example-btn" class="btn btn-white btn-sm" onclick="data_tabla_propuestas()"><i class="fa fa-refresh"></i> Actualizar</button>
+							<button id="cargar-tabla-propuestas" type="button" class="btn btn-white btn-sm" onclick="data_tabla_propuestas()"><i class="fa fa-refresh"></i> Actualizar</button>
 						</div>
 						<div class="col-md-11">
 							<div class="input-group">
-								<input type="text" placeholder="Buscar Propuesta..." class="input-sm form-control">
+								<input id="buscar-propuesta" type="text" placeholder="Buscar Propuesta..." class="input-sm form-control">
 							</div>
 						</div>
 					</div>
@@ -158,13 +158,21 @@ $(document).ready(function(){
 	initialize()
 	data_tabla_propuestas()
 	propuesta_enviar_correo()
+	
 
 });
 
 function initialize(){
 
 	$('.summernote').summernote();
+
+	$('#buscar-propuesta').keyup(function(){
+		console.log($(this).val())
+	})
+
+	$('#cargar-tabla-propuestas').click(data_tabla_propuestas())
 }
+
 
 function data_tabla_propuestas(){
 
@@ -176,9 +184,10 @@ function data_tabla_propuestas(){
 
 			$('table#tabla-propuestas tbody').html('')
 			$('table#tabla-propuestas tbody').append(template_tabla_propuestas(data))
-			$('[data-toggle="tooltip"]').tooltip();
-
-		}
+		},
+		complete: function(){
+			funciones_tabla_propuestas()
+		}		
 	})
 }
 
@@ -210,38 +219,41 @@ function template_tabla_propuestas(data){
 		for (var j = 0; j < data[i].workflow.responsables.length; j++) {
 
 			if (data[i].workflow.responsables[j].avatar != null) {
-				template += '<a style="margin:0px 1px;">'
-				template += '<img src="/media/@avatar" alt="jmieres" width="80" height="80">'
+				template += '<a style="margin:0px 1px;" data-toggle="tooltip" data-placement="top" title="@user_first_name @user_last_name">'
+				template += '<img src="/media/@avatar" width="80" height="80">'
 				template += '</a>'
 				template = template.replace(/@avatar/g, data[i].workflow.responsables[j].avatar);
 			}else{
-				template += '<a class="avatar-default">'
+				template += '<a class="avatar-default" data-toggle="tooltip" data-placement="top" title="@user_first_name @user_last_name">'
 				template += (data[i].workflow.responsables[j].first_name[0]+''+data[i].workflow.responsables[j].last_name[0]).toLowerCase()
 				template += '</a>'
 			}
+			template = template.replace(/@user_first_name/g, data[i].workflow.responsables[j].first_name);
+			template = template.replace(/@user_last_name/g, data[i].workflow.responsables[j].last_name);
+
 		};
 		template += '</td>'
 
 		// acciones
 		template += '<td class="project-actions">'
-		if (data[i].workflow.proceso.acciones == true) {
-			if (data[i].workflow.proceso.id == 1) {
-				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, true)"><i class="fa fa-check"></i> Enviar </a>'
-			}else if(data[i].workflow.proceso.id == 2){
-				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, true)"><i class="fa fa-check"></i> Aceptar </a>'
-				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, false)"><i class="fa fa-times"></i> Rechazar </a>'
-			}else if(data[i].workflow.proceso.id == 3){
-				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, true)"><i class="fa fa-check"></i> Aceptar </a>'
-				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, false)"><i class="fa fa-times"></i> Rechazar </a>'
-			}else if(data[i].workflow.proceso.id == 4){
-				template += '<a class="btn btn-default btn-sm" onclick="funcion_workflow(@workflow_proceso_id, true)"><i class="fa fa-check"></i> Pasar a Contrato </a>'
+		if (data[i].workflow.proceso.acciones == true && data[i].workflow.proceso.estado == false) {
+			if (data[i].workflow.proceso.tipo.id == 1) {
+				template += '<a class="btn btn-default btn-sm propuesta-accion" data-propuesta="@propuesta_id" data-proceso="@proceso_id" data-estado="true" data-text="Enviar"><i class="fa fa-check"></i> Enviar </a>'
+			}else if(data[i].workflow.proceso.tipo.id == 2){
+				template += '<a class="btn btn-default btn-sm propuesta-accion" data-propuesta="@propuesta_id" data-proceso="@proceso_id" data-estado="true" data-text="Aceptar"><i class="fa fa-check"></i> Aceptar </a>'
+				template += '<a class="btn btn-default btn-sm propuesta-accion" data-propuesta="@propuesta_id" data-proceso="@proceso_id" data-estado="false" data-text="Rechazar"><i class="fa fa-times"></i> Rechazar </a>'
+			}else if(data[i].workflow.proceso.tipo.id == 3){
+				template += '<a class="btn btn-default btn-sm propuesta-accion" data-propuesta="@propuesta_id" data-proceso="@proceso_id" data-estado="true" data-text="Aceptar"><i class="fa fa-check"></i> Aceptar </a>'
+				template += '<a class="btn btn-default btn-sm propuesta-accion" data-propuesta="@propuesta_id" data-proceso="@proceso_id" data-estado="false" data-text="Rechazar"><i class="fa fa-times"></i> Rechazar </a>'
+			}else if(data[i].workflow.proceso.tipo.id == 4){
+				template += '<a class="btn btn-default btn-sm propuesta-accion" data-propuesta="@propuesta_id" data-proceso="@proceso_id" data-estado="true" data-text="Pasar a Contrarto la"><i class="fa fa-check"></i> Pasar a Contrato </a>'
 			}else{
 			}
 		};
 		template += '</td>'
 		template += '</tr>'
 
-		template = template.replace(/@workflow_proceso_id/g, data[i].workflow.proceso.id);
+		template = template.replace(/@proceso_id/g, data[i].workflow.proceso.id);
 		template = template.replace(/@workflow_proceso_nombre/g, data[i].workflow.proceso.nombre);
 		template = template.replace(/@background/g, data[i].workflow.proceso.background);
 		template = template.replace(/@propuesta_id/g, data[i].id);
@@ -253,6 +265,21 @@ function template_tabla_propuestas(data){
 
 	return template
 }
+
+function funciones_tabla_propuestas(){
+	// acciones tooltip
+	$('[data-toggle="tooltip"]').tooltip();
+	//funciones propuesta
+	$('.propuesta-accion').click(function(){
+		var obj 		= {}
+		obj.propuesta 	= $(this).attr('data-propuesta')
+		obj.proceso 	= $(this).attr('data-proceso')
+		obj.estado 		= $(this).attr('data-estado')
+		obj.texto 		= $(this).attr('data-text')
+		funcion_propuesta(obj)
+	})
+}
+
 
 function propuesta_enviar_correo(){
 
@@ -400,42 +427,56 @@ function propuesta_restaurar_version(id){
 }
 
 
-function funcion_workflow(id, estado){
+function funcion_propuesta(obj){
 
-	//
-
-	$.ajax({
-		url: '/funcion/propuesta/workflow',
-		type: 'post',
-		dataType: 'json',
-		data:{
-			id 		: id,
-			estado 	: estado,
-			csrfmiddlewaretoken : getCookie('csrftoken'),
-		},
-		success: function(data){
-			if (data.estado == true) {
-				var toast_type 	= 'success'
-				var toast_title = 'Éxito'
-			}else{
-				var toast_type	= 'error'
-				var toast_title = 'Error'
+	swal({
+		title: '¿ '+obj.texto+' Propuesta?',
+		text: '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#F8BB86',
+		cancelButtonColor: '#D0D0D0',
+		confirmButtonText: 'Si',
+		cancelButtonText: 'Cancelar',
+		closeOnConfirm: true,
+	}).then(function() {
+		$.ajax({
+			url: '/funcion/propuesta/workflow',
+			type: 'post',
+			dataType: 'json',
+			data:{
+				propuesta 	: obj.propuesta,
+				proceso 	: obj.proceso,
+				estado 		: obj.estado,
+				csrfmiddlewaretoken : getCookie('csrftoken'),
+			},
+			success: function(data){
+				if (data.estado == true) {
+					var toast_type 	= 'success'
+					var toast_title = 'Éxito'
+				}else{
+					var toast_type	= 'error'
+					var toast_title = 'Error'
+				}
+				var configuracion = {
+					'toast_type'	: toast_type,
+					'toast_text' 	: data.mensaje,
+					'toast_title' 	: toast_title,
+				}
+				notification_toast(configuracion)
+			},
+			error:function(data){
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se puedo eliminar',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
+			},
+			complete: function(){
+				data_tabla_propuestas()
 			}
-			var configuracion = {
-				'toast_type'	: toast_type,
-				'toast_text' 	: data.mensaje,
-				'toast_title' 	: toast_title,
-			}
-			notification_toast(configuracion)
-		},
-		error:function(data){
-			var configuracion = {
-				'toast_type'	: 'error',
-				'toast_text' 	: 'no se puedo eliminar',
-				'toast_title' 	: 'Error',
-			}
-			notification_toast(configuracion)
-		}
+		})
 	})
 }
 

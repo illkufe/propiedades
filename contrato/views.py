@@ -1383,7 +1383,7 @@ class PROPUESTA_CONTRATO_WORKFLOW(View):
 				for responsable in proceso.responsable.all():
 
 					if responsable.user == self.request.user:
-						acciones = True					
+						acciones = True
 
 					# obtener avatar
 					primary_avatar = responsable.user.avatar_set.all().order_by('-primary')[:1]
@@ -1406,6 +1406,8 @@ class PROPUESTA_CONTRATO_WORKFLOW(View):
 					'nombre' 		: proceso.nombre,
 					'background' 	: proceso.tipo_estado.background,
 					'acciones'		: acciones,
+					'estado'		: Propuesta_Proceso.objects.get(propuesta=propuesta, proceso=proceso).estado,
+					'tipo'			: {'id':proceso.tipo_estado.id, 'nombre':proceso.tipo_estado.nombre}
 				}
 
 				workflow = {
@@ -1730,18 +1732,53 @@ def propuesta_generar_pdf(request, id=None):
 	return generar_pdf(configuracion, data)
 
 def propuesta_workflow(request):
+	estado 	= True 
+	mensaje = 'accción realizada correctamente'
+
+	try:
+		var_post 		= request.POST.copy()
+
+		propuesta_id 	= var_post['propuesta']
+		proceso_id 		= var_post['proceso']
+		estado_accion	= var_post['estado']
+
+		propuesta 			= Propuesta_Contrato.objects.get(id=propuesta_id)
+		proceso 			= propuesta.procesos.get(id=proceso_id)
+		propuesta_proceso 	= Propuesta_Proceso.objects.get(propuesta=propuesta, proceso=proceso)
+
+		if estado_accion == 'true':
+			propuesta_proceso.estado = True
+			propuesta_proceso.save()
+
+			if Propuesta_Proceso.objects.filter(propuesta=propuesta, estado=False).exists() is not True:
+				#{falta: revisar ultimo proceso}
+				data_sucesores 		= list()
+				propuesta_procesos 	= Propuesta_Proceso.objects.filter(propuesta=propuesta).values_list('proceso_id', flat=True)
+				
+				for item in Proceso.objects.filter(antecesor__in=propuesta_procesos).distinct():
+					data_sucesores.append(item.id)
+
+				Propuesta_Proceso.objects.filter(propuesta=propuesta).delete()
+
+				for sucesor in data_sucesores:
+					Propuesta_Proceso(propuesta=propuesta, proceso_id=sucesor).save()
+
+		elif estado_accion == 'false':
+			Propuesta_Proceso.objects.filter(propuesta=propuesta).delete()
+			for antecesor in proceso.antecesor.all():
+				Propuesta_Proceso(propuesta=propuesta, proceso=antecesor).save()
+		else:
+			estado 	= False 
+			mensaje = 'error'
+
+	except Exception as error:
+		estado 	= False 
+		mensaje = error
 
 	response = {
-		'estado'	: True,
-		'mensaje'	: 'todo ok',
+		'estado'	: estado,
+		'mensaje'	: mensaje,
 	}
-
-	var_post 	= request.POST.copy()
-	id 			= var_post['id']
-	estado 		= var_post['estado']
-
-	print(id)
-	print(estado)
 
 	return JsonResponse(response, safe=False)
 

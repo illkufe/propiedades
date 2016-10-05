@@ -248,7 +248,7 @@ class Proceso(models.Model):
 	empresa 	= models.ForeignKey(Empresa)
 	responsable = models.ManyToManyField('accounts.UserProfile')
 	tipo_estado = models.ForeignKey(Tipo_Estado_Proceso)
-	antecesor  	= models.ManyToManyField('self', blank=True)
+	antecesor  	= models.ManyToManyField('self', symmetrical=False, blank=True)
 
 	def __str__(self):
 		return self.nombre
