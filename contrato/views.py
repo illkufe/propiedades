@@ -10,6 +10,7 @@ from django.views.generic import View, ListView, FormView, CreateView, DeleteVie
 
 from administrador.models import Empresa, Cliente
 from locales.models import Local
+from avatar.models import Avatar
 
 from .forms import *
 from .models import *
@@ -21,11 +22,6 @@ import base64
 import pdfkit
 import json
 import os
-
-
-from avatar.models import Avatar
-
-
 
 # variables
 modulo 	= 'Contrato'
@@ -333,97 +329,124 @@ class PropuestaMixin(object):
 
 		transaction.set_autocommit(False)
 
-		context = self.get_context_data()
-		obj 	= form.save(commit=False)
+		self.object = form.save(commit=False)
+		context 	= self.get_context_data()
 
-		form_arriendo_minimo 		= context['form_arriendo_minimo']
-		form_arriendo_variable 		= context['form_arriendo_variable']
-		form_arriendo_bodega 		= context['form_arriendo_bodega']
-		form_cuota_incorporacion 	= context['form_cuota_incorporacion']
-		form_fondo_promocion 		= context['form_fondo_promocion']
-		form_gasto_comun 			= context['form_gasto_comun']
+		# formularios conceptos
+		# form_minimo 	= context['form_minimo']
+		form_variable 	= context['form_variable']
+		form_bodega 	= context['form_bodega']
+		form_cuota 		= context['form_cuota']
+		form_promocion 	= context['form_promocion']
+		form_comun 		= context['form_comun']
 
-		# propuesta new
 		if self.kwargs.pop('pk', None) is None:
 
-			propuesta 			= Propuesta_Contrato(numero=form.cleaned_data['numero'])			
-			propuesta.user 		= self.request.user
-			propuesta.empresa 	= self.request.user.userprofile.empresa
+			propuesta 				= Propuesta_Contrato(numero=form.cleaned_data['numero'])
+			propuesta.user 			= self.request.user
+			propuesta.empresa 		= self.request.user.userprofile.empresa
 			propuesta.save()
-			obj.propuesta 		= propuesta
-			obj.save()
+			self.object.propuesta 	= propuesta
+			self.object.save()
 			form.save_m2m()
 
-		# propuesta update
+			# formulario arriendo minimo
+			# if self.object.arriendo_minimo is True:
+			# 	if form_minimo.is_valid():
+			# 		formularios = form_minimo.save(commit=False)
+			# 		for formulario in formularios:
+			# 			formulario.propuesta = self.object
+			# 			formulario.save()
+			# 	else:
+			# 		transaction.rollback()
+			# 		transaction.connections.close_all()
+			# 		return self.render_to_response(self.get_context_data(form=form))
+
+			# formulario arriendo variable
+			if self.object.arriendo_variable is True:
+				if form_variable.is_valid():
+					formularios = form_variable.save(commit=False)
+					for formulario in formularios:
+						formulario.propuesta = self.object
+						formulario.save()
+				else:
+					print (form_variable.errors)
+					transaction.rollback()
+					transaction.connections.close_all()
+					return self.render_to_response(self.get_context_data(form=form))
+
+			# formulario arriendo bodega
+			if self.object.arriendo_bodega is True:
+				if form_bodega.is_valid():
+					formularios = form_bodega.save(commit=False)
+					for formulario in formularios:
+						formulario.propuesta = self.object
+						formulario.save()
+				else:
+					print (form_bodega.errors)
+					transaction.rollback()
+					transaction.connections.close_all()
+					return self.render_to_response(self.get_context_data(form=form))
+
+			# formulario cuota de incorporacion
+			if self.object.arriendo_bodega is True:
+				if form_cuota.is_valid():
+					formularios = form_cuota.save(commit=False)
+					for formulario in formularios:
+						formulario.propuesta = self.object
+						formulario.save()
+				else:
+					print (form_cuota.errors)
+					transaction.rollback()
+					transaction.connections.close_all()
+					return self.render_to_response(self.get_context_data(form=form))
+
+			# formulario fondo de promocion
+			if self.object.arriendo_bodega is True:
+				if form_promocion.is_valid():
+					formularios = form_promocion.save(commit=False)
+					for formulario in formularios:
+						formulario.propuesta = self.object
+						formulario.save()
+				else:
+					print (form_promocion.errors)
+					transaction.rollback()
+					transaction.connections.close_all()
+					return self.render_to_response(self.get_context_data(form=form))
+
+			# formulario gasto comun
+			if self.object.arriendo_bodega is True:
+				if form_comun.is_valid():
+					formularios = form_comun.save(commit=False)
+					for formulario in formularios:
+						formulario.propuesta = self.object
+						formulario.save()
+				else:
+					print (form_comun.errors)
+					transaction.rollback()
+					transaction.connections.close_all()
+					return self.render_to_response(self.get_context_data(form=form))
+
 		else:
-			obj.pk = None
-			obj.save()
+			self.object.pk = None
+			self.object.save()
 			form.save_m2m()
 
-		# conceptos
-		if obj.arriendo_minimo is True:
-			if form_arriendo_minimo.is_valid():
-				formulario 				= form_arriendo_minimo.save(commit=False)
-				formulario.propuesta 	= obj
-				formulario.save()
-			else:
-				transaction.rollback()
-				transaction.connections.close_all()
-				return self.render_to_response(self.get_context_data(form=form))
+			if self.object.arriendo_bodega is True:
+				if form_bodega.is_valid():
+					formularios = form_bodega.save(commit=False)
+					for formulario in formularios:
+						formulario.pk = None
+						formulario.propuesta = self.object
+						formulario.save()
+				else:
+					transaction.rollback()
+					transaction.connections.close_all()
+					return self.render_to_response(self.get_context_data(form=form))
 
-		if obj.arriendo_variable is True:
-			if form_arriendo_variable.is_valid():
-				formulario 				= form_arriendo_variable.save(commit=False)
-				formulario.propuesta 	= obj
-				formulario.save()
-			else:
-				transaction.rollback()
-				transaction.connections.close_all()
-				return self.render_to_response(self.get_context_data(form=form))
-
-		if obj.arriendo_bodega is True:
-			if form_arriendo_bodega.is_valid():
-				formulario 				= form_arriendo_bodega.save(commit=False)
-				formulario.propuesta 	= obj
-				formulario.save()
-			else:
-				transaction.rollback()
-				transaction.connections.close_all()
-				return self.render_to_response(self.get_context_data(form=form))
-
-		if obj.cuota_incorporacion is True:
-			if form_cuota_incorporacion.is_valid():
-				formulario 				= form_cuota_incorporacion.save(commit=False)
-				formulario.propuesta 	= obj
-				formulario.save()
-			else:
-				transaction.rollback()
-				transaction.connections.close_all()
-				return self.render_to_response(self.get_context_data(form=form))
-
-		if obj.fondo_promocion is True:
-			if form_fondo_promocion.is_valid():
-				formulario 				= form_fondo_promocion.save(commit=False)
-				formulario.propuesta 	= obj
-				formulario.save()
-			else:
-				transaction.rollback()
-				transaction.connections.close_all()
-				return self.render_to_response(self.get_context_data(form=form))
-
-		if obj.gasto_comun is True:
-			if form_gasto_comun.is_valid():
-				formulario 				= form_gasto_comun.save(commit=False)
-				formulario.propuesta 	= obj
-				formulario.save()
-			else:
-				transaction.rollback()
-				transaction.connections.close_all()
-				return self.render_to_response(self.get_context_data(form=form))
 
 		transaction.commit()
 		transaction.connections.close_all()
-
 
 		response = super(PropuestaMixin, self).form_valid(form)
 
@@ -445,19 +468,22 @@ class PropuestaNew(PropuestaMixin, FormView):
 		context['accion'] 	= 'create'
 
 		if self.request.POST:
-			context['form_arriendo_minimo'] 	= FormPropuestaArriendoMinimo(self.request.POST, prefix="arriendo_minimo")
-			context['form_arriendo_variable'] 	= FormPropuestaArriendoVariable(self.request.POST, prefix="arriendo_variable")
-			context['form_arriendo_bodega'] 	= FormPropuestaArriendoBodega(self.request.POST, prefix="arriendo_bodega")
-			context['form_cuota_incorporacion'] = FormPropuestaCuotaIncorporacion(self.request.POST, prefix="cuota_incorporacion")
-			context['form_fondo_promocion'] 	= FormPropuestaFondoPromocion(self.request.POST, prefix="fondo_promocion")
-			context['form_gasto_comun'] 		= FormPropuestaGastoComun(self.request.POST, prefix="gasto_comun")
+
+			# context['form_minimo'] 		= InlineFormPropuestaMinimo(self.request.POST, prefix="arriendo_minimo")
+			context['form_variable'] 	= InlineFormPropuestaVariable(self.request.POST, prefix="arriendo_variable")
+			context['form_bodega'] 		= InlineFormPropuestaBodega(self.request.POST, prefix="arriendo_bodega")
+			context['form_cuota'] 		= InlineFormPropuestaCuota(self.request.POST, prefix="cuota_incorporacion")
+			context['form_promocion'] 	= InlineFormPropuestaPromocion(self.request.POST, prefix="fondo_promocion")
+			context['form_comun'] 		= InlineFormPropuestaComun(self.request.POST, prefix="gasto_comun")
+
 		else:
-			context['form_arriendo_minimo'] 	= FormPropuestaArriendoMinimo(prefix="arriendo_minimo")
-			context['form_arriendo_variable'] 	= FormPropuestaArriendoVariable(prefix="arriendo_variable")
-			context['form_arriendo_bodega'] 	= FormPropuestaArriendoBodega(prefix="arriendo_bodega")
-			context['form_cuota_incorporacion'] = FormPropuestaCuotaIncorporacion(prefix="cuota_incorporacion")			
-			context['form_fondo_promocion'] 	= FormPropuestaFondoPromocion(prefix="fondo_promocion")
-			context['form_gasto_comun'] 		= FormPropuestaGastoComun(prefix="gasto_comun")			
+
+			# context['form_minimo'] 		= InlineFormPropuestaMinimo(prefix="arriendo_minimo")
+			context['form_variable'] 	= InlineFormPropuestaVariable(prefix="arriendo_variable")
+			context['form_bodega'] 		= InlineFormPropuestaBodega(prefix="arriendo_bodega")
+			context['form_cuota'] 		= InlineFormPropuestaCuota(prefix="cuota_incorporacion")
+			context['form_promocion'] 	= InlineFormPropuestaPromocion(prefix="fondo_promocion")
+			context['form_comun'] 		= InlineFormPropuestaComun(prefix="gasto_comun")
 
 		return context
 
@@ -491,25 +517,25 @@ class PropuestaUpdate(PropuestaMixin, UpdateView):
 		context['href'] 	= '/propuesta/list'
 		context['accion'] 	= 'update'
 
+		propuesta = Propuesta_Version.objects.get(id=int(self.kwargs['pk']))
+
 		if self.request.POST:
 
-			context['form_arriendo_minimo'] 	= FormPropuestaArriendoMinimo(self.request.POST, prefix="arriendo_minimo")
-			context['form_arriendo_variable'] 	= FormPropuestaArriendoVariable(self.request.POST, prefix="arriendo_variable")
-			context['form_arriendo_bodega'] 	= FormPropuestaArriendoBodega(self.request.POST, prefix="arriendo_bodega")
-			context['form_cuota_incorporacion'] = FormPropuestaCuotaIncorporacion(self.request.POST, prefix="cuota_incorporacion")
-			context['form_fondo_promocion'] 	= FormPropuestaFondoPromocion(self.request.POST, prefix="fondo_promocion")
-			context['form_gasto_comun'] 		= FormPropuestaGastoComun(self.request.POST, prefix="gasto_comun")
+			# context['form_minimo'] 		= InlineFormPropuestaMinimo(self.request.POST, instance=propuesta, prefix="arriendo_minimo")
+			context['form_variable'] 	= InlineFormPropuestaVariable(self.request.POST, instance=propuesta, prefix="arriendo_variable")
+			context['form_bodega'] 		= InlineFormPropuestaBodega(self.request.POST, instance=propuesta, prefix="arriendo_bodega")
+			context['form_cuota'] 		= InlineFormPropuestaCuota(self.request.POST, instance=propuesta, prefix="cuota_incorporacion")
+			context['form_promocion'] 	= InlineFormPropuestaPromocion(self.request.POST, instance=propuesta, prefix="fondo_promocion")
+			context['form_comun'] 		= InlineFormPropuestaComun(self.request.POST, instance=propuesta, prefix="gasto_comun")
 
 		else:
 
-			propuesta = Propuesta_Version.objects.get(id=int(self.kwargs['pk']))
-
-			context['form_arriendo_minimo'] 	= FormPropuestaArriendoMinimo(instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo")
-			context['form_arriendo_variable'] 	= FormPropuestaArriendoVariable(instance=propuesta.propuesta_arriendo_variable_set.first(), prefix="arriendo_variable")
-			context['form_arriendo_bodega'] 	= FormPropuestaArriendoBodega(instance=propuesta.propuesta_arriendo_bodega_set.first(), prefix="arriendo_bodega")
-			context['form_cuota_incorporacion'] = FormPropuestaCuotaIncorporacion(instance=propuesta.propuesta_cuota_incorporacion_set.first(), prefix="cuota_incorporacion")
-			context['form_fondo_promocion'] 	= FormPropuestaFondoPromocion(instance=propuesta.propuesta_fondo_promocion_set.first(), prefix="fondo_promocion")
-			context['form_gasto_comun'] 		= FormPropuestaGastoComun(instance=propuesta.propuesta_gasto_comun_set.first(), prefix="gasto_comun")
+			# context['form_minimo'] 		= InlineFormPropuestaMinimo(instance=propuesta, prefix="arriendo_minimo")
+			context['form_variable'] 	= InlineFormPropuestaVariable(instance=propuesta, prefix="arriendo_variable")
+			context['form_bodega'] 		= InlineFormPropuestaBodega(instance=propuesta, prefix="arriendo_bodega")
+			context['form_cuota'] 		= InlineFormPropuestaCuota(instance=propuesta, prefix="cuota_incorporacion")
+			context['form_promocion'] 	= InlineFormPropuestaPromocion(instance=propuesta, prefix="fondo_promocion")
+			context['form_comun'] 		= InlineFormPropuestaComun(instance=propuesta, prefix="gasto_comun")
 
 		return context
 

@@ -85,6 +85,7 @@ form .container-error{
 	height: 12px;
 	font-size: 12px;
 	padding-left: 1px;
+	text-align:left;
 }
 
 .select2-container .select2-selection--single {

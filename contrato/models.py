@@ -206,7 +206,6 @@ class Propuesta_Proceso(models.Model):
 		verbose_name 		= "Proceso de Propuesta"
 		verbose_name_plural = "Procesos de Propuesta"
 
-
 class Propuesta_Arriendo_Minimo(models.Model):
 
 	# atributos (generales)
@@ -230,8 +229,29 @@ class Propuesta_Arriendo_Minimo(models.Model):
 
 class Propuesta_Arriendo_Variable(models.Model):
 
+	MESES = (
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
+	)
+
 	# atributos (generales)
-	valor = models.FloatField(null=True, blank=True)
+	mes_inicio 		= models.IntegerField(choices=MESES)
+	mes_termino		= models.IntegerField(choices=MESES)
+	anio_inicio		= models.IntegerField()
+	anio_termino 	= models.IntegerField()
+	fecha_inicio 	= models.DateField()
+	fecha_termino 	= models.DateField()
+	valor			= models.FloatField()
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -239,17 +259,26 @@ class Propuesta_Arriendo_Variable(models.Model):
 
 	# relaciones
 	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
+	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)
 
 class Propuesta_Arriendo_Bodega(models.Model):
 
+	PERIODICIDAD = (
+		(1, 'MENSUAL'),
+		(2, 'TRIMESTRAL'),
+		(3, 'SEMESTRAL'),
+		(4, 'ANUAL'),
+	)
+
 	# atributos (generales)
-	metros 			= models.FloatField(null=True, blank=True)
-	valor 			= models.FloatField(null=True, blank=True)
-	metro_cuadrado 	= models.BooleanField(default=False)
+	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
+	valor 			= models.FloatField()
+	metros 			= models.BooleanField(default=False)
+	cantidad_metros = models.FloatField(null=True, blank=True)
+	fecha_inicio 	= models.DateField()
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -257,16 +286,33 @@ class Propuesta_Arriendo_Bodega(models.Model):
 
 	# relaciones
 	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
+	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)
 
 class Propuesta_Cuota_Incorporacion(models.Model):
 
+	MESES = (
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
+	)
+
 	# atributos (generales)
-	valor 			= models.FloatField(null=True, blank=True)
-	metro_cuadrado 	= models.BooleanField(default=False)
+	mes 	 		= models.IntegerField(choices=MESES)
+	anio 			= models.IntegerField()
+	valor 			= models.FloatField()
+	metros 			= models.BooleanField(default=False)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -274,15 +320,25 @@ class Propuesta_Cuota_Incorporacion(models.Model):
 
 	# relaciones
 	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
+	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)
 
 class Propuesta_Fondo_Promocion(models.Model):
 
+	PERIODICIDAD = (
+		(0, 'ANUAL'),
+		(1, 'SEMESTRAL'),
+		(2, 'TRIMESTRAL'),
+		(3, 'MENSUAL'),
+	)
+
 	# atributos (generales)
-	valor = models.FloatField(null=True, blank=True)
+	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
+	valor			= models.FloatField()
+	fecha 			= models.DateField()
+	
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -290,15 +346,21 @@ class Propuesta_Fondo_Promocion(models.Model):
 
 	# relaciones
 	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
+	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)
 
 class Propuesta_Gasto_Comun(models.Model):
 
+	TIPO = (
+		(1, 'FIJO'),
+		(2, 'PRORRATEO'),
+	)
+
 	# atributos (generales)
-	valor = models.FloatField(null=True, blank=True)
+	tipo	= models.IntegerField(choices=TIPO)
+	valor 	= models.FloatField()
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -306,7 +368,7 @@ class Propuesta_Gasto_Comun(models.Model):
 
 	# relaciones
 	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda, null=True, blank=True)
+	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)

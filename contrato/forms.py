@@ -482,6 +482,7 @@ class FondoPromocionForm(forms.ModelForm):
 			'periodicidad'	: 'periodicidad',
 		}
 
+
 # propuesta
 class PropuestaForm(forms.ModelForm):
 
@@ -578,48 +579,57 @@ class PropuestaForm(forms.ModelForm):
 			'conceptos'			: {'required': 'campo requerido'},
 		}
 
-class FormPropuestaArriendoMinimo(forms.ModelForm):
+class FormPropuestaVariable(forms.ModelForm):
 
-	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
-	valor_reajuste 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
-	moneda_valor 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
-	moneda_reajuste = forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 			= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
+	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False)
+	fecha_termino 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False)
 
 	class Meta:
-		model 	= Propuesta_Arriendo_Minimo
+		model 	= Arriendo_Variable
 		fields 	= '__all__'
 		exclude = ['visible', 'creado_en', 'propuesta']
 
 		widgets = {
-			'meses_reajuste' 	: forms.NumberInput(attrs={'class': 'form-control field-required', 'disabled':'disabled'}),
-			'metro_cuadrado' 	: forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
-			'reajuste' 			: forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
+			'mes_inicio'		: forms.Select(attrs={'class': 'form-control'}),
+			'mes_termino'		: forms.Select(attrs={'class': 'form-control'}),
+			'anio_inicio'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio_termino'		: forms.NumberInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'moneda' : {'required': 'campo requerido'},
 		}
 
 		labels = {
-			'metro_cuadrado' 	: 'Valor x m²',
-			'reajuste' 			: 'Con Reajuste',
+			'anio_inicio' 	: 'Año inicio',
+			'anio_termino' 	: 'Año término',
 		}
 
 		help_texts = {
-			'metro_cuadrado' 	: 'Valor x m²',
-			'reajuste' 			: 'Con Reajuste',
+			'moneda' : 'moneda',
 		}
 
-class FormPropuestaArriendoVariable(forms.ModelForm):
+	def clean_fecha_inicio(self):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+		mes_inicio 	= str(self.cleaned_data.get("mes_inicio")).zfill(2)
+		anio_inicio = str(self.cleaned_data.get("anio_inicio"))
 
-	class Meta:
-		model 	= Propuesta_Arriendo_Variable
-		fields 	= '__all__'
-		exclude = ['visible', 'creado_en', 'propuesta']
+		return datetime.strptime('01/'+mes_inicio+'/'+anio_inicio+'', "%d/%m/%Y").date()
 
-class FormPropuestaArriendoBodega(forms.ModelForm):
+	def clean_fecha_termino(self):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+		mes_termino 	= str(self.cleaned_data.get("mes_termino")).zfill(2)
+		anio_termino 	= str(self.cleaned_data.get("anio_termino"))
+
+		return ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+anio_termino+'', "%d/%m/%Y"))
+
+class FormPropuestaBodega(forms.ModelForm):
+
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required'}), error_messages={'required': 'campo requerido'})
+	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required'}), error_messages={'required': 'campo requerido'})
+	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'invalid': 'campo invalido'}, label='Fecha de Inicio')
 
 	class Meta:
 		model 	= Propuesta_Arriendo_Bodega
@@ -627,52 +637,78 @@ class FormPropuestaArriendoBodega(forms.ModelForm):
 		exclude = ['visible', 'creado_en', 'propuesta']
 
 		widgets = {
-			'metros' 			: forms.NumberInput(attrs={'class': 'form-control field-required', 'disabled':'disabled'}),
-			'metro_cuadrado' 	: forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
+			'periodicidad'		: forms.Select(attrs={'class': 'form-control'}),
+			'metros' 			: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'cantidad_metros' 	: forms.NumberInput(attrs={'class': 'form-control field-required'}),
 		}
 
 		labels = {
-			'metros' 			: 'Total de m²',
-			'metro_cuadrado' 	: 'Valor x m²',
+			'metros' 			: 'valor x m²',
+			'cantidad_metros' 	: 'Cantidad de m²',
 		}
+
+	def clean(self):
+
+		cleaned_data = super(FormPropuestaBodega, self).clean()
 		
+		if cleaned_data.get("metros") is True and cleaned_data.get("cantidad_metros") is None:
+		
+			self.add_error('cantidad_metros', 'campo requerido')
 
-class FormPropuestaCuotaIncorporacion(forms.ModelForm):
+class FormPropuestaCuota(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
 
 	class Meta:
-		model 	= Propuesta_Cuota_Incorporacion
+		model 	= Cuota_Incorporacion
 		fields 	= '__all__'
 		exclude = ['visible', 'creado_en', 'propuesta']
 
 		widgets = {
-			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
+			'mes'		: forms.Select(attrs={'class': 'form-control'}),
+			'anio'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'metros' 	: forms.CheckboxInput(attrs={'class': 'form-control'}),
 		}
 
-		labels = {
-			'metro_cuadrado' : 'Valor x m²',
+		error_messages = {
+			'mes' 		: {'required': 'campo requerido'},
+			'anio' 		: {'required': 'campo requerido'},
 		}
 
 		help_texts = {
-			'metro_cuadrado' : 'Valor x m²',
+			'mes' 		: 'mes',
+			'anio' 		: 'anio',
+			'metros' 	: 'metros',
 		}
 
-class FormPropuestaFondoPromocion(forms.ModelForm):
+class FormPropuestaPromocion(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar desde')
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
 
 	class Meta:
 		model 	= Propuesta_Fondo_Promocion
 		fields 	= '__all__'
 		exclude = ['visible', 'creado_en', 'propuesta']
 
-class FormPropuestaGastoComun(forms.ModelForm):
+		widgets = {
+			'periodicidad' : forms.Select(attrs={'class': 'form-control'}),
+		}
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required', 'disabled':'disabled'}), error_messages={'required': 'campo requerido'}, required=False)
+		error_messages = {
+			'periodicidad' : {'required': 'campo requerido'},
+		}
+
+		help_texts = {
+			'periodicidad' : 'periodicidad',
+		}
+
+class FormPropuestaComun(forms.ModelForm):
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda'}))
 
 	class Meta:
 		model 	= Propuesta_Gasto_Comun
@@ -680,16 +716,27 @@ class FormPropuestaGastoComun(forms.ModelForm):
 		exclude = ['visible', 'creado_en', 'propuesta']
 
 		widgets = {
-			'metro_cuadrado' : forms.CheckboxInput(attrs={'class': 'form-control', 'disabled':'disabled'}),
+			'tipo'	: forms.Select(attrs={'class': 'form-control'}),
 		}
 
-		labels = {
-			'metro_cuadrado' : 'Valor x m²',
+		error_messages = {
+			'tipo'		: {'required': 'campo requerido'},
 		}
 
 		help_texts = {
-			'metro_cuadrado' : 'Valor x m²',
+			'tipo' : 'prorrateo',
 		}
+
+
+# inlines de propuesta
+InlineFormPropuestaVariable 	= inlineformset_factory(Propuesta_Version, Propuesta_Arriendo_Variable, form=FormPropuestaVariable, extra=1, can_delete=True)
+InlineFormPropuestaBodega 		= inlineformset_factory(Propuesta_Version, Propuesta_Arriendo_Bodega, form=FormPropuestaBodega, extra=1, can_delete=True)
+InlineFormPropuestaCuota 		= inlineformset_factory(Propuesta_Version, Propuesta_Cuota_Incorporacion, form=FormPropuestaCuota, extra=1, can_delete=True)
+InlineFormPropuestaPromocion 	= inlineformset_factory(Propuesta_Version, Propuesta_Fondo_Promocion, form=FormPropuestaPromocion, extra=1, can_delete=True)
+InlineFormPropuestaComun 		= inlineformset_factory(Propuesta_Version, Propuesta_Gasto_Comun, form=FormPropuestaComun, extra=1, can_delete=True)
+
+
+
 
 
 
