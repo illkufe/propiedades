@@ -1,0 +1,719 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+                {% csrf_token %}
+                <div class="ibox-title">
+                    <h5>Información General</h5>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="ibox-tools">
+                                <button type="button" class="btn btn-primary btn-xs" onclick="agregar_proceso(1, true)" id="btn-borrador"><i class="fa fa-plus"></i> nuevo borrador</button>
+                                <button type="button" class="btn btn-primary btn-xs" onclick="agregar_proceso(2, false)" id="btn-revision"><i class="fa fa-plus"></i> nueva revisión</button>
+                                <button type="button" class="btn btn-primary btn-xs" onclick="agregar_proceso(3, false)" id="btn-aprobacion"><i class="fa fa-plus"></i> nueva aprobación</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="tabla-procesos" class="table table-striped table-hover" style="width: 100% !important;">
+                            <thead>
+                                <tr>
+                                    <th hidden>id</th>
+                                    <th hidden>tipo_estado_id</th>
+                                    <th style="width: 15%">Tipo Estado</th>
+                                    <th style="width: 20%">Nombre</th>
+                                    <th style="width: 20%" class="text-center">Representante(s)</th>
+                                    <th style="width: 20%" class="text-center">Antecesor</th>
+                                    <th style="width: 10%" class="text-center">Condición</th>
+                                    <th style="width: 15%" class="text-center">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="proceso-borrador">
+                            </tbody>
+                            <tbody class="proceso-revision">
+                            </tbody>
+                            <tbody class="proceso-aprobacion">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <a href="/"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+                            <button class="btn btn-w-m btn-sm btn-primary pull-right validar_workflow" type="button">VALIDAR</button>
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- modal formulario Procesos -->
+<div class="modal inmodal fade" id="m-proceso-new" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h6 class="modal-title text-center"> Crear Proceso</h6>
+            </div>
+            <div class="modal-body" style="padding:15px 0px 0px 0px">
+                <div class="ibox-content">
+                    <form id="form-proceso-new" role="form" action="" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <input type="hidden" name="id" maxlength="250" id="id"  class="form-control">
+                            <div class="form-group col-sm-3">
+                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.tipo_estado.help_text }}" ></i>
+                                {{ procesos_form.tipo_estado.label_tag }}
+                                {{ procesos_form.tipo_estado }}
+                                <div class="container-error">
+                                    {{ procesos_form.tipo_estado.errors|striptags }}
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-3">
+                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.nombre.help_text }}" ></i>
+                                {{ procesos_form.nombre.label_tag }}
+                                {{ procesos_form.nombre }}
+                                <div class="container-error">
+                                    {{ procesos_form.nombre.errors|striptags }}
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-3">
+                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.responsable.help_text }}" ></i>
+                                {{ procesos_form.responsable.label_tag }}
+                                {{ procesos_form.responsable }}
+                                <div class="container-error">
+                                    {{ procesos_form.responsable.errors|striptags }}
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-3">
+                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.antecesor.help_text }}" ></i>
+                                {{ procesos_form.antecesor.label_tag }}
+                                {{ procesos_form.antecesor }}
+                                <div class="container-error">
+                                    {{ procesos_form.antecesor.errors|striptags }}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+                <button type="button" id="btn-guardar-proceso" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="guardar_proceso()">Aceptar</button>
+            </div>
+		</div>
+	</div>
+</div>
+
+<!-- modal lista de locales -->
+<div class="modal inmodal fade" id="m-condicion-new" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h6 class="modal-title text-center">Condiciones</h6>
+			</div>
+			<form id="form-condicion-new" role="form" action="" method="post">
+                {% csrf_token %}
+				<div class="modal-body" style="padding:15px 0px 0px 0px">
+					<div class="ibox-title">
+						<div class="ibox-tools">
+							<button type="button" class="btn btn-primary btn-xs pull-right" onclick="nueva_condicion('tabla-condiciones', 'form')"><i class="fa fa-plus"></i> Condición</button>
+						</div>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="col-xs-12 info_condiciones">
+
+{#                                <input type="hidden" value="0" name="form-TOTAL_FORMS" id="id_form-TOTAL_FORMS">#}
+{#                                <input type="hidden" value="1" name="form-INITIAL_FORMS" id="id_form-INITIAL_FORMS">#}
+{#                                <input type="hidden" value="0" name="form-MIN_NUM_FORMS" id="id_form-MIN_NUM_FORMS">#}
+{#                                <input type="hidden" value="1000" name="form-MAX_NUM_FORMS" id="id_form-MAX_NUM_FORMS">#}
+
+                                {{ condiciones_form.management_form }}
+
+								{% for form in condiciones_form %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+								<table id="tabla-condiciones" class="table" style="width:100% !important;">
+									<thead>
+										<tr>
+											<th>Entidad</th>
+											<th>Operación</th>
+											<th>Valor</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+{#										{% for form in condiciones_form %}#}
+{#										<tr>#}
+{#                                            <td hidden>{{ form.proceso }}</td>#}
+{#                                            <td hidden>{{ form.id }}</td>#}
+{#											<td><div class="form-group">{{ form.entidad }}<div class="container-error">{{ form.entidad.errors|striptags}}</div></div></td>#}
+{#											<td><div class="form-group">{{ form.operacion }}<div class="container-error">{{ form.operacion.errors|striptags}}</div></div></td>#}
+{#											<td><div class="form-group">{{ form.valor }}<div class="container-error">{{ form.valor.errors|striptags}}</div></div></td>#}
+{#											<td class="text-center delete">#}
+{#												{{ form.DELETE }}#}
+{#												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child_final(this, 'Condición', 'update')">#}
+{#													<i class="fa fa-trash"></i>#}
+{#												</a>#}
+{#											</td>#}
+{#										</tr>#}
+{#										{% endfor %}#}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+					<button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="guardar_data_condicion()">GUARDAR</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock section %}
+
+{% block scripts %}
+<script>
+    var tabla_proceso;
+
+    $(document).ready(function(){
+        load_data_procesos();
+        validate_btn_proceso();
+        validate_workflow();
+    });
+
+     function validate_btn_proceso() {
+        var count 	= $('.proceso-borrador').children().length;
+        if(count<=0){
+            $('#btn-aprobacion, #btn-revision').prop('disabled', true);
+        }else{
+            $('#btn-borrador').prop('disabled', true);
+            $('#btn-aprobacion, #btn-revision').prop('disabled', false);
+        }
+    }
+
+    function agregar_proceso(estado, activo_antecesor) {
+        clear_errors_form('#form-proceso-new');
+        clear_form('#form-proceso-new');
+        $('#m-proceso-new').modal('show');
+        $('#id_tipo_estado').val(parseInt(estado))
+        $('#id_antecesor').prop('disabled', activo_antecesor)
+        $("#btn-guardar-proceso").attr("onclick","guardar_proceso()");
+    }
+
+    function guardar_proceso() {
+        var data = $('#form-proceso-new').serializeArray();
+        data.push({name:'action', value: 'create'});
+        $.ajax({
+            url: '/workflow',
+            type: 'post',
+            data: data,
+            success: function(data){
+
+                if (data.estado == true ) {
+                    var configuracion = {
+                        'toast_type'	: 'success',
+                        'toast_text' 	: 'Guardado correctamente',
+                        'toast_title' 	: 'ÉXITO',
+                    }
+                    $('#m-proceso-new').modal('hide');
+                }else{
+                    var configuracion = {
+                        'toast_type'	: 'error',
+                        'toast_text' 	: 'No se pudo actualizar',
+                        'toast_title' 	: 'Error',
+                    }
+                }
+                notification_toast(configuracion)
+            },
+            error: function(data, textStatus, jqXHR) {
+                clear_errors_form('#form-proceso-new');
+                var errors = $.parseJSON(data.responseText);
+                apply_errors_form(errors);
+            },
+            complete: function () {
+                load_data_procesos();
+            }
+        })
+    }
+
+    function update_proceso() {
+        var data = $('#form-proceso-new').serializeArray();
+        data.push({name:'action', value: 'update'});
+        $.ajax({
+            url: '/workflow',
+            type: 'post',
+            data: data,
+            success: function(data){
+
+                if (data.estado == true ) {
+                    var configuracion = {
+                        'toast_type'	: 'success',
+                        'toast_text' 	: 'Editado correctamente',
+                        'toast_title' 	: 'ÉXITO',
+                    }
+                    $('#m-proceso-new').modal('hide');
+                }else{
+                    var configuracion = {
+                        'toast_type'	: 'error',
+                        'toast_text' 	: 'No se pudo actualizar',
+                        'toast_title' 	: 'Error',
+                    }
+                }
+                notification_toast(configuracion)
+            },
+            error: function(data, textStatus, jqXHR) {
+                clear_errors_form('#form-proceso-new');
+                var errors = $.parseJSON(data.responseText);
+                apply_errors_form(errors);
+            },
+            complete: function () {
+                load_data_procesos();
+            }
+        })
+    }
+
+    function load_data_procesos() {
+        $('.proceso-borrador').html('')
+        $('.proceso-revision').html('')
+        $('.proceso-aprobacion').html('')
+        $.ajax({
+            url: '/workflow',
+            type: 'get',
+            dataType: 'json',
+            success: function(data){
+                rows            = [];
+                var tipo_estado = ''
+                var options_antecesor   = ''
+
+                for (var i = 0; i < data.length; i++) {
+
+                    var opciones 	    = ''
+                    var html            = ''
+                    var html_condicion  = ''
+                    tipo_estado         = data[i].id_tipo_estado
+
+                    opciones += '<div class="text-center">'
+
+                    opciones += '<a class="btn btn-@button btn-bitbucket" onclick="agregar_condicion(this)" title="Condiciones">'
+                    opciones += '<i class="fa fa-warning"></i>'
+                    opciones += '<input class="parametro-id" type="hidden" value="@id">'
+                    opciones += '</a>'
+
+                    opciones += '<a class="btn btn-@button btn-bitbucket" onclick="edit_proceso(this)" title="Editar">'
+                    opciones += '<i class="fa fa-edit"></i>'
+                    opciones += '<input class="parametro-id" type="hidden" value="@id">'
+                    opciones += '</a>'
+
+                    if(tipo_estado == 1){
+                        opciones += '<a class="btn btn-@button btn-bitbucket" onclick="eliminar_proceso(this)" title="Eliminar" disabled="disabled">'
+                    } else{
+                       opciones += '<a class="btn btn-@button btn-bitbucket" onclick="eliminar_proceso(this)" title="Eliminar">'
+                    }
+                    opciones += '<i class="fa fa-trash"></i>'
+                    opciones += '<input class="parametro-id" type="hidden" value="@id">'
+                    opciones += '</a>'
+                    opciones += '</div>'
+
+                    opciones = opciones.replace(/@id/g, data[i].id);
+                    opciones = opciones.replace(/@eliminar/g, false);
+
+                    var responsable     = ''
+                    var id_responsable  = ''
+
+                    for( var r in data[i].responsable){
+                        responsable     += '<p>'+data[i].responsable[r].nombre+'</p>'
+                        id_responsable  += '<input class="responsables_procesos" type="hidden" id="responsables_procesos" name="responsable" value="'+ data[i].responsable[r].id +'">'
+                    }
+
+                    var antecesor           = ''
+                    var id_antecesor        = ''
+                    for(var a in data[i].antecesor){
+                        antecesor           += '<p>'+data[i].antecesor[a].nombre +'</p>'
+                        id_antecesor        += '<input class="antecesor_procesos" type="hidden" id="antecesor_procesos" name="antecesor" value="'+ data[i].antecesor[a].id +'">'
+                    }
+
+                    var condicion       = ''
+                    for(var b in data[i].condicion){
+                        condicion       += '<input class="condicion-'+b+'" type="hidden" id="condicion"  data-id-proceso="'+data[i].condicion[b].proceso+'" data-id="'+data[i].condicion[b].id+'" data-id-entidad="'+data[i].condicion[b].entidad_id+'" data-id-operacion="'+data[i].condicion[b].operacion_id+'" data-valor="'+data[i].condicion[b].valor+'">'
+                    }
+
+
+                    html_condicion += '<div class="text-center">'
+                    if(data[i].existe_condicion == true){
+                        html_condicion += '<i class="fa fa-check-circle info-succes" title="Condiciones Asociadas" id="prueba"></i>'
+                    }else{
+                        html_condicion += '<i class="fa fa-times-circle info-error" data-toggle="tooltip" data-placement="top" title="No existe condición"></i>'
+                    }
+                    html_condicion += '</div>'
+
+                    tipo_estado = data[i].id_tipo_estado
+
+                    html    += '<tr>'
+                    html    += '<td hidden><input class="id_proceso" type="hidden" id="id_proceso" name="proceso" value="'+ data[i].id +'"></td>'
+                    html    += '<td hidden><input class="tipo_estado" type="hidden" id="tipo_estado" name="tipo_estado" value="'+ data[i].id_tipo_estado +'"></td>'
+                    html    += '<td>'+data[i].tipo_estado+'</td>'
+                    html    += '<td>'+data[i].nombre+'</td>'
+                    html    += '<td hidden>'+id_responsable+'</td>'
+                    html    += '<td>'+responsable+'</td>'
+                    html    += '<td hidden>'+id_antecesor+'</td>'
+                    html    += '<td class="text-center">'+antecesor+'</td>'
+                    html    += '<td hidden>'+condicion+'</td>'
+                    html    += '<td>'+html_condicion+'</td>'
+                    html    += '<td>'+opciones+'</td>'
+                    html    += '</tr>'
+
+
+                    if(tipo_estado == 1){
+                        $('#tabla-procesos').find('.proceso-borrador').append(html)
+                    }else if(tipo_estado == 2){
+                        $('#tabla-procesos').find('.proceso-revision').last().append(html)
+                    }else if(tipo_estado == 3){
+                        $('#tabla-procesos').find('.proceso-aprobacion').last().append(html)
+                    }
+
+                    options_antecesor   += '<option value="'+ data[i].id +'">'+data[i].nombre +'</option>'
+                }
+
+                $('#id_antecesor').html('')
+                $('#id_antecesor').append(options_antecesor)
+            },
+            complete: function () {
+                validate_btn_proceso()
+            }
+        })
+    }
+
+    function edit_proceso(obj) {
+
+        var proceso_edit        = ''
+        var array_resp          = []
+        var array_antec         = []
+        var tipo_estado_edit    = ''
+
+        $(obj).closest('tr').find('.id_proceso').each(function () {
+            proceso_edit = parseInt($(this).val())
+        })
+        $(obj).closest('tr').find('.tipo_estado').each(function () {
+            tipo_estado_edit = parseInt($(this).val())
+        })
+
+        var nombre_proceso = $(obj).parent().parent().parent().children().eq(3).html()
+
+
+        $(obj).closest('tr').find('.responsables_procesos').each(function () {
+            array_resp.push($(this).val())
+        })
+        $(obj).closest('tr').find('.antecesor_procesos').each(function () {
+            array_antec.push($(this).val())
+        })
+
+
+        $('#m-proceso-new').modal('show')
+
+        $('#form-proceso-new').find('#id').val(proceso_edit)
+        $('#form-proceso-new').find('#id_tipo_estado').val(tipo_estado_edit)
+        $('#form-proceso-new').find('#id_nombre').val(nombre_proceso)
+        $('#form-proceso-new').find('#id_responsable').select2('val', array_resp)
+        $('#form-proceso-new').find('#id_antecesor').select2('val', array_antec)
+
+        $("#btn-guardar-proceso").attr("onclick", "update_proceso()");
+    }
+
+    function eliminar_proceso(obj) {
+        swal({
+            title: '¿ Eliminar Proceso ?',
+            text: '',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#F8BB86',
+            cancelButtonColor: '#D0D0D0',
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'Cancelar',
+            closeOnConfirm: true,
+        }).then(function () {
+            var proceso_id = parseInt($(obj).children().last().val())
+            $(obj).closest('tr').remove()
+
+            $.ajax({
+                url: '/workflow',
+                type: 'post',
+                data: {
+                    'action': 'delete',
+                    'proceso_id': proceso_id
+                },
+                success: function (data) {
+                    if (data.estado == true) {
+                        var configuracion = {
+                            'toast_type': 'success',
+                            'toast_text': 'Eliminado correctamente',
+                            'toast_title': 'ÉXITO',
+                        }
+                        $('#m-proceso-new').modal('hide');
+                    } else {
+                        var configuracion = {
+                            'toast_type': 'error',
+                            'toast_text': 'No se pudo eliminar',
+                            'toast_title': 'Error',
+                        }
+                    }
+                    notification_toast(configuracion)
+                }
+            })
+        });
+
+        load_data_procesos();
+    }
+
+    function agregar_condicion(obj) {
+
+        proceso_condicion = parseInt($(obj).children().last().val())
+        clear_form('#form-condicion-new');
+
+        $.ajax({
+            url: '/workflow/condicion',
+            type: 'get',
+            data:{
+                proceso_id :proceso_condicion
+            },
+            success: function(data) {
+                var modal_condicion = ''
+                var count           = 0
+                $('#tabla-condiciones tbody tr').remove()
+
+                if(data.condiciones.length >0){
+
+                    for (var i = 0; i < data.condiciones.length; i++) {
+
+                        modal_condicion += '<tr>'
+                        modal_condicion += '<td hidden=""><input type="hidden" value="'+data.condiciones[i].proceso_id+'" name="form-'+count+'-proceso" id="id_form-'+count+'-proceso" class="form-control id_proceso"></td>'
+                        modal_condicion += '<td hidden=""><input type="hidden" value="'+data.condiciones[i].id+'" name="form-'+count+'-id" id="id_form-'+count+'-id" class="form-control"></td>'
+                        modal_condicion += '<td><div class="form-group">'
+                        modal_condicion += '<select name="form-'+count+'-entidad" id="id_form-'+count+'-entidad" class="form-control">'
+                        modal_condicion += '<option value="">---------</option>'
+
+                        for(var a = 0; a <data.entidades.length; a++){
+                            if (data.entidades[a].id == data.condiciones[i].entidad){
+                                modal_condicion += '<option value="'+data.entidades[a].id+'" selected="selected">'+data.entidades[a].nombre+'</option>'
+                            }else{
+                                modal_condicion += '<option value="'+data.entidades[a].id+'">'+data.entidades[a].nombre+'</option>'
+                            }
+                        }
+                        modal_condicion += '</select>'
+                        modal_condicion += '<div class="container-error"></div>'
+                        modal_condicion += '</div>'
+                        modal_condicion += '</td>'
+                        modal_condicion += '<td>'
+                        modal_condicion += '<div class="form-group">'
+                        modal_condicion += '<select name="form-'+count+'-operacion" id="id_form-'+count+'-operacion" class="form-control">'
+                        modal_condicion += '<option value="">---------</option>'
+                        modal_condicion += '<option value="1"'+ (data.condiciones[i].operacion == 1 ? selected="selected" : "") +'>=</option>'
+                        modal_condicion += '<option value="2"'+ (data.condiciones[i].operacion == 2 ? selected="selected" : "")+'>&gt;=</option>'
+                        modal_condicion += '<option value="3"'+ (data.condiciones[i].operacion == 3 ? selected="selected" : "")+'>&lt;=</option>'
+                        modal_condicion += '</select>'
+                        modal_condicion += '<div class="container-error"></div>'
+                        modal_condicion += '</div>'
+                        modal_condicion += '</td>'
+                        modal_condicion += '<td><div class="form-group"><input type="text" value="'+data.condiciones[i].valor+'" name="form-'+count+'-valor" maxlength="250" id="id_form-'+count+'-valor" class="form-control"><div class="container-error"></div></div></td>'
+                        modal_condicion += '<td class="text-center delete">'
+                        modal_condicion += '<input type="checkbox" name="form-'+count+'-DELETE" id="id_form-'+count+'-DELETE" style="display: none;">'
+                        modal_condicion += '<a onclick="open_modal_delete_condicion(this,@condicion, @action)" class="btn btn-delete btn-bitbucket"><i class="fa fa-trash"></i></a>'
+                        modal_condicion += '</td>'
+                        modal_condicion += '</tr>'
+
+                        modal_condicion = modal_condicion.replace(/@condicion/g, "'Condición'");
+                        modal_condicion = modal_condicion.replace(/@action/g, "'update'");
+                        count += 1
+                    }
+                }else{
+                    modal_condicion += '<tr>'
+                    modal_condicion += '<td hidden=""><input type="hidden" value="'+proceso_condicion+'" name="form-'+count+'-proceso" id="id_form-'+count+'-proceso" class="form-control id_proceso"></td>'
+                    modal_condicion += '<td hidden=""><input type="hidden" value="" name="form-'+count+'-id" id="id_form-'+count+'-id" class="form-control"></td>'
+                    modal_condicion += '<td><div class="form-group">'
+                    modal_condicion += '<select name="form-'+count+'-entidad" id="id_form-'+count+'-entidad" class="form-control">'
+                    modal_condicion += '<option value="">---------</option>'
+
+                    for(var a = 0; a <data.entidades.length; a++){
+                        modal_condicion += '<option value="'+data.entidades[a].id+'">'+data.entidades[a].nombre+'</option>'
+                    }
+                    modal_condicion += '</select>'
+                    modal_condicion += '<div class="container-error"></div>'
+                    modal_condicion += '</div>'
+                    modal_condicion += '</td>'
+                    modal_condicion += '<td>'
+                    modal_condicion += '<div class="form-group">'
+                    modal_condicion += '<select name="form-'+count+'-operacion" id="id_form-'+count+'-operacion" class="form-control">'
+                    modal_condicion += '<option value="">---------</option>'
+                    modal_condicion += '<option value="1">=</option>'
+                    modal_condicion += '<option value="2">&gt;=</option>'
+                    modal_condicion += '<option value="3">&lt;=</option>'
+                    modal_condicion += '</select>'
+                    modal_condicion += '<div class="container-error"></div>'
+                    modal_condicion += '</div>'
+                    modal_condicion += '</td>'
+                    modal_condicion += '<td><div class="form-group"><input type="text" value="" name="form-'+count+'-valor" maxlength="250" id="id_form-'+count+'-valor" class="form-control"><div class="container-error"></div></div></td>'
+                    modal_condicion += '<td class="text-center delete">'
+                    modal_condicion += '<input type="checkbox" name="form-'+count+'-DELETE" id="id_form-'+count+'-DELETE" style="display: none;">'
+                    modal_condicion += '<a onclick="open_modal_delete_condicion(this,@condicion, @action)" class="btn btn-delete btn-bitbucket"><i class="fa fa-trash"></i></a>'
+                    modal_condicion += '</td>'
+                    modal_condicion += '</tr>'
+
+                    modal_condicion = modal_condicion.replace(/@condicion/g, "'Condición'");
+                    modal_condicion = modal_condicion.replace(/@action/g, "'update'");
+                    count += 1
+                }
+
+                $('#tabla-condiciones tbody').append(modal_condicion)
+                $('#id_form-TOTAL_FORMS').val(count)
+            },
+            error: function(){
+            },
+            complete: function () {
+                clear_errors_form('#form-condicion-new');
+                $('#m-condicion-new').modal('show');
+                $('#form-condicion-new').find('.id_proceso').val(proceso_condicion)
+            }
+        })
+
+    }
+
+    function guardar_data_condicion() {
+        $.ajax({
+            url: '/workflow/condicion',
+            type: 'post',
+            data: $('#form-condicion-new').serialize(),
+            success: function (data) {
+                if (data.estado == true) {
+                    var configuracion = {
+                        'toast_type': 'success',
+                        'toast_text': 'Guardado correctamente',
+                        'toast_title': 'ÉXITO',
+                    }
+                    $('#m-condicion-new').modal('hide');
+                } else {
+                    var configuracion = {
+                        'toast_type': 'error',
+                        'toast_text': 'No se pudo guardar',
+                        'toast_title': 'Error',
+                    }
+                }
+                notification_toast(configuracion)
+            },
+            error: function (data, textStatus, jqXHR) {
+                clear_errors_form('#form-condicion-new');
+                var errors = $.parseJSON(data.responseText);
+                apply_errors_form(errors);
+            },
+            complete: function () {
+                load_data_procesos();
+            }
+        });
+    }
+
+    function nueva_condicion(tabla, entidad) {
+
+        var count   = $('#' + tabla + ' tbody').children().length;
+        var $tr     = $('#' + tabla + ' tbody tr:first');
+        var $clone  = $tr.clone();
+        var row     = $clone.html().replace(/form-0/g, 'form-' + count);
+        var $row    = $(row)
+
+        $row.find('input').val('');
+        $row.find('select option:first-child').attr("selected", "selected");
+        $row.find('input:checkbox').prop('checked', false);
+
+        $('#' + tabla + ' tbody').append('<tr></tr>')
+        $('#' + tabla + ' tbody tr:last').append($row)
+
+        var cantidad = parseInt($('#id_' + entidad + '-TOTAL_FORMS').val())
+        cantidad    += 1
+
+        $('#id_' + entidad + '-TOTAL_FORMS').val(cantidad)
+
+        $('#form-condicion-new').find('.id_proceso').val(proceso_condicion)
+    }
+
+    function validate_workflow() {
+        $('.validar_workflow').on('click', function ( event) {
+            $.ajax({
+                url: '{% url 'validar_workflow' %}',
+                type: 'post',
+                data:{
+			        csrfmiddlewaretoken : getCookie('csrftoken'),
+                },
+                success: function(data){
+
+                    if (data.estado == true ) {
+                        var configuracion = {
+                            'toast_type'	: 'success',
+                            'toast_text' 	: 'WorkFlow validado correctamente',
+                            'toast_title' 	: 'ÉXITO',
+                        }
+                        $('#m-proceso-new').modal('hide');
+                    }else{
+                        var configuracion = {
+                            'toast_type'	: 'error',
+                            'toast_text' 	: data.error,
+                            'toast_title' 	: 'Error',
+                        }
+                    }
+                    notification_toast(configuracion)
+                },
+                error: function(data, textStatus, jqXHR) {
+                    clear_errors_form('#form-proceso-new');
+                    var errors = $.parseJSON(data.responseText);
+                    apply_errors_form(errors);
+                }
+            })
+        })
+    }
+
+    function open_modal_delete_condicion(obj, text, tipo){
+        $('#m-condicion-new').modal('hide')
+        swal({
+            title: '¿ Eliminar '+text+' ?',
+            text: '',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#F8BB86',
+            cancelButtonColor: '#D0D0D0',
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'Cancelar',
+            closeOnConfirm: true,
+        }).then(function() {
+            if(tipo == 'new'){
+                $(obj).closest('tr').remove()
+                $('#m-condicion-new').modal('show')
+
+            }else{
+                $(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
+                $(obj).closest('tr').addClass('hide')
+            }
+            $('#m-condicion-new').modal('show')
+        });
+    }
+</script>
+{% endblock scripts %}

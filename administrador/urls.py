@@ -28,4 +28,10 @@ urlpatterns = [
     url(r'^clasificacion/delete/(?P<pk>\d+)$', views.ClasificacionDelete.as_view(), name='clasificacion_delete'),
     url(r'^clasificacion/update/(?P<pk>\d+)$', views.ClasificacionUpdate.as_view(), name='clasificacion_update'),
 
+	#workflow
+	url(r'^workflow/condicion$',csrf_exempt(views.WORKFLOW_CONDICION.as_view()), name='workflow_condicion_new'),
+	url(r'^workflow$', csrf_exempt(views.WORKFLOW.as_view()), name='workflow_update'),
+	url(r'^workflow/validar$', views.validar_workflow, name='validar_workflow'),
+
+
 ]

@@ -9009,4 +9009,52 @@
 		"visible": true, 
 		"creado_en": "2016-01-01 00:00:00"
 		}
+},
+{
+	"model": "administrador.tipo_operacion",
+	"pk": 1,
+	"fields": {
+		"descripcion": "Igual",
+		"simbolo": "="
+	}
+},
+{
+	"model": "administrador.tipo_operacion",
+	"pk": 2,
+	"fields": {
+		"descripcion": "Mayor oigual",
+		"simbolo": ">="
+	}
+},
+{
+	"model": "administrador.tipo_operacion",
+	"pk": 3,
+	"fields": {
+		"descripcion": "Menor o igual",
+		"simbolo": "<="
+	}
+},
+{
+	"model": "administrador.entidad_asociacion",
+	"pk": 1,
+	"fields": {
+		"nombre": "Arriendo Mínimo",
+		"nombre_campo_tabla": "arriendo_minimo"
+	}
+},
+{
+	"model": "administrador.entidad_asociacion",
+	"pk": 2,
+	"fields": {
+		"descripcion": "Cuota Incorporación",
+		"simbolo": "cuota_incorporacion"
+	}
+},
+{
+	"model": "administrador.entidad_asociacion",
+	"pk": 3,
+	"fields": {
+		"descripcion": "Arriendo Bodega",
+		"simbolo": "arriendo_bodega"
+	}
 }]
