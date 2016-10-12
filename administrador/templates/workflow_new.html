@@ -187,7 +187,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
-					<button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="guardar_data_condicion()">GUARDAR</button>
+					<button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="validate_condicion()">GUARDAR</button>
 				</div>
 			</form>
 		</div>
@@ -203,6 +203,7 @@
         load_data_procesos();
         validate_btn_proceso();
         validate_workflow();
+        guardar_data_condicion();
     });
 
      function validate_btn_proceso() {
@@ -305,8 +306,8 @@
             type: 'get',
             dataType: 'json',
             success: function(data){
-                rows            = [];
-                var tipo_estado = ''
+                rows                    = [];
+                var tipo_estado         = ''
                 var options_antecesor   = ''
 
                 for (var i = 0; i < data.length; i++) {
@@ -318,20 +319,20 @@
 
                     opciones += '<div class="text-center">'
 
-                    opciones += '<a class="btn btn-@button btn-bitbucket" onclick="agregar_condicion(this)" title="Condiciones">'
+                    opciones += '<a class="btn btn-config btn-bitbucket" onclick="agregar_condicion(this)" title="Condiciones">'
                     opciones += '<i class="fa fa-warning"></i>'
                     opciones += '<input class="parametro-id" type="hidden" value="@id">'
                     opciones += '</a>'
 
-                    opciones += '<a class="btn btn-@button btn-bitbucket" onclick="edit_proceso(this)" title="Editar">'
+                    opciones += '<a class="btn btn-edit btn-bitbucket" onclick="edit_proceso(this)" title="Editar">'
                     opciones += '<i class="fa fa-edit"></i>'
                     opciones += '<input class="parametro-id" type="hidden" value="@id">'
                     opciones += '</a>'
 
                     if(tipo_estado == 1){
-                        opciones += '<a class="btn btn-@button btn-bitbucket" onclick="eliminar_proceso(this)" title="Eliminar" disabled="disabled">'
+                        opciones += '<a class="btn btn-delete btn-bitbucket" onclick="eliminar_proceso(this)" title="Eliminar" disabled="disabled">'
                     } else{
-                       opciones += '<a class="btn btn-@button btn-bitbucket" onclick="eliminar_proceso(this)" title="Eliminar">'
+                       opciones += '<a class="btn btn-delete btn-bitbucket" onclick="eliminar_proceso(this)" title="Eliminar">'
                     }
                     opciones += '<i class="fa fa-trash"></i>'
                     opciones += '<input class="parametro-id" type="hidden" value="@id">'
@@ -512,7 +513,7 @@
                         modal_condicion += '<td hidden=""><input type="hidden" value="'+data.condiciones[i].proceso_id+'" name="form-'+count+'-proceso" id="id_form-'+count+'-proceso" class="form-control id_proceso"></td>'
                         modal_condicion += '<td hidden=""><input type="hidden" value="'+data.condiciones[i].id+'" name="form-'+count+'-id" id="id_form-'+count+'-id" class="form-control"></td>'
                         modal_condicion += '<td><div class="form-group">'
-                        modal_condicion += '<select name="form-'+count+'-entidad" id="id_form-'+count+'-entidad" class="form-control">'
+                        modal_condicion += '<select name="form-'+count+'-entidad" id="id_form-'+count+'-entidad" class="form-control validate">'
                         modal_condicion += '<option value="">---------</option>'
 
                         for(var a = 0; a <data.entidades.length; a++){
@@ -528,7 +529,7 @@
                         modal_condicion += '</td>'
                         modal_condicion += '<td>'
                         modal_condicion += '<div class="form-group">'
-                        modal_condicion += '<select name="form-'+count+'-operacion" id="id_form-'+count+'-operacion" class="form-control">'
+                        modal_condicion += '<select name="form-'+count+'-operacion" id="id_form-'+count+'-operacion" class="form-control validate">'
                         modal_condicion += '<option value="">---------</option>'
                         modal_condicion += '<option value="1"'+ (data.condiciones[i].operacion == 1 ? selected="selected" : "") +'>=</option>'
                         modal_condicion += '<option value="2"'+ (data.condiciones[i].operacion == 2 ? selected="selected" : "")+'>&gt;=</option>'
@@ -537,7 +538,7 @@
                         modal_condicion += '<div class="container-error"></div>'
                         modal_condicion += '</div>'
                         modal_condicion += '</td>'
-                        modal_condicion += '<td><div class="form-group"><input type="text" value="'+data.condiciones[i].valor+'" name="form-'+count+'-valor" maxlength="250" id="id_form-'+count+'-valor" class="form-control"><div class="container-error"></div></div></td>'
+                        modal_condicion += '<td><div class="form-group"><input type="text" value="'+data.condiciones[i].valor+'" name="form-'+count+'-valor" maxlength="250" id="id_form-'+count+'-valor" class="form-control validate"><div class="container-error"></div></div></td>'
                         modal_condicion += '<td class="text-center delete">'
                         modal_condicion += '<input type="checkbox" name="form-'+count+'-DELETE" id="id_form-'+count+'-DELETE" style="display: none;">'
                         modal_condicion += '<a onclick="open_modal_delete_condicion(this,@condicion, @action)" class="btn btn-delete btn-bitbucket"><i class="fa fa-trash"></i></a>'
@@ -551,9 +552,8 @@
                 }else{
                     modal_condicion += '<tr>'
                     modal_condicion += '<td hidden=""><input type="hidden" value="'+proceso_condicion+'" name="form-'+count+'-proceso" id="id_form-'+count+'-proceso" class="form-control id_proceso"></td>'
-                    modal_condicion += '<td hidden=""><input type="hidden" value="" name="form-'+count+'-id" id="id_form-'+count+'-id" class="form-control"></td>'
                     modal_condicion += '<td><div class="form-group">'
-                    modal_condicion += '<select name="form-'+count+'-entidad" id="id_form-'+count+'-entidad" class="form-control">'
+                    modal_condicion += '<select name="form-'+count+'-entidad" id="id_form-'+count+'-entidad" class="form-control validate">'
                     modal_condicion += '<option value="">---------</option>'
 
                     for(var a = 0; a <data.entidades.length; a++){
@@ -565,7 +565,7 @@
                     modal_condicion += '</td>'
                     modal_condicion += '<td>'
                     modal_condicion += '<div class="form-group">'
-                    modal_condicion += '<select name="form-'+count+'-operacion" id="id_form-'+count+'-operacion" class="form-control">'
+                    modal_condicion += '<select name="form-'+count+'-operacion" id="id_form-'+count+'-operacion" class="form-control validate">'
                     modal_condicion += '<option value="">---------</option>'
                     modal_condicion += '<option value="1">=</option>'
                     modal_condicion += '<option value="2">&gt;=</option>'
@@ -574,7 +574,7 @@
                     modal_condicion += '<div class="container-error"></div>'
                     modal_condicion += '</div>'
                     modal_condicion += '</td>'
-                    modal_condicion += '<td><div class="form-group"><input type="text" value="" name="form-'+count+'-valor" maxlength="250" id="id_form-'+count+'-valor" class="form-control"><div class="container-error"></div></div></td>'
+                    modal_condicion += '<td><div class="form-group"><input type="text" value="" name="form-'+count+'-valor" maxlength="250" id="id_form-'+count+'-valor" class="form-control validate"><div class="container-error"></div></div></td>'
                     modal_condicion += '<td class="text-center delete">'
                     modal_condicion += '<input type="checkbox" name="form-'+count+'-DELETE" id="id_form-'+count+'-DELETE" style="display: none;">'
                     modal_condicion += '<a onclick="open_modal_delete_condicion(this,@condicion, @action)" class="btn btn-delete btn-bitbucket"><i class="fa fa-trash"></i></a>'
@@ -595,42 +595,91 @@
                 clear_errors_form('#form-condicion-new');
                 $('#m-condicion-new').modal('show');
                 $('#form-condicion-new').find('.id_proceso').val(proceso_condicion)
+                guardar_data_condicion();
             }
         })
 
     }
 
+    function validate_condicion() {
+        $("#form-condicion-new").submit();
+    }
+
     function guardar_data_condicion() {
-        $.ajax({
-            url: '/workflow/condicion',
-            type: 'post',
-            data: $('#form-condicion-new').serialize(),
-            success: function (data) {
-                if (data.estado == true) {
-                    var configuracion = {
-                        'toast_type': 'success',
-                        'toast_text': 'Guardado correctamente',
-                        'toast_title': 'ÉXITO',
-                    }
-                    $('#m-condicion-new').modal('hide');
-                } else {
-                    var configuracion = {
-                        'toast_type': 'error',
-                        'toast_text': 'No se pudo guardar',
-                        'toast_title': 'Error',
-                    }
-                }
-                notification_toast(configuracion)
+
+        $("#form-condicion-new").validate({
+            ignore: 'input[type=hidden]',
+            rules: {},
+            messages: {},
+            errorPlacement: function (error, element) {
+                console.log(error)
+                error.appendTo(element.closest(".form-group").find('.container-error'));
             },
-            error: function (data, textStatus, jqXHR) {
-                clear_errors_form('#form-condicion-new');
-                var errors = $.parseJSON(data.responseText);
-                apply_errors_form(errors);
-            },
-            complete: function () {
-                load_data_procesos();
+            submitHandler: function (form) {
+                $.ajax({
+                    url: '/workflow/condicion',
+                    type: 'post',
+                    data: $('#form-condicion-new').serialize(),
+                    success: function (data) {
+                        if (data.estado == true) {
+                            var configuracion = {
+                                'toast_type': 'success',
+                                'toast_text': 'Guardado correctamente',
+                                'toast_title': 'ÉXITO',
+                            }
+                            $('#m-condicion-new').modal('hide');
+                        } else {
+                            var configuracion = {
+                                'toast_type': 'error',
+                                'toast_text': 'No se pudo guardar',
+                                'toast_title': 'Error',
+                            }
+                        }
+                        notification_toast(configuracion)
+                    },
+                    error: function (data, textStatus, jqXHR) {
+                        clear_errors_form('#form-condicion-new');
+                        var errors = $.parseJSON(data.responseText);
+                        apply_errors_form(errors);
+                    },
+                    complete: function () {
+                        load_data_procesos();
+                    }
+                });
             }
         });
+
+
+        $("[name*=entidad]").each(function(){
+
+            $(this).rules("add", {
+                required : true,
+                messages: {
+                    required: "Este campo es obligatorio."
+                }
+            } );
+        });
+
+        $("[name*=operacion]").each(function(){
+
+            $(this).rules("add", {
+                required : true,
+                messages: {
+                    required: "Este campo es obligatorio."
+                }
+            } );
+        });
+
+        $("[name*=valor]").each(function(){
+
+            $(this).rules("add", {
+                required : true,
+                messages: {
+                    required: "Este campo es obligatorio."
+                }
+            } );
+        });
+
     }
 
     function nueva_condicion(tabla, entidad) {
@@ -654,6 +703,7 @@
         $('#id_' + entidad + '-TOTAL_FORMS').val(cantidad)
 
         $('#form-condicion-new').find('.id_proceso').val(proceso_condicion)
+        clear_errors_form('#form-condicion-new');
     }
 
     function validate_workflow() {

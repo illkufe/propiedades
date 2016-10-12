@@ -746,7 +746,6 @@ class WORKFLOW_CONDICION(View):
 
         return JsonResponse({'entidades': data_entidad, 'condiciones': data}, safe=False)
 
-
 def validar_workflow(request):
 
     try:

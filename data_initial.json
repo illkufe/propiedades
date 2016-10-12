@@ -9057,4 +9057,20 @@
 		"descripcion": "Arriendo Bodega",
 		"simbolo": "arriendo_bodega"
 	}
+},
+{
+	"model": "administrador.entidad_asociacion",
+	"pk": 4,
+	"fields": {
+		"descripcion": "Meses Arriendo",
+		"simbolo": "meses"
+	}
+},
+{
+	"model": "administrador.entidad_asociacion",
+	"pk": 5,
+	"fields": {
+		"descripcion": "Gasto Común",
+		"simbolo": "gasto_comun"
+	}
 }]
