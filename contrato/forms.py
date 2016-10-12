@@ -522,12 +522,12 @@ class PropuestaForm(forms.ModelForm):
 			'meses_contrato'		: forms.NumberInput(attrs={'class': 'form-control'}),
 			'meses_aviso_comercial' : forms.NumberInput(attrs={'class': 'form-control'}),
 			'meses_remodelacion' 	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'arriendo_minimo'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'arriendo_minimo'}),
-			'arriendo_variable'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'arriendo_variable'}),
-			'arriendo_bodega'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'arriendo_bodega'}),
-			'cuota_incorporacion'	: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'cuota_incorporacion'}),
-			'fondo_promocion'		: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'fondo_promocion'}),
-			'gasto_comun'			: forms.CheckboxInput(attrs={'class': 'form-control activar-concepto', 'data-concepto':'gasto_comun'}),
+			'arriendo_minimo'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'arriendo_minimo'}),
+			'arriendo_variable'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'arriendo_variable'}),
+			'arriendo_bodega'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'arriendo_bodega'}),
+			'cuota_incorporacion'	: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'cuota_incorporacion'}),
+			'fondo_promocion'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'fondo_promocion'}),
+			'gasto_comun'			: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'gasto_comun'}),
 			'tipo' 					: forms.Select(attrs={'class': 'form-control'}),
 			'cliente'				: forms.Select(attrs={'class': 'form-control'}),
 			'locales'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
@@ -578,6 +578,92 @@ class PropuestaForm(forms.ModelForm):
 			'locales'			: {'required': 'campo requerido'},
 			'conceptos'			: {'required': 'campo requerido'},
 		}
+
+class FormPropuestaArriendo(forms.ModelForm):
+
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,6]), widget=forms.Select(attrs={'class': 'form-control'}))
+	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}))
+
+	class Meta:
+		model 	= Propuesta_Arriendo_Minimo
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en', 'propuesta']
+
+		widgets = {
+			'reajuste'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'por_meses'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'meses'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'fecha_inicio'	: forms.TextInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'meses'			: {'required': 'campo requerido'},
+			'moneda'		: {'required': 'campo requerido'},
+			'fecha_inicio'	: {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'meses'			: 'Meses',
+			'por_meses' 	: 'Por Meses',
+			'fecha_inicio'	: 'Fecha Inicio',
+		}
+
+		help_texts = {
+			'reajuste' 		: 'Reajuste',
+			'por_meses'		: 'Por Meses',
+			'meses' 		: 'Cada Cuantos',
+			'moneda' 		: 'Moneda',
+			'fecha_inicio' 	: 'Fecha Inicio',
+		}
+
+class FormPropuestaArriendoDetalle(forms.ModelForm):
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
+
+	class Meta:
+		model 	= Propuesta_Arriendo_Minimo_Detalle
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en', 'propuesta']
+
+		widgets = {
+			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
+			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
+			'metros' 		: forms.CheckboxInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'mes_inicio' 	: {'required': 'campo requerido'},
+			'mes_termino' 	: {'required': 'campo requerido'},
+			'metros' 		: {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'mes_inicio' 	: 'Año inicio',
+			'mes_termino' 	: 'Año término',
+			'metros' 		: 'valor x m²',
+		}
+
+		help_texts = {
+			'mes_inicio' 	: 'Año inicio',
+			'mes_termino' 	: 'Año término',
+			'metros' 		: 'valor x m²',
+		}
+
+	def clean_fecha_inicio(self):
+
+		mes_inicio 	= str(self.cleaned_data.get("mes_inicio")).zfill(2)
+		anio_inicio = str(self.cleaned_data.get("anio_inicio"))
+
+		return datetime.strptime('01/'+mes_inicio+'/'+anio_inicio+'', "%d/%m/%Y").date()
+
+	def clean_fecha_termino(self):
+
+		mes_termino 	= str(self.cleaned_data.get("mes_termino")).zfill(2)
+		anio_termino 	= str(self.cleaned_data.get("anio_termino"))
+
+		return ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+anio_termino+'', "%d/%m/%Y"))
 
 class FormPropuestaVariable(forms.ModelForm):
 
@@ -729,11 +815,12 @@ class FormPropuestaComun(forms.ModelForm):
 
 
 # inlines de propuesta
-InlineFormPropuestaVariable 	= inlineformset_factory(Propuesta_Version, Propuesta_Arriendo_Variable, form=FormPropuestaVariable, extra=1, can_delete=True)
-InlineFormPropuestaBodega 		= inlineformset_factory(Propuesta_Version, Propuesta_Arriendo_Bodega, form=FormPropuestaBodega, extra=1, can_delete=True)
-InlineFormPropuestaCuota 		= inlineformset_factory(Propuesta_Version, Propuesta_Cuota_Incorporacion, form=FormPropuestaCuota, extra=1, can_delete=True)
-InlineFormPropuestaPromocion 	= inlineformset_factory(Propuesta_Version, Propuesta_Fondo_Promocion, form=FormPropuestaPromocion, extra=1, can_delete=True)
-InlineFormPropuestaComun 		= inlineformset_factory(Propuesta_Version, Propuesta_Gasto_Comun, form=FormPropuestaComun, extra=1, can_delete=True)
+InlineFormPropuestaMinimoDetalle 	= inlineformset_factory(Propuesta_Arriendo_Minimo, Propuesta_Arriendo_Minimo_Detalle, form=FormPropuestaArriendoDetalle, extra=1, can_delete=True)
+InlineFormPropuestaVariable 		= inlineformset_factory(Propuesta_Version, Propuesta_Arriendo_Variable, form=FormPropuestaVariable, extra=1, can_delete=True)
+InlineFormPropuestaBodega 			= inlineformset_factory(Propuesta_Version, Propuesta_Arriendo_Bodega, form=FormPropuestaBodega, extra=1, can_delete=True)
+InlineFormPropuestaCuota 			= inlineformset_factory(Propuesta_Version, Propuesta_Cuota_Incorporacion, form=FormPropuestaCuota, extra=1, can_delete=True)
+InlineFormPropuestaPromocion 		= inlineformset_factory(Propuesta_Version, Propuesta_Fondo_Promocion, form=FormPropuestaPromocion, extra=1, can_delete=True)
+InlineFormPropuestaComun 			= inlineformset_factory(Propuesta_Version, Propuesta_Gasto_Comun, form=FormPropuestaComun, extra=1, can_delete=True)
 
 
 

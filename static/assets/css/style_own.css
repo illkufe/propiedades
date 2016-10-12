@@ -54,7 +54,7 @@
 }
 
 .info-succes{
-	color: #4CAF50	
+	color: #4CAF50;
 }
 
 .info-error{
@@ -65,7 +65,9 @@
 	color: #C1C1C1;
 }
 
-
+label {
+	font-size: 12px;
+}
 
 /* STYLE widget report */
 .widget-report{

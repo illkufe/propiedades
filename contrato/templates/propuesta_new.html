@@ -248,6 +248,179 @@
 						</div>
 					</div>
 
+					<div class="ibox-content">
+						<table id="tabla-arriendo" class="table tabla-conceptos">
+							<tbody>
+								<tr>
+									<td>
+										<div class="form-group">
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_minimo.reajuste.help_text }}" ></i>
+											{{ form_minimo.reajuste.label_tag }}
+											{{ form_minimo.reajuste }}
+											<div class="container-error">
+												{{ form_minimo.reajuste.errors|striptags }}
+											</div>
+										</div>
+									</td>
+
+									<td>
+										<div class="form-group">
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_minimo.por_meses.help_text }}" ></i>
+											{{ form_minimo.por_meses.label_tag }}
+											{{ form_minimo.por_meses }}
+											<div class="container-error">
+												{{ form_minimo.por_meses.errors|striptags }}
+											</div>
+										</div>
+									</td>
+
+									<td class="text-center">
+										<div class="form-group">
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_minimo.meses.help_text }}" ></i>
+											{{ form_minimo.meses.label_tag }}
+											{{ form_minimo.meses }}
+											<div class="container-error">
+												{{ form_minimo.meses.errors|striptags }}
+											</div>
+										</div>
+									</td>
+
+									<td class="text-center">
+										<div class="form-group">
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_minimo.valor.help_text }}" ></i>
+											{{ form_minimo.valor.label_tag }}
+											{{ form_minimo.valor }}
+											<div class="container-error">
+												{{ form_minimo.valor.errors|striptags }}
+											</div>
+										</div>
+									</td>
+
+									<td class="text-center">
+										<div class="form-group">
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_minimo.moneda.help_text }}" ></i>
+											{{ form_minimo.moneda.label_tag }}
+											{{ form_minimo.moneda }}
+											<div class="container-error">
+												{{ form_minimo.moneda.errors|striptags }}
+											</div>
+										</div>
+									</td>
+
+									<td>
+										<div class="form-group">
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_minimo.fecha_inicio.help_text }}" ></i>
+											{{ form_minimo.fecha_inicio.label_tag }}
+											<div class="input-group date">
+												{{ form_minimo.fecha_inicio }}
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+											</div>
+											<div class="container-error">
+												{{ form_minimo.fecha_inicio.errors|striptags }}
+											</div>
+										</div>
+									</td>
+								</tr>
+								
+							</tbody>
+						</table>
+
+						{{ form_minimo_detalle.management_form }}
+						<table id="tabla-comun" class="table tabla-conceptos">
+							<thead>
+								{% for form in form_minimo_detalle %}
+								{% if forloop.first %}
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
+									{{ form.mes_inicio.label_tag|striptags }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
+									{{ form.mes_termino.label_tag|striptags }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+									{{ form.valor.label_tag|striptags }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+									{{ form.moneda.label_tag|striptags }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros.help_text }}" ></i>
+									{{ form.metros.label_tag|striptags }}
+								</th>
+								<th></th>
+								{% endif %}
+								{% endfor %}
+							</thead>
+							<tbody>
+								{% for form in form_minimo_detalle %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								<tr>
+
+									<td class="text-center">
+										<div class="form-group">
+											{{ form.mes_inicio }}
+											<div class="container-error">
+												{{ form.mes_inicio.errors|striptags }}
+											</div>
+										</div>
+									</td>
+
+									<td>
+										<div class="form-group">
+											{{ form.mes_termino }}
+											<div class="container-error">
+												{{ form.mes_termino.errors|striptags }}
+											</div>
+										</div>
+									</td>
+
+									<td>
+										<div class="form-group">
+											{{ form.valor }}
+											<div class="container-error">
+												{{ form.valor.errors|striptags }}
+											</div>
+										</div>
+									</td>
+
+									<td>
+										<div class="form-group">
+											{{ form.moneda }}
+											<div class="container-error">
+												{{ form.moneda.errors|striptags }}
+											</div>
+										</div>
+									</td>
+
+									<td>
+										<div class="form-group">
+											{{ form.metros }}
+											<div class="container-error">
+												{{ form.metros.errors|striptags }}
+											</div>
+										</div>
+									</td>
+
+									<td class="text-center delete">
+										<div class="form-group text-center">
+											{{ form.DELETE }}
+											<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Periodo')"><i class="fa fa-trash"></i></a>
+										</div>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+
+
 					<!-- arriendo variable -->
 					<div class="ibox-title">
 						<div class="checkbox checkbox-primary" style="display:inline-block;">
@@ -263,7 +436,7 @@
 
 					<div class="ibox-content">
 						{{ form_variable.management_form }}
-						<table id="tabla-variable" class="table">
+						<table id="tabla-variable" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_variable %}
 								{% if forloop.first %}
@@ -382,7 +555,7 @@
 
 					<div class="ibox-content">
 						{{ form_bodega.management_form }}
-						<table id="tabla-bodega" class="table">
+						<table id="tabla-bodega" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_bodega %}
 								{% if forloop.first %}
@@ -506,7 +679,7 @@
 
 					<div class="ibox-content">
 						{{ form_cuota.management_form }}
-						<table id="tabla-bodega" class="table">
+						<table id="tabla-cuota" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_cuota %}
 								{% if forloop.first %}
@@ -612,7 +785,7 @@
 
 					<div class="ibox-content">
 						{{ form_promocion.management_form }}
-						<table id="tabla-bodega" class="table">
+						<table id="tabla-promocion" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_promocion %}
 								{% if forloop.first %}
@@ -710,7 +883,7 @@
 
 					<div class="ibox-content">
 						{{ form_comun.management_form }}
-						<table id="tabla-bodega" class="table">
+						<table id="tabla-comun" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_comun %}
 								{% if forloop.first %}
@@ -825,7 +998,6 @@ $(document).ready(function(){
 
 function initialize(){
 
-
 	$('#agregar-fila').click(function(){
 		var obj 	= {}
 		obj.tabla 	= $(this).attr('data-tabla')
@@ -833,29 +1005,28 @@ function initialize(){
 		agregar_fila_concepto(obj)
 	})
 
-	$(".activar-concepto").click(function(){
+	$('.concepto-activo').each(function () {
 		var concepto = $(this).attr('data-concepto')
-		if($(this).prop('checked')){
-			$(".ibox-content [name^="+concepto+"]").attr('disabled', false)
-		}
-		else{
-			$(".ibox-content [name^="+concepto+"]").attr('disabled', true)
-			$(".ibox-content [name^="+concepto+"]").val('')
-			$(".form_"+concepto).find('.container-error').html('')
-		}
-	})
-
-	$(".activar-concepto").each(function () {
-		var concepto = $(this).attr('data-concepto')
-		if($(this).prop('checked')){
-			$(".ibox-content [name^="+concepto+"]").attr('disabled', false)
+		if(!$(this).prop('checked')){
+			$('.ibox-content tbody td [name^='+concepto+']').attr('disabled', true)
+			$(".ibox-content tbody td [name^="+concepto+"]").val('')
+			$(".ibox-content tbody td [name^="+concepto+"]").closest('.form-group').find('.container-error').html('')
 		}
 	});
 
+	$('.concepto-activo').click(function(){
+		var concepto = $(this).attr('data-concepto')
+		if($(this).prop('checked')){
+			$(".ibox-content tbody td [name^="+concepto+"]").attr('disabled', false)
+		}
+		else{
+			$(".ibox-content tbody td [name^="+concepto+"]").attr('disabled', true)
+			$(".ibox-content tbody td [name^="+concepto+"]").val('')
+			$(".ibox-content tbody td [name^="+concepto+"]").closest('.form-group').find('.container-error').html('')
+			// {falta: sacar checkbox seleccionados}
+		}
+	})
 }
-
-
-
 
 function agregar_fila_concepto(obj){
 
@@ -869,7 +1040,7 @@ function agregar_fila_concepto(obj){
 
 	$row.find('input').val('');
 	$row.find('select option:first-child').attr("selected", "selected");
-	$row.find('input:checkbox').prop('checked',false);
+	$row.find('input:checkbox').prop('checked', false);
 
 	$('#'+obj.tabla+' tbody').append('<tr></tr>')
 	$('#'+obj.tabla+' tbody tr:last').append($row)

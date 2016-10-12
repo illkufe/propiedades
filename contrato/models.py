@@ -209,23 +209,56 @@ class Propuesta_Proceso(models.Model):
 class Propuesta_Arriendo_Minimo(models.Model):
 
 	# atributos (generales)
-	valor			= models.FloatField(null=True, blank=True)
-	metro_cuadrado 	= models.BooleanField(default=False)
 	reajuste 		= models.BooleanField(default=False)
-	meses_reajuste 	= models.IntegerField(null=True, blank=True)
-	valor_reajuste	= models.FloatField(null=True, blank=True)
+	por_meses 		= models.BooleanField(default=False)
+	meses 			= models.IntegerField(default=0)
+	valor			= models.FloatField(default=0)
+	fecha_inicio 	= models.DateField()
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
 	creado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	propuesta 		= models.ForeignKey(Propuesta_Version)
-	moneda_valor 	= models.ForeignKey(Moneda, related_name='propuesta_minimo_moneda_valor', null=True, blank=True)
-	moneda_reajuste = models.ForeignKey(Moneda, related_name='propuesta_minimo_moneda_reajuste', null=True, blank=True)
+	propuesta 	= models.ForeignKey(Propuesta_Version)
+	moneda 		= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)
+
+class Propuesta_Arriendo_Minimo_Detalle(models.Model):
+
+	MESES = (
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
+	)
+
+	# atributos (generales
+	mes_inicio 		= models.IntegerField(choices=MESES)
+	mes_termino		= models.IntegerField(choices=MESES)
+	valor			= models.FloatField()
+	metros 			= models.BooleanField(default=False)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	propuesta_arriendo_minimo 	= models.ForeignKey(Propuesta_Arriendo_Minimo)
+	moneda 						= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return str(self.propuesta_arriendo_minimo.propuesta.numero)
 
 class Propuesta_Arriendo_Variable(models.Model):
 
