@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
-
 from conceptos.models import Concepto
 from procesos.models import Factura
 
@@ -446,15 +445,15 @@ class CONEXION_CONCEPTO(View):
 
 # clasificacion
 class ClasificacionList(ListView):
-    model = Clasificacion
-    template_name = 'clasificacion_list.html'
+    model           = Clasificacion
+    template_name   = 'clasificacion_list.html'
 
     def get_context_data(self, **kwargs):
         context = super(ClasificacionList, self).get_context_data(**kwargs)
-        context['title'] = modulo
+        context['title']    = modulo
         context['subtitle'] = 'clasificacion'
-        context['name'] = 'lista'
-        context['href'] = '/clasificacion/list'
+        context['name']     = 'lista'
+        context['href']     = '/clasificacion/list'
 
         return context
 
@@ -464,9 +463,9 @@ class ClasificacionList(ListView):
         return queryset
 
 class ClasificacionMixin(object):
-    template_name = 'clasificacion_new.html'
-    form_class = ClasificacionForm
-    success_url = '/clasificacion/list'
+    template_name   = 'clasificacion_new.html'
+    form_class      = ClasificacionForm
+    success_url     = '/clasificacion/list'
 
     def form_invalid(self, form):
 
@@ -478,15 +477,15 @@ class ClasificacionMixin(object):
 
     def form_valid(self, form):
 
-        context = self.get_context_data()
-        form_clasificacion_detalle = context['clasificacion_detalle_form']
+        context                     = self.get_context_data()
+        form_clasificacion_detalle  = context['clasificacion_detalle_form']
 
-        obj = form.save(commit=False)
+        obj         = form.save(commit=False)
         obj.empresa = self.request.user.userprofile.empresa
         obj.save()
 
         if form_clasificacion_detalle.is_valid():
-            self.object = form.save(commit=False)
+            self.object                         = form.save(commit=False)
             form_clasificacion_detalle.instance = self.object
             form_clasificacion_detalle.save()
 
@@ -502,11 +501,11 @@ class ClasificacionNew(ClasificacionMixin, FormView):
     def get_context_data(self, **kwargs):
 
         context = super(ClasificacionNew, self).get_context_data(**kwargs)
-        context['title'] = modulo
+        context['title']    = modulo
         context['subtitle'] = 'clasificacion'
-        context['name'] = 'nuevo'
-        context['href'] = '/clasificacion/list'
-        context['accion'] = 'create'
+        context['name']     = 'nuevo'
+        context['href']     = '/clasificacion/list'
+        context['accion']   = 'create'
 
         if self.request.POST:
             context['clasificacion_detalle_form'] = ClasificacionFormSet(self.request.POST)
@@ -516,19 +515,19 @@ class ClasificacionNew(ClasificacionMixin, FormView):
         return context
 
 class ClasificacionUpdate(ClasificacionMixin, UpdateView):
-    model = Clasificacion
-    form_class = ClasificacionForm
-    template_name = 'clasificacion_new.html'
-    success_url = '/clasificacion/list'
+    model           = Clasificacion
+    form_class      = ClasificacionForm
+    template_name   = 'clasificacion_new.html'
+    success_url     = '/clasificacion/list'
 
     def get_context_data(self, **kwargs):
 
         context = super(ClasificacionUpdate, self).get_context_data(**kwargs)
-        context['title'] = modulo
+        context['title']    = modulo
         context['subtitle'] = 'clasificacion'
-        context['name'] = 'editar'
-        context['href'] = '/clasificacion/list'
-        context['accion'] = 'update'
+        context['name']     = 'editar'
+        context['href']     = '/clasificacion/list'
+        context['accion']   = 'update'
 
         if self.request.POST:
             context['clasificacion_detalle_form'] = ClasificacionFormSet(self.request.POST, instance=self.object)
@@ -542,10 +541,251 @@ class ClasificacionDelete(DeleteView):
     success_url = reverse_lazy('/clasificacion/list')
 
     def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        self.object         = self.get_object()
         self.object.visible = False
         self.object.save()
         payload = {'delete': 'ok'}
         return JsonResponse(payload, safe=False)
 
+# workflow
+class WORKFLOW(View):
 
+    http_method_names = ['get', 'post']
+
+    def get(self, request, id=None):
+
+        self.object_list = request.user.userprofile.empresa.proceso_set.filter(visible=True).order_by('id')
+
+        if request.is_ajax() or self.request.GET.get('format', None) == 'json':
+            return self.json_to_response()
+        else:
+            return render(request, 'workflow_new.html', {
+                'title'                     : 'Configuración',
+                'href' 		                : 'conexion-parametro',
+                'subtitle'	                : 'WorkFlow',
+                'name' 		                : 'Configuración',
+                'procesos_form'             : ProcesosBorradorForm(),
+                'condiciones_form'          : ProcesoCondicionFormSet()
+            })
+
+    def get_queryset(self, tipo_estado):
+
+        queryset = Proceso.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True, tipo_estado_id=tipo_estado)
+
+        return queryset
+
+    def post(self, request):
+
+        if self.request.POST.get('action') == 'create':
+            try:
+
+                form_proceso = ProcesosBorradorForm(self.request.POST)
+
+                if form_proceso.is_valid():
+                    self.obj_proceso            = form_proceso.save(commit=False)
+                    self.obj_proceso.empresa    = self.request.user.userprofile.empresa
+                    self.obj_proceso.save()
+                    form_proceso.save_m2m()
+                else:
+                    return JsonResponse(form_proceso.errors, status=400)
+
+                estado = True
+
+            except Exception as asd:
+                print(asd)
+
+                estado = False
+
+            return JsonResponse({'estado': estado}, safe=False)
+        elif self.request.POST.get('action') == 'update':
+
+            try:
+
+                proceso         = get_object_or_404(Proceso, pk=self.request.POST.get('id'))
+                form_proceso    = ProcesosBorradorForm(self.request.POST, instance=proceso)
+
+                if form_proceso.is_valid():
+                    self.obj_proceso            = form_proceso.save(commit=False)
+                    self.obj_proceso.empresa    = self.request.user.userprofile.empresa
+                    self.obj_proceso.save()
+                    form_proceso.save_m2m()
+                else:
+                    return JsonResponse(form_proceso.errors, status=400)
+
+                estado = True
+
+            except Exception as asd:
+                print(asd)
+
+                estado = False
+
+            return JsonResponse({'estado': estado}, safe=False)
+        elif self.request.POST.get('action') == 'delete':
+
+            try:
+                proceso_id = self.request.POST.get('proceso_id')
+
+                proceso         = Proceso.objects.get(id=proceso_id)
+                proceso.visible = False
+                proceso.save()
+
+                estado = True
+
+            except Exception as asd:
+                print(asd)
+
+                estado = False
+
+            return JsonResponse({'estado': estado}, safe=False)
+
+
+
+    def json_to_response(self):
+
+        data                = list()
+
+        for item in self.object_list:
+
+            data_responsable    = list()
+            data_antecesor      = list()
+
+            for responsable in item.responsable.all():
+                data_responsable.append({
+                    'id'        : responsable.id,
+                    'nombre'    : responsable.user.username
+                })
+
+            for antecesor in item.antecesor.all():
+                data_antecesor.append({
+                    'id'        : antecesor.id,
+                    'nombre'    : antecesor.nombre
+                })
+
+            link_data_1 = [{'id': l.id, 'proceso': l.proceso_id, 'entidad_id': l.entidad_id,
+                            'entidad': l.entidad.nombre,'operacion_id': l.operacion_id,'operacion': l.operacion.simbolo,
+                            'valor': l.valor} for l in Proceso_Condicion.objects.filter(proceso_id=item.id)]
+
+            data.append({
+                'id' 	            : item.id,
+                'id_tipo_estado'    : item.tipo_estado_id,
+                'tipo_estado'       : item.tipo_estado.nombre,
+                'nombre' 	        : item.nombre,
+                'responsable' 	    : data_responsable,
+                'antecesor' 	    : data_antecesor ,
+                'existe_condicion' 	: False if not Proceso_Condicion.objects.filter(proceso_id=item.id).count() else Proceso_Condicion.objects.filter(proceso_id=item.id).__bool__(),
+                'condicion'         : link_data_1
+            })
+
+        return JsonResponse(data, safe=False)
+
+class WORKFLOW_CONDICION(View):
+
+    http_method_names = ['get', 'post']
+
+    def get(self, request, id=None):
+
+        self.object_list = Proceso_Condicion.objects.filter(proceso_id= self.request.GET.get('proceso_id'))
+
+        if request.is_ajax() or self.request.GET.get('format', None) == 'json':
+
+            return self.json_to_response()
+
+        else:
+
+            return render(request, 'conexion_parametro_list.html', {
+                'title'     : 'Conexión',
+                'href' 		: 'conexion-parametro',
+                'subtitle'	: 'Parametros Generales',
+                'name' 		: 'Configuración',
+            })
+
+    def post(self, request):
+
+        try:
+            form_condicion  = ProcesoCondicionFormSet(self.request.POST)
+            if form_condicion.is_valid():
+
+                instances = form_condicion.save(commit=False)
+                if form_condicion.can_delete == True:
+                    for obj in form_condicion.deleted_objects:
+                        obj.delete()
+
+                form_condicion.save()
+            else:
+                for errors in form_condicion.errors:
+                    pass
+                return JsonResponse(errors, status=400)
+            estado = True
+        except Exception as asd:
+            print(asd)
+            estado = False
+        return JsonResponse({'estado': estado}, safe=False)
+
+    def json_to_response(self):
+
+        data            = list()
+        data_entidad    = list()
+
+        for obj in Entidad_Asociacion.objects.all():
+            data_entidad.append({
+                'id'        : obj.id,
+                'nombre'    : obj.nombre
+            })
+
+
+        for item in self.object_list:
+
+
+            data.append({
+                'proceso_id'            : item.proceso_id,
+                'id' 					: item.id,
+                'entidad' 	            : item.entidad_id,
+                'operacion' 	        : item.operacion_id,
+                'valor' 			    : item.valor
+            })
+
+        return JsonResponse({'entidades': data_entidad, 'condiciones': data}, safe=False)
+
+def validar_workflow(request):
+
+    try:
+        estado      = True
+        error       = ''
+        object_list = request.user.userprofile.empresa.proceso_set.filter(visible=True).order_by('tipo_estado_id','id')
+
+        if not object_list.filter(tipo_estado_id=1).exists() or not object_list.filter(tipo_estado_id=3).exists():
+            estado = False
+            error  = "Error, debe contar con un proceso borrador y una aprobación."
+        else:
+            lista_antecesor = list()
+
+            ##Obtengo la lista de antecesores del workflow
+            for a in object_list:
+                for j in a.antecesor.values_list('proceso__antecesor', flat=True).distinct():
+                    if j not in lista_antecesor:
+                        lista_antecesor.append(j)
+
+            ## Valido que los procesos esten de antecesores
+            for b in object_list:
+                ##Valido que el proceso tenga antecesor y que sea distinto de tipo borrador
+                if not b.antecesor.all().count() and b.tipo_estado_id !=1:
+                    estado = False
+                    error = "El proceso "+ str(b.nombre)+ " no cuenta con un antecesor."
+                    break
+                else:
+                    #Si existe el proceso como antecesor lo elimino de la lista de antecesores.
+                    if b.id in lista_antecesor:
+                        lista_antecesor.remove(b.id)
+                    else:
+                        # El proceso no es de tipo aprobación.
+                        if not b.tipo_estado_id == 3:
+                            estado = False
+                            error = "El proceso "+ str(b.nombre)+ " no es antecesor de ningún proceso."
+                            break
+
+    except Exception as a:
+        estado = False
+        error  = "Error al validar Workflow."
+
+
+    return JsonResponse({'estado': estado, 'error': error}, safe=False)

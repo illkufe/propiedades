@@ -238,7 +238,7 @@ class Tipo_Estado_Proceso(models.Model):
 class Proceso(models.Model):
 
 	# atributos (generales)
-	nombre 		= models.CharField(max_length=250)
+	nombre 		= models.CharField(max_length=250, unique=True)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)

@@ -286,6 +286,8 @@ class PropuestaList(ListView):
 		context['subtitle'] = 'propuesta'
 		context['name'] 	= 'lista'
 		context['href'] 	= '/propuesta/list'
+		context['workflow']	= self.get_workflow()
+
 
 		return context
 
@@ -303,6 +305,13 @@ class PropuestaList(ListView):
 			queryset.append(ultima_version)
 
 		return queryset
+
+	def get_workflow(self):
+
+		workflow = Proceso.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True).count()
+
+		return workflow
+
 
 class PropuestaMixin(object):
 

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.forms.models import inlineformset_factory
+from django.forms import formset_factory
+from django.forms.models import inlineformset_factory, modelformset_factory
 from django.contrib.auth.models import User, Group
 
+from accounts.models import UserProfile
 from .models import *
 
 class ClienteForm(forms.ModelForm):
@@ -153,3 +155,85 @@ class ClasificacionDetalleForm(forms.ModelForm):
         }
 
 ClasificacionFormSet = inlineformset_factory(Clasificacion, Clasificacion_Detalle, form=ClasificacionDetalleForm, extra=1, can_delete=True)
+
+
+class ProcesosBorradorForm(forms.ModelForm):
+
+	def __init__(self, *args, **kwargs):
+
+		super(ProcesosBorradorForm, self).__init__(*args, **kwargs)
+		self.fields['tipo_estado'].queryset 				= Tipo_Estado_Proceso.objects.all()
+		self.fields['tipo_estado'].widget.attrs['readonly'] = True
+		self.fields['responsable'].queryset					= UserProfile.objects.all()
+
+
+	class Meta:
+		model = Proceso
+		fields = '__all__'
+		exclude = ['creado_en', 'visible', 'empresa']
+
+		widgets = {
+			'id'				: forms.HiddenInput(attrs={'class': 'form-control'}),
+			'tipo_estado'		: forms.Select(attrs={'class': 'form-control'}),
+			'nombre'		    : forms.TextInput(attrs={'class': 'form-control select-antecesor'}),
+			'responsable'		: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple': 'multiple'}),
+			'antecesor'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple': 'multiple'}),
+			
+		}
+
+		error_messages = {
+			'tipo_estado' 	: {'required': 'campo requerido'},
+			'nombre' 		: {'required': 'campo requerido', 'unique': 'Nombre de proceso, ya existe.'},
+			'responsable' 	: {'required': 'campo requerido'},
+			'antecesor' 	: {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'tipo_estado'	: 'Tipo de Estado',
+		}
+
+		help_texts = {
+			'tipo_estado'	: 'Tipo estado',
+			'nombre'		: 'nombre',
+			'responsable'	: 'responsable',
+			'antecesor'		: 'antecesor',
+		}
+
+class ProcesoCondicionForm(forms.ModelForm):
+
+	def __init__(self, *args, **kwargs):
+
+		super(ProcesoCondicionForm, self).__init__(*args, **kwargs)
+		self.fields['operacion'].queryset 	= Tipo_Operacion.objects.all().order_by('id')
+		self.fields['entidad'].queryset 	= Entidad_Asociacion.objects.all().order_by('id')
+
+	class Meta:
+		model 	= Proceso_Condicion
+		fields 	= '__all__'
+		exclude = [ 'descripcion']
+
+		widgets = {
+			'proceso'		: forms.HiddenInput(attrs={'class': 'form-control id_proceso'}),
+			'valor'			: forms.TextInput(attrs={'class': 'form-control'}),
+			'operacion'		: forms.Select(attrs={'class': 'form-control'}),
+			'entidad'		: forms.Select(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'valor' 		: {'required': 'campo requerido'},
+			'operacion' 	: {'required': 'campo requerido'},
+			'entidad' 		: {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'tipo_estado'	: 'Tipo de Estado',
+		}
+
+		help_texts = {
+			'proceso'		: 'proceso',
+			'valor'			: 'valor',
+			'operacion'		: 'operacion',
+			'entidad'		: 'entidad',
+		}
+
+ProcesoCondicionFormSet = modelformset_factory(Proceso_Condicion, form=ProcesoCondicionForm, extra=1, exclude=[ 'descripcion'], can_delete=True)

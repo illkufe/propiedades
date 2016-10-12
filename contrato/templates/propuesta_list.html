@@ -11,7 +11,7 @@
 				<div class="ibox-title">
 					<h5>Lista de Propuestas</h5>
 					<div class="ibox-tools">
-						<a href='{% url "propuesta_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nueva propuesta</button></a>
+						<a id="new_propuesta"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nueva propuesta</button></a>
 					</div>
 				</div>
 
@@ -158,6 +158,8 @@ $(document).ready(function(){
 	initialize()
 	data_tabla_propuestas()
 	propuesta_enviar_correo()
+
+
 	
 
 });
@@ -171,6 +173,26 @@ function initialize(){
 	})
 
 	$('#cargar-tabla-propuestas').click(data_tabla_propuestas())
+
+    $('#new_propuesta').on('click', function () {
+        var propuesta = {{ workflow}};
+
+        if(propuesta > 0){
+            location.href = '{% url 'propuesta_new' %}'
+        }
+        else {
+            var configuracion = {
+                'toast_type'	: 'warning',
+                'toast_text' 	: 'Debe configurar primero el Workflow.',
+                'toast_title' 	: 'Advertencia',
+            }
+
+            // mostrar respuesta
+            notification_toast(configuracion)
+        }
+
+
+    })
 }
 
 
