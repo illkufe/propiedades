@@ -47,13 +47,7 @@
 								<div class="form-group col-sm-3">
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cliente.help_text }}" ></i>
 									{{ form.cliente.label_tag }}
-									<div class="input-group">
-										{{ form.cliente }}
-										<span class="input-group-addon" onclick="open_form_cliente()">
-											<i class="fa fa-plus"></i>
-										</span>
-									</div>
-
+									{{ form.cliente }}
 									<div class="container-error">
 										{{ form.cliente.errors|striptags }}
 									</div>
@@ -234,8 +228,7 @@
 						</div>
 					</div>
 
-
-					<!-- arriendo minimos -->
+					<!-- concepto: arriendo minimo -->
 					<div class="ibox-title">
 						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.arriendo_minimo }}
@@ -244,13 +237,13 @@
 							</label>
 						</div>
 						<div class="ibox-tools" style="display:inline-block; margin-top:10px; float:right;">
-							<button type="button" id="agregar-fila" class="btn btn-primary btn-xs" data-tabla="tabla-variable" data-entidad="arriendo_variable"><i class="fa fa-plus"></i> nuevo periodo</button>
+							<button type="button" class="btn btn-primary btn-xs agregar-fila" data-tabla="tabla-arriendo-detalle" data-entidad="arriendo_minimo_detalle"><i class="fa fa-plus"></i> nuevo periodo</button>
 						</div>
 					</div>
 
 					<div class="ibox-content">
-						<table id="tabla-arriendo" class="table tabla-conceptos">
-							<tbody>
+						<table id="tabla-arriendo" class="table">
+							<tbody class="arriendo_minimo_detalle">
 								<tr>
 									<td>
 										<div class="form-group">
@@ -274,7 +267,7 @@
 										</div>
 									</td>
 
-									<td class="text-center">
+									<td>
 										<div class="form-group">
 											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_minimo.meses.help_text }}" ></i>
 											{{ form_minimo.meses.label_tag }}
@@ -285,7 +278,7 @@
 										</div>
 									</td>
 
-									<td class="text-center">
+									<td>
 										<div class="form-group">
 											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_minimo.valor.help_text }}" ></i>
 											{{ form_minimo.valor.label_tag }}
@@ -296,7 +289,7 @@
 										</div>
 									</td>
 
-									<td class="text-center">
+									<td>
 										<div class="form-group">
 											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_minimo.moneda.help_text }}" ></i>
 											{{ form_minimo.moneda.label_tag }}
@@ -323,12 +316,16 @@
 										</div>
 									</td>
 								</tr>
-								
+
 							</tbody>
 						</table>
 
 						{{ form_minimo_detalle.management_form }}
-						<table id="tabla-comun" class="table tabla-conceptos">
+						{% for form in form_minimo_detalle %}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
+						<table id="tabla-arriendo-detalle" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_minimo_detalle %}
 								{% if forloop.first %}
@@ -356,13 +353,8 @@
 								{% endif %}
 								{% endfor %}
 							</thead>
-							<tbody>
-								{% for form in form_minimo_detalle %}
-								{% for hidden in form.hidden_fields %}
-								{{ hidden }}
-								{% endfor %}
+							<tbody class="arriendo_minimo_detalle">
 								<tr>
-
 									<td class="text-center">
 										<div class="form-group">
 											{{ form.mes_inicio }}
@@ -421,7 +413,7 @@
 					</div>
 
 
-					<!-- arriendo variable -->
+					<!-- concepto: arriendo variable -->
 					<div class="ibox-title">
 						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.arriendo_variable }}
@@ -430,12 +422,16 @@
 							</label>
 						</div>
 						<div class="ibox-tools" style="display:inline-block; margin-top:10px; float:right;">
-							<button type="button" id="agregar-fila" class="btn btn-primary btn-xs" data-tabla="tabla-variable" data-entidad="arriendo_variable"><i class="fa fa-plus"></i> nuevo periodo</button>
+							<button type="button" class="btn btn-primary btn-xs agregar-fila" data-tabla="tabla-variable" data-entidad="arriendo_variable"><i class="fa fa-plus"></i> nuevo periodo</button>
 						</div>
 					</div>
 
 					<div class="ibox-content">
 						{{ form_variable.management_form }}
+						{% for form in form_variable %}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
 						<table id="tabla-variable" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_variable %}
@@ -468,11 +464,7 @@
 								{% endif %}
 								{% endfor %}
 							</thead>
-							<tbody>
-								{% for form in form_variable %}
-								{% for hidden in form.hidden_fields %}
-								{{ hidden }}
-								{% endfor %}
+							<tbody class="arriendo_variable">
 								<tr>
 									<td>
 										<div class="form-group">
@@ -539,8 +531,8 @@
 							</tbody>
 						</table>
 					</div>
-					
-					<!-- arriendo bodega -->
+
+					<!-- concepto: arriendo bodega -->
 					<div class="ibox-title">
 						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.arriendo_bodega }}
@@ -549,12 +541,16 @@
 							</label>
 						</div>
 						<div class="ibox-tools" style="display:inline-block; margin-top:10px; float:right;">
-							<button type="button" id="agregar-fila" class="btn btn-primary btn-xs" data-tabla="tabla-bodega" data-entidad="arriendo_bodega"><i class="fa fa-plus"></i> nuevo periodo</button>
+							<button type="button" class="btn btn-primary btn-xs agregar-fila" data-tabla="tabla-bodega" data-entidad="arriendo_bodega"><i class="fa fa-plus"></i> nuevo periodo</button>
 						</div>
 					</div>
 
 					<div class="ibox-content">
 						{{ form_bodega.management_form }}
+						{% for form in form_bodega %}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
 						<table id="tabla-bodega" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_bodega %}
@@ -587,11 +583,7 @@
 								{% endif %}
 								{% endfor %}
 							</thead>
-							<tbody>
-								{% for form in form_bodega %}
-								{% for hidden in form.hidden_fields %}
-								{{ hidden }}
-								{% endfor %}
+							<tbody class="arriendo_bodega">
 								<tr>
 									<td>
 										<div class="form-group">
@@ -664,7 +656,7 @@
 						</table>
 					</div>
 
-					<!-- cuota de incorporacion -->
+					<!-- concepto: cuota de incorporacion -->
 					<div class="ibox-title">
 						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.cuota_incorporacion }}
@@ -673,12 +665,16 @@
 							</label>
 						</div>
 						<div class="ibox-tools" style="display:inline-block; margin-top:10px; float:right;">
-							<button type="button" id="agregar-fila" class="btn btn-primary btn-xs" data-tabla="tabla-variable" data-entidad="arriendo_variable"><i class="fa fa-plus"></i> nuevo periodo</button>
+							<button type="button" class="btn btn-primary btn-xs agregar-fila" data-tabla="tabla-cuota" data-entidad="cuota_incorporacion"><i class="fa fa-plus"></i> nuevo periodo</button>
 						</div>
 					</div>
 
 					<div class="ibox-content">
 						{{ form_cuota.management_form }}
+						{% for form in form_cuota %}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
 						<table id="tabla-cuota" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_cuota %}
@@ -707,11 +703,7 @@
 								{% endif %}
 								{% endfor %}
 							</thead>
-							<tbody>
-								{% for form in form_cuota %}
-								{% for hidden in form.hidden_fields %}
-								{{ hidden }}
-								{% endfor %}
+							<tbody class="cuota_incorporacion">
 								<tr>
 									<td>
 										<div class="form-group">
@@ -770,7 +762,7 @@
 						</table>
 					</div>
 
-					<!-- fondo de promocion -->
+					<!-- concepto: fondo de promocion -->
 					<div class="ibox-title">
 						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.fondo_promocion }}
@@ -779,12 +771,16 @@
 							</label>
 						</div>
 						<div class="ibox-tools" style="display:inline-block; margin-top:10px; float:right;">
-							<button type="button" id="agregar-fila" class="btn btn-primary btn-xs" data-tabla="tabla-variable" data-entidad="arriendo_variable"><i class="fa fa-plus"></i> nuevo periodo</button>
+							<button type="button" class="btn btn-primary btn-xs agregar-fila" data-tabla="tabla-promocion" data-entidad="fondo_promocion"><i class="fa fa-plus"></i> nuevo periodo</button>
 						</div>
 					</div>
 
 					<div class="ibox-content">
 						{{ form_promocion.management_form }}
+						{% for form in form_promocion %}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
 						<table id="tabla-promocion" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_promocion %}
@@ -809,11 +805,7 @@
 								{% endif %}
 								{% endfor %}
 							</thead>
-							<tbody>
-								{% for form in form_promocion %}
-								{% for hidden in form.hidden_fields %}
-								{{ hidden }}
-								{% endfor %}
+							<tbody class="fondo_promocion">
 								<tr>
 									<td>
 										<div class="form-group">
@@ -868,7 +860,7 @@
 						</table>
 					</div>
 
-					<!-- gasto comun -->
+					<!-- concepto: gasto comun -->
 					<div class="ibox-title">
 						<div class="checkbox checkbox-primary" style="display:inline-block;">
 							{{ form.gasto_comun }}
@@ -877,12 +869,16 @@
 							</label>
 						</div>
 						<div class="ibox-tools" style="display:inline-block; margin-top:10px; float:right;">
-							<button type="button" id="agregar-fila" class="btn btn-primary btn-xs" data-tabla="tabla-variable" data-entidad="arriendo_variable"><i class="fa fa-plus"></i> nuevo periodo</button>
+							<button type="button" class="btn btn-primary btn-xs agregar-fila" data-tabla="tabla-comun" data-entidad="gasto_comun"><i class="fa fa-plus"></i> nuevo periodo</button>
 						</div>
 					</div>
 
 					<div class="ibox-content">
 						{{ form_comun.management_form }}
+						{% for form in form_comun %}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
 						<table id="tabla-comun" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_comun %}
@@ -903,11 +899,7 @@
 								{% endif %}
 								{% endfor %}
 							</thead>
-							<tbody>
-								{% for form in form_comun %}
-								{% for hidden in form.hidden_fields %}
-								{{ hidden }}
-								{% endfor %}
+							<tbody class="gasto_comun">
 								<tr>
 
 									<td class="text-center">
@@ -964,6 +956,7 @@
 </div>
 
 <style>
+
 table{
 	border: none;
 }
@@ -998,7 +991,7 @@ $(document).ready(function(){
 
 function initialize(){
 
-	$('#agregar-fila').click(function(){
+	$('.agregar-fila').click(function(){
 		var obj 	= {}
 		obj.tabla 	= $(this).attr('data-tabla')
 		obj.entidad = $(this).attr('data-entidad')
@@ -1008,21 +1001,29 @@ function initialize(){
 	$('.concepto-activo').each(function () {
 		var concepto = $(this).attr('data-concepto')
 		if(!$(this).prop('checked')){
-			$('.ibox-content tbody td [name^='+concepto+']').attr('disabled', true)
-			$(".ibox-content tbody td [name^="+concepto+"]").val('')
-			$(".ibox-content tbody td [name^="+concepto+"]").closest('.form-group').find('.container-error').html('')
+			$('.ibox-content tbody.'+concepto+' td input').val('')
+			$('.ibox-content tbody.'+concepto+' td select').val('')
+			$('.ibox-content tbody.'+concepto+' td input').attr('disabled', true)
+			$('.ibox-content tbody.'+concepto+' td select').attr('disabled', true)
+			$('.ibox-content tbody.'+concepto+' td .form-group .container-error').html('')
+			$('button[data-entidad="'+concepto+'"]').attr('disabled', true);
 		}
 	});
 
 	$('.concepto-activo').click(function(){
 		var concepto = $(this).attr('data-concepto')
 		if($(this).prop('checked')){
-			$(".ibox-content tbody td [name^="+concepto+"]").attr('disabled', false)
+			$('.ibox-content tbody.'+concepto+' td input').attr('disabled', false)
+			$('.ibox-content tbody.'+concepto+' td select').attr('disabled', false)
+			$('button[data-entidad="'+concepto+'"]').attr('disabled', false);
 		}
 		else{
-			$(".ibox-content tbody td [name^="+concepto+"]").attr('disabled', true)
-			$(".ibox-content tbody td [name^="+concepto+"]").val('')
-			$(".ibox-content tbody td [name^="+concepto+"]").closest('.form-group').find('.container-error').html('')
+			$('.ibox-content tbody.'+concepto+' td input').val('')
+			$('.ibox-content tbody.'+concepto+' td select').val('')
+			$('.ibox-content tbody.'+concepto+' td input').attr('disabled', true)
+			$('.ibox-content tbody.'+concepto+' td select').attr('disabled', true)
+			$('.ibox-content tbody.'+concepto+' td .form-group .container-error').html('')
+			$('button[data-entidad="'+concepto+'"]').attr('disabled', true);
 			// {falta: sacar checkbox seleccionados}
 		}
 	})
@@ -1030,7 +1031,10 @@ function initialize(){
 
 function agregar_fila_concepto(obj){
 
+	console.log(obj)
 	var count 	= $('#'+obj.tabla+' tbody').children().length;
+
+	console.log(count)
 
 	var $tr 	= $('#'+obj.tabla+' tbody tr:first');
 	var $clone 	= $tr.clone();

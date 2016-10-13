@@ -234,7 +234,7 @@ function template_tabla_propuestas(data){
 		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="descargar propuesta" href="/funcion/propuesta/pdf/@version_id"><i class="fa fa-download"></i></a>'
 		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="restarurar versión" onclick="propuesta_ver_versiones(@propuesta_id)"><i class="fa fa-history"></i></a>'
 		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="enviar propuesta" data-toggle="modal" data-target="#m-propuesta-enviar-correo"><i class="fa fa-paper-plane"></i></a>'
-		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="ver historial" href="@propuesta_id"><i class="fa fa-clock-o"></i></a>'
+		template += '<a class="btn btn-bitbucket btn-default" data-toggle="tooltip" data-placement="top" title="ver historial" href="/propuesta/historial/@propuesta_id"><i class="fa fa-clock-o"></i></a>'
 		template += '</td>'
 		// responsables
 		template += '<td class="project-people">'

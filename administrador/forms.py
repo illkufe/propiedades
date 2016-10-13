@@ -164,7 +164,7 @@ class ProcesosBorradorForm(forms.ModelForm):
 		super(ProcesosBorradorForm, self).__init__(*args, **kwargs)
 		self.fields['tipo_estado'].queryset 				= Tipo_Estado_Proceso.objects.all()
 		self.fields['tipo_estado'].widget.attrs['readonly'] = True
-		self.fields['responsable'].queryset					= UserProfile.objects.all()
+		self.fields['responsable'].queryset					= UserProfile.objects.all() # {falta: poner solamente los usuarios de la empresa}
 
 
 	class Meta:

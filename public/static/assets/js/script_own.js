@@ -15,7 +15,7 @@ $('.format-rut').rut({
 	validateOn: 'blur'
 }).on('rutInvalido', function(){
 	$(this).closest('.form-group').find('.container-error').text('')
-	$(this).closest('.form-group').find('.container-error').append('Rut invalido')
+	$(this).closest('.form-group').find('.container-error').append('rut invalido')
 	$(this).val('')
 }).on('rutValido', function(){
 	$(this).closest('.form-group').find('.container-error').text('')
@@ -31,16 +31,16 @@ $('.format-date').datepicker({
 	format: 'dd/mm/yyyy',
 });
 
-$('.format-datetime').datetimepicker({
-	format: 'DD/MM/YYYY HH:mm',
-});
-
 $('#date_range .input-daterange').datepicker({
 	language: "es",
 	keyboardNavigation: false,
 	forceParse: false,
 	autoclose: true,
 	format: 'dd/mm/yyyy',
+});
+
+$('.format-datetime').datetimepicker({
+	format: 'DD/MM/YYYY HH:mm',
 });
 
 $(".file-format").filestyle({
@@ -71,7 +71,15 @@ var language = {
 
 $(".select2").select2();
 
-$('[data-toggle="tooltip"]').tooltip()
+
+
+$('.format-ip').mask('0ZZ.0ZZ.0ZZ.0ZZ', {
+    translation: {
+      'Z': {
+        pattern: /[0-9]/, optional: true
+      }
+    }
+});
 
 
 
@@ -135,8 +143,9 @@ function load_table(tabla_id, columnas, configuracion){
 		'language': language,
 		'pageLength': 10,
 		'searching': configuracion.searching == null ? true : configuracion.searching,
+		'ordering': configuracion.ordering == null  ? true : configuracion.ordering,
 		'order': configuracion.order == null ? [[0, 'desc']] : configuracion.order,
-		'paginate':  configuracion.paginate == null  ? true : configuracion.paginate,
+		'paginate': configuracion.paginate == null  ? true : configuracion.paginate,
 		'bLengthChange': configuracion.bLengthChange == null  ? true : configuracion.bLengthChange,
 		'bInfo': configuracion.bInfo == null  ? true : configuracion.bInfo,
 		'pagingType': 'simple_numbers',
@@ -206,6 +215,29 @@ function open_modal_delete_child(obj, text){
 	}).then(function() {
 		$(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
 		$(obj).closest('tr').addClass('hide')
+	});	
+}
+
+function open_modal_delete_child_final(obj, text, tipo){
+
+	swal({
+		title: '¿ Eliminar '+text+' ?',
+		text: '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#F8BB86',
+		cancelButtonColor: '#D0D0D0',
+		confirmButtonText: 'Si, eliminar',
+		cancelButtonText: 'Cancelar',
+		closeOnConfirm: true,
+	}).then(function() {
+		if(tipo == 'new'){
+			$(obj).closest('tr').remove()
+
+		}else{
+			$(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
+			$(obj).closest('tr').addClass('hide')
+		}
 	});	
 }
 
@@ -331,10 +363,26 @@ function agregar_fila(tabla, entidad){
 	$('#id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
 }
 
+function agregar_fila_final(tabla, entidad){
 
+	var count 	= $('#'+tabla+' tbody').children().length;
+	var $tr 	= $('#'+tabla+' tbody tr:first');
+	var $clone 	= $tr.clone();
+	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count).replace(/update/g, 'new');
 
+	var $row 	= $(row)
 
+	$row.find('input').val('');
+	$row.find('select option:first-child').attr("selected", "selected");
+	$row.find('input:checkbox').prop('checked',false);
 
+	$('#'+tabla+' tbody').append('<tr></tr>')
+	$('#'+tabla+' tbody tr:last').append($row)
+
+	var cantidad = parseInt($('#id_'+entidad+'_set-TOTAL_FORMS').val())
+	cantidad += 1
+	$('#id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
+}
 
 // funciones factorizadas
 function getCookie(name){
@@ -401,3 +449,4 @@ function diferencia_entre_meses(fecha_inicio, fecha_termino) {
 	return months <= 0 ? 0 : months;
 }
 
+$('[data-toggle="tooltip"]').tooltip();
