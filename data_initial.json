@@ -9054,13 +9054,21 @@
 	"model": "administrador.entidad_asociacion",
 	"pk": 3,
 	"fields": {
+		"nombre": "Arriendo Variable",
+		"nombre_campo_tabla": "arriendo_variable"
+	}
+},
+{
+	"model": "administrador.entidad_asociacion",
+	"pk": 4,
+	"fields": {
 		"nombre": "Gasto Común",
 		"nombre_campo_tabla": "gasto_comun"
 	}
 },
 {
 	"model": "administrador.entidad_asociacion",
-	"pk": 4,
+	"pk": 5,
 	"fields": {
 		"nombre": "Cuota Incorporación",
 		"nombre_campo_tabla": "cuota_incorporacion"
@@ -9068,7 +9076,7 @@
 },
 {
 	"model": "administrador.entidad_asociacion",
-	"pk": 5,
+	"pk": 6,
 	"fields": {
 		"nombre": "Garantias",
 		"nombre_campo_tabla": "garantias"
@@ -9076,7 +9084,7 @@
 },
 {
 	"model": "administrador.entidad_asociacion",
-	"pk": 6,
+	"pk": 7,
 	"fields": {
 		"nombre": "Meses Arriendo",
 		"nombre_campo_tabla": "meses"
@@ -9084,9 +9092,25 @@
 },
 {
 	"model": "administrador.entidad_asociacion",
-	"pk": 7,
+	"pk": 8,
 	"fields": {
 		"nombre": "Aviso Vencimiento",
 		"nombre_campo_tabla": "aviso_vecimiento"
+	}
+},
+{
+	"model": "administrador.entidad_asociacion",
+	"pk": 9,
+	"fields": {
+		"nombre": "Metros Cuadrados Local",
+		"nombre_campo_tabla": "metros_local"
+	}
+},
+{
+	"model": "administrador.entidad_asociacion",
+	"pk": 10,
+	"fields": {
+		"nombre": "Metros Cuadrados Bodega",
+		"nombre_campo_tabla": "metros_bodega"
 	}
 }]

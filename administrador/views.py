@@ -625,9 +625,10 @@ class WORKFLOW(View):
             try:
                 proceso_id = self.request.POST.get('proceso_id')
 
-                proceso         = Proceso.objects.get(id=proceso_id)
+                proceso         = Proceso.objects.get(id=proceso_id, empresa=self.request.user.userprofile.empresa, visible=True)
                 proceso.visible = False
                 proceso.save()
+
 
                 estado = True
 
@@ -649,13 +650,24 @@ class WORKFLOW(View):
             data_responsable    = list()
             data_antecesor      = list()
 
-            for responsable in item.responsable.all():
+            for responsable in item.responsable.filter(visible=True):
+
+                # obtener avatar
+                primary_avatar = responsable.user.avatar_set.all().order_by('-primary')[:1]
+                if primary_avatar:
+                    avatar = str(primary_avatar[0].avatar)
+                else:
+                    avatar = None
+
                 data_responsable.append({
                     'id'        : responsable.id,
-                    'nombre'    : responsable.user.username
+                    'nombre'    : responsable.user.username,
+                    'first_name': responsable.user.first_name,
+                    'last_name'	: responsable.user.last_name,
+                    'avatar' 	: avatar,
                 })
 
-            for antecesor in item.antecesor.all():
+            for antecesor in item.antecesor.filter(visible=True):
                 data_antecesor.append({
                     'id'        : antecesor.id,
                     'nombre'    : antecesor.nombre
@@ -669,6 +681,7 @@ class WORKFLOW(View):
                 'id' 	            : item.id,
                 'id_tipo_estado'    : item.tipo_estado_id,
                 'tipo_estado'       : item.tipo_estado.nombre,
+                'background_estado' : item.tipo_estado.background,
                 'nombre' 	        : item.nombre,
                 'responsable' 	    : data_responsable,
                 'antecesor' 	    : data_antecesor ,
