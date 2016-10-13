@@ -159,9 +159,6 @@ $(document).ready(function(){
 	data_tabla_propuestas()
 	propuesta_enviar_correo()
 
-
-	
-
 });
 
 function initialize(){
@@ -175,15 +172,16 @@ function initialize(){
 	$('#cargar-tabla-propuestas').click(data_tabla_propuestas())
 
     $('#new_propuesta').on('click', function () {
-        var propuesta = {{ workflow}};
 
-        if(propuesta > 0){
+        var propuesta = {{ workflow.validado| yesno:"true, false"}};
+
+        if(propuesta == true){
             location.href = '{% url 'propuesta_new' %}'
         }
         else {
             var configuracion = {
                 'toast_type'	: 'warning',
-                'toast_text' 	: 'Debe configurar primero el Workflow.',
+                'toast_text' 	: 'Debe configurar o validar primero el Workflow.',
                 'toast_title' 	: 'Advertencia',
             }
 

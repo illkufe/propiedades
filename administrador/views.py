@@ -554,7 +554,7 @@ class WORKFLOW(View):
 
     def get(self, request, id=None):
 
-        self.object_list = request.user.userprofile.empresa.proceso_set.filter(visible=True).order_by('id')
+        self.object_list = request.user.userprofile.empresa.workflow_set.all()
 
         if request.is_ajax() or self.request.GET.get('format', None) == 'json':
             return self.json_to_response()
@@ -564,13 +564,13 @@ class WORKFLOW(View):
                 'href' 		                : 'conexion-parametro',
                 'subtitle'	                : 'WorkFlow',
                 'name' 		                : 'Configuración',
-                'procesos_form'             : ProcesosBorradorForm(),
+                'procesos_form'             : ProcesosBorradorForm(request=self.request),
                 'condiciones_form'          : ProcesoCondicionFormSet()
             })
 
     def get_queryset(self, tipo_estado):
 
-        queryset = Proceso.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True, tipo_estado_id=tipo_estado)
+        queryset = Proceso.objects.filter(workflow__empresa=self.request.user.userprofile.empresa, visible=True, tipo_estado_id=tipo_estado)
 
         return queryset
 
@@ -579,22 +579,25 @@ class WORKFLOW(View):
         if self.request.POST.get('action') == 'create':
             try:
 
-                form_proceso = ProcesosBorradorForm(self.request.POST)
+                form_proceso = ProcesosBorradorForm(self.request.POST, request=self.request)
 
                 if form_proceso.is_valid():
                     self.obj_proceso            = form_proceso.save(commit=False)
-                    self.obj_proceso.empresa    = self.request.user.userprofile.empresa
+                    self.obj_proceso.workflow   = Workflow.objects.filter(empresa=self.request.user.userprofile.empresa).first()
                     self.obj_proceso.save()
                     form_proceso.save_m2m()
+
+                    workflow            = Workflow.objects.get(empresa=self.request.user.userprofile.empresa)
+                    workflow.validado   = False
+                    workflow.save()
                 else:
                     return JsonResponse(form_proceso.errors, status=400)
 
                 estado = True
 
-            except Exception as asd:
-                print(asd)
-
-                estado = False
+            except Exception as a:
+                error   = a
+                estado  = False
 
             return JsonResponse({'estado': estado}, safe=False)
         elif self.request.POST.get('action') == 'update':
@@ -602,22 +605,26 @@ class WORKFLOW(View):
             try:
 
                 proceso         = get_object_or_404(Proceso, pk=self.request.POST.get('id'))
-                form_proceso    = ProcesosBorradorForm(self.request.POST, instance=proceso)
+                form_proceso    = ProcesosBorradorForm(self.request.POST, instance=proceso, request=self.request)
 
                 if form_proceso.is_valid():
                     self.obj_proceso            = form_proceso.save(commit=False)
-                    self.obj_proceso.empresa    = self.request.user.userprofile.empresa
+                    self.obj_proceso.workflow   = Workflow.objects.filter(empresa=self.request.user.userprofile.empresa).first()
                     self.obj_proceso.save()
                     form_proceso.save_m2m()
+
+                    workflow            = Workflow.objects.get(empresa=self.request.user.userprofile.empresa)
+                    workflow.validado   = False
+                    workflow.save()
+
                 else:
                     return JsonResponse(form_proceso.errors, status=400)
 
                 estado = True
 
-            except Exception as asd:
-                print(asd)
-
-                estado = False
+            except Exception as b:
+                error   = b
+                estado  = False
 
             return JsonResponse({'estado': estado}, safe=False)
         elif self.request.POST.get('action') == 'delete':
@@ -625,27 +632,28 @@ class WORKFLOW(View):
             try:
                 proceso_id = self.request.POST.get('proceso_id')
 
-                proceso         = Proceso.objects.get(id=proceso_id, empresa=self.request.user.userprofile.empresa, visible=True)
+                proceso         = Proceso.objects.get(id=proceso_id, workflow__empresa=self.request.user.userprofile.empresa, visible=True)
                 proceso.visible = False
                 proceso.save()
+
+                workflow            = Workflow.objects.get(empresa=self.request.user.userprofile.empresa)
+                workflow.validado   = False
+                workflow.save()
 
 
                 estado = True
 
-            except Exception as asd:
-                print(asd)
-
-                estado = False
+            except Exception as c:
+                error   = c
+                estado  = False
 
             return JsonResponse({'estado': estado}, safe=False)
-
-
 
     def json_to_response(self):
 
         data                = list()
 
-        for item in self.object_list:
+        for item in Proceso.objects.filter(workflow=self.object_list, visible=True).order_by('id'):
 
             data_responsable    = list()
             data_antecesor      = list()
@@ -724,14 +732,19 @@ class WORKFLOW_CONDICION(View):
                         obj.delete()
 
                 form_condicion.save()
+
+                workflow            = Workflow.objects.get(empresa=self.request.user.userprofile.empresa)
+                workflow.validado   = False
+                workflow.save()
             else:
                 for errors in form_condicion.errors:
                     pass
                 return JsonResponse(errors, status=400)
             estado = True
-        except Exception as asd:
-            print(asd)
-            estado = False
+        except Exception as d:
+            error   = d
+            estado  = False
+
         return JsonResponse({'estado': estado}, safe=False)
 
     def json_to_response(self):
@@ -762,9 +775,10 @@ class WORKFLOW_CONDICION(View):
 def validar_workflow(request):
 
     try:
-        estado      = True
-        error       = ''
-        object_list = request.user.userprofile.empresa.proceso_set.filter(visible=True).order_by('tipo_estado_id','id')
+        estado          = True
+        error           = ''
+        object_workflow = request.user.userprofile.empresa.workflow_set.all()
+        object_list     = Proceso.objects.filter(workflow=object_workflow, visible=True).order_by('tipo_estado_id','id')
 
         if not object_list.filter(tipo_estado_id=1).exists() or not object_list.filter(tipo_estado_id=3).exists():
             estado = False
@@ -774,31 +788,73 @@ def validar_workflow(request):
 
             ##Obtengo la lista de antecesores del workflow
             for a in object_list:
-                for j in a.antecesor.values_list('proceso__antecesor', flat=True).distinct():
+                for j in a.antecesor.filter(visible=True).values_list('proceso__antecesor', flat=True).distinct():
+
+                    ## Validar que el proceso no puede ser antecesor de si mismo
+                    if a.id == j:
+                        estado  = False
+                        error   = "El proceso " + str(a.nombre) + " no puede ser antecesor de sí mismo."
+                        break
+
                     if j not in lista_antecesor:
                         lista_antecesor.append(j)
 
-            ## Valido que los procesos esten de antecesores
-            for b in object_list:
-                ##Valido que el proceso tenga antecesor y que sea distinto de tipo borrador
-                if not b.antecesor.all().count() and b.tipo_estado_id !=1:
-                    estado = False
-                    error = "El proceso "+ str(b.nombre)+ " no cuenta con un antecesor."
-                    break
-                else:
-                    #Si existe el proceso como antecesor lo elimino de la lista de antecesores.
-                    if b.id in lista_antecesor:
-                        lista_antecesor.remove(b.id)
+            if estado == True:
+
+                ## Valido que los procesos esten de antecesores
+                for b in object_list:
+                    ##Valido que el proceso tenga antecesor y que sea distinto de tipo borrador
+                    if not b.antecesor.filter(visible=True).count() and b.tipo_estado_id !=1:
+                        estado  = False
+                        error   = "El proceso "+ str(b.nombre)+ " no cuenta con un antecesor."
+                        break
                     else:
-                        # El proceso no es de tipo aprobación.
-                        if not b.tipo_estado_id == 3:
-                            estado = False
-                            error = "El proceso "+ str(b.nombre)+ " no es antecesor de ningún proceso."
-                            break
+                        #Si existe el proceso como antecesor lo elimino de la lista de antecesores.
+                        if b.id in lista_antecesor:
+                            lista_antecesor.remove(b.id)
+                        else:
+                            # El proceso no es de tipo aprobación.
+                            if not b.tipo_estado_id == 3:
+                                estado  = False
+                                error   = "El proceso "+ str(b.nombre)+ " no es antecesor de ningún proceso."
+                                break
+            if estado == True:
+                ## Validar loop procesos
+                count = 1
+                for c in object_list:
+                    try:
+                        antecesor   = c.antecesor.filter(visible=True)
+                        sig_proceso = object_list[count]
+
+                        for a in antecesor:
+
+                            if c.tipo_estado_id == 2 and a.tipo_estado_id == 3:
+                                estado  = False
+                                error   = "El proceso " + str(c.nombre) + " no puede tener un antecesor de aprobación."
+                                break
+
+                            if a == sig_proceso:
+                                estado  = False
+                                error   = "Existe recursividad entre "+ str(c) + ' y ' + str(sig_proceso)
+                                break
+                        count +=1
+                    except Exception as a:
+                        for a in antecesor:
+                            if c.tipo_estado_id == 3 and a.tipo_estado_id == 1 and Proceso.objects.filter(tipo_estado_id=2,
+                                                                                                          visible=True).count():
+                                estado  = False
+                                error   = "El proceso " + str(c.nombre) + " no debe tener un antecesor tipo borrador."
+                                break
+
+                        break
 
     except Exception as a:
         estado = False
         error  = "Error al validar Workflow."
 
+    if estado == True:
+        workflow            = Workflow.objects.get(empresa=request.user.userprofile.empresa)
+        workflow.validado   = True
+        workflow.save()
 
     return JsonResponse({'estado': estado, 'error': error}, safe=False)
