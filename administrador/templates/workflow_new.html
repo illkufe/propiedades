@@ -30,7 +30,7 @@
                                 <tr>
                                     <th hidden>id</th>
                                     <th hidden>tipo_estado_id</th>
-                                    <th style="width: 15%">Tipo Estado</th>
+                                    <th style="width: 15%" class="text-center">Estado</th>
                                     <th style="width: 20%">Nombre</th>
                                     <th style="width: 20%" class="text-center">Representante(s)</th>
                                     <th style="width: 20%" class="text-center">Antecesor</th>
@@ -141,11 +141,6 @@
 
 							<div class="col-xs-12 info_condiciones">
 
-<!-- {#                                <input type="hidden" value="0" name="form-TOTAL_FORMS" id="id_form-TOTAL_FORMS">#}
-{#                                <input type="hidden" value="1" name="form-INITIAL_FORMS" id="id_form-INITIAL_FORMS">#}
-{#                                <input type="hidden" value="0" name="form-MIN_NUM_FORMS" id="id_form-MIN_NUM_FORMS">#}
-{#                                <input type="hidden" value="1000" name="form-MAX_NUM_FORMS" id="id_form-MAX_NUM_FORMS">#} -->
-
                                 {{ condiciones_form.management_form }}
 
 								{% for form in condiciones_form %}
@@ -164,21 +159,6 @@
 										</tr>
 									</thead>
 									<tbody>
-<!-- {#										{% for form in condiciones_form %}#}
-{#										<tr>#}
-{#                                            <td hidden>{{ form.proceso }}</td>#}
-{#                                            <td hidden>{{ form.id }}</td>#}
-{#											<td><div class="form-group">{{ form.entidad }}<div class="container-error">{{ form.entidad.errors|striptags}}</div></div></td>#}
-{#											<td><div class="form-group">{{ form.operacion }}<div class="container-error">{{ form.operacion.errors|striptags}}</div></div></td>#}
-{#											<td><div class="form-group">{{ form.valor }}<div class="container-error">{{ form.valor.errors|striptags}}</div></div></td>#}
-{#											<td class="text-center delete">#}
-{#												{{ form.DELETE }}#}
-{#												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child_final(this, 'Condición', 'update')">#}
-{#													<i class="fa fa-trash"></i>#}
-{#												</a>#}
-{#											</td>#}
-{#										</tr>#}
-{#										{% endfor %}#} -->
 									</tbody>
 								</table>
 							</div>
@@ -193,6 +173,27 @@
 		</div>
 	</div>
 </div>
+    <style>
+
+table#tabla-procesos tbody img{
+	border-radius: 50%;
+}
+
+.avatar-default {
+	width: 32px;
+	height: 32px;
+	background: #286ca0;
+	display: inline-block;
+	border-radius: 50%;
+	margin: 0 auto;
+	text-align: center;
+	line-height: 32px;
+	color: #fff;
+	margin: 0px 1px;
+}
+
+</style>
+
 {% endblock section %}
 
 {% block scripts %}
@@ -244,7 +245,7 @@
                 }else{
                     var configuracion = {
                         'toast_type'	: 'error',
-                        'toast_text' 	: 'No se pudo actualizar',
+                        'toast_text' 	: 'No se pudo guardar',
                         'toast_title' 	: 'Error',
                     }
                 }
@@ -346,7 +347,16 @@
                     var id_responsable  = ''
 
                     for( var r in data[i].responsable){
-                        responsable     += '<p>'+data[i].responsable[r].nombre+'</p>'
+
+                        if(data[i].responsable[r].avatar != null){
+                            responsable += '<a style="margin:0px 1px;" data-toggle="tooltip" data-placement="top" title="'+data[i].responsable[r].first_name+' '+data[i].responsable[r].last_name+'">'
+				            responsable += '<img src="/media/'+data[i].responsable[r].avatar+'" width="80" height="80">'
+				            responsable += '</a>'
+                        }else{
+                            responsable += '<a class="avatar-default" data-toggle="tooltip" data-placement="top" title="'+data[i].responsable[r].first_name+' '+data[i].responsable[r].last_name+'">'
+                            responsable += (data[i].responsable[r].first_name[0]+''+data[i].responsable[r].last_name[0]).toLowerCase()
+                            responsable += '</a>'
+                        }
                         id_responsable  += '<input class="responsables_procesos" type="hidden" id="responsables_procesos" name="responsable" value="'+ data[i].responsable[r].id +'">'
                     }
 
@@ -376,10 +386,10 @@
                     html    += '<tr>'
                     html    += '<td hidden><input class="id_proceso" type="hidden" id="id_proceso" name="proceso" value="'+ data[i].id +'"></td>'
                     html    += '<td hidden><input class="tipo_estado" type="hidden" id="tipo_estado" name="tipo_estado" value="'+ data[i].id_tipo_estado +'"></td>'
-                    html    += '<td>'+data[i].tipo_estado+'</td>'
+                    html    += '<td class="text-center"><span class="label label-primary" style="background:'+data[i].background_estado+'">'+data[i].tipo_estado+'</span></td>'
                     html    += '<td>'+data[i].nombre+'</td>'
                     html    += '<td hidden>'+id_responsable+'</td>'
-                    html    += '<td>'+responsable+'</td>'
+                    html    += '<td class="project-people">'+responsable+'</td>'
                     html    += '<td hidden>'+id_antecesor+'</td>'
                     html    += '<td class="text-center">'+antecesor+'</td>'
                     html    += '<td hidden>'+condicion+'</td>'
@@ -439,7 +449,15 @@
         $('#form-proceso-new').find('#id_tipo_estado').val(tipo_estado_edit)
         $('#form-proceso-new').find('#id_nombre').val(nombre_proceso)
         $('#form-proceso-new').find('#id_responsable').select2('val', array_resp)
-        $('#form-proceso-new').find('#id_antecesor').select2('val', array_antec)
+
+        console.log(tipo_estado_edit)
+
+        if(tipo_estado_edit ==1){
+           $('#form-proceso-new').find('#id_antecesor').attr('disabled', true).select2('val', array_antec)
+        }else{
+           $('#form-proceso-new').find('#id_antecesor').attr('disabled', false).select2('val', array_antec)
+        }
+
 
         $("#btn-guardar-proceso").attr("onclick", "update_proceso()");
     }
@@ -482,11 +500,14 @@
                         }
                     }
                     notification_toast(configuracion)
+                },
+                complete:function () {
+                    load_data_procesos();
                 }
             })
         });
 
-        load_data_procesos();
+
     }
 
     function agregar_condicion(obj) {
