@@ -3399,6 +3399,7 @@ video {
 .note-editor {
   height: auto !important;
   min-height: 300px;
+  border: 1px solid #e5e5e5;
 }
 .note-editor.fullscreen {
   z-index: 2050;

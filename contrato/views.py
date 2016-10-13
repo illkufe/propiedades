@@ -312,7 +312,6 @@ class PropuestaList(ListView):
 
 		return workflow
 
-
 class PropuestaMixin(object):
 
 	template_name 	= 'propuesta_new.html'
@@ -397,7 +396,6 @@ class PropuestaMixin(object):
 						formulario.propuesta = self.object
 						formulario.save()
 				else:
-					print (form_variable.errors)
 					transaction.rollback()
 					transaction.connections.close_all()
 					return self.render_to_response(self.get_context_data(form=form))
@@ -410,7 +408,6 @@ class PropuestaMixin(object):
 						formulario.propuesta = self.object
 						formulario.save()
 				else:
-					print (form_bodega.errors)
 					transaction.rollback()
 					transaction.connections.close_all()
 					return self.render_to_response(self.get_context_data(form=form))
@@ -423,7 +420,6 @@ class PropuestaMixin(object):
 						formulario.propuesta = self.object
 						formulario.save()
 				else:
-					print (form_cuota.errors)
 					transaction.rollback()
 					transaction.connections.close_all()
 					return self.render_to_response(self.get_context_data(form=form))
@@ -436,7 +432,6 @@ class PropuestaMixin(object):
 						formulario.propuesta = self.object
 						formulario.save()
 				else:
-					print (form_promocion.errors)
 					transaction.rollback()
 					transaction.connections.close_all()
 					return self.render_to_response(self.get_context_data(form=form))
@@ -626,7 +621,7 @@ class PropuestaUpdate(PropuestaMixin, UpdateView):
 		if self.request.POST:
 
 			context['form_minimo']			= FormPropuestaArriendo(self.request.POST, instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo")
-			context['form_minimo_detalle'] 	= InlineFormPropuestaMinimoDetalle(self.request.POST, instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo")
+			context['form_minimo_detalle'] 	= InlineFormPropuestaMinimoDetalle(self.request.POST, instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo_detalle")
 			context['form_variable'] 		= InlineFormPropuestaVariable(self.request.POST, instance=propuesta, prefix="arriendo_variable")
 			context['form_bodega'] 			= InlineFormPropuestaBodega(self.request.POST, instance=propuesta, prefix="arriendo_bodega")
 			context['form_cuota'] 			= InlineFormPropuestaCuota(self.request.POST, instance=propuesta, prefix="cuota_incorporacion")
@@ -636,7 +631,7 @@ class PropuestaUpdate(PropuestaMixin, UpdateView):
 		else:
 
 			context['form_minimo']			= FormPropuestaArriendo(instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo")
-			context['form_minimo_detalle'] 	= InlineFormPropuestaMinimoDetalle(instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo")
+			context['form_minimo_detalle'] 	= InlineFormPropuestaMinimoDetalle(instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo_detalle")
 			context['form_variable'] 		= InlineFormPropuestaVariable(instance=propuesta, prefix="arriendo_variable")
 			context['form_bodega'] 			= InlineFormPropuestaBodega(instance=propuesta, prefix="arriendo_bodega")
 			context['form_cuota'] 			= InlineFormPropuestaCuota(instance=propuesta, prefix="cuota_incorporacion")
@@ -946,9 +941,6 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				print ('----')
-				print (formulario.errors)
-				print ('----')
 				return JsonResponse(formulario.errors, safe=False, status=400)
 
 		elif concepto.concepto_tipo.id == 4:
@@ -1170,13 +1162,6 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
 				context['formularios'] = formularios
 
-
-
-		
-		# print (formularios)
-
-		
-
 		# if self.request.POST:
 
 		# 	contrato = Contrato.objects.get(id=self.kwargs['contrato_id'])
@@ -1311,8 +1296,6 @@ class ContratosInactivosList(ListView):
 	def get_queryset(self):
 
 		queryset = Contrato.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True, estado__in=[1])
-
-		print(queryset)
 
 		for item in queryset:
 			item.fecha_inicio  	= item.fecha_inicio.strftime('%d/%m/%Y')

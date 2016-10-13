@@ -522,7 +522,7 @@ class PropuestaForm(forms.ModelForm):
 			'meses_contrato'		: forms.NumberInput(attrs={'class': 'form-control'}),
 			'meses_aviso_comercial' : forms.NumberInput(attrs={'class': 'form-control'}),
 			'meses_remodelacion' 	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'arriendo_minimo'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'arriendo_minimo'}),
+			'arriendo_minimo'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'arriendo_minimo_detalle'}),
 			'arriendo_variable'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'arriendo_variable'}),
 			'arriendo_bodega'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'arriendo_bodega'}),
 			'cuota_incorporacion'	: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'cuota_incorporacion'}),
@@ -540,7 +540,7 @@ class PropuestaForm(forms.ModelForm):
 			'destino_comercial'		: 'Destino Comercial',
 			'meses_contrato'		: 'Meses de Arriendo',
 			'meses_aviso_comercial'	: 'Meses Aviso Comercial',
-			'meses_remodelacion'	: 'Meses de Remodelacion',
+			'meses_remodelacion'	: 'Meses de Remodelación',
 			'arriendo_minimo'		: 'Concepto Arriendo Mínimo',
 			'arriendo_variable'		: 'Concepto Arriendo Variable',
 			'arriendo_bodega'		: 'Concepto Arriendo Bodega',
@@ -642,13 +642,13 @@ class FormPropuestaArriendoDetalle(forms.ModelForm):
 		labels = {
 			'mes_inicio' 	: 'Año inicio',
 			'mes_termino' 	: 'Año término',
-			'metros' 		: 'valor x m²',
+			'metros' 		: 'Valor x m²',
 		}
 
 		help_texts = {
 			'mes_inicio' 	: 'Año inicio',
 			'mes_termino' 	: 'Año término',
-			'metros' 		: 'valor x m²',
+			'metros' 		: 'Valor x m²',
 		}
 
 	def clean_fecha_inicio(self):
@@ -729,7 +729,7 @@ class FormPropuestaBodega(forms.ModelForm):
 		}
 
 		labels = {
-			'metros' 			: 'valor x m²',
+			'metros' 			: 'Valor x m²',
 			'cantidad_metros' 	: 'Cantidad de m²',
 		}
 
@@ -757,6 +757,11 @@ class FormPropuestaCuota(forms.ModelForm):
 			'metros' 	: forms.CheckboxInput(attrs={'class': 'form-control'}),
 		}
 
+		labels = {
+			'anio' 		: 'Año',
+			'metros' 	: 'Valor x m²',
+		}
+
 		error_messages = {
 			'mes' 		: {'required': 'campo requerido'},
 			'anio' 		: {'required': 'campo requerido'},
@@ -764,8 +769,8 @@ class FormPropuestaCuota(forms.ModelForm):
 
 		help_texts = {
 			'mes' 		: 'mes',
-			'anio' 		: 'anio',
-			'metros' 	: 'metros',
+			'anio' 		: 'año',
+			'metros' 	: 'Valor x m²',
 		}
 
 class FormPropuestaPromocion(forms.ModelForm):
