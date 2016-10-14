@@ -5,7 +5,7 @@ from django.contrib.auth.models import User, Group
 
 from utilidades.views import NumberField
 from accounts.models import UserProfile
-from locales.models import Gasto_Servicio
+from locales.models import *
 
 from .models import *
 

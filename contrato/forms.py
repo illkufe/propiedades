@@ -44,13 +44,13 @@ class ContratoTipoForm(forms.ModelForm):
 class ContratoForm(forms.ModelForm):
 
 	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
-	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
+	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Inicio de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
 	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Término de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
+	fecha_inicio_renta	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Incio de Renta',error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
+	fecha_entrega		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Entrega Local', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
 	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Habilitación', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
 	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Renovación', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
-	fecha_remodelacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Remodelación', required=False)
-	fecha_plazo			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), required=False)
-	fecha_aviso			= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, label='Fecha aviso comercial')
+	
 	metros_bodega 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'disabled': 'disabled'}))
 
 	def __init__(self, *args, **kwargs):
@@ -77,37 +77,43 @@ class ContratoForm(forms.ModelForm):
 		exclude = ['creado_en', 'visible', 'empresa']
 
 		widgets = {
-			'bodega'			: forms.CheckboxInput(attrs={'onclick': 'habilitar_input_metros(this)'}),
-			'numero'			: forms.NumberInput(attrs={'class': 'form-control'}),
-			'meses'				: forms.NumberInput(attrs={'class': 'form-control'}),
-			'dias_salida'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'nombre_local'		: forms.TextInput(attrs={'class': 'form-control'}),
-			'destino_comercial'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
-			'tipo' 				: forms.Select(attrs={'class': 'form-control'}),
-			'cliente'			: forms.Select(attrs={'class': 'form-control'}),
-			'locales'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
-			'conceptos'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			'bodega'				: forms.CheckboxInput(attrs={'onclick': 'habilitar_input_metros(this)'}),
+			'numero'				: forms.NumberInput(attrs={'class': 'form-control'}),
+			'meses_contrato'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'meses_aviso_comercial'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'meses_remodelacion'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'dias_salida'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'nombre_local'			: forms.TextInput(attrs={'class': 'form-control'}),
+			'destino_comercial'		: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
+			'tipo' 					: forms.Select(attrs={'class': 'form-control'}),
+			'cliente'				: forms.Select(attrs={'class': 'form-control'}),
+			'locales'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+			'conceptos'				: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
+		}
+
+		
+		labels = {
+			'numero'				: 'Nº Contrato',
+			'nombre_local'			: 'Marca Comercial',
+			'fecha_renovacion'		: 'Fecha Renovación',
+			'meses_contrato'		: 'Meses de Arriendo',
+			'meses_aviso_comercial'	: 'Meses Aviso Comercial',
+			'meses_remodelacion'	: 'Meses de Remodelación',
+			'tipo' 					: 'Tipo de Contrato',
+			'dias_salida'			: 'Meses aviso comercial'
 		}
 
 		error_messages = {
-			'numero'			: {'required': 'campo requerido', 'invalid': 'campo invalido'},
-			'nombre_local'		: {'required': 'campo requerido'},
-			'destino_comercial'	: {'required': 'campo requerido'},
-			'meses'				: {'required': 'campo requerido'},
-			'dias_salida'		: {'required': 'campo requerido'},
-			'tipo'				: {'required': 'campo requerido'},
-			'cliente'			: {'required': 'campo requerido'},
-			'locales'			: {'required': 'campo requerido'},
-			'conceptos'			: {'required': 'campo requerido'},
-		}
-
-		labels = {
-			'numero'			: 'Nº Contrato',
-			'nombre_local'		: 'Marca Comercial',
-			'fecha_renovacion'	: 'Fecha Renovación',
-			'meses' 			: 'Meses Arriendo',
-			'tipo' 				: 'Tipo de Contrato',
-			'dias_salida'		: 'Meses aviso comercial'
+			'numero'				: {'required': 'campo requerido', 'invalid': 'campo invalido'},
+			'nombre_local'			: {'required': 'campo requerido'},
+			'destino_comercial'		: {'required': 'campo requerido'},
+			'meses_contrato'		: {'required': 'campo requerido'},
+			'meses_aviso_comercial'	: {'required': 'campo requerido'},
+			'meses_remodelacion'	: {'required': 'campo requerido'},
+			'tipo'					: {'required': 'campo requerido'},
+			'cliente'				: {'required': 'campo requerido'},
+			'locales'				: {'required': 'campo requerido'},
+			'conceptos'				: {'required': 'campo requerido'},
 		}
 
 		help_texts = {
@@ -378,25 +384,21 @@ class GastoComunForm(forms.ModelForm):
 		contrato = kwargs.pop('contrato', None)
 		super(GastoComunForm, self).__init__(*args, **kwargs)
 
-		if contrato is not None:
-			self.fields['local'].queryset = contrato.locales.all()
-
 	class Meta:
 		model 	= Gasto_Comun
 		fields 	= '__all__'
 		exclude = ['visible', 'creado_en', 'concepto']
 
 		widgets = {
-			'local' 	: forms.Select(attrs={'class': 'form-control'}),
-			'prorrateo'	: forms.CheckboxInput(attrs={'class': 'form-control prorrateo'}),
+			'tipo' 	: forms.Select(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
-			'local'		: {'required': 'campo requerido'},
+			'tipo'	: {'required': 'campo requerido'},
 		}
 
 		help_texts = {
-			'prorrateo' : 'prorrateo',
+			'tipo' : 'tipo',
 		}
 
 class ServicioBasicoForm(forms.ModelForm):
@@ -501,10 +503,7 @@ class PropuestaForm(forms.ModelForm):
 
 		super(PropuestaForm, self).__init__(*args, **kwargs)
 
-		if self.instance.pk is not None:
-			locales_id = Contrato.objects.values_list('locales', flat=True).filter(estado=4, visible=True).exclude(id=self.instance.pk)
-		else:
-			locales_id = Contrato.objects.values_list('locales', flat=True).filter(estado=4, visible=True)
+		locales_id = Contrato.objects.values_list('locales', flat=True).filter(estado=4, visible=True)
 
 		self.fields['locales'].queryset = Local.objects.filter(activo__in=activos, visible=True).exclude(id__in=locales_id)
 		self.fields['cliente'].queryset = Cliente.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
@@ -513,7 +512,7 @@ class PropuestaForm(forms.ModelForm):
 	class Meta:
 		model 	= Propuesta_Version
 		fields 	= '__all__'
-		exclude = ['creado_en', 'visible', 'empresa', 'propuesta']
+		exclude = ['creado_en', 'visible', 'user', 'empresa', 'propuesta']
 
 		widgets = {
 			'numero'				: forms.NumberInput(attrs={'class': 'form-control'}),
@@ -577,6 +576,20 @@ class PropuestaForm(forms.ModelForm):
 			'cliente'			: {'required': 'campo requerido'},
 			'locales'			: {'required': 'campo requerido'},
 			'conceptos'			: {'required': 'campo requerido'},
+		}
+
+class FormPropuestaGarantia(forms.ModelForm):
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control'}))
+
+	class Meta:
+		model 	= Propuesta_Garantia
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en']
+
+		widgets = {
+			'nombre' 	: forms.TextInput(attrs={'class': 'form-control'}),
 		}
 
 class FormPropuestaArriendo(forms.ModelForm):
@@ -820,16 +833,13 @@ class FormPropuestaComun(forms.ModelForm):
 
 
 # inlines de propuesta
+InlineFormPropuestaGarantia 		= inlineformset_factory(Propuesta_Version, Propuesta_Garantia, form=FormPropuestaGarantia, extra=1, can_delete=True)
 InlineFormPropuestaMinimoDetalle 	= inlineformset_factory(Propuesta_Arriendo_Minimo, Propuesta_Arriendo_Minimo_Detalle, form=FormPropuestaArriendoDetalle, extra=1, can_delete=True)
 InlineFormPropuestaVariable 		= inlineformset_factory(Propuesta_Version, Propuesta_Arriendo_Variable, form=FormPropuestaVariable, extra=1, can_delete=True)
 InlineFormPropuestaBodega 			= inlineformset_factory(Propuesta_Version, Propuesta_Arriendo_Bodega, form=FormPropuestaBodega, extra=1, can_delete=True)
 InlineFormPropuestaCuota 			= inlineformset_factory(Propuesta_Version, Propuesta_Cuota_Incorporacion, form=FormPropuestaCuota, extra=1, can_delete=True)
 InlineFormPropuestaPromocion 		= inlineformset_factory(Propuesta_Version, Propuesta_Fondo_Promocion, form=FormPropuestaPromocion, extra=1, can_delete=True)
 InlineFormPropuestaComun 			= inlineformset_factory(Propuesta_Version, Propuesta_Gasto_Comun, form=FormPropuestaComun, extra=1, can_delete=True)
-
-
-
-
 
 
 ArriendoVariableFormSet 	= inlineformset_factory(Contrato, Arriendo_Variable, form=ArriendoVariableForm, extra=1, can_delete=True)

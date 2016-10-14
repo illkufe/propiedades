@@ -23,6 +23,9 @@
 
 <style>
 
+
+
+
 table#tabla-versiones thead tr th{
 	text-align: right;
 }
@@ -37,6 +40,12 @@ table#tabla-versiones tbody tr td{
 
 table#tabla-versiones tbody tr td:first-child{
 	text-align: left;
+}
+
+table#tabla-versiones tbody tr td img{
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
 }
 </style>
 
@@ -64,7 +73,7 @@ function cargar_informacion_version(){
 			var version = {}
 
 			version.id 					= data[0].versiones[0].id
-			version.creador 			= data[0].user.first_name+' '+data[0].user.last_name
+			version.creador 			= data[0].versiones[0].user.first_name+' '+data[0].versiones[0].user.last_name
 			version.fecha_creacion 		= data[0].creado_en
 			version.fecha_actualizacion = data[0].versiones[0].creado_en
 			version.marca_comercial		= data[0].versiones[0].nombre_local
@@ -148,8 +157,10 @@ function data_tabla_versiones(versiones){
 
 		tabla_versiones.row.add(row).draw().nodes().to$().addClass(clase_tr);
 	};
-}
 
+	// acciones tooltip
+	$('[data-toggle="tooltip"]').tooltip();
+}
 
 function template_informacion_version(version){
 
@@ -164,10 +175,10 @@ function template_informacion_version(version){
 	template += '</div>'
 	template += '<div class="col-lg-5">'
 	template += '<dl class="dl-horizontal">'
-	template += '<dt>Creado por:</dt><dd>@creador</dd>'
+	template += '<dt>Útima Versión por:</dt><dd>@creador</dd>'
 	template += '<dt>Cliente:</dt><dd><a class="text-navy">@cliente</a></dd>'
 	template += '<dt>Marca Comercial:</dt><dd><a class="text-navy">@marca_comercial</a></dd>'
-	template += '<dt>Última Actualización:</dt><dd>@fecha_actualizacion</dd>'
+	template += '<dt>Actualización:</dt><dd>@fecha_actualizacion</dd>'
 	template += '<dt>Creada:</dt><dd>@fecha_creacion</dd>'
 	template += '</dl>'
 	template += '</div>'

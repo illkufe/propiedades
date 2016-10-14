@@ -230,14 +230,13 @@ class ContratoUpdate(ContratoMixin, UpdateView):
 
 		queryset = Contrato.objects.get(id=int(self.kwargs['pk']))
 
-		queryset.fecha_contrato 	= queryset.fecha_contrato.strftime('%d/%m/%Y')
-		queryset.fecha_inicio 		= queryset.fecha_inicio.strftime('%d/%m/%Y')
-		queryset.fecha_termino 		= queryset.fecha_termino.strftime('%d/%m/%Y')
-		queryset.fecha_habilitacion = queryset.fecha_habilitacion.strftime('%d/%m/%Y')
-		queryset.fecha_renovacion 	= queryset.fecha_renovacion.strftime('%d/%m/%Y')
-		queryset.fecha_remodelacion = queryset.fecha_remodelacion.strftime('%d/%m/%Y') if queryset.fecha_remodelacion is not None else ''
-		queryset.fecha_plazo 		= queryset.fecha_plazo.strftime('%d/%m/%Y') if queryset.fecha_plazo is not None else ''
-		queryset.fecha_aviso 		= queryset.fecha_aviso.strftime('%d/%m/%Y')
+		queryset.fecha_contrato 	= queryset.fecha_contrato.strftime('%d/%m/%Y') if queryset.fecha_contrato is not None else ''
+		queryset.fecha_inicio 		= queryset.fecha_inicio.strftime('%d/%m/%Y') if queryset.fecha_inicio is not None else ''
+		queryset.fecha_termino 		= queryset.fecha_termino.strftime('%d/%m/%Y') if queryset.fecha_termino is not None else ''
+		queryset.fecha_inicio_renta = queryset.fecha_inicio_renta.strftime('%d/%m/%Y') if queryset.fecha_inicio_renta is not None else ''
+		queryset.fecha_entrega 		= queryset.fecha_entrega.strftime('%d/%m/%Y') if queryset.fecha_entrega is not None else ''
+		queryset.fecha_renovacion 	= queryset.fecha_renovacion.strftime('%d/%m/%Y') if queryset.fecha_renovacion is not None else ''
+		queryset.fecha_habilitacion = queryset.fecha_habilitacion.strftime('%d/%m/%Y') if queryset.fecha_habilitacion is not None else ''
 
 		return queryset
 
@@ -341,6 +340,7 @@ class PropuestaMixin(object):
 		context 	= self.get_context_data()
 		accion 		= context['accion']
 
+		form_garantia 		= context['form_garantia']
 		# formularios conceptos
 		form_minimo 		= context['form_minimo']
 		form_minimo_detalle = context['form_minimo_detalle']
@@ -353,10 +353,11 @@ class PropuestaMixin(object):
 		if accion == 'create':
 
 			propuesta 				= Propuesta_Contrato(numero=form.cleaned_data['numero'])
-			propuesta.user 			= self.request.user
+			# propuesta.user 			= self.request.user
 			propuesta.empresa 		= self.request.user.userprofile.empresa
 			propuesta.save()
 			self.object.propuesta 	= propuesta
+			self.object.user 		= self.request.user
 			self.object.save()
 			form.save_m2m()
 
@@ -366,6 +367,18 @@ class PropuestaMixin(object):
 				propuesta 	= propuesta,
 				user 		= self.request.user,
 				).save()
+
+
+			# formulario garantia
+			if form_garantia.is_valid():
+				formularios = form_garantia.save(commit=False)
+				for formulario in formularios:
+					formulario.propuesta = self.object
+					formulario.save()
+			else:
+				transaction.rollback()
+				transaction.connections.close_all()
+				return self.render_to_response(self.get_context_data(form=form))
 			
 			# formulario arriendo minimo
 			if self.object.arriendo_minimo is True:
@@ -450,9 +463,22 @@ class PropuestaMixin(object):
 
 		else:
 
-			self.object.pk = None
+			self.object.pk 		= None
+			self.object.user 	= self.request.user
 			self.object.save()
 			form.save_m2m()
+
+			# formulario garantia
+			if form_garantia.is_valid():
+				formularios = form_garantia.save(commit=False)
+				for formulario in formularios:
+					formulario.pk = None
+					formulario.propuesta = self.object
+					formulario.save()
+			else:
+				transaction.rollback()
+				transaction.connections.close_all()
+				return self.render_to_response(self.get_context_data(form=form))
 
 			# formulario arriendo minimo
 			if self.object.arriendo_minimo is True:
@@ -567,23 +593,24 @@ class PropuestaNew(PropuestaMixin, FormView):
 
 		if self.request.POST:
 
-			context['form_minimo']			= FormPropuestaArriendo(self.request.POST, prefix="arriendo_minimo")
-			context['form_minimo_detalle'] 	= InlineFormPropuestaMinimoDetalle(self.request.POST, prefix="arriendo_minimo_detalle")
-			context['form_variable'] 		= InlineFormPropuestaVariable(self.request.POST, prefix="arriendo_variable")
-			context['form_bodega'] 			= InlineFormPropuestaBodega(self.request.POST, prefix="arriendo_bodega")
-			context['form_cuota'] 			= InlineFormPropuestaCuota(self.request.POST, prefix="cuota_incorporacion")
-			context['form_promocion'] 		= InlineFormPropuestaPromocion(self.request.POST, prefix="fondo_promocion")
-			context['form_comun'] 			= InlineFormPropuestaComun(self.request.POST, prefix="gasto_comun")
+			context['form_garantia'] 		= InlineFormPropuestaGarantia(self.request.POST, prefix='garantia')
+			context['form_minimo']			= FormPropuestaArriendo(self.request.POST, prefix='arriendo_minimo')
+			context['form_minimo_detalle'] 	= InlineFormPropuestaMinimoDetalle(self.request.POST, prefix='arriendo_minimo_detalle')
+			context['form_variable'] 		= InlineFormPropuestaVariable(self.request.POST, prefix='arriendo_variable')
+			context['form_bodega'] 			= InlineFormPropuestaBodega(self.request.POST, prefix='arriendo_bodega')
+			context['form_cuota'] 			= InlineFormPropuestaCuota(self.request.POST, prefix='cuota_incorporacion')
+			context['form_promocion'] 		= InlineFormPropuestaPromocion(self.request.POST, prefix='fondo_promocion')
+			context['form_comun'] 			= InlineFormPropuestaComun(self.request.POST, prefix='gasto_comun')
 
 		else:
-
-			context['form_minimo']			= FormPropuestaArriendo(prefix="arriendo_minimo")
-			context['form_minimo_detalle'] 	= InlineFormPropuestaMinimoDetalle(prefix="arriendo_minimo_detalle")
-			context['form_variable'] 		= InlineFormPropuestaVariable(prefix="arriendo_variable")
-			context['form_bodega'] 			= InlineFormPropuestaBodega(prefix="arriendo_bodega")
-			context['form_cuota'] 			= InlineFormPropuestaCuota(prefix="cuota_incorporacion")
-			context['form_promocion'] 		= InlineFormPropuestaPromocion(prefix="fondo_promocion")
-			context['form_comun'] 			= InlineFormPropuestaComun(prefix="gasto_comun")
+			context['form_garantia'] 		= InlineFormPropuestaGarantia(prefix='garantia')
+			context['form_minimo']			= FormPropuestaArriendo(prefix='arriendo_minimo')
+			context['form_minimo_detalle'] 	= InlineFormPropuestaMinimoDetalle(prefix='arriendo_minimo_detalle')
+			context['form_variable'] 		= InlineFormPropuestaVariable(prefix='arriendo_variable')
+			context['form_bodega'] 			= InlineFormPropuestaBodega(prefix='arriendo_bodega')
+			context['form_cuota'] 			= InlineFormPropuestaCuota(prefix='cuota_incorporacion')
+			context['form_promocion'] 		= InlineFormPropuestaPromocion(prefix='fondo_promocion')
+			context['form_comun'] 			= InlineFormPropuestaComun(prefix='gasto_comun')
 
 		return context
 
@@ -620,6 +647,7 @@ class PropuestaUpdate(PropuestaMixin, UpdateView):
 
 		if self.request.POST:
 
+			context['form_garantia'] 		= InlineFormPropuestaGarantia(self.request.POST, instance=propuesta, prefix='garantia')
 			context['form_minimo']			= FormPropuestaArriendo(self.request.POST, instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo")
 			context['form_minimo_detalle'] 	= InlineFormPropuestaMinimoDetalle(self.request.POST, instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo_detalle")
 			context['form_variable'] 		= InlineFormPropuestaVariable(self.request.POST, instance=propuesta, prefix="arriendo_variable")
@@ -630,6 +658,7 @@ class PropuestaUpdate(PropuestaMixin, UpdateView):
 
 		else:
 
+			context['form_garantia'] 		= InlineFormPropuestaGarantia(instance=propuesta, prefix='garantia')
 			context['form_minimo']			= FormPropuestaArriendo(instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo")
 			context['form_minimo_detalle'] 	= InlineFormPropuestaMinimoDetalle(instance=propuesta.propuesta_arriendo_minimo_set.first(), prefix="arriendo_minimo_detalle")
 			context['form_variable'] 		= InlineFormPropuestaVariable(instance=propuesta, prefix="arriendo_variable")
@@ -1345,20 +1374,19 @@ class CONTRATO(View):
 					'id'	: concepto.id,
 					'nombre': concepto.nombre,
 					})
-
+					
 			data.append({
 				'id' 					: contrato.id,
 				'numero' 				: contrato.numero,
-				'fecha_contrato' 		: contrato.fecha_contrato,
 				'nombre_local' 			: contrato.nombre_local,
+				'fecha_contrato' 		: contrato.fecha_contrato,
 				'fecha_inicio' 			: contrato.fecha_inicio.strftime('%d/%m/%Y'),
 				'fecha_termino' 		: contrato.fecha_termino.strftime('%d/%m/%Y'),
+				'fecha_inicio_renta' 	: contrato.fecha_inicio_renta.strftime('%d/%m/%Y') if contrato.fecha_inicio_renta is not None else None,
+				'fecha_entrega' 		: contrato.fecha_entrega.strftime('%d/%m/%Y') if contrato.fecha_entrega is not None else None,
 				'fecha_habilitacion' 	: contrato.fecha_habilitacion.strftime('%d/%m/%Y'),
-				'fecha_activacion' 		: contrato.fecha_activacion.strftime('%d/%m/%Y') if contrato.fecha_activacion is not None else None,
 				'fecha_renovacion' 		: contrato.fecha_renovacion.strftime('%d/%m/%Y'),
-				'fecha_remodelacion' 	: contrato.fecha_remodelacion.strftime('%d/%m/%Y') if contrato.fecha_remodelacion is not None else None,
-				'fecha_aviso' 			: contrato.fecha_aviso.strftime('%d/%m/%Y'),
-				'fecha_plazo' 			: contrato.fecha_plazo.strftime('%d/%m/%Y') if contrato.fecha_plazo is not None else None,
+				'fecha_activacion' 		: contrato.fecha_activacion.strftime('%d/%m/%Y') if contrato.fecha_activacion is not None else None,
 				'bodega' 				: contrato.bodega,
 				'metros_bodega' 		: contrato.metros_bodega,
 				'tipo' 					: {'id': contrato.tipo.id, 'nombre': contrato.tipo.nombre},
@@ -1412,6 +1440,12 @@ class PROPUESTA_CONTRATO(View):
 					'descripcion' 	: version.tipo.descripcion, 
 				}
 
+				user = {
+					'id' 			: version.user.id,
+					'first_name' 	: version.user.first_name,
+					'last_name' 	: version.user.last_name,
+				}
+
 				data_versiones.append({
 					'id' 					: version.id,
 					'numero'				: version.numero,
@@ -1429,18 +1463,14 @@ class PROPUESTA_CONTRATO(View):
 					'creado_en' 			: version.creado_en.strftime('%d/%m/%Y'),
 					'cliente'				: cliente,
 					'tipo'					: tipo,
+					'user'					: user,
 					})
 
-			user = {
-				'id' 			: propuesta.user.id,
-				'first_name' 	: propuesta.user.first_name,
-				'last_name' 	: propuesta.user.last_name,
-			}
+
 
 			data.append({
 				'id' 		: propuesta.id,
 				'creado_en' : propuesta.creado_en.strftime('%d/%m/%Y'),
-				'user'		: user,
 				'versiones' : data_versiones,
 				})
 
@@ -1475,12 +1505,6 @@ class PROPUESTA_CONTRATO_WORKFLOW(View):
 				workflow_responsables 	= list()
 				workflow_estados 		= list()
 				version 				= propuesta.propuesta_version_set.all().order_by('-id').first()
-
-				user = {
-					'id'			: propuesta.user.id,
-					'first_name' 	: propuesta.user.first_name,
-					'last_name' 	: propuesta.user.last_name,
-				}
 
 				version = {
 					'id' 			: version.id,
@@ -1527,7 +1551,6 @@ class PROPUESTA_CONTRATO_WORKFLOW(View):
 				data.append({
 					'id' 			: propuesta.id,
 					'creado_en' 	: propuesta.creado_en.strftime('%d/%m/%Y %H:%M'),
-					'user'			: user,
 					'version' 		: version,
 					'workflow' 		: workflow,
 				})
@@ -1625,6 +1648,7 @@ def propuesta_historial_tabla(request, id=None):
 	versiones = propuesta.propuesta_version_set.all()
 
 	# datos informacion
+	usuario					= list()
 	numero 					= list()
 	# datos periodo
 	fecha_contrato 			= list()
@@ -1638,6 +1662,7 @@ def propuesta_historial_tabla(request, id=None):
 	meses_aviso_comercial 	= list()
 	meses_remodelacion 		= list()
 	# datos conceptos
+	garantia 		 		= list()
 	arriendo_minimo 		= list()
 	arriendo_variable 		= list()
 	arriendo_bodega 		= list()
@@ -1648,6 +1673,7 @@ def propuesta_historial_tabla(request, id=None):
 
 	# datos informacion
 	numero.append({'data':'item', 'value': 'Número Contrato'})
+	usuario.append({'data':'item', 'value': 'Usuario Creador'})
 	# datos periodo
 	fecha_contrato.append({'data':'item', 'value': 'Fecha de Contrato'})
 	fecha_inicio.append({'data':'item', 'value': 'Fecha de Inicio'})
@@ -1659,8 +1685,9 @@ def propuesta_historial_tabla(request, id=None):
 	meses_contrato.append({'data':'item', 'value': 'Meses de Arriendo'})
 	meses_aviso_comercial.append({'data':'item', 'value': 'Meses Aviso Comercial'})
 	meses_remodelacion.append({'data':'item', 'value': 'Meses de Remodelacion'})
-	# datos conceptos {falta: ajuste arriendo minimo, doble en diciembre}
-	arriendo_minimo.append({'data':'item', 'value': 'Arriendo Minimo'})
+	# datos conceptos
+	garantia.append({'data':'item', 'value': 'Garantía'})
+	arriendo_minimo.append({'data':'item', 'value': 'Arriendo Mínimo'})
 	arriendo_variable.append({'data':'item', 'value': 'Arriendo Variable'})
 	arriendo_bodega.append({'data':'item', 'value': 'Arriendo de Bodega'})
 	cuota_incorporacion.append({'data':'item', 'value': 'Cuota de Incorporación'})
@@ -1669,6 +1696,7 @@ def propuesta_historial_tabla(request, id=None):
 
 	for version in versiones:
 
+		value_garantia 				= '<span class="badge">no aplica</span>'
 		value_arriendo_minimo 		= '<span class="badge">no aplica</span>'
 		value_arriendo_variable 	= '<span class="badge">no aplica</span>'
 		value_arriendo_bodega 		= '<span class="badge">no aplica</span>'
@@ -1693,18 +1721,20 @@ def propuesta_historial_tabla(request, id=None):
 		head.append({'data':version.id, 'title': version.creado_en.strftime('%d/%m/%Y %H:%M')})
 		# datos informacion
 		numero.append({'data':version.id, 'value': version.numero, 'type': 'informacion'})
+		usuario.append({'data':version.id, 'value': avatar_usuario(version.user), 'type': 'informacion'})
 		# datos periodo
 		fecha_contrato.append({'data':version.id, 'value': version.fecha_contrato.strftime('%d/%m/%Y') if version.fecha_contrato is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
 		fecha_inicio.append({'data':version.id, 'value': version.fecha_inicio.strftime('%d/%m/%Y') if version.fecha_inicio is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
 		fecha_termino.append({'data':version.id, 'value': version.fecha_termino.strftime('%d/%m/%Y') if version.fecha_termino is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
 		fecha_inicio_renta.append({'data':version.id, 'value': version.fecha_inicio_renta.strftime('%d/%m/%Y') if version.fecha_inicio_renta is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
 		fecha_entrega.append({'data':version.id, 'value': version.fecha_entrega.strftime('%d/%m/%Y') if version.fecha_entrega is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
-		fecha_habilitacion.append({'data':version.id, 'value': version.fecha_habilitacion.strftime('%d/%m/%Y') if version.fecha_habilitacion is not None else '', 'type': 'periodo'})
+		fecha_habilitacion.append({'data':version.id, 'value': version.fecha_habilitacion.strftime('%d/%m/%Y') if version.fecha_habilitacion is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
 		fecha_renovacion.append({'data':version.id, 'value': version.fecha_renovacion.strftime('%d/%m/%Y') if version.fecha_renovacion is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
-		meses_contrato.append({'data':version.id, 'value': version.meses_contrato if version.meses_contrato is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
-		meses_aviso_comercial.append({'data':version.id, 'value': version.meses_aviso_comercial if version.meses_aviso_comercial is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
-		meses_remodelacion.append({'data':version.id, 'value': version.meses_remodelacion if version.meses_remodelacion is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		meses_contrato.append({'data':version.id, 'value': str(version.meses_contrato)+' mes(s)' if version.meses_contrato is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		meses_aviso_comercial.append({'data':version.id, 'value': str(version.meses_aviso_comercial)+' mes(s)' if version.meses_aviso_comercial is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
+		meses_remodelacion.append({'data':version.id, 'value': str(version.meses_remodelacion)+' mes(s)' if version.meses_remodelacion is not None else '<span class="badge">sin dato</span>', 'type': 'periodo'})
 		# datos conceptos
+		garantia.append({'data':version.id, 'value': value_garantia, 'type': 'concepto'})
 		arriendo_minimo.append({'data':version.id, 'value': value_arriendo_minimo, 'type': 'concepto'})
 		arriendo_variable.append({'data':version.id, 'value': value_arriendo_variable, 'type': 'concepto'})
 		arriendo_bodega.append({'data':version.id, 'value': value_arriendo_bodega, 'type': 'concepto'})
@@ -1714,6 +1744,7 @@ def propuesta_historial_tabla(request, id=None):
 
 	# datos informacion
 	body.append(numero)
+	body.append(usuario)
 	# datos periodo
 	body.append(fecha_contrato)
 	body.append(fecha_inicio)
@@ -1726,6 +1757,7 @@ def propuesta_historial_tabla(request, id=None):
 	body.append(meses_aviso_comercial)
 	body.append(meses_remodelacion)
 	# datos conceptos
+	body.append(garantia)
 	body.append(arriendo_minimo)
 	body.append(arriendo_variable)
 	body.append(arriendo_bodega)

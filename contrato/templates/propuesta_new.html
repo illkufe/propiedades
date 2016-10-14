@@ -9,7 +9,8 @@
 			<div class="ibox float-e-margins">
 				<form id="form-propuesta-new" role="form" action="" method="post">
 					{% csrf_token %}
-
+					
+					<!-- informacion general -->
 					<div class="ibox-title">
 						<h5>Información General</h5>
 					</div>
@@ -81,7 +82,8 @@
 							</div>
 						</div>
 					</div>
-
+					
+					<!-- periodo -->
 					<div class="ibox-title">
 						<h5>Período</h5>
 					</div>
@@ -228,6 +230,65 @@
 						</div>
 					</div>
 
+					<!-- garantias -->
+					<div class="ibox-title">
+						<h5>Garantías</h5>
+						<div class="ibox-tools">
+							<button type="button" class="btn btn-primary btn-xs pull-right agregar-fila" data-tabla="tabla-garantia" data-entidad="garantia" ><i class="fa fa-plus"></i> nueva garantía</button>
+						</div>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-7">
+
+								{{ form_garantia.management_form }}
+								{% for form in form_garantia %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+								<table id="tabla-garantia" class="table">
+									<thead>
+										{% for form in form_garantia %}
+										{% if forloop.first %}
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+											{{ form.nombre.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+											{{ form.valor.label_tag }}
+										</th>
+										<th>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
+											{{ form.moneda.label_tag }}
+										</th>
+										<th></th>
+										{% endif %}
+										{% endfor %}
+									</thead>
+									<tbody>
+										{% for form in form_garantia %}
+										<tr>
+											<td>{{ form.nombre }}</td>
+											<td>{{ form.valor }}</td>
+											<td>{{ form.moneda }}</td>
+											<td class="text-center delete">
+												{{ form.DELETE }}
+												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Garantía')">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
 					<!-- concepto: arriendo minimo -->
 					<div class="ibox-title">
 						<div class="checkbox checkbox-primary" style="display:inline-block;">
@@ -305,7 +366,7 @@
 											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_minimo.fecha_inicio.help_text }}" ></i>
 											{{ form_minimo.fecha_inicio.label_tag }}
 											<div class="input-group date">
-												{{ form_minimo.fecha_inicio }}
+												<input class="form-control format-date" id="id_arriendo_minimo-fecha_inicio" name="arriendo_minimo-fecha_inicio" type="text" value='{{ form_minimo.fecha_inicio.value|date:"d/m/Y" }}'>
 												<span class="input-group-addon">
 													<i class="fa fa-calendar"></i>
 												</span>
@@ -325,35 +386,37 @@
 						{% for hidden in form.hidden_fields %}
 						{{ hidden }}
 						{% endfor %}
+						{% endfor %}
 						<table id="tabla-arriendo-detalle" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_minimo_detalle %}
 								{% if forloop.first %}
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
-									{{ form.mes_inicio.label_tag|striptags }}
+									{{ form.mes_inicio.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
-									{{ form.mes_termino.label_tag|striptags }}
+									{{ form.mes_termino.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-									{{ form.valor.label_tag|striptags }}
+									{{ form.valor.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
-									{{ form.moneda.label_tag|striptags }}
+									{{ form.moneda.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros.help_text }}" ></i>
-									{{ form.metros.label_tag|striptags }}
+									{{ form.metros.label_tag }}
 								</th>
 								<th></th>
 								{% endif %}
 								{% endfor %}
 							</thead>
 							<tbody class="arriendo_minimo_detalle">
+								{% for form in form_minimo_detalle %}
 								<tr>
 									<td class="text-center">
 										<div class="form-group">
@@ -412,7 +475,6 @@
 						</table>
 					</div>
 
-
 					<!-- concepto: arriendo variable -->
 					<div class="ibox-title">
 						<div class="checkbox checkbox-primary" style="display:inline-block;">
@@ -432,39 +494,41 @@
 						{% for hidden in form.hidden_fields %}
 						{{ hidden }}
 						{% endfor %}
+						{% endfor %}
 						<table id="tabla-variable" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_variable %}
 								{% if forloop.first %}
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_inicio.help_text }}" ></i>
-									{{ form.mes_inicio.label_tag|striptags }}
+									{{ form.mes_inicio.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.anio_inicio.help_text }}" ></i>
-									{{ form.anio_inicio.label_tag|striptags }}
+									{{ form.anio_inicio.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes_termino.help_text }}" ></i>
-									{{ form.mes_termino.label_tag|striptags }}
+									{{ form.mes_termino.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.anio_termino.help_text }}" ></i>
-									{{ form.anio_termino.label_tag|striptags }}
+									{{ form.anio_termino.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-									{{ form.valor.label_tag|striptags }}
+									{{ form.valor.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
-									{{ form.moneda.label_tag|striptags }}
+									{{ form.moneda.label_tag }}
 								</th>
 								<th></th>
 								{% endif %}
 								{% endfor %}
 							</thead>
 							<tbody class="arriendo_variable">
+								{% for form in form_variable %}
 								<tr>
 									<td>
 										<div class="form-group">
@@ -551,39 +615,41 @@
 						{% for hidden in form.hidden_fields %}
 						{{ hidden }}
 						{% endfor %}
+						{% endfor %}
 						<table id="tabla-bodega" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_bodega %}
 								{% if forloop.first %}
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.periodicidad.help_text }}" ></i>
-									{{ form.periodicidad.label_tag|striptags }}
+									{{ form.periodicidad.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-									{{ form.valor.label_tag|striptags }}
+									{{ form.valor.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
-									{{ form.moneda.label_tag|striptags }}
+									{{ form.moneda.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
-									{{ form.metros.label_tag|striptags }}
+									{{ form.metros.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
-									{{ form.cantidad_metros.label_tag|striptags }}
+									{{ form.cantidad_metros.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
-									{{ form.fecha_inicio.label_tag|striptags }}
+									{{ form.fecha_inicio.label_tag }}
 								</th>
 								<th></th>
 								{% endif %}
 								{% endfor %}
 							</thead>
 							<tbody class="arriendo_bodega">
+								{% for form in form_bodega %}
 								<tr>
 									<td>
 										<div class="form-group">
@@ -632,8 +698,8 @@
 
 									<td>
 										<div class="form-group">
-											<div class="input-group">
-												{{ form.fecha_inicio }}
+											<div class="input-group date">
+												<input class="form-control format-date" id="id_arriendo_bodega-{{forloop.counter0}}-fecha_inicio" name="arriendo_bodega-{{forloop.counter0}}-fecha_inicio" type="text" value='{{ form.fecha_inicio.value|date:"d/m/Y" }}'>
 												<span class="input-group-addon">
 													<i class="fa fa-calendar"></i>
 												</span>
@@ -675,35 +741,37 @@
 						{% for hidden in form.hidden_fields %}
 						{{ hidden }}
 						{% endfor %}
+						{% endfor %}
 						<table id="tabla-cuota" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_cuota %}
 								{% if forloop.first %}
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes.help_text }}" ></i>
-									{{ form.mes.label_tag|striptags }}
+									{{ form.mes.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.anio.help_text }}" ></i>
-									{{ form.anio.label_tag|striptags }}
+									{{ form.anio.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-									{{ form.valor.label_tag|striptags }}
+									{{ form.valor.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
-									{{ form.moneda.label_tag|striptags }}
+									{{ form.moneda.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros.help_text }}" ></i>
-									{{ form.metros.label_tag|striptags }}
+									{{ form.metros.label_tag }}
 								</th>
 								<th></th>
 								{% endif %}
 								{% endfor %}
 							</thead>
 							<tbody class="cuota_incorporacion">
+								{% for form in form_cuota %}
 								<tr>
 									<td>
 										<div class="form-group">
@@ -781,31 +849,33 @@
 						{% for hidden in form.hidden_fields %}
 						{{ hidden }}
 						{% endfor %}
+						{% endfor %}
 						<table id="tabla-promocion" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_promocion %}
 								{% if forloop.first %}
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.periodicidad.help_text }}" ></i>
-									{{ form.periodicidad.label_tag|striptags }}
+									{{ form.periodicidad.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-									{{ form.valor.label_tag|striptags }}
+									{{ form.valor.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
-									{{ form.moneda.label_tag|striptags }}
+									{{ form.moneda.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha.help_text }}" ></i>
-									{{ form.fecha.label_tag|striptags }}
+									{{ form.fecha.label_tag }}
 								</th>
 								<th></th>
 								{% endif %}
 								{% endfor %}
 							</thead>
 							<tbody class="fondo_promocion">
+								{% for form in form_promocion %}
 								<tr>
 									<td>
 										<div class="form-group">
@@ -836,6 +906,17 @@
 
 									<td>
 										<div class="form-group">
+											<div class="input-group date">
+												<input class="form-control format-date" id="id_fondo_promocion-{{forloop.counter0}}-fecha" name="fondo_promocion-{{forloop.counter0}}-fecha" type="text" value='{{ form.fecha.value|date:"d/m/Y" }}'>
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+											</div>
+											<div class="container-error">
+												{{ form.fecha.errors|striptags }}
+											</div>
+										</div>
+										<!-- <div class="form-group">
 											<div class="input-group">
 												{{ form.fecha }}
 												<span class="input-group-addon">
@@ -845,7 +926,7 @@
 											<div class="container-error">
 												{{ form.fecha.errors|striptags }}
 											</div>
-										</div>
+										</div> -->
 									</td>
 
 									<td class="text-center delete">
@@ -879,29 +960,30 @@
 						{% for hidden in form.hidden_fields %}
 						{{ hidden }}
 						{% endfor %}
+						{% endfor %}
 						<table id="tabla-comun" class="table tabla-conceptos">
 							<thead>
 								{% for form in form_comun %}
 								{% if forloop.first %}
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
-									{{ form.tipo.label_tag|striptags }}
+									{{ form.tipo.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-									{{ form.valor.label_tag|striptags }}
+									{{ form.valor.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
-									{{ form.moneda.label_tag|striptags }}
+									{{ form.moneda.label_tag }}
 								</th>
 								<th></th>
 								{% endif %}
 								{% endfor %}
 							</thead>
 							<tbody class="gasto_comun">
+								{% for form in form_comun %}
 								<tr>
-
 									<td class="text-center">
 										<div class="form-group">
 											{{ form.tipo }}
@@ -1031,11 +1113,7 @@ function initialize(){
 
 function agregar_fila_concepto(obj){
 
-	console.log(obj)
 	var count 	= $('#'+obj.tabla+' tbody').children().length;
-
-	console.log(count)
-
 	var $tr 	= $('#'+obj.tabla+' tbody tr:first');
 	var $clone 	= $tr.clone();
 	var row 	= $clone.html().replace(/-0-/g, '-'+count+'-').replace(/update/g, 'new');

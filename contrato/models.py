@@ -52,21 +52,25 @@ class Contrato(models.Model):
 
 	# atributos (generales)
 	numero 				= models.IntegerField()
-	fecha_contrato 		= models.DateField()
 	nombre_local 		= models.CharField(max_length=250)
-	fecha_inicio 		= models.DateField()
-	fecha_termino 		= models.DateField()
-	meses 				= models.IntegerField()
-	fecha_habilitacion 	= models.DateField()
-	fecha_activacion 	= models.DateField(null=True, blank=True)
-	fecha_renovacion 	= models.DateField()
-	fecha_remodelacion 	= models.DateField(null=True, blank=True)
-	fecha_aviso 		= models.DateField()
-	fecha_plazo 		= models.DateField(null=True, blank=True)
-	dias_salida			= models.IntegerField()
+	destino_comercial 	= models.TextField(blank=True)
+
+	# atributos (periodo)
+	fecha_contrato 			= models.DateField()
+	fecha_inicio 			= models.DateField()
+	fecha_termino 			= models.DateField()
+	meses_contrato 			= models.IntegerField()
+	meses_aviso_comercial	= models.IntegerField()
+	meses_remodelacion		= models.IntegerField()
+	fecha_inicio_renta 		= models.DateField()
+	fecha_entrega 			= models.DateField()
+	fecha_renovacion 		= models.DateField()
+	fecha_habilitacion 		= models.DateField()
+	fecha_activacion 		= models.DateField(null=True, blank=True)	
+
+	# atributos (bodega)
 	bodega 				= models.BooleanField(default=False)
 	metros_bodega		= models.FloatField(default=0, null=True, blank=True)
-	destino_comercial 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -134,8 +138,6 @@ class Propuesta_Contrato(models.Model):
 
 	# relaciones
 	empresa 	= models.ForeignKey(Empresa)
-	user 		= models.ForeignKey(User)
-	# procesos 	= models.ManyToManyField(Proceso)
 	procesos 	= models.ManyToManyField(Proceso, through='Propuesta_Proceso')
 
 	def __str__(self):
@@ -177,6 +179,7 @@ class Propuesta_Version(models.Model):
 	creado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
+	user		= models.ForeignKey(User)
 	propuesta	= models.ForeignKey(Propuesta_Contrato)
 	tipo 		= models.ForeignKey(Contrato_Tipo)
 	cliente 	= models.ForeignKey(Cliente)
@@ -205,6 +208,23 @@ class Propuesta_Proceso(models.Model):
 	class Meta:
 		verbose_name 		= "Proceso de Propuesta"
 		verbose_name_plural = "Procesos de Propuesta"
+
+class Propuesta_Garantia(models.Model):
+
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+	valor		= models.FloatField(default=0)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	propuesta 	= models.ForeignKey(Propuesta_Version)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return self.nombre
 
 class Propuesta_Arriendo_Minimo(models.Model):
 
@@ -361,10 +381,10 @@ class Propuesta_Cuota_Incorporacion(models.Model):
 class Propuesta_Fondo_Promocion(models.Model):
 
 	PERIODICIDAD = (
-		(0, 'ANUAL'),
-		(1, 'SEMESTRAL'),
+		(1, 'MENSUAL'),
 		(2, 'TRIMESTRAL'),
-		(3, 'MENSUAL'),
+		(3, 'SEMESTRAL'),
+		(4, 'ANUAL'),
 	)
 
 	# atributos (generales)
@@ -503,10 +523,10 @@ class Arriendo_Detalle(models.Model):
 class Arriendo_Bodega(models.Model):
 
 	PERIODICIDAD = (
-		(0, 'ANUAL'),
-		(1, 'SEMESTRAL'),
+		(1, 'MENSUAL'),
 		(2, 'TRIMESTRAL'),
-		(3, 'MENSUAL'),
+		(3, 'SEMESTRAL'),
+		(4, 'ANUAL'),
 	)
 
 	# atributos (generales
@@ -570,9 +590,14 @@ class Arriendo_Variable(models.Model):
 
 class Gasto_Comun(models.Model):
 
+	TIPO = (
+		(1, 'FIJO'),
+		(2, 'PRORRATEO'),
+	)
+
 	# atributos (generales)
-	valor		= models.FloatField(default=0)
-	prorrateo 	= models.BooleanField(default=False)
+	tipo		= models.IntegerField(choices=TIPO)
+	valor		= models.FloatField(null=True, blank=True)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -580,7 +605,6 @@ class Gasto_Comun(models.Model):
 
 	# relaciones
 	contrato 	= models.ForeignKey(Contrato)
-	local 		= models.ForeignKey(Local)
 	moneda 		= models.ForeignKey(Moneda)
 	concepto 	= models.ForeignKey(Concepto)
 
@@ -628,10 +652,10 @@ class Cuota_Incorporacion(models.Model):
 class Fondo_Promocion(models.Model):
 
 	PERIODICIDAD = (
-		(0, 'ANUAL'),
-		(1, 'SEMESTRAL'),
+		(1, 'MENSUAL'),
 		(2, 'TRIMESTRAL'),
-		(3, 'MENSUAL'),
+		(3, 'SEMESTRAL'),
+		(4, 'ANUAL'),
 	)
 
 	# atributos (generales)

@@ -32,12 +32,8 @@
 								{% for form in formulario.fomulario %}
 								{% if forloop.first %}
 								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.local.help_text }}" ></i>
-									{{ form.local.label_tag }}
-								</th>
-								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.prorrateo.help_text }}" ></i>
-									{{ form.prorrateo.label_tag }}
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+									{{ form.tipo.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
@@ -56,18 +52,9 @@
 								<tr>
 									<td>
 										<div class="form-group">
-											{{ form.local }}
+											{{ form.tipo }}
 											<div class="container-error">
-												{{ form.local.errors }}
-											</div>
-										</div>
-									</td>
-
-									<td>
-										<div class="form-group">
-											{{ form.prorrateo }}
-											<div class="container-error">
-												{{ form.prorrateo.errors }}
+												{{ form.tipo.errors }}
 											</div>
 										</div>
 									</td>

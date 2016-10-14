@@ -131,19 +131,6 @@ table#tabla-propuestas tbody img{
 	border-radius: 50%;
 }
 
-.avatar-default {
-	width: 32px;
-	height: 32px;
-	background: #286ca0;
-	display: inline-block;
-	border-radius: 50%;
-	margin: 0 auto;
-	text-align: center;
-	line-height: 32px;
-	color: #fff;
-	margin: 0px 1px;
-}
-
 </style>
 
 {% endblock section %}
@@ -169,30 +156,51 @@ function initialize(){
 	$('.summernote').summernote();
 
 	$('#buscar-propuesta').keyup(function(){
-		console.log($(this).val())
+
+		var buscar = $(this).val().toLowerCase()
+
+		$('table#tabla-propuestas tbody').find('tr.mensaje').remove()
+
+		if (buscar != '') {
+			$('table#tabla-propuestas tbody tr').addClass('hide')
+		} else{
+			$('table#tabla-propuestas tbody tr').removeClass('hide')
+		};
+
+		$('.project-title .nombre-local').each(function(){
+			var texto = $(this).text().toLowerCase()
+			if (texto.indexOf(buscar) >= 0){
+				$(this).closest('tr').removeClass('hide')
+			}
+		})
+
+		var filas 			= $('table#tabla-propuestas tbody tr').length
+		var filas_ocultas 	= $('table#tabla-propuestas tbody tr.hide').length
+
+		if (filas == filas_ocultas) {
+			$('table#tabla-propuestas tbody').append('<tr class="text-center mensaje"><td>No se encontraron propuestas</td></tr>')
+		}
 	})
 
 	$('#cargar-tabla-propuestas').click(data_tabla_propuestas())
 
-    $('#new_propuesta').on('click', function () {
-        var propuesta = {{ workflow}};
+	$('#new_propuesta').on('click', function () {
+		var propuesta = {{workflow}};
 
-        if(propuesta > 0){
-            location.href = '{% url 'propuesta_new' %}'
-        }
-        else {
-            var configuracion = {
-                'toast_type'	: 'warning',
-                'toast_text' 	: 'Debe configurar primero el Workflow.',
-                'toast_title' 	: 'Advertencia',
-            }
+		if(propuesta > 0){
+			location.href = '{% url 'propuesta_new' %}'
+		}
+		else {
+			var configuracion = {
+				'toast_type'	: 'warning',
+				'toast_text' 	: 'Debe configurar primero el Workflow.',
+				'toast_title' 	: 'Advertencia',
+			}
 
-            // mostrar respuesta
-            notification_toast(configuracion)
-        }
-
-
-    })
+			// mostrar respuesta
+			notification_toast(configuracion)
+		}
+	})
 }
 
 
@@ -209,7 +217,7 @@ function data_tabla_propuestas(){
 		},
 		complete: function(){
 			funciones_tabla_propuestas()
-		}		
+		}
 	})
 }
 
@@ -224,7 +232,7 @@ function template_tabla_propuestas(data){
 		template += '<span class="label label-primary" style="background:@background">@workflow_proceso_nombre</span>'
 		template += '</td>'
 		template += '<td class="project-title">'
-		template += '<a>@nombre_local</a>'
+		template += '<a class="nombre-local">@nombre_local</a>'
 		template += '<br>'
 		template += '<small>Creado @creado_en</small>'
 		template += '</td>'

@@ -2,6 +2,7 @@
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, UpdateView, DeleteView
+from locales.models import *
 
 from .forms import *
 from .models import *

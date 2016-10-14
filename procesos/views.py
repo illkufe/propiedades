@@ -256,7 +256,6 @@ def propuesta_guardar(request):
 
 	try:
 		with transaction.atomic():
-			print(request.user.userprofile.empresa.configuracion.motor_factura)
 			propuesta = Propuesta(
 				nombre 	= var_post['nombre'],
 				user 	= request.user,
@@ -660,9 +659,33 @@ def validar_arriendo_variable(contrato, concepto, periodo):
 
 def validar_gasto_comun(contrato, concepto, periodo):
 
+	mensajes = [
+		'Correcto',
+		'No tiene ingresado el gasto comín asociado en este periodo',
+		'No tiene gasto común asociado',
+	]
+
+	estado 	= False
+	mensaje = 2
+
+	if Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto).exists():
+
+		estado 	= True
+		mensaje = 0
+
+		gastos_comunes = Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto)
+
+		for gasto_comun in gastos_comunes:
+
+			if gasto_comun.tipo == 2:
+
+				if Gasto_Mensual.objects.filter(mes=periodo.month, anio=periodo.year, visible=True).exists() is False:
+					estado 	= False
+					mensaje = 1
+
 	return {
-		'estado'	: False,
-		'mensaje'	: 'Incorrecto',
+		'estado'	: estado,
+		'mensaje'	: mensajes[mensaje],
 	}
 
 def validar_servicios_basicos(contrato, concepto, periodo):
@@ -710,6 +733,9 @@ def validar_fondo_de_promocion(contrato, concepto, periodo):
 	locales 		= contrato.locales.all()
 	metros_total 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
 
+	# verificar si tiene arriendo minimo
+	# verificar si tiene arriendo variabe
+
 	if Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto).exists():
 
 		fondos_promocion = Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto)
@@ -719,9 +745,9 @@ def validar_fondo_de_promocion(contrato, concepto, periodo):
 			estado 	= False
 			mensaje = 1
 
-			if arriendo_bodega.periodicidad == 0 and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+			if fondo_promocion.periodicidad == 0 and periodo.month >= fondo_promocion.fecha_inicio.month and periodo.year >= fondo_promocion.fecha_inicio.year:
 
-				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+				mes_1 = sumar_meses(fondo_promocion.fecha_inicio, 11)
 				
 				if periodo.month == mes_1.month:
 
@@ -730,26 +756,26 @@ def validar_fondo_de_promocion(contrato, concepto, periodo):
 						'mensaje'	: mensajes[0],
 					}
 
-			elif arriendo_bodega.periodicidad == 1:
+			elif fondo_promocion.periodicidad == 1:
 
-				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
-				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+				mes_1 = sumar_meses(fondo_promocion.fecha_inicio, 5)
+				mes_2 = sumar_meses(fondo_promocion.fecha_inicio, 11)
 
-				if (periodo.month == mes_1.month or periodo.month==mes_2.month) and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+				if (periodo.month == mes_1.month or periodo.month==mes_2.month) and periodo.month >= fondo_promocion.fecha_inicio.month and periodo.year >= fondo_promocion.fecha_inicio.year:
 
 					return {
 						'estado'	: True,
 						'mensaje'	: mensajes[0],
 					}
 
-			elif arriendo_bodega.periodicidad == 2:
+			elif fondo_promocion.periodicidad == 2:
 
-				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 2)
-				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
-				mes_3 = sumar_meses(arriendo_bodega.fecha_inicio, 8)
-				mes_4 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+				mes_1 = sumar_meses(fondo_promocion.fecha_inicio, 2)
+				mes_2 = sumar_meses(fondo_promocion.fecha_inicio, 5)
+				mes_3 = sumar_meses(fondo_promocion.fecha_inicio, 8)
+				mes_4 = sumar_meses(fondo_promocion.fecha_inicio, 11)
 
-				if (periodo.month == mes_1.month or periodo.month==mes_2.month or periodo.month==mes_3.month or periodo.month==mes_4.month) and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+				if (periodo.month == mes_1.month or periodo.month==mes_2.month or periodo.month==mes_3.month or periodo.month==mes_4.month) and periodo.month >= fondo_promocion.fecha_inicio.month and periodo.year >= fondo_promocion.fecha_inicio.year:
 
 					return {
 						'estado'	: True,
@@ -768,10 +794,6 @@ def validar_fondo_de_promocion(contrato, concepto, periodo):
 			else:
 				estado 	= False
 				mensaje = 1
-
-
-
-
 
 
 
@@ -851,10 +873,6 @@ def validar_fondo_de_promocion(contrato, concepto, periodo):
 
 	except Exception:
 		arriendo_reajustable = None
-
-
-
-
 
 	try:
 		fondos_promocion = Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto)
@@ -984,7 +1002,7 @@ def validar_arriendo_bodega(contrato, concepto, periodo):
 			estado 	= False
 			mensaje = 1
 
-			if arriendo_bodega.periodicidad == 0 and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+			if arriendo_bodega.periodicidad == 4 and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
 
 				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
 				
@@ -995,7 +1013,7 @@ def validar_arriendo_bodega(contrato, concepto, periodo):
 						'mensaje'	: mensajes[0],
 					}
 
-			elif arriendo_bodega.periodicidad == 1:
+			elif arriendo_bodega.periodicidad == 3:
 
 				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
 				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
@@ -1021,7 +1039,7 @@ def validar_arriendo_bodega(contrato, concepto, periodo):
 						'mensaje'	: mensajes[0],
 					}
 
-			elif arriendo_bodega.periodicidad == 3:
+			elif arriendo_bodega.periodicidad == 1:
 
 				if periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
 
@@ -1117,6 +1135,7 @@ def calcular_concepto(contrato, concepto, periodo):
 		return True
 
 def calcular_arriendo_minimo(contrato, concepto, periodo):
+	print ('asdasd')
 
 	total 			= 0
 	locales 		= contrato.locales.all()
@@ -1155,6 +1174,7 @@ def calcular_arriendo_minimo(contrato, concepto, periodo):
 		total = moneda * metros * reajuste
 
 	except Exception:
+
 		total = 0
 
 	return total
@@ -1198,7 +1218,31 @@ def calcular_arriendo_variable(contrato, concepto, periodo):
 
 def calcular_gasto_comun(contrato, concepto, periodo):
 
-	return 0
+	total = 0
+
+	gastos_comunes = Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto)
+
+	for gasto_comun in gastos_comunes:
+
+		if gasto_comun.tipo == 1:
+
+			valor 	= gasto_comun.valor
+			factor 	= gasto_comun.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+		else:
+
+			locales 		= contrato.locales.all()
+			activos_id 		= contrato.locales.all().values_list('activo_id', flat=True)
+
+			metros_total 	= Local.objects.filter(activo__in=activos_id, visible=True).aggregate(Sum('metros_cuadrados'))
+			metros_local 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
+
+			valor 	= Gasto_Mensual.objects.get(activo=contrato.locales.first().activo, mes=periodo.month, anio=periodo.year).valor
+			factor 	= ((metros_local['metros_cuadrados__sum'] * 100) / (metros_total['metros_cuadrados__sum'])) / 100
+
+		total += valor * factor
+
+	return total
 
 def calcular_servicios_basicos(contrato, concepto, periodo):
 
@@ -1421,7 +1465,7 @@ def calcular_arriendo_bodega(contrato, concepto, periodo):
 
 		for arriendo_bodega in arriendo_bodegas:
 			
-			if arriendo_bodega.periodicidad == 0 and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+			if arriendo_bodega.periodicidad == 4 and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
 
 				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
 				
@@ -1441,7 +1485,7 @@ def calcular_arriendo_bodega(contrato, concepto, periodo):
 				else:
 					total += 0
 
-			elif arriendo_bodega.periodicidad == 1:
+			elif arriendo_bodega.periodicidad == 3:
 
 				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
 				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
@@ -1485,7 +1529,7 @@ def calcular_arriendo_bodega(contrato, concepto, periodo):
 				else:
 					total += 0
 
-			elif arriendo_bodega.periodicidad == 3:
+			elif arriendo_bodega.periodicidad == 1:
 
 				if periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
 					valor 	= arriendo_bodega.valor
@@ -1534,6 +1578,7 @@ def calcular_multas(contrato, concepto, periodo):
 		total += multa.valor * multa.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
 	return total
+
 
 # API - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class FACTURA(View):
@@ -1624,22 +1669,6 @@ class FACTURA(View):
 				})
 
 		return JsonResponse(data, safe=False)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -342,12 +342,12 @@ class VentaList(ListView):
 			contrato	= Contrato.objects.filter(cliente_id=self.request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
 			locales 	= Local.objects.filter(id__in=contrato, visible=True)
 		else:
-			activos 			= Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
-			locales 			= Local.objects.filter(activo_id__in=activos, visible=True)
+			activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
+			locales = Local.objects.filter(activo_id__in=activos, visible=True)
+
 		context['locales'] 	= locales
 
 		return context
-
 
 
 class VENTAS(View):
@@ -355,8 +355,11 @@ class VENTAS(View):
 
 	def get(self, request, id=None):
 
+		activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
+		locales = Local.objects.filter(activo_id__in=activos, visible=True)
+
 		if id == None:
-			self.object_list = Venta.objects.all().\
+			self.object_list = Venta.objects.filter(local_id__in=locales).\
 				extra(select={'year': "EXTRACT(year FROM fecha_inicio)",'month': "EXTRACT(month FROM fecha_inicio)", 'id': "id"}).\
 				values('year', 'month', 'local_id').\
 				annotate(Sum('valor'))
@@ -403,11 +406,11 @@ class VENTAS(View):
 						venta.save()
 					else:
 						venta = Venta(
-							fecha_inicio		= fecha_inicio,
-							fecha_termino		= fecha_termino,
-							valor				= valor,
-							local_id 			= local,
-							periodicidad		= 3,
+							fecha_inicio	= fecha_inicio,
+							fecha_termino	= fecha_termino,
+							valor			= valor,
+							local_id 		= local,
+							periodicidad	= 3,
 							)
 						venta.save()
 				else:

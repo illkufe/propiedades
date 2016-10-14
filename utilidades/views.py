@@ -111,6 +111,27 @@ def formato_numero_sin_miles(valor):
 
 	return moneda
 
+# funciones avatar
+def avatar_usuario(user):
+
+	template 		= ''
+	primary_avatar 	= user.avatar_set.all().order_by('-primary')[:1]
+	full_name 		= str(user.first_name)+' '+str(user.last_name)
+	short_name 		= str(user.first_name)[:1]+''+str(user.last_name)[:1]
+
+	if primary_avatar:
+		url 	= str(primary_avatar[0].avatar)
+
+		template += '<a style="margin:0px 1px;" data-toggle="tooltip" data-placement="top" title="'+full_name+'">'
+		template += '<img src="/media/'+url+'" width="80" height="80">'
+		template += '</a>'
+	else:
+		template  += '<a class="avatar-default" data-toggle="tooltip" data-placement="top" title="'+full_name+'">'
+		template  += short_name
+		template  += '</a>'
+
+	return template
+
 
 # funciones globales (correo)
 def enviar_correo(configuracion):
@@ -150,8 +171,6 @@ def generar_pdf(configuracion, data):
 	pdf.close()
 
 	return response
-
-
 
 # funciones conectar web service
 def concectar_web_service(url):
