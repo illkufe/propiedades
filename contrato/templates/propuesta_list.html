@@ -146,9 +146,6 @@ $(document).ready(function(){
 	data_tabla_propuestas()
 	propuesta_enviar_correo()
 
-
-	
-
 });
 
 function initialize(){
@@ -183,6 +180,7 @@ function initialize(){
 	})
 
 	$('#cargar-tabla-propuestas').click(data_tabla_propuestas())
+
 
 	$('#new_propuesta').on('click', function () {
 		var propuesta = {{workflow}};

@@ -8,7 +8,7 @@ from django.db import transaction
 from django.db.models import Sum
 from django.views.generic import View, ListView, FormView, CreateView, DeleteView, UpdateView
 
-from administrador.models import Empresa, Cliente
+from administrador.models import Empresa, Cliente, Workflow
 from locales.models import Local
 from avatar.models import Avatar
 
@@ -307,7 +307,7 @@ class PropuestaList(ListView):
 
 	def get_workflow(self):
 
-		workflow = Proceso.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True).count()
+		workflow = Workflow.objects.get(empresa=self.request.user.userprofile.empresa)
 
 		return workflow
 

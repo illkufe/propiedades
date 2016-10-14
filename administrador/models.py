@@ -235,6 +235,21 @@ class Tipo_Estado_Proceso(models.Model):
 		verbose_name 		= "Tipo de Estado Proceso"
 		verbose_name_plural = "Tipos de Estados Procesos"
 
+class Workflow(models.Model):
+
+	descripcion = models.CharField(max_length=250)
+	validado	= models.BooleanField(default=False)
+
+	# relaciones
+	empresa 	= models.ForeignKey(Empresa)
+
+	def __str__(self):
+		return self.descripcion
+
+	class Meta:
+		verbose_name = "Workflow"
+		verbose_name_plural = "Workflow's"
+
 class Proceso(models.Model):
 
 	# atributos (generales)
@@ -244,8 +259,7 @@ class Proceso(models.Model):
 	visible 	= models.BooleanField(default=True)
 	creado_en 	= models.DateTimeField(auto_now=True)
 
-	# relaciones
-	empresa 	= models.ForeignKey(Empresa)
+	workflow	= models.ForeignKey(Workflow)
 	responsable = models.ManyToManyField('accounts.UserProfile')
 	tipo_estado = models.ForeignKey(Tipo_Estado_Proceso)
 	antecesor  	= models.ManyToManyField('self', symmetrical=False, blank=True)

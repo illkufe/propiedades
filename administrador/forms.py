@@ -161,16 +161,17 @@ class ProcesosBorradorForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 
+		request 	= kwargs.pop('request', None)
+
 		super(ProcesosBorradorForm, self).__init__(*args, **kwargs)
 		self.fields['tipo_estado'].queryset 				= Tipo_Estado_Proceso.objects.all()
-		self.fields['tipo_estado'].widget.attrs['readonly'] = True
-		self.fields['responsable'].queryset					= UserProfile.objects.all() # {falta: poner solamente los usuarios de la empresa}
+		self.fields['responsable'].queryset					= UserProfile.objects.filter(empresa=request.user.userprofile.empresa)
 
 
 	class Meta:
 		model = Proceso
 		fields = '__all__'
-		exclude = ['creado_en', 'visible', 'empresa']
+		exclude = ['creado_en', 'visible', 'empresa', 'workflow']
 
 		widgets = {
 			'id'				: forms.HiddenInput(attrs={'class': 'form-control'}),
