@@ -738,10 +738,18 @@ def validar_fondo_de_promocion(contrato, concepto, periodo):
 
 			if response['estado']:
 
-				variable = Arriendo_Variable.objects.filter(contrato=contrato, arriendo_minimo=fondo_promocion.vinculo, visible=True).first()
-				response = validar_arriendo_variable(contrato, variable.concepto, periodo)
+				if Arriendo_Variable.objects.filter(contrato=contrato, arriendo_minimo=fondo_promocion.vinculo, visible=True).exists():
 
-				if response['estado'] is False:
+					variable = Arriendo_Variable.objects.filter(contrato=contrato, arriendo_minimo=fondo_promocion.vinculo, visible=True).first()
+					response = validar_arriendo_variable(contrato, variable.concepto, periodo)
+
+					if response['estado'] is False:
+						return {
+							'estado'	: False,
+							'mensaje'	: response['mensaje'],
+						}
+
+				else:
 					return {
 						'estado'	: False,
 						'mensaje'	: mensajes[2],
@@ -749,7 +757,7 @@ def validar_fondo_de_promocion(contrato, concepto, periodo):
 			else:
 				return {
 					'estado'	: False,
-					'mensaje'	: mensajes[1],
+					'mensaje'	: response['mensaje'],
 				}
 
 			if fondo_promocion.periodicidad == 4 and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:

@@ -67,21 +67,21 @@
 										</div>
 									</div>
 
+									<div class="form-group col-sm-6">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.giro.help_text }}" ></i>
+										{{ form.giro.label_tag }}
+										{{ form.giro }}
+										<div class="container-error">
+											{{ form.giro.errors|striptags }}
+										</div>
+									</div>
+
 									<div class="form-group col-sm-6 dato-juridica">
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.razon_social.help_text }}" ></i>
 										{{ form.razon_social.label_tag }}
 										{{ form.razon_social }}
 										<div class="container-error">
 											{{ form.razon_social.errors|striptags }}
-										</div>
-									</div>
-
-									<div class="form-group col-sm-6 dato-juridica">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.giro.help_text }}" ></i>
-										{{ form.giro.label_tag }}
-										{{ form.giro }}
-										<div class="container-error">
-											{{ form.giro.errors|striptags }}
 										</div>
 									</div>
 								</div>
@@ -194,36 +194,36 @@
 								</table>
 							</div>
 						</div>
-                    </div>
-                    <div class="ibox-title">
+					</div>
+					<div class="ibox-title">
 						<h5>Clasificación</h5>
 					</div>
 
-                    <div class="ibox-content">
+					<div class="ibox-content">
 						<div class="row">
 
-                            {% for clasificacion in clasificaciones %}
+							{% for clasificacion in clasificaciones %}
 
-                                <div class="form-group col-sm-3">
-                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title=".." ></i>
-                                    {{ clasificacion.nombre }}
-                                    <select class="select2" multiple="multiple" name="clasificaciones" id="id_clasificaciones">
-                                        {% for detalles in clasificacion.detalle %}
-                                            <option value="{{ detalles.id }}" {% if detalles.select %} selected="selected" {% endif %}>{{ detalles.nombre}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
+							<div class="form-group col-sm-3">
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title=".." ></i>
+								{{ clasificacion.nombre }}
+								<select class="select2" multiple="multiple" name="clasificaciones" id="id_clasificaciones">
+									{% for detalles in clasificacion.detalle %}
+									<option value="{{ detalles.id }}" {% if detalles.select %} selected="selected" {% endif %}>{{ detalles.nombre}}</option>
+									{% endfor %}
+								</select>
+							</div>
 
-                            {% endfor %}
+							{% endfor %}
 
-                        </div>
+						</div>
 
 						<br>
 						<br>
 
 						<div class="row">
 							<div class="col-sm-12">
-                                <a href="/clientes/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+								<a href="/clientes/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-cliente-new')">GUARDAR Y SEGUIR</button>
 							</div>
@@ -247,6 +247,12 @@ $(document).ready(function(){
 });
 
 function initialize(){
+
+	// verificar al editar un cliente si es persona juridica o persona natural
+	if ($('#id_tipo').val() == '2') {
+		$('.dato-juridica').addClass('hide')
+	}
+
 	$('#id_tipo').change(function() {
 		// 1 = persona juridica
 		// 2 = persona natural
