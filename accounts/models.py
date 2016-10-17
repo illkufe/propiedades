@@ -39,7 +39,7 @@ class UserProfile(models.Model):
 	cliente = models.ForeignKey(Cliente, blank=True, null=True)
 
 	def __str__(self):
-		return self.user.username
+		return self.user.first_name + ' ' + self.user.last_name
 
 	class Meta:
 		verbose_name 		= "Perfil"

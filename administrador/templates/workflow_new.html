@@ -713,7 +713,8 @@ table#tabla-procesos tbody img{
         var $row    = $(row)
 
         $row.find('input').val('');
-{#        $row.find('select option:first-child').attr("selected", "selected");#}
+        $row.find('select').val('');
+        $row.find('select').removeAttr('selected');
         $row.find('input:checkbox').prop('checked', false);
 
         $('#' + tabla + ' tbody').append('<tr></tr>')

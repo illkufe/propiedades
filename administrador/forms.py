@@ -165,8 +165,22 @@ class ProcesosBorradorForm(forms.ModelForm):
 
 		super(ProcesosBorradorForm, self).__init__(*args, **kwargs)
 		self.fields['tipo_estado'].queryset 				= Tipo_Estado_Proceso.objects.all()
-		self.fields['responsable'].queryset					= UserProfile.objects.filter(empresa=request.user.userprofile.empresa)
+		self.fields['responsable'].queryset					= UserProfile.objects.filter(empresa=request.user.userprofile.empresa).exclude(tipo_id=2)
 
+
+	def clean_nombre(self):
+
+		nombre 		= self.cleaned_data['nombre']
+		is_insert 	= self.instance.id is None
+
+		if is_insert:
+			if Proceso.objects.filter(nombre=nombre, visible=True).exists():
+				raise forms.ValidationError('Ya existe un proceso con este nombre.')
+		else:
+			if nombre != Proceso.objects.get(id=self.instance.id).nombre and Proceso.objects.filter(nombre=nombre, visible=True).exists():
+				raise forms.ValidationError('Ya existe un proceso con este nombre.')
+
+		return nombre
 
 	class Meta:
 		model = Proceso

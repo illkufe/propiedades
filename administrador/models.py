@@ -253,7 +253,7 @@ class Workflow(models.Model):
 class Proceso(models.Model):
 
 	# atributos (generales)
-	nombre 		= models.CharField(max_length=250, unique=True)
+	nombre 		= models.CharField(max_length=250)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)

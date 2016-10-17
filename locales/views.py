@@ -339,6 +339,7 @@ class VentaList(ListView):
 		context['href'] 	= 'locales'
 
 		if self.request.user.userprofile.tipo_id == 2:
+
 			contrato	= Contrato.objects.filter(cliente_id=self.request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
 			locales 	= Local.objects.filter(id__in=contrato, visible=True)
 		else:
@@ -355,8 +356,12 @@ class VENTAS(View):
 
 	def get(self, request, id=None):
 
-		activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
-		locales = Local.objects.filter(activo_id__in=activos, visible=True)
+		if self.request.user.userprofile.tipo_id == 2:
+			contrato	= Contrato.objects.filter(cliente_id=self.request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
+			locales 	= Local.objects.filter(id__in=contrato, visible=True)
+		else:
+			activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
+			locales = Local.objects.filter(activo_id__in=activos, visible=True)
 
 		if id == None:
 			self.object_list = Venta.objects.filter(local_id__in=locales).\

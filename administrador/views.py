@@ -726,12 +726,38 @@ class WORKFLOW_CONDICION(View):
             form_condicion  = ProcesoCondicionFormSet(self.request.POST)
             if form_condicion.is_valid():
 
-                instances = form_condicion.save(commit=False)
-                if form_condicion.can_delete == True:
-                    for obj in form_condicion.deleted_objects:
-                        obj.delete()
+                for obj_condicion in form_condicion:
+                    data = obj_condicion.cleaned_data
 
-                form_condicion.save()
+                    if data.get('id') is not None:
+
+                        condicion = Proceso_Condicion.objects.get(id=data.get('id').id)
+
+                        if data.get('DELETE') == True:
+                            condicion.delete()
+                        else:
+                            condicion.entidad   = data.get('entidad')
+                            condicion.operacion = data.get('operacion')
+                            condicion.valor     = data.get('valor')
+                            condicion.save()
+                    else:
+
+                        if data.get('DELETE') == False:
+                            new_condicion           = Proceso_Condicion()
+                            new_condicion.proceso   = data.get('proceso')
+                            new_condicion.entidad   = data.get('entidad')
+                            new_condicion.operacion = data.get('operacion')
+                            new_condicion.valor     = data.get('valor')
+                            new_condicion.save()
+
+
+
+                # instances = form_condicion.save(commit=False)
+                # if form_condicion.can_delete == True:
+                #     for obj in form_condicion.deleted_objects:
+                #         obj.delete()
+                #
+                # form_condicion.save()
 
                 workflow            = Workflow.objects.get(empresa=self.request.user.userprofile.empresa)
                 workflow.validado   = False
