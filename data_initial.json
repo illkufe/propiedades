@@ -9113,4 +9113,13 @@
 		"nombre": "Metros Cuadrados Bodega",
 		"nombre_campo_tabla": "metros_bodega"
 	}
+},
+{
+	"model": "administrador.workflow",
+	"pk": 1,
+	"fields": {
+		"descripcion": "Workflow Aprobación Propuesta",
+		"validado": false,
+		"empresa": "1"
+	}
 }]

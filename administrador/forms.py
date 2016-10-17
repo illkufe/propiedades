@@ -171,7 +171,7 @@ class ProcesosBorradorForm(forms.ModelForm):
 	class Meta:
 		model = Proceso
 		fields = '__all__'
-		exclude = ['creado_en', 'visible', 'empresa', 'workflow']
+		exclude = ['creado_en', 'visible', 'empresa', 'workflow', 'validado']
 
 		widgets = {
 			'id'				: forms.HiddenInput(attrs={'class': 'form-control'}),

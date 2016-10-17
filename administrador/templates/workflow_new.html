@@ -450,8 +450,6 @@ table#tabla-procesos tbody img{
         $('#form-proceso-new').find('#id_nombre').val(nombre_proceso)
         $('#form-proceso-new').find('#id_responsable').select2('val', array_resp)
 
-        console.log(tipo_estado_edit)
-
         if(tipo_estado_edit ==1){
            $('#form-proceso-new').find('#id_antecesor').attr('disabled', true).select2('val', array_antec)
         }else{
@@ -633,7 +631,9 @@ table#tabla-procesos tbody img{
             rules: {},
             messages: {},
             errorPlacement: function (error, element) {
+                console.log('error 1')
                 console.log(error)
+                console.log(element)
                 error.appendTo(element.closest(".form-group").find('.container-error'));
             },
             submitHandler: function (form) {
@@ -661,6 +661,7 @@ table#tabla-procesos tbody img{
                     error: function (data, textStatus, jqXHR) {
                         clear_errors_form('#form-condicion-new');
                         var errors = $.parseJSON(data.responseText);
+                        console.log('error 2')
                         apply_errors_form(errors);
                     },
                     complete: function () {
@@ -784,7 +785,6 @@ table#tabla-procesos tbody img{
             if(tipo == 'new'){
                 $(obj).closest('tr').remove()
                 $('#m-condicion-new').modal('show')
-
             }else{
                 $(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
                 $(obj).closest('tr').addClass('hide')
