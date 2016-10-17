@@ -1064,6 +1064,7 @@ def calcular_arriendo_minimo(contrato, concepto, periodo):
 	try:
 		arriendo 	= Arriendo.objects.get(contrato=contrato, concepto=concepto)
 		detalle 	= Arriendo_Detalle.objects.get(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month)
+		valor 		= detalle.valor
 		moneda 		= detalle.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
 		# verificar si es por metros cuadrados
@@ -1074,17 +1075,15 @@ def calcular_arriendo_minimo(contrato, concepto, periodo):
 
 		# verificar si tiene reajuste
 		if arriendo.reajuste is True and arriendo.por_meses is False and periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
-
 			if arriendo.moneda.id == 6:
 				reajuste = (arriendo.valor/100)+1
 			else:
 				reajuste = arriendo.valor * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
 		elif arriendo.reajuste is True and arriendo.por_meses is True and periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
-
-			if arriendo.meses == 0:
+			if arriendo.meses == 0:			
 				reajuste_factor = 1
-			else:
+			else:			
 				reajuste_factor = int((meses_entre_fechas(arriendo.fecha_inicio, periodo) -1)/arriendo.meses)
 
 			if arriendo.moneda.id == 6:
@@ -1094,13 +1093,10 @@ def calcular_arriendo_minimo(contrato, concepto, periodo):
 		else:
 			reajuste = 1
 
-
 		if arriendo.moneda.id == 6:
-			total = moneda * metros * reajuste	
+			total = (valor * moneda * metros ) * reajuste
 		else:
-			total = moneda * metros + reajuste
-
-		
+			total = (valor * moneda * metros ) + reajuste
 
 	except Exception:
 
