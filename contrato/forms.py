@@ -390,15 +390,23 @@ class GastoComunForm(forms.ModelForm):
 		exclude = ['visible', 'creado_en', 'concepto']
 
 		widgets = {
-			'tipo' 	: forms.Select(attrs={'class': 'form-control'}),
+			'tipo' 				: forms.Select(attrs={'class': 'form-control'}),
+			'metros_cuadrado' 	: forms.CheckboxInput(attrs={'class': 'form-control'}),
+		}
+
+		labels = {
+			'anio_inicio' 		: 'Año inicio',
+			'metros_cuadrado' 	: 'Valor x m²',
 		}
 
 		error_messages = {
-			'tipo'	: {'required': 'campo requerido'},
+			'tipo'				: {'required': 'campo requerido'},
+			'metros_cuadrado' 	: {'required': 'campo requerido'},
 		}
 
 		help_texts = {
-			'tipo' : 'tipo',
+			'tipo' 				: 'tipo',
+			'metros_cuadrado'	: 'metros cuadrado'
 		}
 
 class ServicioBasicoForm(forms.ModelForm):

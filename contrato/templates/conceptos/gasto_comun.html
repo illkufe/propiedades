@@ -40,8 +40,12 @@
 									{{ form.valor.label_tag }}
 								</th>
 								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
 									{{ form.moneda.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_cuadrado.help_text }}" ></i>
+									{{ form.metros_cuadrado.label_tag }}
 								</th>
 								<th></th>
 								{% endif %}
@@ -76,6 +80,15 @@
 											</div>
 										</div>
 									</td>
+									<td class="text-center">
+										<div class="form-group">
+											{{ form.metros_cuadrado }}
+											<div class="container-error">
+												{{ form.metros_cuadrado.errors }}
+											</div>
+										</div>
+									</td>
+									
 									<td class="text-center delete">
 
 										<div class="form-group text-center">

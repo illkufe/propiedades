@@ -564,14 +564,13 @@ class Arriendo_Variable(models.Model):
 		(12, 'DICIEMBRE'),
 	)
 
-	# atributos (generales
+	# atributos (generales)
 	mes_inicio 		= models.IntegerField(choices=MESES)
 	mes_termino		= models.IntegerField(choices=MESES)
 	anio_inicio		= models.IntegerField()
 	anio_termino 	= models.IntegerField()
 	fecha_inicio 	= models.DateField()
 	fecha_termino 	= models.DateField()
-
 	valor			= models.FloatField()
 	relacion		= models.BooleanField(default=False)
 
@@ -596,8 +595,9 @@ class Gasto_Comun(models.Model):
 	)
 
 	# atributos (generales)
-	tipo		= models.IntegerField(choices=TIPO)
-	valor		= models.FloatField(null=True, blank=True)
+	tipo			= models.IntegerField(choices=TIPO)
+	valor			= models.FloatField(null=True, blank=True)
+	metros_cuadrado = models.BooleanField(default=False)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
