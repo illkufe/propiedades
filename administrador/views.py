@@ -786,67 +786,75 @@ def validar_workflow(request):
         else:
             lista_antecesor = list()
 
+
             ##Obtengo la lista de antecesores del workflow
-            for a in object_list:
-                for j in a.antecesor.filter(visible=True).values_list('proceso__antecesor', flat=True).distinct():
-
-                    ## Validar que el proceso no puede ser antecesor de si mismo
-                    if a.id == j:
-                        estado  = False
-                        error   = "El proceso " + str(a.nombre) + " no puede ser antecesor de sí mismo."
-                        break
-
+            for b in object_list:
+                for j in b.antecesor.filter(visible=True).values_list('proceso__antecesor', flat=True).distinct():
                     if j not in lista_antecesor:
                         lista_antecesor.append(j)
+            count = 1
+            for a in object_list:
 
-            if estado == True:
+                ##Valida que el proceso tenga antecesor y que sea distinto de tipo borrador
+                if not a.antecesor.filter(visible=True).count() and a.tipo_estado_id != 1:
+                    estado = False
+                    error = "El proceso " + str(a.nombre) + " no cuenta con un antecesor."
+                    break
+                ##Valida que el proceso no sea antecesor de sí mismo
+                elif a.antecesor.filter(visible=True, nombre=a.nombre).distinct().exists():
+                    estado = False
+                    error = "El proceso " + str(a.nombre) + " no puede ser antecesor de sí mismo."
+                    break
+                ##Valida que un proceso de tipo revisión no pueda tener un antecesor tipo aprobación
+                elif a.tipo_estado_id == 2 and a.antecesor.filter(tipo_estado_id=3).exists():
+                    estado  = False
+                    error   = "El proceso " + str(a.nombre) + " no puede tener un antecesor Tipo Aprobación."
+                    break
+                ##Valida que un proceso tipo aprobación no tenga un antecesor tipo borrador si existen tipo revisión.
+                elif a.tipo_estado_id == 3 and a.antecesor.filter(tipo_estado_id=1).exists() and Proceso.objects.filter(tipo_estado_id=2,visible=True).count():
+                    estado  = False
+                    error   = "El proceso " + str(a.nombre) + " no debe tener un antecesor Tipo Borrador."
+                    break
+                else:
 
-                ## Valido que los procesos esten de antecesores
-                for b in object_list:
-                    ##Valido que el proceso tenga antecesor y que sea distinto de tipo borrador
-                    if not b.antecesor.filter(visible=True).count() and b.tipo_estado_id !=1:
-                        estado  = False
-                        error   = "El proceso "+ str(b.nombre)+ " no cuenta con un antecesor."
-                        break
+                    # Si existe el proceso como antecesor lo elimino de la lista de antecesores.
+                    if a.id in lista_antecesor:
+                        lista_antecesor.remove(a.id)
                     else:
-                        #Si existe el proceso como antecesor lo elimino de la lista de antecesores.
-                        if b.id in lista_antecesor:
-                            lista_antecesor.remove(b.id)
-                        else:
-                            # El proceso no es de tipo aprobación.
-                            if not b.tipo_estado_id == 3:
-                                estado  = False
-                                error   = "El proceso "+ str(b.nombre)+ " no es antecesor de ningún proceso."
-                                break
-            if estado == True:
-                ## Validar loop procesos
-                count = 1
-                for c in object_list:
-                    try:
-                        antecesor   = c.antecesor.filter(visible=True)
-                        sig_proceso = object_list[count]
+                        # El proceso no es de tipo aprobación.
+                        if not a.tipo_estado_id == 3:
+                            estado  = False
+                            error   = "El proceso " + str(a.nombre) + " no es antecesor de ningún proceso."
+                            break
 
-                        for a in antecesor:
+                    for j in a.antecesor.filter(visible=True):
+                        ## Validar loop procesos
+                        try:
 
-                            if c.tipo_estado_id == 2 and a.tipo_estado_id == 3:
-                                estado  = False
-                                error   = "El proceso " + str(c.nombre) + " no puede tener un antecesor de aprobación."
-                                break
+                            proceso_recursivos  = list()
+                            aux                 = count
+                            proceso_recursivos.append(a.nombre)
 
-                            if a == sig_proceso:
-                                estado  = False
-                                error   = "Existe recursividad entre "+ str(c) + ' y ' + str(sig_proceso)
-                                break
-                        count +=1
-                    except Exception as a:
-                        for a in antecesor:
-                            if c.tipo_estado_id == 3 and a.tipo_estado_id == 1 and Proceso.objects.filter(tipo_estado_id=2,
-                                                                                                          visible=True).count():
-                                estado  = False
-                                error   = "El proceso " + str(c.nombre) + " no debe tener un antecesor tipo borrador."
-                                break
+                            ## Busca que el proceso antecesor se encuentra en los siguientes procesos
+                            while aux < object_list.count():
+                                sig_proceso = object_list[aux]
+                                proceso_recursivos.append(sig_proceso.nombre)
 
-                        break
+                                if j == sig_proceso:
+                                    estado  = False
+                                    error   = "Existe recursividad entre " + tuple(proceso_recursivos).__str__()
+                                    break
+
+                                aux += 1
+
+                            if estado == False:
+                                break
+                        except Exception as a:
+                            break
+                if estado == False:
+                    break
+                else:
+                    count += 1
 
     except Exception as a:
         estado = False
@@ -858,3 +866,93 @@ def validar_workflow(request):
         workflow.save()
 
     return JsonResponse({'estado': estado, 'error': error}, safe=False)
+
+
+
+# def validar_workflow(request):
+#
+#     try:
+#         estado          = True
+#         error           = ''
+#         object_workflow = request.user.userprofile.empresa.workflow_set.all()
+#         object_list     = Proceso.objects.filter(workflow=object_workflow, visible=True).order_by('tipo_estado_id','id')
+#
+#         if not object_list.filter(tipo_estado_id=1).exists() or not object_list.filter(tipo_estado_id=3).exists():
+#             estado = False
+#             error  = "Error, debe contar con un proceso borrador y una aprobación."
+#         else:
+#             lista_antecesor = list()
+#
+#             ##Obtengo la lista de antecesores del workflow
+#             for a in object_list:
+#                 for j in a.antecesor.filter(visible=True).values_list('proceso__antecesor', flat=True).distinct():
+#
+#                     ## Validar que el proceso no puede ser antecesor de si mismo
+#                     if a.id == j:
+#                         estado  = False
+#                         error   = "El proceso " + str(a.nombre) + " no puede ser antecesor de sí mismo."
+#                         break
+#
+#                     if j not in lista_antecesor:
+#                         lista_antecesor.append(j)
+#
+#             if estado == True:
+#
+#                 ## Valido que los procesos esten de antecesores
+#                 for b in object_list:
+#                     ##Valido que el proceso tenga antecesor y que sea distinto de tipo borrador
+#                     if not b.antecesor.filter(visible=True).count() and b.tipo_estado_id !=1:
+#                         estado  = False
+#                         error   = "El proceso "+ str(b.nombre)+ " no cuenta con un antecesor."
+#                         break
+#                     else:
+#                         #Si existe el proceso como antecesor lo elimino de la lista de antecesores.
+#                         if b.id in lista_antecesor:
+#                             lista_antecesor.remove(b.id)
+#                         else:
+#                             # El proceso no es de tipo aprobación.
+#                             if not b.tipo_estado_id == 3:
+#                                 estado  = False
+#                                 error   = "El proceso "+ str(b.nombre)+ " no es antecesor de ningún proceso."
+#                                 break
+#             if estado == True:
+#                 ## Validar loop procesos
+#                 count = 1
+#                 for c in object_list:
+#                     try:
+#                         antecesor   = c.antecesor.filter(visible=True)
+#                         sig_proceso = object_list[count]
+#
+#                         for a in antecesor:
+#
+#                             if c.tipo_estado_id == 2 and a.tipo_estado_id == 3:
+#                                 estado  = False
+#                                 error   = "El proceso " + str(c.nombre) + " no puede tener un antecesor de aprobación."
+#                                 break
+#
+#                             if a == sig_proceso:
+#                                 estado  = False
+#                                 error   = "Existe recursividad entre "+ str(c) + ' y ' + str(sig_proceso)
+#                                 break
+#                         count +=1
+#                     except Exception as a:
+#                         for a in antecesor:
+#
+#                             if c.tipo_estado_id == 3 and a.tipo_estado_id == 1 and Proceso.objects.filter(tipo_estado_id=2,
+#                                                                                                           visible=True).count():
+#                                 estado  = False
+#                                 error   = "El proceso " + str(c.nombre) + " no debe tener un antecesor tipo borrador."
+#                                 break
+#
+#                         break
+#
+#     except Exception as a:
+#         estado = False
+#         error  = "Error al validar Workflow."
+#
+#     if estado == True:
+#         workflow            = Workflow.objects.get(empresa=request.user.userprofile.empresa)
+#         workflow.validado   = True
+#         workflow.save()
+#
+#     return JsonResponse({'estado': estado, 'error': error}, safe=False)
