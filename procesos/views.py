@@ -220,7 +220,7 @@ def propuesta_generar(request):
 
 			concepto = Concepto.objects.get(id=concepto_id)
 
-			if validar_concepto(contrato, concepto, fecha):
+			if validar_concepto(contrato, concepto, fecha)['estado'] == True:
 
 				total = calcular_concepto(contrato, concepto, fecha)
 
@@ -544,8 +544,6 @@ def factura_pdf(request, pk=None):
 	return response
 
 
-
-		
 
 
 
@@ -1298,8 +1296,6 @@ def calcular_fondo_de_promocion(contrato, concepto, periodo):
 
 			else:
 				reajuste = 0
-
-			print (reajuste)
 
 			total += (arriendo_minimo + arriendo_variable) * (reajuste/100)
 
