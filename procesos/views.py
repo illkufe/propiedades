@@ -1094,7 +1094,13 @@ def calcular_arriendo_minimo(contrato, concepto, periodo):
 		else:
 			reajuste = 1
 
-		total = moneda * metros * reajuste
+
+		if arriendo.moneda.id == 6:
+			total = moneda * metros * reajuste	
+		else:
+			total = moneda * metros + reajuste
+
+		
 
 	except Exception:
 
