@@ -419,7 +419,11 @@ class ServicioBasicoForm(forms.ModelForm):
 		contrato = kwargs.pop('contrato', None)
 		super(ServicioBasicoForm, self).__init__(*args, **kwargs)
 
+		print ('aca 1')
+		print (contrato)
+
 		if contrato is not None:
+			print ('aca 2')
 			self.fields['locales'].queryset = contrato.locales.all()
 
 	class Meta:

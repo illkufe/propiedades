@@ -1085,7 +1085,7 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 			elif concepto.concepto_tipo.id == 3:
 				context['formulario'] 	= GastoComunFormSet(self.request.POST, instance=contrato)
 			elif concepto.concepto_tipo.id == 4:
-				context['formulario'] 	= ServicioBasicoFormSet(self.request.POST, instance=contrato)
+				context['formulario'] 	= ServicioBasicoFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			elif concepto.concepto_tipo.id == 5:
 				context['formulario'] 	= CuotaIncorporacionFormet(self.request.POST, instance=contrato)
 			elif concepto.concepto_tipo.id == 6:
@@ -1143,7 +1143,7 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 					if Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto).exists():
 						form = ServicioBasicoFormSet(instance=contrato, queryset=Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto), form_kwargs={'contrato': contrato})
 					else:
-						form = ServicioBasicoFormSet()
+						form = ServicioBasicoFormSet(form_kwargs={'contrato': contrato})
 
 					formularios.append({
 						'fomulario' : form, 

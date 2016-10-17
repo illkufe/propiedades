@@ -47,6 +47,7 @@ class LecturaMedidorList(ListView):
 		lectura_gas 			= Lectura_Gas.objects.filter(medidor_gas__in=medidores_gas, visible=True)
 
 		for item in lectura_electricidad:
+			item.nombre = item.medidor_electricidad.nombre
 			item.local 	= item.medidor_electricidad.local
 			item.activo = item.medidor_electricidad.local.activo
 			item.mes 	= meses[int(item.mes)-1]
@@ -55,6 +56,7 @@ class LecturaMedidorList(ListView):
 			queryset.append(item)
 
 		for item in lectura_agua:
+			item.nombre = item.medidor_agua.nombre
 			item.local 	= item.medidor_agua.local
 			item.activo = item.medidor_agua.local.activo
 			item.mes 	= meses[int(item.mes)-1]
@@ -63,6 +65,7 @@ class LecturaMedidorList(ListView):
 			queryset.append(item)
 
 		for item in lectura_gas:
+			item.nombre = item.medidor_gas.nombre
 			item.local 	= item.medidor_gas.local
 			item.activo = item.medidor_gas.local.activo
 			item.mes 	= meses[int(item.mes)-1]
@@ -301,9 +304,9 @@ class LecturaGasDelete(DeleteView):
 
 class LecturaGasUpdate(LecturaGasMixin, UpdateView):
 
-	model 			= Lectura_Agua
-	form_class 		= LecturaAguaForm
-	template_name 	= 'lectura_agua_new.html'
+	model 			= Lectura_Gas
+	form_class 		= LecturaGasForm
+	template_name 	= 'lectura_gas_new.html'
 	success_url 	= '/lectura-medidores/list'
 
 	def get_context_data(self, **kwargs):

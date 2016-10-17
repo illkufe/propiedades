@@ -27,6 +27,7 @@
 									<td>{{ item.activo }}</td>
 									<td>{{ item.local }}</td>
 									<td>{{ item.tipo }}</td>
+									<td>{{ item.nombre }}</td>
 									<td class="text-right">{{ item.mes }}</td>
 									<td class="text-right">{{ item.anio }}</td>
 									<td class="text-right">{{ item.creado_en }}</td>
@@ -88,6 +89,11 @@ function load_tabla_lecturas(){
 	},
 	{
 		'width': '15%',
+		'data': 'medidor',
+		'title': 'Medidor',
+	},
+	{
+		'width': '15%',
 		'data': 'tipo',
 		'title': 'Tipo',
 	},
@@ -97,12 +103,12 @@ function load_tabla_lecturas(){
 		'title': 'Mes',
 	},
 	{
-		'width': '10%',
+		'width': '5%',
 		'data': 'anio',
 		'title': 'Año',
 	},
 	{
-		'width': '10%',
+		'width': '7%',
 		'data': 'fecha',
 		'title': 'Fecha',
 		'visible': false,
