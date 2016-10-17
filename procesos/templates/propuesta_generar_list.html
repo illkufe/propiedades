@@ -466,6 +466,12 @@ function cargar_propuesta(contratos){
 		$('#container-propuesta').append(template_propuesta(contratos[i]))
 	}
 
+	$('.format-number').autoNumeric("init",{
+		aSep: LEASE_CURRENCY_THOUSANDS,
+		aDec: LEASE_CURRENCY_DECIMALS,
+		mDec: LEASE_CURRENCY_FORMAT,
+	})
+
 	validar_form_propuesta()
 }
 
@@ -497,7 +503,7 @@ function template_propuesta(contrato){
 		template += '<tr>'
 		template += '<input type="hidden" class="id" value="@concepto_id">'
 		template += '<td class="container-input"><input type="text" class="nombre"  name="nombre-@contrato_id-@concepto_id" value="@concepto_nombre"><div class="container-error"></div></td>'
-		template += '<td class="container-input"><input type="number" class="total" name="total-@contrato_id-@concepto_id"  value="@concepto_total"><div class="container-error"></div></td>'
+		template += '<td class="container-input"><input type="text" class="total text-right format-number" name="total-@contrato_id-@concepto_id"  value="@concepto_total"><div class="container-error"></div></td>'
 		template += '</tr>'
 
 		template = template.replace(/@concepto_id/g, 		contrato.conceptos[i].id);

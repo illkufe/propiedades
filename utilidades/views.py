@@ -84,7 +84,7 @@ def sumar_meses(fecha, meses):
 # funciones globales (numeros)
 def formato_moneda(valor):
 
-	moneda = '${:,.2f}'.format(valor)
+	moneda = '${:,.4f}'.format(valor)
 
 	moneda = moneda.replace('.', '*')
 	moneda = moneda.replace(',', '.')
@@ -94,7 +94,7 @@ def formato_moneda(valor):
 
 def formato_numero(valor):
 
-	moneda = '{:,.2f}'.format(valor)
+	moneda = '{:,.4f}'.format(valor)
 
 	moneda = moneda.replace('.', '*')
 	moneda = moneda.replace(',', '.')
@@ -104,7 +104,7 @@ def formato_numero(valor):
 
 def formato_numero_sin_miles(valor):
 
-	moneda = '{:.2f}'.format(valor)
+	moneda = '{:.4f}'.format(valor)
     #
 	# moneda = moneda.replace('.', ',')
 

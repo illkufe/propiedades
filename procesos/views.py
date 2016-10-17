@@ -21,7 +21,7 @@ from contrato.models import *
 from procesos.models import *
 from operaciones.models import *
 
-from utilidades.views import primer_dia, ultimo_dia, meses_entre_fechas, sumar_meses, formato_moneda
+from utilidades.views import primer_dia, ultimo_dia, meses_entre_fechas, sumar_meses, formato_moneda, formato_numero
 from django.db.models import Sum, Q
 from datetime import datetime, timedelta
 
@@ -229,6 +229,7 @@ def propuesta_generar(request):
 						'id'		: concepto.id,
 						'nombre'	: concepto.nombre,
 						'total'		: total,
+						# 'total'		: formato_numero(total),
 						})
 
 		cliente = {
@@ -285,7 +286,8 @@ def propuesta_guardar(request):
 
 					concepto_id 		= concepto['id']
 					concepto_nombre 	= concepto['nombre']
-					concepto_total 		= concepto['total']
+					# concepto_total 		= concepto['total']
+					concepto_total 		= concepto['total'].replace(".", "").replace(",", ".")
 					concepto_modificado = concepto['modified']
 
 					Factura_Detalle(
@@ -308,8 +310,6 @@ def propuesta_guardar(request):
 		id 		= None
 		estado 	= False
 		mensaje = str(error)
-
-	
 
 	return JsonResponse({'estado':estado, 'mensaje':mensaje, 'id':id}, safe=False)
 
