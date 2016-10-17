@@ -985,7 +985,10 @@ def calcular_arriendo_minimo(contrato, concepto, periodo):
 
 		elif arriendo.reajuste is True and arriendo.por_meses is True and periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
 
-			reajuste_factor = int((meses_entre_fechas(arriendo.fecha_inicio, periodo) -1)/arriendo.meses)
+			if arriendo.meses == 0:
+				reajuste_factor = 1
+			else:
+				reajuste_factor = int((meses_entre_fechas(arriendo.fecha_inicio, periodo) -1)/arriendo.meses)
 
 			if arriendo.moneda.id == 6:
 				reajuste = ((arriendo.valor * reajuste_factor)/100)+1
