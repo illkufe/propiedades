@@ -3,9 +3,13 @@ from django import forms
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User
 
+from contrato.models import Contrato
 from utilidades.views import NumberField
 from accounts.models import UserProfile
 from activos.models import *
+from datetime import datetime
+
+import datetime
 
 from .models import *
 
@@ -29,6 +33,57 @@ class LocalTipoForm(forms.ModelForm):
 			'descripcion' 	: 'Descripción',
 		}
 
+class VentasForm(forms.ModelForm):
+
+	fecha_inicio = forms.DateField(
+									input_formats	= ['%d/%m/%Y'],
+									widget			= forms.TextInput(attrs={'class': 'form-control format-date'}),
+									label			= 'Fecha',
+									error_messages	= {'required': 'campo requerido', 'invalid': 'campo invalido'},
+								    initial			= datetime.datetime.today(),
+									help_text		= 'Fecha'
+	)
+
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), label='Valor', error_messages={'required': 'campo requerido'})
+
+	def __init__(self, *args, **kwargs):
+
+		request = kwargs.pop('request', None)
+
+		super(VentasForm, self).__init__(*args, **kwargs)
+
+
+		# if request.user.userprofile.tipo_id == 2:
+        #
+		# 	contrato	= Contrato.objects.filter(cliente_id=request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
+		# 	locales 	= Local.objects.filter(id__in=contrato, visible=True)
+		# else:
+		activos = Activo.objects.filter(empresa_id=request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
+		locales = Local.objects.filter(activo_id__in=activos, visible=True)
+
+		self.fields['local'].queryset = locales
+
+	class Meta:
+		model 	= Venta
+		fields 	= '__all__'
+		exclude = ['creado_en', 'visible', 'periodicidad', 'fecha_termino']
+
+		widgets = {
+			'local'		: forms.Select(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'local' 	: {'required': 'campo requerido'},
+		}
+
+		help_texts = {
+			'local'			: 'local',
+			'valor'			: 'valor',
+		}
+
+		labels = {
+			'local'		: 'Local',
+		}
 
 class LocalForm(forms.ModelForm):
 
@@ -91,8 +146,6 @@ class LocalForm(forms.ModelForm):
 			'codigo'		: 'Código',
 			'local_tipo'	: 'Tipo de Local',
 		}
-
-
 
 class ElectricidadForm(forms.ModelForm):
 
@@ -186,3 +239,4 @@ class GasForm(forms.ModelForm):
 AguaFormSet 		= inlineformset_factory(Local, Medidor_Agua, form=AguaForm, extra=1, can_delete=True)
 GasFormSet 			= inlineformset_factory(Local, Medidor_Gas, form=GasForm, extra=1, can_delete=True)
 ElectricidadFormSet = inlineformset_factory(Local, Medidor_Electricidad, form=ElectricidadForm, extra=1, can_delete=True)
+

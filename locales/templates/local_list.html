@@ -31,6 +31,7 @@
 								{% for item in object_list %}
 								<tr>
 									<td>{{ item.id }}</td>
+                                    <td>{{ item.codigo}}</td>
 									<td>{{ item.nombre }}</td>
 									<td>{{ item.activo }}</td>
 									<td>{{ item.local_tipo }}</td>
@@ -68,23 +69,28 @@ $(document).ready(function(){
 		'title': 'ID',
 		'visible': false,
 	},
+    {
+		'width': '9%',
+		'data': 'codigo',
+		'title': 'Código',
+	},
 	{
-		'width': '15%',
+		'width': '14%',
 		'data': 'nombre',
 		'title': 'Nombre',
 	},
 	{
-		'width': '15%',
+		'width': '14%',
 		'data': 'activo',
 		'title': 'Activo',
 	},
 	{
-		'width': '15%',
+		'width': '14%',
 		'data': 'tipo',
 		'title': 'Tipo',
 	},
 	{
-		'width': '15%',
+		'width': '14%',
 		'data': 'sector',
 		'title': 'Sector',
 	},

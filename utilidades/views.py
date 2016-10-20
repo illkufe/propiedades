@@ -114,6 +114,16 @@ def formato_numero_sin_miles(valor):
 
 	return moneda
 
+def formato_numero_sin_miles_decimales(valor):
+
+	moneda = '{:.0f}'.format(valor)
+    #
+	# moneda = moneda.replace('.', ',')
+
+
+	return moneda
+
+
 # funciones avatar
 def avatar_usuario(user):
 

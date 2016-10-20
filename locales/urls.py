@@ -13,6 +13,7 @@ urlpatterns = [
 	url(r'^ventas/list$', views.VentaList.as_view(), name='ventas_list'),
 	url(r'^ventas/$', views.VENTAS.as_view(), name='venta_list'),
 	url(r'^ventas/(?P<id>\d+)$', views.VENTAS.as_view(), name='venta_list_id'),
+	url(r'^ventas/diaria$', csrf_exempt(views.VentaDiaria.as_view()), name='venta_diaria'),
 
 	# locales
 	url(r'^locales/list$', views.LocalList.as_view(), name='local_list'),

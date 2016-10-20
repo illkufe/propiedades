@@ -5,7 +5,9 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse_lazy
+from django.views.decorators.csrf import requires_csrf_token
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
+from utilidades.views import formato_numero
 
 from accounts.models import *
 from administrador.models import *
@@ -337,24 +339,29 @@ class VentaList(ListView):
 		context['subtitle'] = 'ventas'
 		context['name'] 	= 'lista'
 		context['href'] 	= 'locales'
+		context['form_venta']	= VentasForm(request=self.request)
 
-		if self.request.user.userprofile.tipo_id == 2:
-			contrato	= Contrato.objects.filter(cliente_id=self.request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
-			locales 	= Local.objects.filter(id__in=contrato, visible=True)
-		else:
-			activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
-			locales = Local.objects.filter(activo_id__in=activos, visible=True)
-
-		context['locales'] 	= locales
+		# if self.request.user.userprofile.tipo_id == 2:
+        #
+		# 	contrato	= Contrato.objects.filter(cliente_id=self.request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
+		# 	locales 	= Local.objects.filter(id__in=contrato, visible=True)
+		# else:
+		# 	activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
+		# 	locales = Local.objects.filter(activo_id__in=activos, visible=True)
+        #
+		# context['locales'] 	= locales
 
 		return context
-
 
 class VENTAS(View):
 	http_method_names = ['get', 'post', 'put', 'delete']
 
 	def get(self, request, id=None):
 
+		# if self.request.user.userprofile.tipo_id == 2:
+		# 	contrato	= Contrato.objects.filter(cliente_id=self.request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
+		# 	locales 	= Local.objects.filter(id__in=contrato, visible=True)
+		# else:
 		activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
 		locales = Local.objects.filter(activo_id__in=activos, visible=True)
 
@@ -373,79 +380,124 @@ class VENTAS(View):
 			return self.json_to_response()
 
 	def post(self, request):
-		var_post 	= request.POST.copy()
-		local     	= var_post['local']
 
-		tempfile = request.FILES.get('file')
-
-		book = open_workbook(filename=None, file_contents=tempfile.read())
-		sheet = book.sheet_by_index(0)
-		keys = [sheet.cell(0, col_index).value for col_index in range(sheet.ncols)]
-		dict_list = []
-		for row_index in range(1, sheet.nrows):
-			d = {keys[col_index]: sheet.cell(row_index, col_index).value for col_index in range(sheet.ncols)}
-			dict_list.append(d)
-		cont = 1
-		errors = list()
-		estado = 'ok'
-
-		for i in dict_list:
-			list_error = list()
+		if self.request.POST.get('method') == 'delete':
 			try:
+				var_post 		= request.POST.copy()
+				local    		= json.loads(var_post['venta'])
+				nombre_local 	= local['local']
+				mes	  			= local['mes']
+				ano   			= local['ano']
 
-				list_error = self.validate_data(i['Fecha Inicio'], i['Fecha Termino'], i['Total'])
+				venta = Venta.objects.filter(local__nombre=nombre_local,
+										  fecha_inicio__year=ano, fecha_termino__year=ano,
+										  fecha_inicio__month=mes, fecha_termino__month=mes)
+				venta.delete()
 
-				if not list_error:
-					fecha_inicio 	= datetime(*xlrd.xldate_as_tuple(i['Fecha Inicio'], 0))
-					fecha_termino 	= datetime(*xlrd.xldate_as_tuple(i['Fecha Termino'], 0))
+				estado = True
+			except Exception as e:
+				estado = False
+			return JsonResponse({'estado': estado}, safe=False)
+		else:
+
+			tempfile 	= request.FILES.get('file')
+
+			book 		= open_workbook(filename=None, file_contents=tempfile.read())
+			sheet 		= book.sheet_by_index(0)
+			keys 		= [sheet.cell(0, col_index).value for col_index in range(sheet.ncols)]
+			title_excel = ['Codigo Local', 'Fecha Inicio', 'Fecha Termino', 'Total']
+
+			errors 		= list()
+			estado 		= 'ok'
+			tipo		= ''
+
+			if len(set(title_excel) & set(keys)) == 4:
+
+				dict_list = []
+				for row_index in range(1, sheet.nrows):
+					d = {keys[col_index]: sheet.cell(row_index, col_index).value for col_index in range(sheet.ncols)}
+					dict_list.append(d)
+				cont = 1
+
+
+				for i in dict_list:
+					list_error = list()
+
+					try:
+						list_error = self.validate_data(i['Fecha Inicio'], i['Fecha Termino'], i['Total'], i['Codigo Local'])
+
+						if list_error:
+
+							estado 	= 'error'
+							tipo 	= 'data'
+
+							errors.append({
+								'row'			: cont,
+								'local'			: i['Codigo Local'],
+								'fecha_inicio'	: i['Fecha Inicio'],
+								'fecha_termino'	: i['Fecha Termino'],
+								'valor'			: i['Total'],
+								'error'			: list_error
+							})
+
+					except ValueError as a:
+						estado 	= 'error'
+						tipo 	= 'data'
+
+						errors.append({
+							'row'			: cont,
+							'local'			: i['Codigo Local'],
+							'fecha_inicio'	: i['Fecha Inicio'],
+							'fecha_termino'	: i['Fecha Termino'],
+							'valor'			: i['Total'],
+							'error'			: list_error
+						})
+					cont +=1
+			else:
+				estado = 'error'
+				tipo   = 'formato'
+
+				errors.append({
+					'error'			: 'Formato de Excel subido es incorrecto.'
+				})
+
+
+			if not errors:
+				for i in dict_list:
+					fecha_inicio 	= datetime.strptime(i['Fecha Inicio'], '%d-%m-%Y')
+					fecha_termino 	= datetime.strptime(i['Fecha Termino'], '%d-%m-%Y')
 					valor 			= i['Total']
+					local 			= i['Codigo Local']
 
-					if Venta.objects.filter(fecha_inicio=fecha_inicio, fecha_termino=fecha_termino, local_id=local).exists():
-						venta 		= Venta.objects.get(fecha_inicio=fecha_inicio, fecha_termino=fecha_termino, local_id=local)
+					if Venta.objects.filter(fecha_inicio=fecha_inicio, fecha_termino=fecha_termino,
+											local__codigo=local).exists():
+
+						venta = Venta.objects.get(fecha_inicio=fecha_inicio, fecha_termino=fecha_termino,
+												  local__codigo=local)
 						venta.valor = valor
 						venta.save()
+
 					else:
 						venta = Venta(
 							fecha_inicio	= fecha_inicio,
 							fecha_termino	= fecha_termino,
 							valor			= valor,
-							local_id 		= local,
+							local_id 		= Local.objects.get(codigo=local).id,
 							periodicidad	= 3,
-							)
+						)
 						venta.save()
-				else:
-					estado = 'error'
 
-					errors.append({
-						'row'			: cont,
-						'fecha_inicio'	: i['Fecha Inicio'],
-						'fecha_termino'	: i['Fecha Termino'],
-						'valor'			: i['Total'],
-						'error'			: list_error
-					})
-
-			except ValueError:
-				estado = 'error'
-
-				errors.append({
-					'row'			: cont,
-					'fecha_inicio'	: i['Fecha Inicio'],
-					'fecha_termino'	: i['Fecha Termino'],
-					'valor'			: i['Total'],
-					'error'			: list_error
-				})
-			cont +=1
-
-		if self.request.is_ajax():
-			data = {
-				'estado': estado,
-				'errors': errors,
-			}
-			return JsonResponse(data)
-		else:
-			return render(request, 'viewer/locales/venta_list.html')
+			if self.request.is_ajax():
+				data = {
+					'estado': estado,
+					'tipo'	: tipo,
+					'errors': errors,
+				}
+				return JsonResponse(data)
+			else:
+				return render(request, 'viewer/locales/venta_list.html')
 	
-	def validate_data(self, fecha_inicio, fecha_termino, valor):
+	def validate_data(self, fecha_inicio, fecha_termino, valor, local):
 
 		list_error = list()
 
@@ -454,13 +506,9 @@ class VENTAS(View):
 			fecha_termino
 		]
 
-		for a in fechas:
-			try:
-				datetime(*xlrd.xldate_as_tuple(a, 0))
-			except Exception:
-				error = "Formato fecha no válido."
-				if not error in list_error:
-					list_error.append(error)
+		activos 	= Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
+		locales 	= Local.objects.filter(activo_id__in=activos, codigo=local, visible=True).exists()
+		error_fecha = False
 
 		try:
 			float(valor)
@@ -468,16 +516,43 @@ class VENTAS(View):
 			error = "Valor no válido."
 			list_error.append(error)
 
+
+		if not locales:
+			error = "Local no pertenece a empresa."
+			list_error.append(error)
+
+		for a in fechas:
+			try:
+				datetime.strptime(a, '%d-%m-%Y')
+			except Exception as e:
+
+				error 		= "Formato fecha no válido."
+				error_fecha = True
+
+				if not error in list_error:
+					list_error.append(error)
+
+		if not error_fecha:
+			if datetime.strptime(fechas[1], '%d-%m-%Y') < datetime.strptime(fechas[0], '%d-%m-%Y'):
+				error = "Fecha Termino no puede ser menor a fecha Inicio."
+				list_error.append(error)
+
 		return list_error
 
-	def delete(self, request, project_id, module_id, id):
-		venta = Venta.objects.get(pk=id)
-		venta.delete()
-		return render({'error':0, 'message':'Venta: eliminada correctamente'})
+	def delete(self, request):
+
+		try:
+			venta 		= Venta.objects.get(pk=id)
+			venta.delete()
+
+			estado = True
+		except Exception:
+			estado = False
+		return JsonResponse({'estado': estado}, safe=False)
 
 	def json_to_response(self):
 
-		meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
+		meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 
 		data = list()
 
@@ -489,9 +564,10 @@ class VENTAS(View):
 				'id'			: 1,
 				'local_id'		: local.id,
 				'local_nombre'	: local.nombre,
+				'nro_mes'		: int(venta['month']),
 				'mes'			: meses[int(venta['month'])-1],
 				'ano'			: venta['year'],
-				'valor'			: venta['valor__sum'],
+				'valor'			: formato_numero(venta['valor__sum']),
 				})
 
 		return JsonResponse(data, safe=False)
@@ -533,3 +609,39 @@ class LOCAL(View):
 				})
 
 		return JsonResponse(data, safe=False)
+
+class VentaDiaria(View):
+	http_method_names = ['post']
+
+	def post(self, request):
+		try:
+			form_venta = VentasForm(self.request.POST, request=self.request)
+			if form_venta.is_valid():
+				data = form_venta.cleaned_data
+				fecha = data.get('fecha_inicio')
+				local = data.get('local')
+				valor = data.get('valor')
+
+				if Venta.objects.filter(fecha_inicio=fecha, fecha_termino=fecha, local=local).exists():
+
+					update_venta 				= Venta.objects.get(fecha_inicio=fecha, fecha_termino=fecha, local=local)
+					update_venta.valor 			= valor
+					update_venta.save()
+
+
+				else:
+					new_venta 				= Venta()
+					new_venta.local 		= local
+					new_venta.fecha_inicio 	= fecha
+					new_venta.fecha_termino = fecha
+					new_venta.valor 		= valor
+					new_venta.periodicidad  = 3
+					new_venta.save()
+			else:
+				return JsonResponse(form_venta.errors, status=400)
+			estado = True
+		except Exception as d:
+			error 	= d
+			estado 	= False
+
+		return JsonResponse({'estado': estado}, safe=False)
