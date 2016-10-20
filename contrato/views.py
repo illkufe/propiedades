@@ -914,6 +914,8 @@ class ContratoConceptoMixin(object):
 
 	def form_invalid(self, form):
 
+		print ('invalido')
+
 		response = super(ContratoConceptoMixin, self).form_invalid(form)
 
 		if self.request.is_ajax():
@@ -922,6 +924,8 @@ class ContratoConceptoMixin(object):
 			return response
 
 	def form_valid(self, form):
+
+		print ('valido')
 
 		context 	= self.get_context_data()
 		concepto 	= Concepto.objects.get(id=context['concepto_id'])
@@ -1028,6 +1032,25 @@ class ContratoConceptoMixin(object):
 					newscore.save()
 			else:
 				return JsonResponse(form.errors, status=400)
+
+		elif concepto.concepto_tipo.id == 10:
+			print ('gasto administrativo valido')
+
+			if formulario.is_valid():
+				print ('valido')
+				newscores = formulario.save(commit=False)
+
+				for obj in formulario.deleted_objects:
+					obj.delete()
+
+				for newscore in newscores:
+					newscore.concepto_id = concepto.id
+					newscore.save()
+			else:				
+				print ('invalido')
+				print (formulario.errors)
+				return JsonResponse(form.errors, status=400)
+
 		else:
 			pass
 
@@ -1058,6 +1081,8 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
 		if self.request.POST:
 
+			print ('aca post')
+
 			context['concepto_id'] 	= self.request.POST.get('concepto_id')
 			concepto 				= Concepto.objects.get(id=context['concepto_id'])
 
@@ -1071,15 +1096,6 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 					context['formulario'] 			= ArriendoForm(self.request.POST)
 					context['formulario_detalle'] 	= ArriendoDetalleFormSet(self.request.POST)
 
-				# try:
-				# 	arriendo_minimo 			= Arriendo.objects.get(contrato_id=self.kwargs['contrato_id'])
-				# 	context['formset_arriendo'] = ArriendoForm(self.request.POST, instance=arriendo_minimo)
-				# 	context['formset_detalle'] 	= ArriendoDetalleFormSet(self.request.POST,  instance=arriendo_minimo)
-				# except Exception:
-				# 	context['formset_arriendo'] = ArriendoForm(self.request.POST)
-				# 	context['formset_detalle'] 	= ArriendoDetalleFormSet(self.request.POST)
-
-
 			elif concepto.concepto_tipo.id == 2:
 				context['formulario'] 	= ArriendoVariableFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			elif concepto.concepto_tipo.id == 3:
@@ -1092,6 +1108,9 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 				context['formulario'] 	= FondoPromocionFormSet(self.request.POST, instance=contrato)
 			elif concepto.concepto_tipo.id == 7:
 				context['formulario'] 	= ArriendoBodegaFormSet(self.request.POST, instance=contrato)
+			elif concepto.concepto_tipo.id == 10:
+				print ('gasto administrativo')
+				context['formulario'] 	= GastoAsociadoFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			else:
 				pass
 
@@ -1127,6 +1146,7 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 						'contrato' 	: contrato,
 						'concepto' 	: concepto,
 					})
+
 				elif concepto.concepto_tipo.id == 3:
 					if Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto).exists():
 						form = GastoComunFormSet(instance=contrato, queryset=Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto), form_kwargs={'contrato': contrato})
@@ -1138,6 +1158,7 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 						'contrato' 	: contrato,
 						'concepto' 	: concepto,
 					})
+
 				elif concepto.concepto_tipo.id == 4:
 
 					if Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto).exists():
@@ -1186,6 +1207,19 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 						'contrato' 	: contrato,
 						'concepto' 	: concepto,
 					})
+
+				elif concepto.concepto_tipo.id == 10:
+					if Gasto_Asociado.objects.filter(contrato=contrato, concepto=concepto).exists():
+						form = GastoAsociadoFormSet(instance=contrato, queryset=Gasto_Asociado.objects.filter(contrato=contrato, concepto=concepto), form_kwargs={'contrato': contrato})
+					else:
+						form = GastoAsociadoFormSet(form_kwargs={'contrato': contrato})
+
+					formularios.append({
+						'fomulario' : form, 
+						'contrato' 	: contrato,
+						'concepto' 	: concepto,
+					})
+
 				else:
 					pass
 

@@ -9,6 +9,9 @@ from suds.client import Client
 from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
+from django.views.generic import View
+
+from .models import *
 
 import pdfkit
 import calendar
@@ -188,8 +191,65 @@ def concectar_web_service(url):
 
 	return response
 
+
+
+
+
 # CLASES
 class NumberField(forms.Field):
 	def to_python(self, value):
 		if value is not '' and value is not None:
 			return value.replace(".", "").replace(",", ".")
+
+
+
+
+
+
+# get
+class CURRENCIES_LAST(View):
+	http_method_names = ['get']
+	
+	def get(self, request, id=None):
+
+		currencies 	= []
+
+		if id is None:
+
+			currencies.append({'id':1})
+			currencies.append({'id':2})
+			currencies.append({'id':3})
+			currencies.append({'id':4})
+
+			self.object_list = currencies
+		else:
+
+			currencies.append({'id':int(id)})
+
+			self.object_list = currencies
+
+		if request.is_ajax():
+			return self.json_to_response()
+
+		if self.request.GET.get('format', None) == 'json':
+			return self.json_to_response()
+
+	def json_to_response(self):
+
+		data = list()
+
+		for currency in self.object_list:
+
+			moneda 		= Moneda.objects.get(id=int(currency['id']))
+			historial 	= Moneda_Historial.objects.filter(moneda=moneda).last()
+
+			data.append({
+				'id'		: moneda.id,
+				'nombre'	: moneda.nombre,
+				'abrev'		: moneda.abrev,
+				'simbolo'	: moneda.simbolo,
+				'value'		: formato_numero(historial.valor),
+				'fecha'		: historial.fecha.strftime('%d/%m/%Y %H:%M'),
+				})
+
+		return JsonResponse(data, safe=False)

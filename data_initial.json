@@ -107,6 +107,18 @@
 	}
 },
 {
+	"model": "conceptos.concepto_tipo",
+	"pk": 10,
+	"fields": {
+		"nombre": "Gasto Asociado",
+		"codigo": "GAS-ASO",
+		"template": "gasto_asociado",
+		"descripcion": "Descripción Gasto Asociado",
+		"visible": true,
+		"creado_en": "2016-01-01 00:00:00"
+	}
+},
+{
 	"model": "utilidades.tarifa_electricidad",
 	"pk": 1,
 	"fields": {

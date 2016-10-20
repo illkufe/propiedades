@@ -1,4 +1,8 @@
 /* STYLE botons */
+.btn{
+	padding: 4px 8px;
+}
+
 .btn-default,
 .btn-config,
 .btn-edit,

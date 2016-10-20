@@ -162,14 +162,12 @@ def propuesta_filtrar(request):
 	activo_id		= var_post['activo']
 	conceptos_id 	= var_post.getlist('conceptos')
 
-	fecha 			= primer_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y"))
+	fecha 			= ultimo_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y"))
 	activo 			= Activo.objects.get(id=activo_id)
 	locales 		= activo.local_set.filter(visible=True).values_list('id', flat=True)
 	contratos 		= Contrato.objects.filter(locales__in=locales, estado__in=[4,6], visible=True).distinct()
 
 	for contrato in contratos:
-
-		# {falta: mostrar solo contratos donde su cliente es persona juridica}
 
 		conceptos = list()
 
@@ -209,7 +207,11 @@ def propuesta_generar(request):
 
 	contratos_id 	= var_post.get('contratos').split(",")
 	conceptos_id 	= var_post.get('conceptos').split(",")
-	fecha 			= datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y").date()
+	fecha 			= ultimo_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y").date())
+
+	configuracion = {
+		'uf' : float(var_post.get('uf_valor').replace(".", "").replace(",", "."))
+	}
 
 	for contrato_id in contratos_id:
 
@@ -222,7 +224,7 @@ def propuesta_generar(request):
 
 			if validar_concepto(contrato, concepto, fecha)['estado'] == True:
 
-				total = calcular_concepto(contrato, concepto, fecha)
+				total = calcular_concepto(contrato, concepto, fecha, configuracion)
 
 				if total is not 0:
 					conceptos.append({
@@ -258,8 +260,10 @@ def propuesta_guardar(request):
 	try:
 		with transaction.atomic():
 			propuesta = Propuesta(
-				nombre 	= var_post['nombre'],
-				user 	= request.user,
+				nombre 			= var_post['nombre'],
+				uf_valor		= float(var_post.get('uf_valor').replace(".", "").replace(",", ".")),
+				uf_modificada	= True if var_post.get('uf_modificada') == 'true' else False,
+				user 			= request.user,
 			)
 			propuesta.save()
 
@@ -578,31 +582,42 @@ def validar_concepto(contrato, concepto, fecha):
 	elif concepto.concepto_tipo.id == 9:
 		return validar_multas(contrato, concepto, fecha)
 
+	elif concepto.concepto_tipo.id == 10:
+		return validar_gasto_asociado(contrato, concepto, fecha)
+
 	else:
 		return True
 
 def validar_arriendo_minimo(contrato, concepto, periodo):
 
 	mensajes = [
-		'Correcto', 
-		'No tiene datos para este periodo', 
-		'No existe arriendo mínimo'
-		]
+		'arriendo mínimo : correcto',
+		'arriendo mínimo : incorrecto',
+		'arriendo mínimo : no existe',
+		'arriendo mínimo : no existe para este período',
+		'arriendo mínimo : existen varios detalles para este período',
+	]
 
-	try:
+	estado 	= False
+	mensaje = 2
+	
+	if Arriendo.objects.filter(contrato=contrato, concepto=concepto).exists() and Arriendo.objects.filter(contrato=contrato, concepto=concepto).count() == 1:
 
 		arriendo = Arriendo.objects.get(contrato=contrato, concepto=concepto)
 
 		if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month).exists():
+
 			estado 	= True
 			mensaje = 0
+
+			if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month).count() > 1:
+
+				estado 	= False
+				mensaje = 4
+
 		else:
 			estado 	= False
-			mensaje = 1
-
-	except:
-		estado 	= False
-		mensaje = 2
+			mensaje = 3
 
 	return {
 		'estado'	: estado,
@@ -656,9 +671,10 @@ def validar_arriendo_variable(contrato, concepto, periodo):
 def validar_gasto_comun(contrato, concepto, periodo):
 
 	mensajes = [
-		'Correcto',
-		'No tiene ingresado el gasto común asociado en este periodo',
-		'No tiene gasto común asociado',
+		'gasto común: correcto',
+		'gasto común: incorrecto',
+		'gasto comun: no existe',
+		'gasto común: no existe gasto mensual ingresado para este período',
 	]
 
 	estado 	= False
@@ -676,8 +692,9 @@ def validar_gasto_comun(contrato, concepto, periodo):
 			if gasto_comun.tipo == 2:
 
 				if Gasto_Mensual.objects.filter(mes=periodo.month, anio=periodo.year, visible=True).exists() is False:
+
 					estado 	= False
-					mensaje = 1
+					mensaje = 3
 
 	return {
 		'estado'	: estado,
@@ -785,16 +802,23 @@ def validar_servicios_basicos(contrato, concepto, periodo):
 def validar_cuota_de_incorporacion(contrato, concepto, periodo):
 
 	mensajes = [
-		'Correcto',
-		'No tiene cuotas asociadas'
+		'cuota de incorporación : correcto',
+		'cuota de incorporación : incorrecto',
+		'cuota de incorporación : no existe',
+		'cuota de incorporación : no existe para este período',
 	]
 
-	if Cuota_Incorporacion.objects.filter(contrato=contrato, concepto=concepto, fecha__year=periodo.year, fecha__month=periodo.month, visible=True).exists():
-		estado 	= True
-		mensaje = 0
-	else:
-		estado = False
-		mensaje = 1
+	estado 	= False
+	mensaje = 2
+
+	if Cuota_Incorporacion.objects.filter(contrato=contrato, concepto=concepto).exists():
+
+		if Cuota_Incorporacion.objects.filter(contrato=contrato, concepto=concepto, fecha__year=periodo.year, fecha__month=periodo.month, visible=True).exists():
+			estado 	= True
+			mensaje = 0
+		else:
+			estado = False
+			mensaje = 1
 
 	return {
 		'estado'	: estado,
@@ -907,72 +931,73 @@ def validar_fondo_de_promocion(contrato, concepto, periodo):
 def validar_arriendo_bodega(contrato, concepto, periodo):
 
 	mensajes = [
-		'Correcto',
-		'No tiene arriendo de bodega asociado en este periodo',
-		'No tiene arriendo de bodega asociado',
+		'arriendo bodega : correcto',
+		'arriendo bodega : incorrecto, no tiene metros cuadrados',
+		'arriendo bodega : no existe',
+		'arriendo bodega : no existe para este período',
 	]
 
 	estado 	= False
 	mensaje = 2
-
+	
 	if Arriendo_Bodega.objects.filter(contrato=contrato, concepto=concepto).exists():
+
+		estado 	= False
+		mensaje = 3
 
 		arriendo_bodegas = Arriendo_Bodega.objects.filter(contrato=contrato, concepto=concepto)
 
 		for arriendo_bodega in arriendo_bodegas:
 
-			estado 	= False
-			mensaje = 1
+			# validar periodicidad del concepto alternativa
+			if arriendo_bodega.periodicidad == 1:
 
-			if arriendo_bodega.periodicidad == 4 and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+				if periodo >= arriendo_bodega.fecha_inicio:
 
-				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
-				
-				if periodo.month == mes_1.month:
-
-					return {
-						'estado'	: True,
-						'mensaje'	: mensajes[0],
-					}
-
-			elif arriendo_bodega.periodicidad == 3:
-
-				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
-				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
-
-				if (periodo.month == mes_1.month or periodo.month==mes_2.month) and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
-
-					return {
-						'estado'	: True,
-						'mensaje'	: mensajes[0],
-					}
+					estado 	= True
+					mensaje = 0
 
 			elif arriendo_bodega.periodicidad == 2:
 
-				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 2)
-				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
-				mes_3 = sumar_meses(arriendo_bodega.fecha_inicio, 8)
-				mes_4 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+				fecha_1 = sumar_meses(arriendo_bodega.fecha_inicio, 3)
+				fecha_2 = sumar_meses(arriendo_bodega.fecha_inicio, 6)
+				fecha_3 = sumar_meses(arriendo_bodega.fecha_inicio, 9)
+				fecha_4 = sumar_meses(arriendo_bodega.fecha_inicio, 12)
 
-				if (periodo.month == mes_1.month or periodo.month==mes_2.month or periodo.month==mes_3.month or periodo.month==mes_4.month) and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+				if periodo >= arriendo_bodega.fecha_inicio and (periodo.month == fecha_1.month or periodo.month == fecha_2.month or periodo.month == fecha_3.month or periodo.month == fecha_4.month):
 
-					return {
-						'estado'	: True,
-						'mensaje'	: mensajes[0],
-					}
+					estado 	= True
+					mensaje = 0
 
-			elif arriendo_bodega.periodicidad == 1:
+			elif arriendo_bodega.periodicidad == 3:
 
-				if periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
+				fecha_1 = sumar_meses(arriendo_bodega.fecha_inicio, 6)
+				fecha_2 = sumar_meses(arriendo_bodega.fecha_inicio, 12)
 
-					return {
-						'estado'	: True,
-						'mensaje'	: mensajes[0],
-					}
+				if periodo >= arriendo_bodega.fecha_inicio and (periodo.month == fecha_1.month or periodo.month == fecha_2.month):
+
+					estado 	= True
+					mensaje = 0
+
+			elif arriendo_bodega.periodicidad == 4:
+
+				if periodo >= arriendo_bodega.fecha_inicio and arriendo_bodega.fecha_inicio.month == periodo.month:
+
+					estado 	= True
+					mensaje = 0
 
 			else:
-				estado 	= False
-				mensaje = 1
+				pass
+
+			# verificar si tiene la cantidad de metros cuadrados
+			if estado is True:
+
+				if arriendo_bodega.metro_cuadrado is True and contrato.bodega is False:
+
+					return {
+						'estado'	: False,
+						'mensaje'	: mensajes[1],
+					}
 
 	return {
 		'estado'	: estado,
@@ -981,21 +1006,29 @@ def validar_arriendo_bodega(contrato, concepto, periodo):
 
 def validar_servicios_varios(contrato, concepto, periodo):
 
-	mensajes = [
-		'Correcto', 
-		'No tiene gastos varios asociados',
-		]
+	mensajes = [	
+		'servicios varios: correcto',
+		'servicios varios: incorrecto',
+		'servicios varios: no existe',
+		'servicios varios: no existe para este período',
+	]
+
+	estado 	= False
+	mensaje = 2
 	
-	locales 	= contrato.locales.all()
+	locales_id = contrato.locales.all().values_list('id', flat=True)
 
-	for local in locales:
+	if Gasto_Servicio.objects.filter(locales__in=locales_id).exists():
 
-		if local.gasto_servicio_set.all().filter(mes=periodo.month, anio=periodo.year).exists():
+		if Gasto_Servicio.objects.filter(locales__in=locales_id, mes=periodo.month, anio=periodo.year).exists():
+
 			estado 	= True
 			mensaje = 0
+
 		else:
+
 			estado 	= False
-			mensaje = 1
+			mensaje = 3
 
 	return {
 		'estado'	: estado,
@@ -1005,16 +1038,100 @@ def validar_servicios_varios(contrato, concepto, periodo):
 def validar_multas(contrato, concepto, periodo):
 
 	mensajes = [
-		'Correcto',
-		'No tiene multas asociadas'
+		'multas : correcto',
+		'multas : incorrecto',
+		'multas : no existe',
+		'multas : no existe para este período',
 	]
 
-	if Multa.objects.filter(contrato=contrato, mes=periodo.month, anio=periodo.year, visible=True).exists():
-		estado 	= True
-		mensaje = 0
-	else:
-		estado = False
-		mensaje = 1
+	estado 	= False
+	mensaje = 2
+
+	if Multa.objects.filter(contrato=contrato).exists():
+
+		if Multa.objects.filter(contrato=contrato, mes=periodo.month, anio=periodo.year, visible=True).exists():
+			estado 	= True
+			mensaje = 0
+		else:
+			estado = False
+			mensaje = 3
+
+	return {
+		'estado'	: estado,
+		'mensaje'	: mensajes[mensaje],
+	}
+
+def validar_gasto_asociado(contrato, concepto, periodo):
+
+	mensajes = [
+		'gasto asociado : correcto',
+		'gasto asociado : incorrecto',
+		'gasto asociado : no existe',
+		'gasto asociado : no existe para este período',
+	]
+
+	estado 	= False
+	mensaje = 2
+	
+	if Gasto_Asociado.objects.filter(contrato=contrato, concepto=concepto).exists():
+
+		estado 	= False
+		mensaje = 3
+
+		gastos_asociados = Gasto_Asociado.objects.filter(contrato=contrato, concepto=concepto)
+
+		for gasto_asociado in gastos_asociados:
+
+			# validar periodicidad del concepto alternativa
+			if gasto_asociado.periodicidad == 1:
+
+				if periodo >= gasto_asociado.fecha:
+
+					estado 	= True
+					mensaje = 0
+
+			elif gasto_asociado.periodicidad == 2:
+
+				fecha_1 = sumar_meses(gasto_asociado.fecha, 3)
+				fecha_2 = sumar_meses(gasto_asociado.fecha, 6)
+				fecha_3 = sumar_meses(gasto_asociado.fecha, 9)
+				fecha_4 = sumar_meses(gasto_asociado.fecha, 12)
+
+				if periodo >= gasto_asociado.fecha and (periodo.month == fecha_1.month or periodo.month == fecha_2.month or periodo.month == fecha_3.month or periodo.month == fecha_4.month):
+
+					estado 	= True
+					mensaje = 0
+
+			elif gasto_asociado.periodicidad == 3:
+
+				fecha_1 = sumar_meses(gasto_asociado.fecha, 6)
+				fecha_2 = sumar_meses(gasto_asociado.fecha, 12)
+
+				if periodo >= gasto_asociado.fecha and (periodo.month == fecha_1.month or periodo.month == fecha_2.month):
+
+					estado 	= True
+					mensaje = 0
+
+			elif gasto_asociado.periodicidad == 4:
+
+				if periodo >= gasto_asociado.fecha and gasto_asociado.fecha.month == periodo.month:
+
+					estado 	= True
+					mensaje = 0
+
+			else:
+				pass
+
+			# validar vinculo del concepto
+			if estado is True:
+				
+				validar = validar_concepto(contrato, gasto_asociado.vinculo, periodo)
+
+				if validar['estado'] is False:
+					return {
+						'estado'	: False,
+						'mensaje'	: validar['mensaje'],
+					}
 
 	return {
 		'estado'	: estado,
@@ -1023,88 +1140,106 @@ def validar_multas(contrato, concepto, periodo):
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-def calcular_concepto(contrato, concepto, periodo):
+def calcular_concepto(contrato, concepto, periodo, configuracion):
 
 	if concepto.concepto_tipo.id == 1:
-		return calcular_arriendo_minimo(contrato, concepto, periodo)
+		return calcular_arriendo_minimo(contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 2:
-		return calcular_arriendo_variable(contrato, concepto, periodo)
+		return calcular_arriendo_variable(contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 3:
-		return calcular_gasto_comun(contrato, concepto, periodo)
+		return calcular_gasto_comun(contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 4:
-		return calcular_servicios_basicos(contrato, concepto, periodo)
+		return calcular_servicios_basicos(contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 5:
-		return calcular_cuota_de_incorporacion(contrato, concepto, periodo)
+		return calcular_cuota_de_incorporacion(contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 6:
-		return calcular_fondo_de_promocion(contrato, concepto, periodo)
+		return calcular_fondo_de_promocion(contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 7:
-		return calcular_arriendo_bodega(contrato, concepto, periodo)
+		return calcular_arriendo_bodega(contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 8:
-		return calcular_servicios_varios(contrato, concepto, periodo)
+		return calcular_servicios_varios(contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 9:
-		return calcular_multas(contrato, concepto, periodo)
+		return calcular_multas(contrato, concepto, periodo, configuracion)
+
+	elif concepto.concepto_tipo.id == 10:
+		return calcular_gasto_asociado(contrato, concepto, periodo, configuracion)
 
 	else:
 		return True
 
-def calcular_arriendo_minimo(contrato, concepto, periodo):
+def calcular_arriendo_minimo(contrato, concepto, periodo, configuracion):
 
-	total 			= 0
-	locales 		= contrato.locales.all()
-	metros_total 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
+	total = 0	
 
-	try:
-		arriendo 	= Arriendo.objects.get(contrato=contrato, concepto=concepto)
-		detalle 	= Arriendo_Detalle.objects.get(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month)
-		valor 		= detalle.valor
-		moneda 		= detalle.moneda.moneda_historial_set.all().order_by('-id').first().valor
+	if Arriendo.objects.filter(contrato=contrato, concepto=concepto).exists() and Arriendo.objects.filter(contrato=contrato, concepto=concepto).count() == 1:
 
-		# verificar si es por metros cuadrados
-		if detalle.metro_cuadrado is True:
-			metros 	= metros_total['metros_cuadrados__sum']
-		else:
-			metros 	= 1
+		arriendo = Arriendo.objects.get(contrato=contrato, concepto=concepto)
 
-		# verificar si tiene reajuste
-		if arriendo.reajuste is True and arriendo.por_meses is False and periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
-			if arriendo.moneda.id == 6:
-				reajuste = (arriendo.valor/100)+1
+		if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month).count() == 1:
+
+			detalle 		= Arriendo_Detalle.objects.get(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month)
+			detalle_valor 	= detalle.valor
+
+			# moneda
+			if detalle.moneda.id == 3:
+				detalle_moneda = configuracion['uf']
 			else:
-				reajuste = arriendo.valor * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+				detalle_moneda = detalle.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
-		elif arriendo.reajuste is True and arriendo.por_meses is True and periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
-			if arriendo.meses == 0:			
-				reajuste_factor = 1
-			else:			
-				reajuste_factor = int((meses_entre_fechas(arriendo.fecha_inicio, periodo) -1)/arriendo.meses)
-
-			if arriendo.moneda.id == 6:
-				reajuste = ((arriendo.valor * reajuste_factor)/100)+1
+			# metros cuadrados
+			if detalle.metro_cuadrado is True:
+				detalle_metros = contrato.locales.all().aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 			else:
-				reajuste = (arriendo.valor * reajuste_factor) * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
-		else:
-			reajuste = 1
+				detalle_metros = 1
 
-		if arriendo.moneda.id == 6:
-			total = (valor * moneda * metros ) * reajuste
-		else:
-			total = (valor * moneda * metros ) + reajuste
+			# total detalle
+			detalle_total = detalle_valor * detalle_moneda * detalle_metros
+			
+			# reajuste
+			if arriendo.reajuste is True and periodo >= arriendo.fecha_inicio:
 
-	except Exception:
+				# reajuste valor
+				if arriendo.moneda.id == 3:
+					arriendo_valor = arriendo.valor * configuracion['uf']
+				elif arriendo.moneda.id == 6:
+					arriendo_valor = ((arriendo.valor)/100)+1
+				else:
+					arriendo_valor = arriendo.valor * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
-		total = 0
+				if arriendo.por_meses is True:
+					if periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
+						if arriendo.meses == 0:
+							reajuste_factor = 1
+						else:
+							reajuste_factor = int((meses_entre_fechas(arriendo.fecha_inicio, periodo) -1)/arriendo.meses)
 
-	return total
+						if arriendo.moneda.id == 6:
+							total = detalle_total * (arriendo_valor * reajuste_factor)
+						else:
+							total = detalle_total + (arriendo_valor * reajuste_factor)
 
-def calcular_arriendo_variable(contrato, concepto, periodo):
+				else:
+
+					if periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
+						if arriendo.moneda.id == 6:
+							total = detalle_total * arriendo_valor
+						else:
+							total = detalle_total + arriendo_valor
+
+			else:
+				total = detalle_total
+
+	return detalle_total
+
+def calcular_arriendo_variable(contrato, concepto, periodo, configuracion):
 
 	total 	= 0
 	locales = contrato.locales.all()
@@ -1116,67 +1251,86 @@ def calcular_arriendo_variable(contrato, concepto, periodo):
 		
 		if Venta.objects.filter(local_id__in=locales, fecha_inicio__month=periodo.month, fecha_termino__month=periodo.month, fecha_inicio__year=periodo.year, fecha_termino__year=periodo.year).exists():
 
+			print ('tiene ventas')
+
 			ventas 	= Venta.objects.filter(local_id__in=locales, fecha_inicio__month=periodo.month, fecha_termino__month=periodo.month, fecha_inicio__year=periodo.year, fecha_termino__year=periodo.year).aggregate(Sum('valor'))
 			total 	= ((ventas['valor__sum'] * valor) / 100)
 
 			if arriendo_variable.relacion is True:
+				print ('true')
 
 				arriendo_minimo = validar_arriendo_minimo(contrato, arriendo_variable.arriendo_minimo, periodo)
 
 				if arriendo_minimo['estado'] is True:
-					valor_arriendo_minimo = calcular_arriendo_minimo(contrato, arriendo_variable.arriendo_minimo, periodo)
+					print ('true 2')
+					valor_arriendo_minimo = calcular_arriendo_minimo(contrato, arriendo_variable.arriendo_minimo, periodo, configuracion)
+
+					print ('ventas')
+					print (ventas['valor__sum'])
 
 					if ((ventas['valor__sum'] * valor) / 100) >= valor_arriendo_minimo:
+						print ('if')
 						total = ((ventas['valor__sum'] * valor) / 100) - valor_arriendo_minimo
 					else:
+						print ('else')
 						total = 0
 				else:
 					total = 0
 		else:
 			total = 0
 
-	except Exception:
+	except Exception as asd:
+
+		print (asd)
 
 		total = 0
+
+	print (total)
 	
 	return total
 
-def calcular_gasto_comun(contrato, concepto, periodo):
+def calcular_gasto_comun(contrato, concepto, periodo, configuracion):
 
 	total = 0
 
-	gastos_comunes = Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto)
+	if Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto).exists():
 
-	for gasto_comun in gastos_comunes:
+		gastos_comunes = Gasto_Comun.objects.filter(contrato=contrato, concepto=concepto)
 
-		# valor por m2 del local
-		if gasto_comun.metros_cuadrado is True:
-			metros_cuadrados = gasto_comun.contrato.locales.all().aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']			
-		else:
-			metros_cuadrados = 1
+		for gasto_comun in gastos_comunes:
 
-		# verificar si es fijo o prorrateable
-		if gasto_comun.tipo == 1:
+			# valor por m2 del local
+			if gasto_comun.metros_cuadrado is True:
+				metros_cuadrados = gasto_comun.contrato.locales.all().aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']			
+			else:
+				metros_cuadrados = 1
 
-			valor 	= gasto_comun.valor
-			factor 	= gasto_comun.moneda.moneda_historial_set.all().order_by('-id').first().valor
+			# verificar si es fijo o prorrateable
+			if gasto_comun.tipo == 1:
 
-		else:
+				valor 	= gasto_comun.valor
 
-			locales 		= contrato.locales.all()
-			activos_id 		= contrato.locales.all().values_list('activo_id', flat=True)
+				if gasto_comun.moneda.id == 3:
+					factor 	= configuracion['uf']
+				else:
+					factor 	= gasto_comun.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
-			metros_total 	= Local.objects.filter(activo__in=activos_id, visible=True).aggregate(Sum('metros_cuadrados'))
-			metros_local 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
+			else:
 
-			valor 	= Gasto_Mensual.objects.get(activo=contrato.locales.first().activo, mes=periodo.month, anio=periodo.year).valor
-			factor 	= ((metros_local['metros_cuadrados__sum'] * 100) / (metros_total['metros_cuadrados__sum'])) / 100
+				locales 		= contrato.locales.all()
+				activos_id 		= contrato.locales.all().values_list('activo_id', flat=True)
 
-		total += valor * factor * metros_cuadrados
+				metros_total 	= Local.objects.filter(activo__in=activos_id, visible=True).aggregate(Sum('metros_cuadrados'))
+				metros_local 	= contrato.locales.all().aggregate(Sum('metros_cuadrados'))
+
+				valor 	= Gasto_Mensual.objects.get(activo=contrato.locales.first().activo, mes=periodo.month, anio=periodo.year).valor
+				factor 	= ((metros_local['metros_cuadrados__sum'] * 100) / (metros_total['metros_cuadrados__sum'])) / 100
+
+			total += valor * factor * metros_cuadrados
 
 	return total
 
-def calcular_servicios_basicos(contrato, concepto, periodo):
+def calcular_servicios_basicos(contrato, concepto, periodo, configuracion):
 
 	total = 0
 
@@ -1212,26 +1366,30 @@ def calcular_servicios_basicos(contrato, concepto, periodo):
 
 	return total
 
-def calcular_cuota_de_incorporacion(contrato, concepto, periodo):
+def calcular_cuota_de_incorporacion(contrato, concepto, periodo, configuracion):
 
 	total 	= 0
 	cuotas 	= Cuota_Incorporacion.objects.filter(contrato=contrato, concepto=concepto, fecha__year=periodo.year, fecha__month=periodo.month, visible=True)
 
 	for cuota in cuotas:
 
+		valor = cuota.valor
+
 		if cuota.metro_cuadrado is True:
 			metros_cuadrados = cuota.contrato.locales.all().aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']			
 		else:
 			metros_cuadrados = 1
 
-		valor 	= cuota.valor
-		factor 	= cuota.moneda.moneda_historial_set.all().order_by('-id').first().valor
+		if cuota.moneda.id == 3:
+			factor = configuracion['uf']
+		else:
+			factor = cuota.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
-		total 	+= (valor * factor * metros_cuadrados)
+		total += (valor * factor * metros_cuadrados)
 	
 	return total
 
-def calcular_fondo_de_promocion(contrato, concepto, periodo):
+def calcular_fondo_de_promocion(contrato, concepto, periodo, configuracion):
 
 	total = 0
 
@@ -1243,9 +1401,9 @@ def calcular_fondo_de_promocion(contrato, concepto, periodo):
 
 			reajuste = 0
 
-			arriendo_minimo 	= calcular_arriendo_minimo(contrato, fondo_promocion.vinculo, periodo)
+			arriendo_minimo 	= calcular_arriendo_minimo(contrato, fondo_promocion.vinculo, periodo, configuracion)
 			variable 			= Arriendo_Variable.objects.filter(contrato=contrato, arriendo_minimo=fondo_promocion.vinculo, visible=True).first()
-			arriendo_variable 	= calcular_arriendo_variable(contrato, variable.concepto, periodo)
+			arriendo_variable 	= calcular_arriendo_variable(contrato, variable.concepto, periodo, configuracion)
 
 			if fondo_promocion.periodicidad == 4 and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
 
@@ -1303,7 +1461,7 @@ def calcular_fondo_de_promocion(contrato, concepto, periodo):
 
 	return total
 
-def calcular_arriendo_bodega(contrato, concepto, periodo):
+def calcular_arriendo_bodega(contrato, concepto, periodo, configuracion):
 
 	total = 0
 
@@ -1312,95 +1470,67 @@ def calcular_arriendo_bodega(contrato, concepto, periodo):
 		arriendo_bodegas = Arriendo_Bodega.objects.filter(contrato=contrato, concepto=concepto)
 
 		for arriendo_bodega in arriendo_bodegas:
-			
-			if arriendo_bodega.periodicidad == 4 and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
 
-				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
-				
-				if periodo.month == mes_1.month:
-					valor 	= arriendo_bodega.valor
-					factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+			factor = False
 
-					if arriendo_bodega.metro_cuadrado == True:
-						if contrato.bodega is True:
-							metros = contrato.metros_bodega
-						else:
-							metros = 0
-					else:
-						metros = 1
+			# calcular valor del arriendo de bodega
+			if arriendo_bodega.periodicidad == 1:
 
-					total += valor * factor * metros
-				else:
-					total += 0
+				print ('aca')
 
-			elif arriendo_bodega.periodicidad == 3:
+				if periodo >= arriendo_bodega.fecha_inicio:
 
-				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
-				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
-
-				if (periodo.month == mes_1.month or periodo.month==mes_2.month) and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
-					valor 	= arriendo_bodega.valor
-					factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
-
-					if arriendo_bodega.metro_cuadrado == True:
-						if contrato.bodega is True:
-							metros = contrato.metros_bodega
-						else:
-							metros = 0
-					else:
-						metros = 1
-
-					total += valor * factor * metros
-				else:
-					total += 0
+					factor = arriendo_bodega.valor
 
 			elif arriendo_bodega.periodicidad == 2:
 
-				mes_1 = sumar_meses(arriendo_bodega.fecha_inicio, 2)
-				mes_2 = sumar_meses(arriendo_bodega.fecha_inicio, 5)
-				mes_3 = sumar_meses(arriendo_bodega.fecha_inicio, 8)
-				mes_4 = sumar_meses(arriendo_bodega.fecha_inicio, 11)
+				fecha_1 = sumar_meses(arriendo_bodega.fecha_inicio, 3)
+				fecha_2 = sumar_meses(arriendo_bodega.fecha_inicio, 6)
+				fecha_3 = sumar_meses(arriendo_bodega.fecha_inicio, 9)
+				fecha_4 = sumar_meses(arriendo_bodega.fecha_inicio, 12)
 
-				if (periodo.month == mes_1.month or periodo.month==mes_2.month or periodo.month==mes_3.month or periodo.month==mes_4.month) and periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
-					valor 	= arriendo_bodega.valor
-					factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+				if periodo >= arriendo_bodega.fecha_inicio and (periodo.month == fecha_1.month or periodo.month == fecha_2.month or periodo.month == fecha_3.month or periodo.month == fecha_4.month):
 
-					if arriendo_bodega.metro_cuadrado == True:
-						if contrato.bodega is True:
-							metros = contrato.metros_bodega
-						else:
-							metros = 0
-					else:
-						metros = 1
+					factor = arriendo_bodega.valor
 
-					total += valor * factor * metros
-				else:
-					total += 0
+			elif arriendo_bodega.periodicidad == 3:
 
-			elif arriendo_bodega.periodicidad == 1:
+				fecha_1 = sumar_meses(arriendo_bodega.fecha_inicio, 6)
+				fecha_2 = sumar_meses(arriendo_bodega.fecha_inicio, 12)
 
-				if periodo.month >= arriendo_bodega.fecha_inicio.month and periodo.year >= arriendo_bodega.fecha_inicio.year:
-					valor 	= arriendo_bodega.valor
-					factor 	= arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+				if periodo >= arriendo_bodega.fecha_inicio and (periodo.month == fecha_1.month or periodo.month == fecha_2.month):
 
-					if arriendo_bodega.metro_cuadrado == True:
-						if contrato.bodega is True:
-							metros = contrato.metros_bodega
-						else:
-							metros = 0
-					else:
-						metros = 1
+					factor = arriendo_bodega.valor
 
-					total += valor * factor * metros
-				else:
-					total += 0
+			elif arriendo_bodega.periodicidad == 4:
+
+				if periodo >= arriendo_bodega.fecha_inicio and arriendo_bodega.fecha_inicio.month == periodo.month:
+
+					factor = arriendo_bodega.valor
 
 			else:
-				total += 0
+				factor = False
+
+			# calcular valor del vinculo
+			if factor is not False:
+
+				if arriendo_bodega.moneda.id == 3:
+					valor = configuracion['uf']
+				else:
+					valor = arriendo_bodega.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+				if arriendo_bodega.metro_cuadrado is False:
+					total += factor * valor
+					
+				elif arriendo_bodega.metro_cuadrado is True and contrato.bodega is True:
+					total += factor * valor * contrato.metros_bodega
+				else:
+					pass
 
 	return total
 
-def calcular_servicios_varios(contrato, concepto, periodo):
+def calcular_servicios_varios(contrato, concepto, periodo, configuracion):
+
 	total 		= 0	
 	locales 	= contrato.locales.all()
 
@@ -1417,13 +1547,80 @@ def calcular_servicios_varios(contrato, concepto, periodo):
 
 	return total
 
-def calcular_multas(contrato, concepto, periodo):
+def calcular_multas(contrato, concepto, periodo, configuracion):
 
 	total 	= 0
+
 	multas 	= Multa.objects.filter(contrato=contrato, mes=periodo.month, anio=periodo.year, visible=True)
 
 	for multa in multas:
-		total += multa.valor * multa.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+		if multa.moneda.id == 3:
+			factor = configuracion['uf']
+		else:			
+			factor = multa.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+		total += multa.valor * factor
+
+	return total
+
+def calcular_gasto_asociado(contrato, concepto, periodo, configuracion):
+
+	total = 0
+
+	if Gasto_Asociado.objects.filter(contrato=contrato, concepto=concepto).exists():
+
+		gastos_asociados = Gasto_Asociado.objects.filter(contrato=contrato, concepto=concepto)
+
+		for gasto_asociado in gastos_asociados:
+
+			factor = False
+
+			# calcular valor del gasto
+			if gasto_asociado.periodicidad == 1:
+
+				if periodo >= gasto_asociado.fecha:
+
+					factor = (gasto_asociado.valor * gasto_asociado.moneda.moneda_historial_set.all().order_by('-id').first().valor) / 100
+
+			elif gasto_asociado.periodicidad == 2:
+
+				fecha_1 = sumar_meses(gasto_asociado.fecha, 3)
+				fecha_2 = sumar_meses(gasto_asociado.fecha, 6)
+				fecha_3 = sumar_meses(gasto_asociado.fecha, 9)
+				fecha_4 = sumar_meses(gasto_asociado.fecha, 12)
+
+				if periodo >= gasto_asociado.fecha and (periodo.month == fecha_1.month or periodo.month == fecha_2.month or periodo.month == fecha_3.month or periodo.month == fecha_4.month):
+
+					factor = (gasto_asociado.valor * gasto_asociado.moneda.moneda_historial_set.all().order_by('-id').first().valor) / 100
+
+			elif gasto_asociado.periodicidad == 3:
+
+				fecha_1 = sumar_meses(gasto_asociado.fecha, 6)
+				fecha_2 = sumar_meses(gasto_asociado.fecha, 12)
+
+				if periodo >= gasto_asociado.fecha and (periodo.month == fecha_1.month or periodo.month == fecha_2.month):
+
+					factor = (gasto_asociado.valor * gasto_asociado.moneda.moneda_historial_set.all().order_by('-id').first().valor) / 100
+
+			elif gasto_asociado.periodicidad == 4:
+
+				if periodo >= gasto_asociado.fecha and gasto_asociado.fecha.month == periodo.month:
+
+					factor = (gasto_asociado.valor * gasto_asociado.moneda.moneda_historial_set.all().order_by('-id').first().valor) / 100
+
+			else:
+				factor = False
+
+			# calcular valor del vinculo
+			if factor is not False:
+
+				validar = validar_concepto(contrato, gasto_asociado.vinculo, periodo)
+
+				if validar['estado'] is True:
+
+					valor = calcular_concepto(contrato, gasto_asociado.vinculo, periodo, configuracion)
+					total += valor * factor
 
 	return total
 
@@ -1520,107 +1717,3 @@ class FACTURA(View):
 		return JsonResponse(data, safe=False)
 
 
-# def calculo_servicios_basico(request, proceso, contratos, meses, fecha, concepto):
-#
-# 	for x in range(meses):
-#
-# 		for item in contratos:
-#
-# 			contrato 		= Contrato.objects.get(id=item)
-# 			locales 		= contrato.locales.values_list('id', flat=True).all()
-# 			medidores_luz  	= Medidor_Electricidad.objects.filter(local__in=locales)
-# 			medidores_agua  = Medidor_Agua.objects.filter(local__in=locales)
-# 			medidores_gas  	= Medidor_Gas.objects.filter(local__in=locales)
-#
-#
-# 			for medidor in medidores_luz:
-# 				try:
-# 					valor_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=(fecha.month-1), anio=fecha.year).valor
-# 				except Exception:
-# 					valor_anterior	= None
-# 				try:
-# 					valor_actual 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=fecha.month, anio=fecha.year).valor
-# 				except Exception:
-# 					valor_actual	= None
-# 				try:
-# 					if medidor.local.servicio_basico_set.all().exists():
-# 						servicios_basicos = medidor.local.servicio_basico_set.all()
-# 						valor_luz = servicios_basicos[0].valor_electricidad
-# 					else:
-# 						valor_luz	= None
-# 				except Exception:
-# 					valor_luz	= None
-#
-# 				Detalle_Electricidad(
-# 					valor			= valor_luz,
-# 					valor_anterior	= valor_anterior,
-# 					valor_actual	= valor_actual,
-# 					fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
-# 					fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
-# 					proceso			= proceso,
-# 					contrato		= contrato,
-# 					medidor			= medidor,
-# 				).save()
-#
-# 			for medidor in medidores_agua:
-# 				try:
-# 					lectura_anterior 	= Lectura_Agua.objects.get(medidor_electricidad=medidor, mes=(fecha.month-1), anio=fecha.year)
-# 				except Exception as error:
-# 					lectura_anterior	= None
-# 				try:
-# 					lectura_actual 		= Lectura_Agua.objects.get(medidor_electricidad=medidor, mes=fecha.month, anio=fecha.year)
-# 				except Exception as error:
-# 					lectura_actual		= None
-# 				try:
-# 					if medidor.local.servicio_basico_set.all().exists():
-# 						servicios_basicos = medidor.local.servicio_basico_set.all()
-# 						valor_agua = servicios_basicos[0].valor_agua
-# 					else:
-# 						valor_agua	= None
-# 				except Exception:
-# 					valor_agua	= None
-#
-# 				Detalle_Agua(
-# 					valor			= valor_agua,
-# 					valor_anterior	= lectura_anterior,
-# 					valor_actual	= lectura_actual,
-# 					fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
-# 					fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
-# 					proceso			= proceso,
-# 					contrato		= contrato,
-# 					medidor			= medidor,
-# 				).save()
-#
-# 			for medidor in medidores_gas:
-# 				try:
-# 					lectura_anterior 	= Lectura_Gas.objects.get(medidor_electricidad=medidor, mes=(fecha.month-1), anio=fecha.year)
-# 				except Exception as error:
-# 					lectura_anterior	= None
-# 				try:
-# 					lectura_actual 		= Lectura_Gas.objects.get(medidor_electricidad=medidor, mes=fecha.month, anio=fecha.year)
-# 				except Exception as error:
-# 					lectura_actual		= None
-# 				try:
-# 					if medidor.local.servicio_basico_set.all().exists():
-# 						servicios_basicos = medidor.local.servicio_basico_set.all()
-# 						valor_gas = servicios_basicos[0].valor_gas
-# 					else:
-# 						valor_gas	= None
-# 				except Exception:
-# 					valor_gas	= None
-#
-# 				Detalle_Gas(
-# 					valor			= valor_gas,
-# 					valor_anterior	= lectura_actual,
-# 					valor_actual	= lectura_actual,
-# 					fecha_inicio	= primer_dia(fecha).strftime('%Y-%m-%d'),
-# 					fecha_termino	= ultimo_dia(fecha).strftime('%Y-%m-%d'),
-# 					proceso			= proceso,
-# 					contrato		= contrato,
-# 					medidor			= medidor,
-# 				).save()
-#
-# 		fecha = sumar_meses(fecha, 1)
-#
-# 	return 'ok'
-#

@@ -492,6 +492,41 @@ class FondoPromocionForm(forms.ModelForm):
 			'periodicidad'	: 'periodicidad',
 		}
 
+class GastoAsociadoForm(forms.ModelForm):
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar a partir de:')
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
+
+	def __init__(self, *args, **kwargs):
+
+		contrato = kwargs.pop('contrato', None)
+
+		super(GastoAsociadoForm, self).__init__(*args, **kwargs)
+
+		self.fields['vinculo'].queryset = Concepto.objects.filter(empresa=contrato.empresa).exclude(concepto_tipo_id=10)
+
+		# if contrato is not None:
+		# 	self.fields['fecha'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
+			
+
+	class Meta:
+		model 	= Gasto_Asociado
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en', 'concepto']
+
+		widgets = {
+			'periodicidad'	: forms.Select(attrs={'class': 'form-control'}),
+			'vinculo'		: forms.Select(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'periodicidad'	: {'required': 'campo requerido'},
+		}
+
+		help_texts = {
+			'periodicidad'	: 'periodicidad',
+		}
 
 # propuesta
 class PropuestaForm(forms.ModelForm):
@@ -797,7 +832,7 @@ class FormPropuestaCuota(forms.ModelForm):
 class FormPropuestaPromocion(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
-	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar desde')
+	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar a partir de:')
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control'}))
 
 	class Meta:
@@ -858,3 +893,5 @@ ArriendoBodegaFormSet 		= inlineformset_factory(Contrato, Arriendo_Bodega, form=
 GarantiaFormSet 			= inlineformset_factory(Contrato, Garantia, form=GarantiaForm, extra=1, can_delete=True)
 ArriendoDetalleFormSet 		= inlineformset_factory(Arriendo, Arriendo_Detalle, form=ArriendoDetalleForm, extra=1, can_delete=True)
 FondoPromocionFormSet 		= inlineformset_factory(Contrato, Fondo_Promocion, form=FondoPromocionForm, extra=1, can_delete=True)
+GastoAsociadoFormSet 		= inlineformset_factory(Contrato, Gasto_Asociado, form=GastoAsociadoForm, extra=1, can_delete=True)
+

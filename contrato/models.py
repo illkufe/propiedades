@@ -676,4 +676,29 @@ class Fondo_Promocion(models.Model):
 	def __str__(self):
 		return self.contrato.nombre_local
 
+class Gasto_Asociado(models.Model):
 
+	PERIODICIDAD = (
+		(1, 'MENSUAL'),
+		(2, 'TRIMESTRAL'),
+		(3, 'SEMESTRAL'),
+		(4, 'ANUAL'),
+	)
+
+	# atributos (generales)
+	fecha 			= models.DateField()
+	valor			= models.FloatField()
+	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+	creado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	contrato 	= models.ForeignKey(Contrato)
+	concepto 	= models.ForeignKey(Concepto)
+	moneda 		= models.ForeignKey(Moneda)
+	vinculo 	= models.ForeignKey(Concepto, related_name='concepto_gasto_asociado')
+
+	def __str__(self):
+		return self.contrato.nombre_local

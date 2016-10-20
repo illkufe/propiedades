@@ -56,9 +56,11 @@ function guardar_formulario_conceptos(form, id){
 		url: $('#'+form).attr('action'),
 		data: $('#'+form).serialize(),
 		success: function(response) {
+			console.log('succes')
 			window.location.href = '/contrato-concepto/'+id
 		},
 		error: function(data, textStatus, jqXHR) {
+
 			clear_errors_form('#'+form)
 			var errors = $.parseJSON(data.responseText)
 			// console.log(errors)
