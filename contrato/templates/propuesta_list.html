@@ -183,9 +183,8 @@ function initialize(){
 
 
 	$('#new_propuesta').on('click', function () {
-		var propuesta = {{workflow}};
 
-		if(propuesta > 0){
+		if('{{workflow}}' == 'True'){
 			location.href = '{% url 'propuesta_new' %}'
 		}
 		else {

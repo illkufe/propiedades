@@ -191,10 +191,6 @@ class Clasificacion_Detalle(models.Model):
 		verbose_name 		= "Detalle Clasificación"
 		verbose_name_plural = "Detalles de Clasificaciones"
 
-
-
-
-
 class Tipo_Operacion(models.Model):
 
 	# atributos (generales)
@@ -211,7 +207,6 @@ class Tipo_Operacion(models.Model):
 class Entidad_Asociacion(models.Model):
 
 	# atributos (generales)
-
 	nombre 				= models.CharField(max_length=250)
 	nombre_campo_tabla	= models.CharField(max_length=250)
 

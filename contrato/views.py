@@ -287,7 +287,6 @@ class PropuestaList(ListView):
 		context['href'] 	= '/propuesta/list'
 		context['workflow']	= self.get_workflow()
 
-
 		return context
 
 	def get_queryset(self):
@@ -307,7 +306,7 @@ class PropuestaList(ListView):
 
 	def get_workflow(self):
 
-		workflow = Workflow.objects.get(empresa=self.request.user.userprofile.empresa)
+		workflow = Workflow.objects.filter(empresa=self.request.user.userprofile.empresa, validado=True).exists()
 
 		return workflow
 
