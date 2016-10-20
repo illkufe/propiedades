@@ -31,6 +31,16 @@ def formato_numero(valor):
 
 	return moneda
 
+@register.filter
+def formato_numero_sin_miles_decimales(valor):
+
+	moneda = '{:.0f}'.format(valor)
+    #
+	# moneda = moneda.replace('.', ',')
+
+
+	return moneda
+
 
 @register.filter
 def formato_boolean(valor):

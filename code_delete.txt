@@ -3119,3 +3119,32 @@ def propuesta_pdf(proceso, pk=None):
 	// 		response = false
 	// 	return response
 	// }, mensaje);
+
+
+//Method DELETE AJAX
+
+{#    $.ajax({#}
+{#        type: "delete",#}
+{#        url: '{% url 'venta_list' %}',#}
+{#        dataType: 'json',#}
+{#        beforeSend: function(xhr) {#}
+{#            xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));#}
+{#        },#}
+{#        success: function(response) {#}
+{#			if (response.estado == true ) {#}
+{#				var configuracion = {#}
+{#					'toast_type'	: 'success',#}
+{#					'toast_text' 	: 'Guardado correctamente',#}
+{#					'toast_title' 	: 'ÉXITO',#}
+{#				}#}
+{#			}else{#}
+{#				var configuracion = {#}
+{#					'toast_type'	: 'error',#}
+{#					'toast_text' 	: 'No se pudo actualizar',#}
+{#					'toast_title' 	: 'Error',#}
+{#				}#}
+{#			}#}
+{#            notification_toast(configuracion)#}
+{#            load_tabla_ventas()#}
+{#        }#}
+{#    });#}

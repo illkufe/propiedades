@@ -11,6 +11,7 @@
 				<div class="ibox-title">
 					<h5>Lecturas de Medidores</h5>
 					<div class="ibox-tools">
+                        <a onclick="load_modal_medidor()"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Carga Masiva Medidor</button></a>
 						<a href='{% url "lectura_electricidad_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Lectura Luz</button></a>
 						<a href='{% url "lectura_agua_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Lectura Agua</button></a>
 						<a href='{% url "lectura_gas_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Lectura Gas</button></a>
@@ -18,31 +19,9 @@
 				</div>
 				<div class="ibox-content">
 					<div class="table-responsive">
-						<table id="tabla-lecturas" class="table table-striped table-bordered table-hover">
+						<table id="tabla-lecturas" class="table table-striped table-bordered table-hover" style="width: 100% !important;">
 							<thead></thead>
 							<tbody>
-								{% for item in object_list %}
-								<tr>
-									<td>{{ item.id }}</td>
-									<td>{{ item.activo }}</td>
-									<td>{{ item.local }}</td>
-									<td>{{ item.tipo }}</td>
-									<td>{{ item.nombre }}</td>
-									<td class="text-right">{{ item.mes }}</td>
-									<td class="text-right">{{ item.anio }}</td>
-									<td class="text-right">{{ item.creado_en }}</td>
-									<td class="text-right">{{ item.valor|formato_numero }}</td>
-									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='/lectura-{{item.url}}/update/{{item.id}}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'lectura-{{item.url}}', 'tabla-lecturas', 'Lectura')"><i class="fa fa-trash"></i></a>
-										{% if item.imagen_file != '' %}
-										<a class="btn btn-view btn-bitbucket" href="/media/{{item.imagen_file}}" download><i class="fa fa-eye"></i></a>
-										{% else %}
-										<a class="btn btn-none btn-bitbucket"><i class="fa fa-eye"></i></a>
-										{% endif %}
-									</td>
-								</tr>
-								{% endfor %}
 							</tbody>
 						</table>
 					</div>
@@ -50,6 +29,59 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+<div class="modal inmodal fade" id="modal-new-carga-masiva" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title text-center">Subir Plantilla de Medidores</h4>
+            </div>
+            <div class="modal-body" style="padding:15px 0px 0px 0px">
+                <form id="form-carga-new" role="form" action="/lectura-medidores/" method="post" enctype="multipart/form-data">
+                    <div class="ibox-content">
+                        {% csrf_token %}
+                        <div class="ibox-tools">
+                            <a href="/media/formatos/formato_medidores.xls" class="btn btn-primary btn-xs" role="button"><i class="fa fa-download"></i>
+                                Descargar Plantilla
+                            </a>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-8">
+                                <label for="">Archivo</label>
+                                <input type="file" id="file" name="file" class="filestyle input-sm" data-buttonText="" accept="application/vnd.ms-excel" >
+                                <div class="container-error">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+                        <button type="submit" class="btn btn-w-m btn-sm btn-primary pull-right" >SUBIR ARCHIVO</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal fade" id="modalError" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Archivo</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <p class="text-center">
+                    <button type="button" class="btn btn-w-m btn-sm btn-primary" data-dismiss="modal">OK</button>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock section %}
@@ -60,13 +92,131 @@
 var tabla_lecturas;
 
 $(document).ready(function(){
-
 	load_tabla_lecturas()
-
+    load_data_tabla_lecturas()
+    guardar_carga_masiva()
 });
 
-function load_tabla_lecturas(){
+function load_modal_medidor() {
+    clear_errors_form('#form-carga-new');
+    clear_form('#form-carga-new');
+    $('#modal-new-carga-masiva').modal('show');
+    $(":file").filestyle();
+}
 
+function guardar_carga_masiva() {
+
+   $("#form-carga-new").validate({
+		rules: {
+			file: {
+				required: true,
+			},
+		},
+		messages: {
+			file: {
+				required: "campo requerido",
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group").find('.container-error'));
+		},
+		submitHandler: function(form) {
+
+			$('#form-carga-new').ajaxSubmit({
+				dataType: 'json',
+				beforeSubmit: function(){
+					console.log('enviando')
+                    $('#modal-new-carga-masiva').modal('hide');
+				},
+				success: function(data){
+
+                    console.log(data)
+
+					if (data.estado == 'error') {
+
+                        if(data.tipo == 'formato'){
+                            var template = ''
+                            template += '<div class="row">'
+                            template += '<div class="text-center">'
+                            template += '<p style="color:#ff8100; font-size:100px">'
+                            template += '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>'
+                            template += '</p>'
+                            template += '<p style="font-size: 20px;font-weight: bold">'+data.errors[0].error+'</p>'
+                            template += '</div>'
+                        }else {
+
+                            var template = ''
+                            template += '<div class="row">'
+                            template += '<div class="text-center">'
+                            template += '<p style="color:#ff8100; font-size:100px">'
+                            template += '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>'
+                            template += '</p>'
+                            template += '<h4>Error en los siguientes datos</h4>'
+                            template += '</div>'
+                            template += '<br>'
+                            template += '<table class="table table-striped table-bordered table-hover table-responsive">'
+                            template += '<thead>'
+                            template += '<tr>'
+                            template += '<th>fila</th>'
+                            template += '<th>N° Rotulo</th>'
+                            template += '<th>Tipo Medidor</th>'
+                            template += '<th>Lectura Medidor</th>'
+                            template += '<th>Mes</th>'
+                            template += '<th>Año</th>'
+                            template += '<th>Error(es)</th>'
+                            template += '</tr>'
+                            template += '</thead>'
+                            template += '<tbody>'
+
+                            for (var i = 0; i < data.errors.length; i++) {
+                                template += '<tr>'
+                                template += '<td>' + data.errors[i].row + '</td>'
+                                template += '<td>' + data.errors[i].rotulo + '</td>'
+                                template += '<td>' + data.errors[i].medidor + '</td>'
+                                template += '<td>' + data.errors[i].lectura + '</td>'
+                                template += '<td>' + data.errors[i].mes + '</td>'
+                                template += '<td>' + data.errors[i].ano + '</td>'
+
+                                var template_error = ''
+                                for (var a = 0; a < data.errors[i].error.length; a++) {
+                                    template_error += '<p>' + data.errors[i].error[a] + '</p>'
+                                }
+                                template += '<td>' + template_error + '</td>'
+                                template += '</tr>'
+                            }
+
+                            template += '</tbody></table></div>'
+                        }
+					}else{
+                        var template = ''
+                        template += '<div class="row">'
+                        template += '<div class="text-center">'
+                        template += '<p style="color:#a5dc86; font-size:100px">'
+                        template += '<i class="fa fa-check-circle" aria-hidden="true"></i>'
+                        template += '</p>'
+						template += '<p style="font-size: 20px;font-weight: bold">OK</p>'
+                        template += '</div>'
+
+                        load_data_tabla_lecturas()
+					}
+
+                    $('#modalError').find('.modal-body').html(template);
+					clear_form('#form-carga-new')
+					$("#file").filestyle('clear');
+
+				},
+                complete:function () {
+                    /*Cambiar por una función */
+/*                  setTimeout(function(){$('#modalError').modal('show')}, 158);*/
+                    setTimeout(function(){$('#modalError').modal('show')}, 500);
+                }
+			})
+
+        }
+    })
+}
+
+function load_tabla_lecturas(){
 	var configuration = {
 		'order': [[3, 'asc']],
 	}
@@ -126,9 +276,130 @@ function load_tabla_lecturas(){
 	}];
 
 	tabla_lecturas = load_table('#tabla-lecturas', columns, configuration)
-
 }
 
+function load_data_tabla_lecturas() {
+
+   	tabla_lecturas.clear().draw();
+
+	$.ajax({
+		url: '/lectura-medidores/',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+            console.log(data)
+			rows = [];
+
+			for (var i = 0; i < data.length; i++) {
+
+                var lectura = 'Lectura'
+                var tabla   = 'tabla-lecturas'
+
+                for(var a=0; a< data[i].luz.length; a++){
+
+                    var options_luz = ''
+                    var url_luz     = 'lectura-'+ data[i].luz[a].url
+
+                    options_luz += '<div class="text-center">'
+                    options_luz += '<a class="btn btn-edit btn-bitbucket" href="/lectura-'+data[i].luz[a].url+'/update/'+data[i].luz[a].id+'"><i class="fa fa-edit"></i></a>'
+                    options_luz += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].luz[a].id+',\''+url_luz+'\', \''+tabla+'\', \''+lectura+'\')"><i class="fa fa-trash"></i></a>'
+
+                    if(data[i].luz[a].image != '') {
+                        options_luz += '<a class="btn btn-view btn-bitbucket" href="/media/'+data[i].luz[a].image +'" download><i class="fa fa-eye"></i></a>'
+                    }else{
+                        options_luz += '<a class="btn btn-none btn-bitbucket"><i class="fa fa-eye"></i></a>'
+                    }
+
+                    options_luz += '</div>'
+
+                    row = {}
+
+                    row.id 		= data[i].luz[a].id
+                    row.activo  = data[i].luz[a].activo
+                    row.local 	= data[i].luz[a].local
+                    row.medidor = data[i].luz[a].tipo
+                    row.tipo 	= data[i].luz[a].nombre
+                    row.mes 	= data[i].luz[a].mes
+                    row.anio 	= data[i].luz[a].anio
+                    row.fecha 	= data[i].luz[a].creado
+                    row.valor 	= data[i].luz[a].lectura
+                    row.options = options_luz
+
+                    rows.push(row)
+                }
+
+
+                for(var b=0; b< data[i].agua.length; b++){
+
+                    var options_agua    = ''
+                    var url_agua        = 'lectura-'+ data[i].agua[b].url
+
+                    options_agua += '<div class="text-center">'
+                    options_agua += '<a class="btn btn-edit btn-bitbucket" href="/lectura-'+data[i].agua[b].url+'/update/'+data[i].agua[b].id+'"><i class="fa fa-edit"></i></a>'
+                    options_agua += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].agua[b].id+',\''+url_agua+'\', \''+tabla+'\', \''+lectura+'\')"><i class="fa fa-trash"></i></a>'
+
+                    if(data[i].agua[b].image != '') {
+                        options_agua += '<a class="btn btn-view btn-bitbucket" href="/media/'+data[i].agua[b].image +'" download><i class="fa fa-eye"></i></a>'
+                    }else{
+                        options_agua += '<a class="btn btn-none btn-bitbucket"><i class="fa fa-eye"></i></a>'
+                    }
+
+                    options_agua += '</div>'
+
+                    row = {}
+
+                    row.id 		= data[i].agua[b].id
+                    row.activo  = data[i].agua[b].activo
+                    row.local 	= data[i].agua[b].local
+                    row.medidor = data[i].agua[b].tipo
+                    row.tipo 	= data[i].agua[b].nombre
+                    row.mes 	= data[i].agua[b].mes
+                    row.anio 	= data[i].agua[b].anio
+                    row.fecha 	= data[i].agua[b].creado
+                    row.valor 	= data[i].agua[b].lectura
+                    row.options = options_agua
+
+                    rows.push(row)
+                }
+
+
+                for(var c=0; c< data[i].gas.length; c++){
+                    var options_gas = ''
+                    var url_gas     = 'lectura-'+ data[i].gas[c].url
+
+                    options_gas += '<div class="text-center">'
+                    options_gas += '<a class="btn btn-edit btn-bitbucket" href="/lectura-'+data[i].gas[c].url+'/update/'+data[i].gas[c].id+'"><i class="fa fa-edit"></i></a>'
+                    options_gas += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].gas[c].id+',\''+url_gas+'\', \''+tabla+'\', \''+lectura+'\')"><i class="fa fa-trash"></i></a>'
+
+                    if(data[i].gas[c].image != '') {
+                        options_gas += '<a class="btn btn-view btn-bitbucket" href="/media/'+data[i].gas[c].image +'" download><i class="fa fa-eye"></i></a>'
+                    }else{
+                        options_gas += '<a class="btn btn-none btn-bitbucket"><i class="fa fa-eye"></i></a>'
+                    }
+                    options_gas += '</div>'
+
+                    row = {}
+
+                    row.id 		= data[i].gas[c].id
+                    row.activo  = data[i].gas[c].activo
+                    row.local 	= data[i].gas[c].local
+                    row.medidor = data[i].gas[c].tipo
+                    row.tipo 	= data[i].gas[c].nombre
+                    row.mes 	= data[i].gas[c].mes
+                    row.anio 	= data[i].gas[c].anio
+                    row.fecha 	= data[i].gas[c].creado
+                    row.valor 	= data[i].gas[c].lectura
+                    row.options = options_gas
+
+                    rows.push(row)
+                }
+
+			};
+
+			tabla_lecturas.rows.add(rows).draw();
+		}
+	})
+}
 </script>
 
 {% endblock scripts %}

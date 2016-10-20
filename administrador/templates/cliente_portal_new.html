@@ -260,18 +260,9 @@ function initialize(){
 }
 
 function edit_data_client(){
-    {% if facturas %}
-        $('#form-cliente-new').find(':input').prop('disabled', true);
-        $('.btn-delete').attr('onclick','').unbind('click');
 
-        var configuracion = {
-            'toast_type' : 'warning',
-            'toast_text' : 'Cliente tiene asociado documentos generados',
-            'toast_title' : 'Advertencia'
-        };
-
-        notification_toast(configuracion)
-    {% endif %}
+    $('#form-cliente-new').find(':input').prop('disabled', true);
+    $('.btn-delete').attr('onclick','').unbind('click');
 }
 
 function agregar_representante(){

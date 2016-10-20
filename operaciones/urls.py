@@ -9,6 +9,7 @@ urlpatterns = [
 	
 	# lecturas
 	url(r'^lectura-medidores/list$', views.LecturaMedidorList.as_view(), name='lectura_medidor_list'),
+	url(r'^lectura-medidores/$', views.LECTURASMEDIDOR.as_view(), name='lectura_medidor_carga_masiva'),
 
 	# lecturas electricidad
 	url(r'^lectura-electricidad/new$', views.LecturaElectricidadNew.as_view(), name='lectura_electricidad_new'),
