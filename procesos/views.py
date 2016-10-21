@@ -20,6 +20,7 @@ from conceptos.models import *
 from contrato.models import *
 from procesos.models import *
 from operaciones.models import *
+from utilidades.models import *
 
 from utilidades.views import primer_dia, ultimo_dia, meses_entre_fechas, sumar_meses, formato_moneda, formato_numero
 from django.db.models import Sum, Q
@@ -627,46 +628,58 @@ def validar_arriendo_minimo(contrato, concepto, periodo):
 def validar_arriendo_variable(contrato, concepto, periodo):
 
 	mensajes = [
-		'Correcto',
-		'Los locales asociados no tienen ventas ingresadas',
-		'No tiene arriendo variable asociado para este periodo',
+		'arriendo variable : correcto',
+		'arriendo variable : incorrecto, existen varios detalles para este período',
+		'arriendo variable : incorrecto, no tiene ventas para este período',
+		'arriendo variable : incorrecto, no tiene uf del día especificado',
+		'arriendo variable : incorrecto, no tiene arriendo mínimo facturado',
+		'arriendo variable : incorrecto, no existe para este período',
 	]
 
-	locales = contrato.locales.all()
+	if Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo).exists():
 
-	try:
-		arriendo_variable = Arriendo_Variable.objects.get(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo)
+		if Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo).count() == 1:
 
-		if Venta.objects.filter(local_id__in=locales, fecha_inicio__month=periodo.month, fecha_termino__month=periodo.month, fecha_inicio__year=periodo.year, fecha_termino__year=periodo.year).exists():
+			arriendo 	= Arriendo_Variable.objects.get(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo)
+			locales 	= contrato.locales.all()
 
-			ventas = Venta.objects.filter(local_id__in=locales, fecha_inicio__month=periodo.month, fecha_termino__month=periodo.month, fecha_inicio__year=periodo.year, fecha_termino__year=periodo.year).aggregate(Sum('valor'))
+			if Venta.objects.filter(local_id__in=locales, fecha_inicio__month=periodo.month, fecha_termino__month=periodo.month, fecha_inicio__year=periodo.year, fecha_termino__year=periodo.year).exists():
 
-			if arriendo_variable.relacion is True:
+				if Moneda_Historial.objects.filter(fecha__day=arriendo.dia_reajuste, fecha__month=periodo.month, fecha__year=periodo.year).exists():
 
-				arriendo_minimo = validar_arriendo_minimo(contrato, arriendo_variable.arriendo_minimo, periodo)
+					if arriendo.relacion is True:
 
-				if arriendo_minimo['estado'] is True:
-					estado 	= True
-					mensaje = 0
+						if Factura_Detalle.objects.filter(concepto=arriendo.arriendo_minimo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).exists():
+							estado 	= True
+							mensaje = 0
+						else:
+							estado 	= False
+							mensaje = 4
+					else:
+						estado 	= True
+						mensaje = 0
+
 				else:
 					estado 	= False
-					mensaje = arriendo_minimo['mensaje']
+					mensaje = 3
+
 			else:
-				estado 	= True
-				mensaje = 0
+				estado 	= False
+				mensaje = 2
+
 		else:
 			estado 	= False
 			mensaje = 1
 
-	except Exception:
-
+	else:
 		estado 	= False
-		mensaje = 2
+		mensaje = 5
 
 	return {
 		'estado'	: estado,
 		'mensaje'	: mensajes[mensaje],
 	}
+
 
 def validar_gasto_comun(contrato, concepto, periodo):
 
@@ -1241,51 +1254,39 @@ def calcular_arriendo_minimo(contrato, concepto, periodo, configuracion):
 
 def calcular_arriendo_variable(contrato, concepto, periodo, configuracion):
 
-	total 	= 0
-	locales = contrato.locales.all()
+	total = 0
 
-	try:
+	if Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo).exists():
 
-		arriendo_variable 	= Arriendo_Variable.objects.get(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo)
-		valor 				= arriendo_variable.valor
-		
-		if Venta.objects.filter(local_id__in=locales, fecha_inicio__month=periodo.month, fecha_termino__month=periodo.month, fecha_inicio__year=periodo.year, fecha_termino__year=periodo.year).exists():
+		if Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo).count() == 1:
 
-			print ('tiene ventas')
+			arriendo 	= Arriendo_Variable.objects.get(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo)
+			locales 	= contrato.locales.all()
 
-			ventas 	= Venta.objects.filter(local_id__in=locales, fecha_inicio__month=periodo.month, fecha_termino__month=periodo.month, fecha_inicio__year=periodo.year, fecha_termino__year=periodo.year).aggregate(Sum('valor'))
-			total 	= ((ventas['valor__sum'] * valor) / 100)
+			if Venta.objects.filter(local_id__in=locales, fecha_inicio__month=periodo.month, fecha_termino__month=periodo.month, fecha_inicio__year=periodo.year, fecha_termino__year=periodo.year).exists():
 
-			if arriendo_variable.relacion is True:
-				print ('true')
+				if Moneda_Historial.objects.filter(fecha__day=arriendo.dia_reajuste, fecha__month=periodo.month, fecha__year=periodo.year).exists():
 
-				arriendo_minimo = validar_arriendo_minimo(contrato, arriendo_variable.arriendo_minimo, periodo)
+					ventas_valor 		= Venta.objects.filter(local_id__in=locales, fecha_inicio__month=periodo.month, fecha_termino__month=periodo.month, fecha_inicio__year=periodo.year, fecha_termino__year=periodo.year).aggregate(Sum('valor'))['valor__sum']
+					ventas_uf			= Moneda_Historial.objects.get(fecha__day=arriendo.dia_reajuste, fecha__month=periodo.month, fecha__year=periodo.year, moneda_id=3).valor
+					ventas_total   		= ventas_valor / ventas_uf
+					ventas_correccion 	= ventas_total * configuracion['uf']
+					valor 				= (ventas_correccion * arriendo.valor) / 100
 
-				if arriendo_minimo['estado'] is True:
-					print ('true 2')
-					valor_arriendo_minimo = calcular_arriendo_minimo(contrato, arriendo_variable.arriendo_minimo, periodo, configuracion)
+					if arriendo.relacion is True:
 
-					print ('ventas')
-					print (ventas['valor__sum'])
+						if Factura_Detalle.objects.filter(concepto=arriendo.arriendo_minimo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).exists():
+							
+							arriendo_minimo = Factura_Detalle.objects.filter(concepto=arriendo.arriendo_minimo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).last()
+							arriendo_minimo = arriendo_minimo.total
 
-					if ((ventas['valor__sum'] * valor) / 100) >= valor_arriendo_minimo:
-						print ('if')
-						total = ((ventas['valor__sum'] * valor) / 100) - valor_arriendo_minimo
+							if valor > arriendo_minimo:
+								total = valor - arriendo_minimo
+							else:
+								total = 0
+
 					else:
-						print ('else')
-						total = 0
-				else:
-					total = 0
-		else:
-			total = 0
-
-	except Exception as asd:
-
-		print (asd)
-
-		total = 0
-
-	print (total)
+						total = valor
 	
 	return total
 

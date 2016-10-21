@@ -913,8 +913,6 @@ class ContratoConceptoMixin(object):
 
 	def form_invalid(self, form):
 
-		print ('invalido')
-
 		response = super(ContratoConceptoMixin, self).form_invalid(form)
 
 		if self.request.is_ajax():
@@ -923,8 +921,6 @@ class ContratoConceptoMixin(object):
 			return response
 
 	def form_valid(self, form):
-
-		print ('valido')
 
 		context 	= self.get_context_data()
 		concepto 	= Concepto.objects.get(id=context['concepto_id'])
@@ -1033,10 +1029,8 @@ class ContratoConceptoMixin(object):
 				return JsonResponse(form.errors, status=400)
 
 		elif concepto.concepto_tipo.id == 10:
-			print ('gasto administrativo valido')
 
 			if formulario.is_valid():
-				print ('valido')
 				newscores = formulario.save(commit=False)
 
 				for obj in formulario.deleted_objects:
@@ -1045,9 +1039,7 @@ class ContratoConceptoMixin(object):
 				for newscore in newscores:
 					newscore.concepto_id = concepto.id
 					newscore.save()
-			else:				
-				print ('invalido')
-				print (formulario.errors)
+			else:
 				return JsonResponse(form.errors, status=400)
 
 		else:
@@ -1080,11 +1072,8 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
 		if self.request.POST:
 
-			print ('aca post')
-
 			context['concepto_id'] 	= self.request.POST.get('concepto_id')
 			concepto 				= Concepto.objects.get(id=context['concepto_id'])
-
 
 			if concepto.concepto_tipo.id == 1:
 				if Arriendo.objects.filter(contrato=contrato, concepto=concepto).exists():
@@ -1108,7 +1097,6 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 			elif concepto.concepto_tipo.id == 7:
 				context['formulario'] 	= ArriendoBodegaFormSet(self.request.POST, instance=contrato)
 			elif concepto.concepto_tipo.id == 10:
-				print ('gasto administrativo')
 				context['formulario'] 	= GastoAsociadoFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			else:
 				pass

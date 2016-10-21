@@ -344,6 +344,7 @@ class ArriendoVariableForm(forms.ModelForm):
 			'mes_termino'		: forms.Select(attrs={'class': 'form-control'}),
 			'anio_inicio'		: forms.NumberInput(attrs={'class': 'form-control'}),
 			'anio_termino'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'dia_reajuste'		: forms.NumberInput(attrs={'class': 'form-control'}),
 			'relacion'			: forms.CheckboxInput(attrs={'class': 'form-control'}),
 			'arriendo_minimo' 	: forms.Select(attrs={'class': 'form-control'}),
 		}
@@ -355,6 +356,7 @@ class ArriendoVariableForm(forms.ModelForm):
 		labels = {
 			'anio_inicio' 	: 'Año inicio',
 			'anio_termino' 	: 'Año término',
+			'dia_reajuste'  : 'dia_reajuste'
 		}
 
 		help_texts = {

@@ -196,8 +196,8 @@ def concectar_web_service(url):
 	client1 = Client(url)
 	response = client1.service.Execute(xml_2)
 
-	for error in response.SDT_ERRORES_ERROR:
-		print (error.DESCERROR)
+	# for error in response.SDT_ERRORES_ERROR:
+	# 	print (error.DESCERROR)
 
 	return response
 

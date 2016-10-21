@@ -51,12 +51,20 @@
 									{{ form.relacion.label_tag }}
 								</th>
 								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.arriendo_minimo.help_text }}" ></i>
+									{{ form.arriendo_minimo.label_tag }}
+								</th>
+								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
 									{{ form.valor.label_tag }}
 								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.moneda.help_text }}" ></i>
 									{{ form.moneda.label_tag }}
+								</th>
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.dia_reajuste.help_text }}" ></i>
+									{{ form.dia_reajuste.label_tag }}
 								</th>
 								<th></th>
 								{% endif %}
@@ -126,6 +134,14 @@
 											{{ form.moneda }}
 											<div class="container-error">
 												{{ form.moneda.errors }}
+											</div>
+										</div>
+									</td>
+									<td class="text-center">
+										<div class="form-group">
+											{{ form.dia_reajuste }}
+											<div class="container-error">
+												{{ form.dia_reajuste.errors }}
 											</div>
 										</div>
 									</td>

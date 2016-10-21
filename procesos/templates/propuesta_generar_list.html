@@ -869,7 +869,7 @@ function validar_form_propuesta(){
 							allowOutsideClick 	: false,
 							allowEscapeKey 		: false,
 						}).then(function() {
-							console.log('enviar')
+							
 						})
 					}else{
 						var configuracion = {
@@ -881,7 +881,6 @@ function validar_form_propuesta(){
 					}
 				},
 				error: function(){
-					console.log('error')
 					loading(false)
 				}
 			})

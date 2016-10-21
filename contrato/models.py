@@ -573,6 +573,7 @@ class Arriendo_Variable(models.Model):
 	fecha_termino 	= models.DateField()
 	valor			= models.FloatField()
 	relacion		= models.BooleanField(default=False)
+	dia_reajuste  	= models.IntegerField()
 
 	# atributos (por defecto)
 	visible 		= models.BooleanField(default=True)
