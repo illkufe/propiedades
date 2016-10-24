@@ -20,7 +20,10 @@
 								<div class="row">
 									{% for field in form %}
 									<div class="form-group col-sm-3">
-										{{ field.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ field.help_text }}" ></i>
+                                            {{ field.label_tag }}
+                                        </span>
 										{{ field }}
 										<div class="container-error">
 											{{ field.errors|striptags }}
@@ -38,7 +41,10 @@
 									{% for form in userprofileform %}
 									
 									<div class="form-group col-sm-3">
-										<label>{{ form.rut.label_tag }}</label>
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.rut.help_text }}" ></i>
+                                            <label>{{ form.rut.label_tag }}</label>
+                                        </span>
 										{{ form.rut }}
 										<div class="container-error">
 											{{ form.rut.errors|striptags }}
@@ -46,7 +52,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<label>{{ form.tipo.label_tag }}</label>
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+                                            <label>{{ form.tipo.label_tag }}</label>
+                                        </span>
 										{{ form.tipo }}
 										<div class="container-error">
 											{{ form.tipo.errors|striptags }}
@@ -54,7 +63,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<label>{{ form.cargo.label_tag }}</label>
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cargo.help_text }}" ></i>
+                                            <label>{{ form.cargo.label_tag }}</label>
+                                        </span>
 										{{ form.cargo }}
 										<div class="container-error">
 											{{ form.cargo.errors|striptags }}
@@ -62,7 +74,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<label>{{ form.direccion.label_tag }}</label>
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.direccion.help_text }}" ></i>
+                                            <label>{{ form.direccion.label_tag }}</label>
+                                        </span>
 										{{ form.direccion }}
 										<div class="container-error">
 											{{ form.direccion.errors|striptags }}
@@ -70,7 +85,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<label>{{ form.ciudad.label_tag }}</label>
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.ciudad.help_text }}" ></i>
+                                            <label>{{ form.ciudad.label_tag }}</label>
+                                        </span>
 										{{ form.ciudad }}
 										<div class="container-error">
 											{{ form.ciudad.errors|striptags }}
@@ -78,7 +96,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<label>{{ form.comuna.label_tag }}</label>
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.comuna.help_text }}" ></i>
+                                            <label>{{ form.comuna.label_tag }}</label>
+                                        </span>
 										{{ form.comuna }}
 										<div class="container-error">
 											{{ form.comuna.errors|striptags }}
@@ -86,7 +107,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<label>{{ form.descripcion.label_tag }}</label>
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
+                                            <label>{{ form.descripcion.label_tag }}</label>
+                                        </span>
 										{{ form.descripcion }}
 										<div class="container-error">
 											{{ form.descripcion.errors|striptags }}

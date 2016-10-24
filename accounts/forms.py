@@ -28,6 +28,11 @@ class UserForm(forms.ModelForm):
 			'last_name'		: 'Apellido',
 			'email'			: 'Correo',
 		}
+		help_texts ={
+			'first_name'	: 'Nombre',
+			'last_name'		: 'Apellido',
+			'email'			: 'Correo',
+		}
 
 class UserProfileForm(forms.ModelForm):
 
@@ -52,16 +57,26 @@ class UserProfileForm(forms.ModelForm):
 			'descripcion'	: 'Descripción',
 		}
 
+		help_texts={
+			'rut'			: 'R.U.T de Usuario',
+			'tipo'			: 'Tipo de Usuario',
+			'cargo'			: 'Cargo del Usuario',
+			'direccion'		: 'Dirección del Usuario',
+			'ciudad'		: 'Ciudad de Usuario',
+			'comuna'		: 'Comuna del Usuario',
+			'descripcion'	: 'Descripción',
+		}
+
 class UpdateUserProfileForm(forms.Form):
 
-	first_name 		= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Nombres')
-	last_name 		= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Apellidos')
-	rut 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control format-rut'}), label='RUT')
-	cargo 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Cargo')
-	ciudad 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Ciudad')
-	comuna 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Comuna')
-	direccion 		= forms.CharField(max_length=200, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Dirección')
-	descripcion 	= forms.CharField(max_length=200, required=False, widget=forms.Textarea(attrs={'class': 'form-control',  'rows':'2'}), label='Descripción')
+	first_name 		= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Nombres', help_text='Nombres del Usuario')
+	last_name 		= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Apellidos', help_text='Apellidos del Usuario')
+	rut 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control format-rut'}), label='RUT', help_text='R.U.T. del Usuario')
+	cargo 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Cargo', help_text='Cargo del Usuario')
+	ciudad 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Ciudad', help_text='Ciudad del Usuario')
+	comuna 			= forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Comuna', help_text='Comuna del Usuario')
+	direccion 		= forms.CharField(max_length=200, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}), label='Dirección', help_text='Dirección del Usuario')
+	descripcion 	= forms.CharField(max_length=200, required=False, widget=forms.Textarea(attrs={'class': 'form-control',  'rows':'2'}), label='Descripción', help_text='Descripción')
 
 	def __init__(self, *args, **kwargs):
 
@@ -81,9 +96,9 @@ class UpdateUserProfileForm(forms.Form):
 
 class UpdatePasswordForm(forms.Form):
 
-	password_actual = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Contraseña Actual')
-	password_nueva 	= forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Contraseña Nueva')
-	password_copia 	= forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Repetir Contraseña')
+	password_actual = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Contraseña Actual', help_text='Contraseña Actual del Usuario')
+	password_nueva 	= forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Contraseña Nueva', help_text='Nueva Contraseña del Usuario')
+	password_copia 	= forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Repetir Contraseña', help_text='Repetición de Contraseña Nueva del Usuario')
 
 	def __init__(self, *args, **kwargs):
 		self.user = kwargs.pop('user', None)

@@ -33,6 +33,11 @@ class LocalTipoForm(forms.ModelForm):
 			'descripcion' 	: 'Descripción',
 		}
 
+		help_texts={
+			'nombre' 		: 'Nombre del Tipo de Local',
+			'descripcion' 	: 'Descripción del Tipo de Local'
+		}
+
 class VentasForm(forms.ModelForm):
 
 	fecha_inicio = forms.DateField(
@@ -41,10 +46,10 @@ class VentasForm(forms.ModelForm):
 									label			= 'Fecha',
 									error_messages	= {'required': 'campo requerido', 'invalid': 'campo invalido'},
 								    initial			= datetime.datetime.today(),
-									help_text		= 'Fecha'
+									help_text		= 'Fecha Venta Diaria'
 	)
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), label='Valor', error_messages={'required': 'campo requerido'})
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), label='Valor', error_messages={'required': 'campo requerido'}, help_text='Valor de la Venta')
 
 	def __init__(self, *args, **kwargs):
 
@@ -52,12 +57,6 @@ class VentasForm(forms.ModelForm):
 
 		super(VentasForm, self).__init__(*args, **kwargs)
 
-
-		# if request.user.userprofile.tipo_id == 2:
-        #
-		# 	contrato	= Contrato.objects.filter(cliente_id=request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
-		# 	locales 	= Local.objects.filter(id__in=contrato, visible=True)
-		# else:
 		activos = Activo.objects.filter(empresa_id=request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
 		locales = Local.objects.filter(activo_id__in=activos, visible=True)
 
@@ -77,8 +76,7 @@ class VentasForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'local'			: 'local',
-			'valor'			: 'valor',
+			'local'			: 'local de la Venta',
 		}
 
 		labels = {
@@ -87,10 +85,10 @@ class VentasForm(forms.ModelForm):
 
 class LocalForm(forms.ModelForm):
 
-	metros_cuadrados 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	metros_lineales 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	metros_compartidos 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
-	metros_bodega 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	metros_cuadrados 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Metros Cuadrados del Local')
+	metros_lineales 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Metros Lineales del Local')
+	metros_compartidos 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Metros Compartidos del Local')
+	metros_bodega 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Metros de Bodega del Local')
 
 	def __init__(self, *args, **kwargs):
 
@@ -133,12 +131,13 @@ class LocalForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'nombre'			: '...',
-			'codigo'			: '...',
-			'descripcion'		: '...',
-			'sector'			: '...',
-			'nivel'				: '...',
-			'local_tipo'		: '...',
+			'nombre'			: 'Nombre de Local',
+			'codigo'			: 'Código de Local',
+			'descripcion'		: 'Descripción de Local',
+			'sector'			: 'Sector del Local',
+			'nivel'				: 'Nivel del Local',
+			'local_tipo'		: 'Tipo de Local',
+			'prorrateo'			: 'Prorrateo del Local'
 		}
 
 		labels = {
@@ -149,9 +148,9 @@ class LocalForm(forms.ModelForm):
 
 class ElectricidadForm(forms.ModelForm):
 
-	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
-	potencia_presente 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
-	potencia_fuera 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Potencia de Medidor Electricidad')
+	potencia_presente 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Potencia Presente Medidor Electricidad')
+	potencia_fuera 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Potencia Fuera Medidor Electricidad')
 
 	class Meta:
 		model 	= Medidor_Electricidad
@@ -170,9 +169,9 @@ class ElectricidadForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'nombre'				: '...',
-			'numero_rotulo'			: '...',
-			'tarifa_electricidad'	: '...',
+			'nombre'				: 'Nombre Medidor Electricidad',
+			'numero_rotulo'			: 'Número de Rótulo de Electricidad',
+			'tarifa_electricidad'	: 'Tarifa de Electricidad',
 		}
 
 		labels = {
@@ -182,7 +181,7 @@ class ElectricidadForm(forms.ModelForm):
 
 class AguaForm(forms.ModelForm):
 
-	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Potencia Medidor Agua')
 
 	class Meta:
 		model 	= Medidor_Agua
@@ -200,8 +199,8 @@ class AguaForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'nombre'			: '...',
-			'numero_rotulo'		: '...',
+			'nombre'			: 'Nombre Medidor Agua',
+			'numero_rotulo'		: 'Número Rótulo Agua',
 		}
 
 		labels = {
@@ -210,7 +209,7 @@ class AguaForm(forms.ModelForm):
 
 class GasForm(forms.ModelForm):
 
-	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}))
+	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Potencia Medidor Gas')
 
 	class Meta:
 		model 	= Medidor_Gas
@@ -228,8 +227,8 @@ class GasForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'nombre'			: '...',
-			'numero_rotulo'		: '...',
+			'nombre'			: 'Nombre Medidor Gas',
+			'numero_rotulo'		: 'Número Rótulo Gas',
 		}
 
 		labels = {

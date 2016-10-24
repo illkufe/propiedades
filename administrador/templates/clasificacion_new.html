@@ -20,8 +20,10 @@
 							<div class="col-sm-12">
 								<div class="row">
 									<div class="form-group col-sm-4">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
-										{{ form.nombre.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+                                            {{ form.nombre.label_tag }}
+                                        </span>
 										{{ form.nombre }}
 										<div class="container-error">
 											{{ form.nombre.errors|striptags }}
@@ -29,8 +31,10 @@
 									</div>
 
 									<div class="form-group col-sm-4">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo_clasificacion.help_text }}" ></i>
-										{{ form.tipo_clasificacion.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo_clasificacion.help_text }}" ></i>
+                                            {{ form.tipo_clasificacion.label_tag }}
+                                        </span>
 										{{ form.tipo_clasificacion }}
 										<div class="container-error">
 											{{ form.tipo_clasificacion.errors|striptags }}
@@ -38,8 +42,10 @@
 									</div>
 
 									<div class="form-group col-sm-4">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
-										{{ form.descripcion.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
+                                            {{ form.descripcion.label_tag }}
+                                        </span>
 										{{ form.descripcion }}
 										<div class="container-error">
 											{{ form.descripcion.errors|striptags }}
@@ -71,7 +77,10 @@
 								<table id="tabla-clasificacion-detalle" class="table">
 									<thead>
 										<tr>
-											<th>Nombre</th>
+											<th>
+                                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="Nombre o Descripción Asociado a la Clasificación" ></i>
+                                                <label>Nombre</label>
+                                            </th>
 											<th></th>
 										</tr>
 

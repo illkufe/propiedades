@@ -130,7 +130,7 @@ class ClienteUpdatePortal(ClienteMixin, UpdateView):
 
 	model 			= Cliente
 	form_class 		= ClienteForm
-	template_name 	= 'cliente_portal_new.html'
+	template_name 	= 'portal_cliente/cliente_portal_new.html'
 	success_url 	= '/'
 
 	def get_context_data(self, **kwargs):

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'notificaciones',
     'reporteria',
     'facturacion',
+    'portal'
 ]
 
 MIDDLEWARE_CLASSES = [

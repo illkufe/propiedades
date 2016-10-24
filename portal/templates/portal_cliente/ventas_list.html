@@ -59,7 +59,7 @@
                 <h4 class="modal-title text-center">Subir Plantilla de Ventas</h4>
             </div>
             <div class="modal-body" style="padding:15px 0px 0px 0px">
-                <form id="form-carga-new" role="form" action="/ventas/" method="post" enctype="multipart/form-data">
+                <form id="form-carga-new" role="form" action="/portal-cliente/ventas/" method="post" enctype="multipart/form-data">
                     <div class="ibox-content">
                         {% csrf_token %}
                         <div class="ibox-tools">
@@ -69,10 +69,8 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-8">
-                                <span>
-                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="Archivo Excel de Ventas a Cargar" ></i>
-                                    <label for="">Archivo</label>
-                                </span>
+                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="Archivo excel que contiene las ventas mensuales" ></i>
+                                <label for="">Archivo</label>
                                 <input type="file" id="file" name="file" class="filestyle input-sm" data-buttonText="" accept="application/vnd.ms-excel" >
                                 <div class="container-error">
                                 </div>
@@ -203,6 +201,7 @@ function load_function() {
     $('.diariamente').on('click', function () {
         clear_errors_form('#form-venta-new');
         clear_form('#form-venta-new');
+
         $('#modal-new-venta').modal('show');
     })
 
@@ -218,7 +217,7 @@ function load_function() {
 function guardar_ventas(){
 
     $.ajax({
-        url: '/ventas/diaria',
+        url: '/portal-cliente/ventas/diaria',
         type: 'post',
         data: $('#form-venta-new').serialize(),
         success: function(data){
@@ -255,7 +254,7 @@ function load_tabla_ventas(){
 	tabla_ventas.clear().draw();
 
 	$.ajax({
-		url: '/ventas/',
+		url: '/portal-cliente/ventas/',
 		type: 'get',
 		dataType: 'json',
 		success: function(data){
@@ -401,7 +400,7 @@ function open_modal_delete_ventas(obj) {
     }
 
     $.ajax({
-        url: '{% url 'venta_list' %}',
+        url: '{% url 'portal_cliente_venta_list' %}',
         type: 'post',
         data: {
             method             : 'delete',

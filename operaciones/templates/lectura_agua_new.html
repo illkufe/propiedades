@@ -20,8 +20,10 @@
 								<div class="row">
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor_agua.help_text }}" ></i>
-										{{ form.medidor_agua.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.medidor_agua.help_text }}" ></i>
+                                            {{ form.medidor_agua.label_tag }}
+                                        </span>
 										{{ form.medidor_agua }}
 										<div class="container-error">
 											{{ form.medidor_agua.errors|striptags }}
@@ -29,8 +31,10 @@
 									</div>
 
 									<div class="form-group col-sm-2">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes.help_text }}" ></i>
-										{{ form.mes.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes.help_text }}" ></i>
+                                            {{ form.mes.label_tag }}
+                                        </span>
 										{{ form.mes }}
 										<div class="container-error">
 											{{ form.mes.errors|striptags }}
@@ -47,8 +51,10 @@
 									</div>
 
 									<div class="form-group col-sm-2">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
-										{{ form.valor.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+                                            {{ form.valor.label_tag }}
+                                        </span>
 										{{ form.valor }}
 										<div class="container-error">
 											{{ form.valor.errors|striptags }}
@@ -56,8 +62,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.imagen_file.help_text }}" ></i>
-										{{ form.imagen_file.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.imagen_file.help_text }}" ></i>
+                                            {{ form.imagen_file.label_tag }}
+                                        </span>
 										{{ form.imagen_file }}
 										<div class="container-error">
 											{{ form.imagen_file.errors|striptags }}

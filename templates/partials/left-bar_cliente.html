@@ -38,7 +38,7 @@
 			</li>
             {% if request.user.userprofile.cliente_id != None %}
                 <li>
-                    <a href="{% url "cliente_update_portal" pk=request.user.userprofile.cliente_id%}"><i class="fa fa-user"></i> <span class="nav-label">Datos Generales</span></a>
+                    <a href="{% url "portal_cliente_list" pk=request.user.userprofile.cliente_id%}"><i class="fa fa-user"></i> <span class="nav-label">Datos Generales</span></a>
                 </li>
             {% else %}
                 <li>
@@ -46,10 +46,10 @@
                 </li>
             {% endif %}
             <li>
-				<a href="{% url "propuesta_procesar_portal_cliente_list" %}"><i class="fa fa-edit"></i> <span class="nav-label">Facturas/Pedidos</span></a>
+				<a href="{% url "portal_cliente_propuesta_list" %}"><i class="fa fa-edit"></i> <span class="nav-label">Facturas/Pedidos</span></a>
 			</li>
             <li>
-				<a href="{% url "ventas_list" %}"><i class="fa fa-shopping-cart"></i> <span class="nav-label">Ventas</span></a>
+				<a href="{% url "portal_cliente_ventas_list" %}"><i class="fa fa-shopping-cart"></i> <span class="nav-label">Ventas</span></a>
 			</li>
 		</ul>
 	</div>

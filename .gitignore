@@ -111,6 +111,7 @@ notificaciones/migrations/
 utilidades/migrations/
 reporteria/migrations/
 facturacion/migrations
+portal/migrations
 
 
 #Ignora archivos de la carpeta media

@@ -40,7 +40,7 @@ class Activo(models.Model):
 	fecha_adquisicion 	= models.DateField(null=True, blank=True)
 	tasacion_fiscal 	= models.FloatField()
 	avaluo_comercial 	= models.FloatField(null=True, blank=True)
-	contibuciones 		= models.FloatField(null=True, blank=True)
+	contribuciones 		= models.FloatField(null=True, blank=True)
 	precio_compra 		= models.FloatField(null=True, blank=True)
 	valor_tasacion		= models.FloatField(null=True, blank=True)
 	fecha_tasacion 		= models.DateField(null=True, blank=True)

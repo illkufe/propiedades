@@ -71,26 +71,6 @@ class PropuestaProcesarList(ListView):
 		
 		return context
 
-
-class PropuestaProcesarPortalClienteList(ListView):
-	model = Propuesta
-	template_name = 'propuesta_procesar_portal_cliente_list.html'
-
-	def get_context_data(self, **kwargs):
-		users = self.request.user.userprofile.cliente.empresa.userprofile_set.all().values_list('user_id', flat=True)
-		propuestas = Propuesta.objects.filter(user__in=users).values_list('id', flat=True)
-
-		context = super(PropuestaProcesarPortalClienteList, self).get_context_data(**kwargs)
-		context['title'] = 'Facturas / Pedidos'
-		context['subtitle'] = 'propuestas de facturación'
-		context['name'] = 'lista'
-		context['href'] = '/'
-
-		context['facturas_procesadas'] = Factura.objects.filter(propuesta__in=propuestas, estado_id__in=[2, 4, 5],
-																visible=True)
-
-		return context
-
 class PROPUESTA_CONSULTAR(View):
 
 	http_method_names = ['get', 'post']
