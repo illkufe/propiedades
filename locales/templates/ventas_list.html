@@ -400,36 +400,50 @@ function open_modal_delete_ventas(obj) {
             'ano'   : ano,
     }
 
-    $.ajax({
-        url: '{% url 'venta_list' %}',
-        type: 'post',
-        data: {
-            method             : 'delete',
-            venta               : JSON.stringify(data),
-            csrfmiddlewaretoken : getCookie('csrftoken'),
-        },
-        success: function(data){
 
-            if (data.estado == true ) {
-                var configuracion = {
-                    'toast_type'	: 'success',
-                    'toast_text' 	: 'Eliminado correctamente',
-                    'toast_title' 	: 'ÉXITO',
+    swal({
+		title: '¿ Eliminar Venta ?',
+		text: '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#F8BB86',
+		cancelButtonColor: '#D0D0D0',
+		confirmButtonText: 'Si, eliminar',
+		cancelButtonText: 'Cancelar',
+		closeOnConfirm: true,
+	}).then(function() {
+        $.ajax({
+            url: '{% url 'venta_list' %}',
+            type: 'post',
+            data: {
+                method             : 'delete',
+                venta               : JSON.stringify(data),
+                csrfmiddlewaretoken : getCookie('csrftoken'),
+            },
+            success: function(data){
+
+                if (data.estado == true ) {
+                    var configuracion = {
+                        'toast_type'	: 'success',
+                        'toast_text' 	: 'Eliminado correctamente',
+                        'toast_title' 	: 'ÉXITO',
+                    }
+                    $('#modal-new-venta').modal('hide');
+                }else{
+                    var configuracion = {
+                        'toast_type'	: 'error',
+                        'toast_text' 	: 'No se pudo eliminar',
+                        'toast_title' 	: 'Error',
+                    }
                 }
-                $('#modal-new-venta').modal('hide');
-            }else{
-                var configuracion = {
-                    'toast_type'	: 'error',
-                    'toast_text' 	: 'No se pudo eliminar',
-                    'toast_title' 	: 'Error',
-                }
+                notification_toast(configuracion)
+            },
+            complete: function () {
+                load_tabla_ventas();
             }
-            notification_toast(configuracion)
-        },
-        complete: function () {
-            load_tabla_ventas();
-        }
-    })
+        })
+	})
+
 }
 </script>
 {% endblock scripts %}
