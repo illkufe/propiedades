@@ -4,7 +4,7 @@ from .models import Alerta
 
 class AlertaForm(forms.ModelForm):
 
-	fecha = forms.DateTimeField(input_formats=['%d/%m/%Y %H:%M'],widget=forms.TextInput(attrs={'class': 'form-control format-datetime'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'})
+	fecha = forms.DateTimeField(input_formats=['%d/%m/%Y %H:%M'],widget=forms.TextInput(attrs={'class': 'form-control format-datetime'}), error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha')
 
 	class Meta:
 		model 	= Alerta
@@ -30,7 +30,7 @@ class AlertaForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'nombre'		: '...',
-			'descripcion'	: '...',
-			'miembros'		: '...',
+			'nombre'		: 'Nombre de la Alerta',
+			'descripcion'	: 'Descripción de Alerta',
+			'miembros'		: 'Miembros de la Alerta',
 		}

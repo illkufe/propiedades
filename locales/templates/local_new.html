@@ -43,8 +43,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
-										{{ form.local_tipo.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.local_tipo.help_text }}" ></i>
+                                            {{ form.local_tipo.label_tag }}
+                                        </span>
 										{{ form.local_tipo }}
 										<div class="container-error">
 											{{ form.local_tipo.errors|striptags }}
@@ -52,8 +54,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
-										{{ form.descripcion.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
+                                            {{ form.descripcion.label_tag }}
+                                        </span>
 										{{ form.descripcion }}
 										<div class="container-error">
 											{{ form.descripcion.errors|striptags }}
@@ -75,8 +79,10 @@
 								<div class="row">
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_cuadrados.help_text }}" ></i>
-										{{ form.metros_cuadrados.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_cuadrados.help_text }}" ></i>
+                                            {{ form.metros_cuadrados.label_tag }}
+                                        </span>
 										{{ form.metros_cuadrados }}
 										<div class="container-error">
 											{{ form.metros_cuadrados.errors|striptags }}
@@ -84,8 +90,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_lineales.help_text }}" ></i>
-										{{ form.metros_lineales.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metros_lineales.help_text }}" ></i>
+                                            {{ form.metros_lineales.label_tag }}
+                                        </span>
 										{{ form.metros_lineales }}
 										<div class="container-error">
 											{{ form.metros_lineales.errors|striptags }}
@@ -105,8 +113,10 @@
 
 
 									<div class="form-group col-sm-2">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.prorrateo.help_text }}" ></i>
-										{{ form.prorrateo.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.prorrateo.help_text }}" ></i>
+                                            {{ form.prorrateo.label_tag }}
+                                        </span>
 										<div class="checkbox checkbox-primary">
 											{{ form.prorrateo }}
 											<label for="checkbox2"></label>
@@ -130,8 +140,10 @@
 							<div class="col-sm-12">
 								<div class="row">
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.fecha_plazo.help_text }}" ></i>
-										{{ form.sector.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.sector.help_text }}" ></i>
+                                            {{ form.sector.label_tag }}
+                                        </span>
 										{{ form.sector }}
 										<div class="container-error">
 											{{ form.sector.errors|striptags }}
@@ -139,8 +151,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_cuota.help_text }}" ></i>
-										{{ form.nivel.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nivel.help_text }}" ></i>
+                                            {{ form.nivel.label_tag }}
+                                        </span>
 										{{ form.nivel }}
 										<div class="container-error">
 											{{ form.nivel.errors|striptags }}
@@ -157,19 +171,23 @@
 
 					<div class="ibox-content">
 						<div class="row">
-							{% for clasificacion in clasificaciones %}
 
-							<div class="form-group col-sm-3">
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title=".." ></i>
-								{{ clasificacion.nombre }}
-								<select class="select2" multiple="multiple" name="clasificaciones" id="id_clasificaciones">
-									{% for detalles in clasificacion.detalle %}
-									<option value="{{ detalles.id }}" {% if detalles.select %} selected="selected" {% endif %}>{{ detalles.nombre}}</option>
-									{% endfor %}
-								</select>
-							</div>
+                            {% for clasificacion in clasificaciones %}
 
-							{% endfor %}
+                                <div class="form-group col-sm-3">
+                                    <span>
+                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ clasificacion.nombre }}" ></i>
+                                        {{ clasificacion.nombre }}
+                                    </span>
+                                    <select class="select2" multiple="multiple" name="clasificaciones" id="id_clasificaciones">
+                                        {% for detalles in clasificacion.detalle %}
+                                            <option value="{{ detalles.id }}" {% if detalles.select %} selected="selected" {% endif %}>{{ detalles.nombre}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                            {% endfor %}
+
 						</div>
 					</div>
 

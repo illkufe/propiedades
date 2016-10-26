@@ -54,14 +54,17 @@ class ClienteForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'rut'			: 'rut',
-			'nombre'		: 'nombre',
-			'razon_social'	: 'razon social',
-			'giro'			: 'giro',
-			'region'		: 'region',
-			'comuna'		: 'comuna',
-			'direccion'		: 'direccion',
-			'telefono'		: 'telefono',
+			'tipo'			    : 'Tipo de Persona',
+			'rut'			    : 'R.U.T. del Cliente',
+			'nombre'		    : 'Nombre del Cliente',
+			'razon_social'	    : 'Razón Social del Cliente',
+			'email'			    : 'Email del Cliente',
+			'giro'			    : 'Giro del Cliente',
+			'region'		    : 'Región',
+			'ciudad'		    : 'Ciudad',
+			'comuna'		    : 'Comuna',
+			'direccion'		    : 'Dirección del Cliente',
+			'telefono'		    : 'Número Teléfono del Cliente',
 		}
 
 class RepresentanteForm(forms.ModelForm):
@@ -128,9 +131,9 @@ class ClasificacionForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'nombre'		        : 'nombre',
-			'tipo_clasificacion'    : 'tipo clasificación',
-			'descripcion'		    : 'descripción',
+			'nombre'		        : 'Nombre de la Clasificación',
+			'tipo_clasificacion'    : 'Tipo  de Clasificación',
+			'descripcion'		    : 'Descripción de la Clasificación',
 		}
 
 class ClasificacionDetalleForm(forms.ModelForm):
@@ -148,7 +151,7 @@ class ClasificacionDetalleForm(forms.ModelForm):
         }
 
         help_texts = {
-            'nombre'		: 'nombre',
+            'nombre'		: 'Nombre',
         }
 
         labels = {

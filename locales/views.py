@@ -341,16 +341,6 @@ class VentaList(ListView):
 		context['href'] 	= 'locales'
 		context['form_venta']	= VentasForm(request=self.request)
 
-		# if self.request.user.userprofile.tipo_id == 2:
-        #
-		# 	contrato	= Contrato.objects.filter(cliente_id=self.request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
-		# 	locales 	= Local.objects.filter(id__in=contrato, visible=True)
-		# else:
-		# 	activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
-		# 	locales = Local.objects.filter(activo_id__in=activos, visible=True)
-        #
-		# context['locales'] 	= locales
-
 		return context
 
 class VENTAS(View):
@@ -358,10 +348,6 @@ class VENTAS(View):
 
 	def get(self, request, id=None):
 
-		# if self.request.user.userprofile.tipo_id == 2:
-		# 	contrato	= Contrato.objects.filter(cliente_id=self.request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
-		# 	locales 	= Local.objects.filter(id__in=contrato, visible=True)
-		# else:
 		activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
 		locales = Local.objects.filter(activo_id__in=activos, visible=True)
 
@@ -389,7 +375,7 @@ class VENTAS(View):
 				mes	  			= local['mes']
 				ano   			= local['ano']
 
-				venta = Venta.objects.filter(local__nombre=nombre_local,
+				venta = Venta.objects.get(local__nombre=nombre_local,
 										  fecha_inicio__year=ano, fecha_termino__year=ano,
 										  fecha_inicio__month=mes, fecha_termino__month=mes)
 				venta.delete()

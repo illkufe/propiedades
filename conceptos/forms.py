@@ -42,9 +42,9 @@ class ConceptoForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'nombre'		: '...',
-			'codigo'		: '...',
-			'concepto_tipo' : '...',
-			'iva'			: '...',
-			'descripcion'	: '...',
+			'nombre'		: 'Nombre de Concepto',
+			'codigo'		: 'Código de Concepto',
+			'concepto_tipo' : 'Tipo de Concepto',
+			'iva'			: 'Concepto tiene Asociado I.V.A.',
+			'descripcion'	: 'Descripción de Concepto',
 		}

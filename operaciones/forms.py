@@ -4,7 +4,7 @@ from .models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas
 
 class LecturaElectricidadForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
 
 	class Meta:
 
@@ -31,12 +31,15 @@ class LecturaElectricidadForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'imagen_file'	: '...',
+			'medidor_electricidad'	: 'Medidor de Electricidad',
+			'mes'					: 'Mes de Lectura',
+			'anio'					: 'Año de Lectura',
+			'imagen_file'			: 'Imagen Asociada a Lectura',
 		}
 
 class LecturaAguaForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
 
 	class Meta:
 
@@ -63,12 +66,15 @@ class LecturaAguaForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'imagen_file'	: '...',
+			'medidor_agua'	: 'Medidor de Agua',
+			'mes'			: 'Mes de Lectura',
+			'anio'			: 'Año de Lectura',
+			'imagen_file'	: 'Imagen Asociada a Lectura',
 		}
 
 class LecturaGasForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'})
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
 
 	class Meta:
 
@@ -95,5 +101,8 @@ class LecturaGasForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'imagen_file'	: '...',
+			'medidor_gas'	: 'Medidor de Gas',
+			'mes'			: 'Mes de Lectura',
+			'anio'			: 'Año de Lectura',
+			'imagen_file'	: 'Imagen Asociada a Lectura',
 		}

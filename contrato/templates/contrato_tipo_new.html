@@ -19,8 +19,10 @@
 								<div class="row">
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
-										{{ form.nombre.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre.help_text }}" ></i>
+                                            {{ form.nombre.label_tag }}
+                                        </span>
 										{{ form.nombre }}
 										<div class="container-error">
 											{{ form.nombre.errors|striptags }}
@@ -28,8 +30,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.codigo.help_text }}" ></i>
-										{{ form.codigo.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.codigo.help_text }}" ></i>
+                                            {{ form.codigo.label_tag }}
+                                        </span>
 										{{ form.codigo }}
 										<div class="container-error">
 											{{ form.codigo.errors|striptags }}
@@ -37,8 +41,10 @@
 									</div>
 
 									<div class="form-group col-sm-6">
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
-										{{ form.descripcion.label_tag }}
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
+                                            {{ form.descripcion.label_tag }}
+                                        </span>
 										{{ form.descripcion }}
 										<div class="container-error">
 											{{ form.descripcion.errors|striptags }}
