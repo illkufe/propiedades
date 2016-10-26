@@ -133,7 +133,7 @@ class LocalForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'nombre'			: '...',
+			'nombre'			: 'nombre del local',
 			'codigo'			: '...',
 			'descripcion'		: '...',
 			'sector'			: '...',
