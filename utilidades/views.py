@@ -11,6 +11,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 from django.views.generic import View
 
+from administrador.models import Configuracion_Monedas
 from .models import *
 
 import pdfkit
@@ -23,16 +24,38 @@ def variables_globales(request):
 		user 			= request.user
 		empresa 		= user.userprofile.empresa
 		configuracion 	= empresa.configuracion
+		moneda_local    = empresa.configuracion_monedas_set.get(moneda_local=True).moneda_id
 
 		return {
-		'lease_user_id' 	: user.id,
-		'lease_format_dec' 	: ',' if configuracion.formato_decimales == 1 else '.', 
-		'lease_format_mil' 	: '.' if configuracion.formato_decimales == 1 else ',',
-		'lease_decimales' 	: configuracion.cantidad_decimales,
+		'lease_user_id' 		: user.id,
+		'lease_format_dec' 		: ',' if configuracion.formato_decimales == 1 else '.',
+		'lease_format_mil' 		: '.' if configuracion.formato_decimales == 1 else ',',
+		'lease_decimales' 		: configuracion.cantidad_decimales,
+		'lease_moneda_local' 	: 5   if not moneda_local else moneda_local
 		}
 	except Exception:
 		return {'estado':'error'}
 
+
+def configuracion_monedas(request, pk):
+
+	data 			= []
+
+	user 			= request.user
+	empresa 		= user.userprofile.empresa
+	configuracion 	= empresa.configuracion
+
+	moneda = Configuracion_Monedas.objects.get(moneda_id=int(pk))
+
+	data.append({
+		'id'			: moneda.moneda_id,
+		'moneda'		: moneda.moneda.abrev,
+		'decimal'		: moneda.cantidad_decimales,
+		'format_dec' 	: ',' if configuracion.formato_decimales == 1 else '.',
+		'format_mil'	: '.' if configuracion.formato_decimales == 1 else ',',
+	})
+
+	return JsonResponse(data, safe=False)
 
 # funciones globales (fechas)
 def fecha_actual():

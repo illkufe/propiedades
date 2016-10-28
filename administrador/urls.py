@@ -33,5 +33,7 @@ urlpatterns = [
 	url(r'^workflow$', csrf_exempt(views.WORKFLOW.as_view()), name='workflow_update'),
 	url(r'^workflow/validar$', views.validar_workflow, name='validar_workflow'),
 
+	#configuracion moneda
+	url(r'^configuracion-moneda', views.CONFIGURACION_MONEDA.as_view(), name='configuracion_moneda_update'),
 
 ]

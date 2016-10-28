@@ -10,6 +10,79 @@ $('.format-number').autoNumeric("init",{
 	mDec: LEASE_CURRENCY_FORMAT,
 })
 
+
+function change_config_money(moneda_activa, moneda) {
+
+	if(moneda_activa){
+		$.ajax({
+			url: '/get/configuracion-monedas/'+moneda,
+			type: 'POST',
+			data: {csrfmiddlewaretoken: getCookie('csrftoken')},
+			success: function(data){
+				$('.format-number').autoNumeric("update",{
+					aSep: data[0].format_mil,
+					aDec: data[0].format_dec,
+					mDec: data[0].decimal,
+            	})
+			},
+			error:function(data){
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se puedo recuperar configuración de monedas',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
+			}
+		})
+	}else{
+		$('.format-number').autoNumeric("init",{
+			aSep: LEASE_CURRENCY_THOUSANDS,
+			aDec: LEASE_CURRENCY_DECIMALS,
+			mDec: LEASE_CURRENCY_FORMAT,
+		})
+	}
+}
+
+
+function cambio_format_moneda(obj) {
+
+    var moneda = parseInt($(obj).val())
+
+    if(! isNaN(moneda)){
+       change_config_money_selected(moneda, obj)
+    }
+}
+
+function change_config_money_selected(moneda, obj) {
+
+	$('.format-number').autoNumeric("init",{
+		aSep: LEASE_CURRENCY_THOUSANDS,
+		aDec: LEASE_CURRENCY_DECIMALS,
+		mDec: LEASE_CURRENCY_FORMAT,
+	})
+
+    $.ajax({
+        url: '/get/configuracion-monedas/'+moneda,
+        type: 'POST',
+        data: {csrfmiddlewaretoken: getCookie('csrftoken')},
+        success: function(data){
+            $(obj).closest('tr').find('.format-number').autoNumeric("update",{
+                aSep: data[0].format_mil,
+                aDec: data[0].format_dec,
+                mDec: data[0].decimal,
+            })
+        },
+        error:function(data){
+            var configuracion = {
+                'toast_type'	: 'error',
+                'toast_text' 	: 'no se puedo recuperar configuración de monedas',
+                'toast_title' 	: 'Error',
+            }
+            notification_toast(configuracion)
+        }
+    })
+}
+
 $('.format-rut').rut({
 	formatOn: 'keyup',
 	validateOn: 'blur'

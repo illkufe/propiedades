@@ -631,7 +631,8 @@ $(document).ready(function(){
 
 function initialize(){
 
-	var fecha = new Date();
+	var fecha   = new Date();
+    var accion  = '{{ accion }}';
 
 	$('#form-lectura-medidor select[name="mes"]').val(fecha.getMonth() + 1)
 	$('#form-lectura-medidor input[name="anio"]').val(fecha.getFullYear())
@@ -684,6 +685,12 @@ function initialize(){
 			$('input[name="fecha_termino"]').val(dia+'/'+mes+'/'+anio)
 		}
 	})
+
+    if(accion == 'update'){
+        $("[class*=moneda]").each(function () {
+            $(this).trigger('change')
+        })
+    }
 
 }
 

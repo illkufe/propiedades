@@ -561,7 +561,7 @@ class WORKFLOW(View):
         else:
             return render(request, 'workflow_new.html', {
                 'title'                     : 'Configuración',
-                'href' 		                : 'conexion-parametro',
+                'href' 		                : 'workflow',
                 'subtitle'	                : 'WorkFlow',
                 'name' 		                : 'Configuración',
                 'procesos_form'             : ProcesosBorradorForm(request=self.request),
@@ -892,6 +892,44 @@ def validar_workflow(request):
         workflow.save()
 
     return JsonResponse({'estado': estado, 'error': error}, safe=False)
+
+
+class CONFIGURACION_MONEDA(View):
+    http_method_names = ['get', 'post']
+
+    def get(self, request, id=None):
+
+        self.object_list = request.user.userprofile.empresa.concepto_set.all()
+
+        return render(request, 'configuracion_moneda_new.html', {
+            'title'                 : 'Configuración',
+            'href' 		            : 'configuracion-moneda',
+            'subtitle'	            : 'Monedas',
+            'name' 		            : 'Configuración',
+            'configuracion_form'    : ConfiguracionMonedaFormSet
+        })
+
+    def post(self, request):
+
+        try:
+
+            form_moneda = ConfiguracionMonedaFormSet(self.request.POST)
+
+            if form_moneda.is_valid():
+                form_moneda.save()
+            else:
+                return JsonResponse(form_moneda.errors, status=400)
+
+            estado = True
+
+        except Exception as b:
+            error   = b
+            estado  = False
+
+        return JsonResponse({'estado': estado}, safe=False)
+
+
+
 
 
 

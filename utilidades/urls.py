@@ -10,4 +10,5 @@ urlpatterns = [
 	# get - currency last
 	url(r'^get/currency-last/(?P<id>\d+)$', csrf_exempt(views.CURRENCIES_LAST.as_view()),name='get_currencies_last_id'),
 	url(r'^get/currency-last/$', csrf_exempt(views.CURRENCIES_LAST.as_view()),name='get_currencies_last'),
+	url(r'^get/configuracion-monedas/(?P<pk>\d+)$', views.configuracion_monedas,name='configuracion_monedas'),
 ]
