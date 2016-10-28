@@ -43,9 +43,9 @@ def configuracion_monedas(request, pk):
 
 	user 			= request.user
 	empresa 		= user.userprofile.empresa
-	configuracion 	= empresa.configuracion
+	configuracion 	= user.userprofile.empresa.configuracion
 
-	moneda = Configuracion_Monedas.objects.get(moneda_id=int(pk))
+	moneda = Configuracion_Monedas.objects.get(moneda_id=int(pk), empresa=empresa)
 
 	data.append({
 		'id'			: moneda.moneda_id,
