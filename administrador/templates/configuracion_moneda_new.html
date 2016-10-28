@@ -1,0 +1,163 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<form id="form-configuracion-new" role="form" action="" method="post">
+
+					{% csrf_token %}
+
+					<div class="ibox-title">
+						<h5>Configuración Monedas</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+
+							<div class="col-xs-12">
+
+								{{ configuracion_form.management_form }}
+								{% for form in configuracion_form %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+								<table id="tabla-moneda" class="table">
+									<thead>
+										<tr>
+											<th>
+                                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="Moneda" ></i>
+                                                <label>Moneda</label>
+                                            </th>
+											<th>
+                                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="Cantidad Decimales Moneda" ></i>
+                                                <label>Cantidad Decimales</label>
+                                            </th>
+										</tr>
+
+									</thead>
+									<tbody>
+										{% for form in configuracion_form %}
+										<tr>
+											<td>
+                                                <div class="form-group">
+                                                    {{ form.moneda }}
+                                                    <div class="container-error">
+                                                        {{ form.moneda.errors|striptags}}
+                                                    </div>
+                                                </div>
+                                            </td>
+											<td>
+                                                <div class="form-group">
+                                                    {{ form.cantidad_decimales }}
+                                                    <div class="container-error">
+                                                        {{ form.cantidad_decimales.errors|striptags}}
+                                                    </div>
+                                                </div>
+                                            </td>
+										</tr>
+
+										{% endfor %}
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+                    <br>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <a href="/"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+                            <button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit" >GUARDAR</button>
+                        </div>
+                    </div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+
+	initialize()
+    enviar_form()
+});
+
+function initialize(){
+    $('.inactiva').attr('disabled', true)
+}
+
+
+function enviar_form() {
+
+    $("#form-configuracion-new").validate({
+        ignore: 'input[type=hidden]',
+        rules: {},
+        messages: {},
+        errorPlacement: function (error, element) {
+            error.appendTo(element.closest(".form-group").find('.container-error'));
+        },
+        submitHandler: function (form) {
+
+            $('.inactiva').attr('disabled', false)
+
+            $.ajax({
+                url: '{% url 'configuracion_moneda_update' %}',
+                type: 'post',
+                data: $('#form-configuracion-new').serializeArray(),
+                success: function (data) {
+
+                    $('.inactiva').attr('disabled', true)
+
+                    if (data.estado == true ) {
+                        var configuracion = {
+                            'toast_type'	: 'success',
+                            'toast_text' 	: 'Guardado correctamente',
+                            'toast_title' 	: 'ÉXITO',
+                        }
+
+                        setTimeout(function(){window.location.href = '{% url 'configuracion_moneda_update' %}'}, 1500);
+
+                    }else{
+                        var configuracion = {
+                            'toast_type'	: 'error',
+                            'toast_text' 	: 'No se pudo actualizar',
+                            'toast_title' 	: 'Error',
+                        }
+                    }
+                    notification_toast(configuracion)
+                },
+                error: function (data, textStatus, jqXHR) {
+                    clear_errors_form('#form-configuracion-new');
+                    var errors = $.parseJSON(data.responseText);
+                    apply_errors_form(errors);
+                }
+            });
+        }
+    });
+
+
+    $("[class*=validate]").each(function(){
+
+        $(this).rules("add", {
+            required : true,
+            messages: {
+                required: "Este campo es obligatorio."
+            }
+        } );
+    });
+}
+
+</script>
+{% endblock scripts %}

@@ -8,8 +8,15 @@ class ConfiguracionInline(admin.StackedInline):
 class ConexionInline(admin.StackedInline):
 	model = Conexion
 
+class ConfiguracionMonedaInline(admin.StackedInline):
+	model = Configuracion_Monedas
+
 class SettingAdmin(admin.ModelAdmin):
-	inlines = [ ConfiguracionInline, ConexionInline]
+	inlines = [ ConfiguracionInline, ConexionInline, ConfiguracionMonedaInline]
+
+
+
+
 
 admin.site.register(Empresa, SettingAdmin)
 admin.site.register(Cliente)
@@ -24,3 +31,4 @@ admin.site.register(Tipo_Estado_Proceso)
 admin.site.register(Proceso)
 admin.site.register(Proceso_Condicion)
 admin.site.register(Workflow)
+admin.site.register(Configuracion_Monedas)

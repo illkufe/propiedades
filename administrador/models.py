@@ -27,7 +27,9 @@ class Empresa(models.Model):
 	creado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	giro = models.ForeignKey(Giro)
+	giro 	= models.ForeignKey(Giro)
+	moneda 	= models.ManyToManyField(Moneda, through='Configuracion_Monedas')
+
 
 	def __str__(self):
 		return self.nombre
@@ -35,6 +37,26 @@ class Empresa(models.Model):
 	class Meta:
 		verbose_name 		= "Empresa"
 		verbose_name_plural = "Empresas"
+
+class Configuracion_Monedas(models.Model):
+
+	# atributos (generales)
+	cantidad_decimales	= models.IntegerField()
+	moneda_local		= models.BooleanField(default=False)
+
+	# atributos (por defecto)
+	visible 	= models.BooleanField(default=True)
+
+	# relaciones
+	empresa 	= models.ForeignKey(Empresa)
+	moneda 		= models.ForeignKey(Moneda)
+
+	def __str__(self):
+		return  str(self.cantidad_decimales)
+
+	class Meta:
+		verbose_name = "Configuración Moneda"
+		verbose_name_plural = "Configuraciones de Monedas"
 
 class Cliente(models.Model):
 

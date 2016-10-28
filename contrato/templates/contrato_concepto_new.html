@@ -46,6 +46,14 @@ function initialize(){
 	$('#accordion .panel-heading a').attr('aria-expanded', true)
 	$('#accordion .panel-collapse').first().addClass('in')
 
+    var accion = '{{ accion }}';
+    if(accion == 'update'){
+    $("[class*=moneda]").each(function () {
+        $(this).trigger('change')
+    })
+    }
+
+
 }
 
 

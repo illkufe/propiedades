@@ -255,3 +255,38 @@ class ProcesoCondicionForm(forms.ModelForm):
 		}
 
 ProcesoCondicionFormSet = modelformset_factory(Proceso_Condicion, form=ProcesoCondicionForm, extra=1, exclude=[ 'descripcion'], can_delete=True)
+
+class ConfiguracionMonedaForm(forms.ModelForm):
+
+	def __init__(self, *args, **kwargs):
+
+		super(ConfiguracionMonedaForm, self).__init__(*args, **kwargs)
+
+
+	class Meta:
+		model 	= Configuracion_Monedas
+		fields 	= '__all__'
+		exclude = [ 'visible', 'empresa', 'moneda_local']
+
+		widgets = {
+			'moneda'				: forms.Select(attrs={'class': 'form-control inactiva validate'}),
+			'cantidad_decimales'	: forms.NumberInput(attrs={'class': 'form-control validate'}),
+
+
+		}
+		error_messages = {
+			'moneda' 				: {'required': 'campo requerido'},
+			'cantidad_decimales' 	: {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'moneda'				: 'Moneda',
+			'cantidad_decimales'	: 'Cantidad Decimales',
+		}
+
+		help_texts = {
+			'moneda'				: 'Moneda',
+			'cantidad_decimales'	: 'Cantidad Decimales para la Moneda',
+		}
+
+ConfiguracionMonedaFormSet = modelformset_factory(Configuracion_Monedas, form=ConfiguracionMonedaForm, extra=0, min_num=1, can_delete=False)

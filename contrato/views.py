@@ -362,7 +362,7 @@ class PropuestaMixin(object):
 
 			Propuesta_Proceso(
 				estado 		= False,
-				proceso 	= Proceso.objects.get(tipo_estado=1, empresa=self.request.user.userprofile.empresa),
+				proceso 	= Proceso.objects.get(tipo_estado=1, workflow__empresa=self.request.user.userprofile.empresa),
 				propuesta 	= propuesta,
 				user 		= self.request.user,
 				).save()
@@ -1062,7 +1062,6 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 		context['subtitle'] 	= 'Arriendo'
 		context['name'] 		= 'Nuevo'
 		context['href'] 		= 'contratos'
-		context['accion'] 		= 'create'
 		context['contrato_id']	= self.kwargs['contrato_id']
 		
 		
@@ -1100,6 +1099,8 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 				context['formulario'] 	= GastoAsociadoFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			else:
 				pass
+
+			context['accion'] = 'create'
 
 		# GET
 		else:
@@ -1210,7 +1211,8 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 				else:
 					pass
 
-				context['formularios'] = formularios
+				context['formularios'] 	= formularios
+				context['accion'] 		= 'update'
 
 		# if self.request.POST:
 

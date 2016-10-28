@@ -541,7 +541,66 @@
 <script>
 
 $(document).ready(function(){
+
+    // Configuracion de Moneda Pesos
+    change_config_money(true, LEASE_CURRENCY_LOCAL)
+
+{#    var data = {}#}
+{#    var config_moneda = function(){#}
+{##}
+{#        data = {#}
+{#           	aSep: '.',#}
+{#            aDec: ',',#}
+{#            mDec: 1,#}
+{#        }#}
+{##}
+{#        return data;#}
+{#    }#}
+
+{##}
+{#    /* initiates autoNumeric and passes a function */#}
+{##}
+{#    $('selector').autoNumeric('init', {mDec: functionName})#}
+{##}
+{##}
+{#    var someOptions = {aSep: '.', aDec: ',', aSign: '€ '};#}
+{#    $(selector).autoNumeric('init', someOptions);#}
+{##}
+{#	aSep: LEASE_CURRENCY_THOUSANDS,#}
+{#	aDec: LEASE_CURRENCY_DECIMALS,#}
+{#	mDec: LEASE_CURRENCY_FORMAT,#}
+{##}
+{#    console.log(config_moneda)#}
+{#    $('.format-number').autoNumeric("init", config_moneda)#}
 })
+
+
+
+{#function change_config_money(moneda) {#}
+{#    $.ajax({#}
+{#        url: '{% url 'configuracion_monedas' %}',#}
+{#        type: 'POST',#}
+{#        data: {csrfmiddlewaretoken: getCookie('csrftoken')},#}
+{#        success: function(data){#}
+{#            var array = []#}
+{#            for(var i = 0; i < data.length; i++){#}
+{#                array[i]={ aSep: data[i].format_mil, aDec: data[i].format_dec, mDec: data[i].decimal}#}
+{#            }#}
+{#            var num_money = moneda - 1;#}
+{#            $.extend($.fn.autoNumeric.defaults, array[num_money])#}
+{##}
+{#            $('.format-number').autoNumeric('init');#}
+{#        },#}
+{#        error:function(data){#}
+{#            var configuracion = {#}
+{#                'toast_type'	: 'error',#}
+{#                'toast_text' 	: 'no se puedo recuperar configuración de monedas',#}
+{#                'toast_title' 	: 'Error',#}
+{#            }#}
+{#            notification_toast(configuracion)#}
+{#        }#}
+{#    })#}
+{#}#}
 
 </script>
 {% endblock scripts %}

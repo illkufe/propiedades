@@ -1115,6 +1115,8 @@ $(document).ready(function(){
 
 function initialize(){
 
+    var accion = '{{ accion }}';
+
 	$('.agregar-fila').click(function(){
 		var obj 	= {}
 		obj.tabla 	= $(this).attr('data-tabla')
@@ -1151,6 +1153,14 @@ function initialize(){
 			// {falta: sacar checkbox seleccionados}
 		}
 	})
+
+    if(accion == 'update'){
+        $("[class*=moneda]").each(function () {
+            $(this).trigger('change')
+        })
+    }
+
+
 }
 
 function agregar_fila_concepto(obj){
@@ -1240,6 +1250,9 @@ function guardar_formulario_propuesta(){
 		});
 	});
 }
+
+
+
 
 </script>
 {% endblock scripts %}
