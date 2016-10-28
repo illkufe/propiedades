@@ -321,6 +321,7 @@ function guardar_formulario_final(accion, entidad){
 		url: $('#form-'+entidad+'-new').attr('action'),
 		data: $('#form-'+entidad+'-new').serialize(),
 		success: function(data) {
+			console.log(data)
 
 			if (accion == 'create') {
 				clear_form('#form-'+entidad+'-new')
@@ -342,6 +343,7 @@ function guardar_formulario_final(accion, entidad){
 			notification_toast(configuracion)
 		},
 		error: function(data, textStatus, jqXHR) {
+			console.log('error')
 			clear_errors_form('#form-'+entidad+'-new')
 			var errors = $.parseJSON(data.responseText)
 			apply_errors_form(errors)
