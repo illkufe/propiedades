@@ -913,7 +913,7 @@ class CONFIGURACION_MONEDA(View):
 			'href' 		            : 'configuracion-moneda',
 			'subtitle'	            : 'Monedas',
 			'name' 		            : 'Configuración',
-			'configuracion_form'    : ConfiguracionMonedaFormSet
+			'configuracion_form'    : ConfiguracionMonedaFormSet(queryset=Configuracion_Monedas.objects.filter(empresa=request.user.userprofile.empresa))
 		})
 
 	def post(self, request):
