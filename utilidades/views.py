@@ -147,6 +147,52 @@ def formato_numero_sin_miles_decimales(valor):
 	return moneda
 
 
+def formato_moneda_local(request, valor):
+
+	try:
+		user 			= request.user
+		empresa 		= user.userprofile.empresa
+		configuracion 	= empresa.configuracion
+		moneda_local    = empresa.configuracion_monedas_set.get(moneda_local=True)
+
+		decimales       = configuracion.cantidad_decimales if moneda_local.cantidad_decimales is None else moneda_local.cantidad_decimales
+
+		formato = '${:,.'+str(decimales)+'f}'
+		moneda  = formato.format(valor)
+
+	except Exception:
+		formato = '${:,.'+str(configuracion.cantidad_decimales)+'f}'
+		moneda 	= formato.format(valor)
+
+	moneda = moneda.replace('.', '*')
+	moneda = moneda.replace(',', '.')
+	moneda = moneda.replace('*', ',')
+
+	return moneda
+
+def formato_moneda_local_sin_miles(request, valor):
+
+	try:
+		user 			= request.user
+		empresa 		= user.userprofile.empresa
+		configuracion 	= empresa.configuracion
+		moneda_local    = empresa.configuracion_monedas_set.get(moneda_local=True)
+
+		decimales       = configuracion.cantidad_decimales if moneda_local.cantidad_decimales is None else moneda_local.cantidad_decimales
+
+		formato = '{:.'+str(decimales)+'f}'
+		moneda  = formato.format(valor)
+
+	except Exception:
+		formato = '{:.'+str(configuracion.cantidad_decimales)+'f}'
+		moneda 	= formato.format(valor)
+
+	moneda = moneda.replace('.', '*')
+	moneda = moneda.replace(',', '.')
+	moneda = moneda.replace('*', ',')
+
+	return moneda
+
 # funciones avatar
 def avatar_usuario(user):
 

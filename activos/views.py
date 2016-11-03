@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, UpdateView, DeleteView
 from locales.models import *
+from utilidades.views import formato_moneda_local
 
 from .forms import *
 from .models import *
@@ -95,6 +96,9 @@ class ActivoList(ListView):
 	def get_queryset(self):
 
 		queryset 	= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		for item in queryset:
+
+			item.tasacion_fiscal 		= formato_moneda_local(self.request, item.tasacion_fiscal)
 
 		return queryset
 
@@ -236,6 +240,7 @@ class GastoMensualList(ListView):
 
 			item.mes 		= meses[int(item.mes)-1]
 			item.creado_en 	= item.creado_en.strftime('%d/%m/%Y')
+			item.valor		= formato_moneda_local(self.request, item.valor)
 
 		return queryset
 

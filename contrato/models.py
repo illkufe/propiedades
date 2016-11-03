@@ -70,7 +70,7 @@ class Contrato(models.Model):
 
 	# atributos (bodega)
 	bodega 				= models.BooleanField(default=False)
-	metros_bodega		= models.FloatField(default=0, null=True, blank=True)
+	metros_bodega		= models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True, default=0)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -95,7 +95,7 @@ class Garantia(models.Model):
 
 	# atributos (generales)
 	nombre 		= models.CharField(max_length=250)
-	valor		= models.FloatField(default=0)
+	valor		= models.DecimalField(max_digits=24, decimal_places=4, default=0)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -213,7 +213,7 @@ class Propuesta_Garantia(models.Model):
 
 	# atributos (generales)
 	nombre 		= models.CharField(max_length=250)
-	valor		= models.FloatField(default=0)
+	valor		= models.DecimalField(max_digits=24, decimal_places=4, default=0)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -232,7 +232,7 @@ class Propuesta_Arriendo_Minimo(models.Model):
 	reajuste 		= models.BooleanField(default=False)
 	por_meses 		= models.BooleanField(default=False)
 	meses 			= models.IntegerField(default=0)
-	valor			= models.FloatField(default=0)
+	valor			= models.DecimalField(max_digits=24, decimal_places=4, default=0)
 	fecha_inicio 	= models.DateField()
 
 	# atributos (por defecto)
@@ -266,7 +266,7 @@ class Propuesta_Arriendo_Minimo_Detalle(models.Model):
 	# atributos (generales
 	mes_inicio 		= models.IntegerField(choices=MESES)
 	mes_termino		= models.IntegerField(choices=MESES)
-	valor			= models.FloatField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	metros 			= models.BooleanField(default=False)
 
 	# atributos (por defecto)
@@ -304,7 +304,7 @@ class Propuesta_Arriendo_Variable(models.Model):
 	anio_termino 	= models.IntegerField()
 	fecha_inicio 	= models.DateField()
 	fecha_termino 	= models.DateField()
-	valor			= models.FloatField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -328,9 +328,9 @@ class Propuesta_Arriendo_Bodega(models.Model):
 
 	# atributos (generales)
 	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
-	valor 			= models.FloatField()
+	valor 			= models.DecimalField(max_digits=24, decimal_places=4)
 	metros 			= models.BooleanField(default=False)
-	cantidad_metros = models.FloatField(null=True, blank=True)
+	cantidad_metros = models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
 	fecha_inicio 	= models.DateField()
 
 	# atributos (por defecto)
@@ -364,7 +364,7 @@ class Propuesta_Cuota_Incorporacion(models.Model):
 	# atributos (generales)
 	mes 	 		= models.IntegerField(choices=MESES)
 	anio 			= models.IntegerField()
-	valor 			= models.FloatField()
+	valor 			= models.DecimalField(max_digits=24, decimal_places=4)
 	metros 			= models.BooleanField(default=False)
 
 	# atributos (por defecto)
@@ -389,7 +389,7 @@ class Propuesta_Fondo_Promocion(models.Model):
 
 	# atributos (generales)
 	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
-	valor			= models.FloatField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	fecha 			= models.DateField()
 	
 
@@ -413,7 +413,7 @@ class Propuesta_Gasto_Comun(models.Model):
 
 	# atributos (generales)
 	tipo	= models.IntegerField(choices=TIPO)
-	valor 	= models.FloatField()
+	valor 	= models.DecimalField(max_digits=24, decimal_places=4)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -447,7 +447,7 @@ class Multa(models.Model):
 	)
 
 	# atributos (generales)
-	valor		= models.FloatField()
+	valor		= models.DecimalField(max_digits=24, decimal_places=4)
 	mes 		= models.IntegerField(choices=MESES)
 	anio		= models.IntegerField()
 	descripcion = models.TextField(blank=True)
@@ -471,7 +471,7 @@ class Arriendo(models.Model):
 	reajuste 		= models.BooleanField(default=False)
 	por_meses 		= models.BooleanField(default=False)
 	meses 			= models.IntegerField(default=0)
-	valor			= models.FloatField(default=0)
+	valor			= models.DecimalField(max_digits=24, decimal_places=4, default=0)
 	fecha_inicio 	= models.DateField()
 	
 	# atributos (por defecto)
@@ -506,7 +506,7 @@ class Arriendo_Detalle(models.Model):
 	# atributos (generales
 	mes_inicio 		= models.IntegerField(choices=MESES)
 	mes_termino		= models.IntegerField(choices=MESES)
-	valor			= models.FloatField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	metro_cuadrado 	= models.BooleanField(default=False)
 	
 	# atributos (por defecto)
@@ -531,7 +531,7 @@ class Arriendo_Bodega(models.Model):
 
 	# atributos (generales
 	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
-	valor			= models.FloatField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	fecha_inicio 	= models.DateField()
 	metro_cuadrado 	= models.BooleanField(default=False)
 	
@@ -571,7 +571,7 @@ class Arriendo_Variable(models.Model):
 	anio_termino 	= models.IntegerField()
 	fecha_inicio 	= models.DateField()
 	fecha_termino 	= models.DateField()
-	valor			= models.FloatField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	relacion		= models.BooleanField(default=False)
 	dia_reajuste  	= models.IntegerField()
 
@@ -597,7 +597,7 @@ class Gasto_Comun(models.Model):
 
 	# atributos (generales)
 	tipo			= models.IntegerField(choices=TIPO)
-	valor			= models.FloatField(null=True, blank=True)
+	valor			= models.DecimalField(max_digits=24, decimal_places=4,null=True, blank=True)
 	metros_cuadrado = models.BooleanField(default=False)
 
 	# atributos (por defecto)
@@ -635,7 +635,7 @@ class Cuota_Incorporacion(models.Model):
 
 	# atributos (generales)
 	fecha 			= models.DateField()
-	valor			= models.FloatField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	metro_cuadrado 	= models.BooleanField(default=False)
 
 	# atributos (por defecto)
@@ -661,7 +661,7 @@ class Fondo_Promocion(models.Model):
 
 	# atributos (generales)
 	fecha 			= models.DateField()
-	valor			= models.FloatField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
 
 	# atributos (por defecto)
@@ -688,7 +688,7 @@ class Gasto_Asociado(models.Model):
 
 	# atributos (generales)
 	fecha 			= models.DateField()
-	valor			= models.FloatField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
 	valor_fijo 		= models.BooleanField(default=False)
 

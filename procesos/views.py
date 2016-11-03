@@ -22,9 +22,12 @@ from procesos.models import *
 from operaciones.models import *
 from utilidades.models import *
 
-from utilidades.views import primer_dia, ultimo_dia, meses_entre_fechas, sumar_meses, formato_moneda, formato_numero
+from utilidades.views import primer_dia, ultimo_dia, meses_entre_fechas, sumar_meses, formato_moneda,formato_moneda_local, formato_moneda_local_sin_miles
 from django.db.models import Sum, Q
 from datetime import datetime, timedelta
+
+from decimal import Decimal
+
 
 import os
 import json
@@ -65,8 +68,33 @@ class PropuestaProcesarList(ListView):
 		context['name'] 	= 'enviar'
 		context['href'] 	= 'propuesta/procesar'
 
-		context['facturas_propuestas'] = Factura.objects.filter(propuesta__in=propuestas, estado_id__in=[1,3], visible=True)
-		context['facturas_procesadas'] = Factura.objects.filter(propuesta__in=propuestas, estado_id__in=[2,4,5], visible=True)
+		data_propuestas = list()
+
+		for item in Factura.objects.filter(propuesta__in=propuestas, estado_id__in=[1,3], visible=True):
+			data_propuestas.append({
+				'id' 			: item.id,
+				'propuesta'		: item.propuesta,
+				'fecha_inicio'	: item.fecha_inicio,
+				'fecha_termino' : item.fecha_termino,
+				'contrato'		: item.contrato,
+				'total'			: formato_moneda_local(self.request, item.total)
+			})
+
+		data_procesadas = list()
+
+		for obj in Factura.objects.filter(propuesta__in=propuestas, estado_id__in=[2,4,5], visible=True):
+			data_procesadas.append({
+				'id'			: obj.id,
+				'numero_pedido'	: obj.numero_pedido,
+				'propuesta'		: obj.propuesta,
+				'fecha_inicio'	: obj.fecha_inicio,
+				'fecha_termino'	: obj.fecha_termino,
+				'contrato'		: obj.contrato,
+				'total'			: formato_moneda_local(self.request, obj.total)
+			})
+
+		context['facturas_propuestas'] = data_propuestas
+		context['facturas_procesadas'] = data_procesadas
 		
 		return context
 
@@ -190,7 +218,7 @@ def propuesta_generar(request):
 	fecha 			= ultimo_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y").date())
 
 	configuracion = {
-		'uf' : float(var_post.get('uf_valor').replace(".", "").replace(",", "."))
+		'uf' : Decimal(var_post.get('uf_valor').replace(".", "").replace(",", "."))
 	}
 
 	for contrato_id in contratos_id:
@@ -204,7 +232,7 @@ def propuesta_generar(request):
 
 			if validar_concepto(contrato, concepto, fecha)['estado'] == True:
 
-				total = calcular_concepto(contrato, concepto, fecha, configuracion)
+				total = calcular_concepto(request, contrato, concepto, fecha, configuracion)
 
 				if total is not 0:
 					conceptos.append({
@@ -241,7 +269,7 @@ def propuesta_guardar(request):
 		with transaction.atomic():
 			propuesta = Propuesta(
 				nombre 			= var_post['nombre'],
-				uf_valor		= float(var_post.get('uf_valor').replace(".", "").replace(",", ".")),
+				uf_valor		= Decimal(var_post.get('uf_valor').replace(".", "").replace(",", ".")),
 				uf_modificada	= True if var_post.get('uf_modificada') == 'true' else False,
 				user 			= request.user,
 			)
@@ -271,7 +299,7 @@ def propuesta_guardar(request):
 					concepto_id 		= concepto['id']
 					concepto_nombre 	= concepto['nombre']
 					# concepto_total 		= concepto['total']
-					concepto_total 		= concepto['total'].replace(".", "").replace(",", ".")
+					concepto_total 		= Decimal(concepto['total'].replace(".", "").replace(",", "."))
 					concepto_modificado = concepto['modified']
 
 					Factura_Detalle(
@@ -281,7 +309,7 @@ def propuesta_guardar(request):
 						concepto_id 	= int(concepto_id),
 					).save()
 
-					total += float(concepto_total)
+					total += concepto_total
 
 				factura.total = total
 				factura.save()
@@ -1025,40 +1053,39 @@ def validar_gasto_asociado(contrato, concepto, periodo):
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-def calcular_concepto(contrato, concepto, periodo, configuracion):
+def calcular_concepto(request, contrato, concepto, periodo, configuracion):
 
 	if concepto.concepto_tipo.id == 1:
-		return calcular_arriendo_minimo(contrato, concepto, periodo, configuracion)
+		return calcular_arriendo_minimo(request, contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 2:
-		return calcular_arriendo_variable(contrato, concepto, periodo, configuracion)
+		return calcular_arriendo_variable(request, contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 3:
-		return calcular_gasto_comun(contrato, concepto, periodo, configuracion)
+		return calcular_gasto_comun(request, contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 4:
-		return calcular_servicios_basicos(contrato, concepto, periodo, configuracion)
+		return calcular_servicios_basicos(request, contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 5:
-		return calcular_cuota_de_incorporacion(contrato, concepto, periodo, configuracion)
+		return calcular_cuota_de_incorporacion(request, contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 6:
-		return calcular_gasto_asociado(contrato, concepto, periodo, configuracion)
+		return calcular_gasto_asociado(request, contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 7:
-		return calcular_arriendo_bodega(contrato, concepto, periodo, configuracion)
+		return calcular_arriendo_bodega(request, contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 8:
-		return calcular_servicios_varios(contrato, concepto, periodo, configuracion)
+		return calcular_servicios_varios(request, contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 9:
-		return calcular_multas(contrato, concepto, periodo, configuracion)
-		
+		return calcular_multas(request, contrato, concepto, periodo, configuracion)
 
 	else:
 		return True
 
-def calcular_arriendo_minimo(contrato, concepto, periodo, configuracion):
+def calcular_arriendo_minimo(request, contrato, concepto, periodo, configuracion):
 
 	total = 0	
 
@@ -1084,8 +1111,8 @@ def calcular_arriendo_minimo(contrato, concepto, periodo, configuracion):
 				detalle_metros = 1
 
 			# total detalle
-			detalle_total = detalle_valor * detalle_moneda * detalle_metros
-			
+			detalle_total 	= detalle_valor * detalle_moneda * detalle_metros
+			total 			= detalle_total
 			# reajuste
 			if arriendo.reajuste is True and periodo >= arriendo.fecha_inicio:
 
@@ -1117,12 +1144,9 @@ def calcular_arriendo_minimo(contrato, concepto, periodo, configuracion):
 						else:
 							total = detalle_total + arriendo_valor
 
-			else:
-				total = detalle_total
+	return formato_moneda_local_sin_miles(request, total)
 
-	return detalle_total
-
-def calcular_arriendo_variable(contrato, concepto, periodo, configuracion):
+def calcular_arriendo_variable(request, contrato, concepto, periodo, configuracion):
 
 	total = 0
 
@@ -1158,9 +1182,9 @@ def calcular_arriendo_variable(contrato, concepto, periodo, configuracion):
 					else:
 						total = valor
 	
-	return total
+	return formato_moneda_local_sin_miles(request, total)
 
-def calcular_gasto_comun(contrato, concepto, periodo, configuracion):
+def calcular_gasto_comun(request, contrato, concepto, periodo, configuracion):
 
 	total = 0
 
@@ -1199,9 +1223,9 @@ def calcular_gasto_comun(contrato, concepto, periodo, configuracion):
 
 			total += valor * factor * metros_cuadrados
 
-	return total
+	return formato_moneda_local_sin_miles(request, total)
 
-def calcular_servicios_basicos(contrato, concepto, periodo, configuracion):
+def calcular_servicios_basicos(request, contrato, concepto, periodo, configuracion):
 
 	total = 0
 
@@ -1235,9 +1259,9 @@ def calcular_servicios_basicos(contrato, concepto, periodo, configuracion):
 
 				total += (lectura_actual - lectura_anterior) * servicio_basico.valor_gas
 
-	return total
+	return formato_moneda_local_sin_miles(request, total)
 
-def calcular_cuota_de_incorporacion(contrato, concepto, periodo, configuracion):
+def calcular_cuota_de_incorporacion(request, contrato, concepto, periodo, configuracion):
 
 	total 	= 0
 	cuotas 	= Cuota_Incorporacion.objects.filter(contrato=contrato, concepto=concepto, fecha__year=periodo.year, fecha__month=periodo.month, visible=True)
@@ -1258,9 +1282,9 @@ def calcular_cuota_de_incorporacion(contrato, concepto, periodo, configuracion):
 
 		total += (valor * factor * metros_cuadrados)
 	
-	return total
+	return formato_moneda_local_sin_miles(request, total)
 
-# def calcular_fondo_de_promocion(contrato, concepto, periodo, configuracion):
+# def calcular_fondo_de_promocion(request, contrato, concepto, periodo, configuracion):
 
 # 	total = 0
 
@@ -1330,9 +1354,10 @@ def calcular_cuota_de_incorporacion(contrato, concepto, periodo, configuracion):
 
 # 			total += (arriendo_minimo + arriendo_variable) * (reajuste/100)
 
-# 	return total
+# 	return formato_moneda_local_sin_miles(request, total)
 
-def calcular_arriendo_bodega(contrato, concepto, periodo, configuracion):
+
+def calcular_arriendo_bodega(request, contrato, concepto, periodo, configuracion):
 
 	total = 0
 
@@ -1398,9 +1423,9 @@ def calcular_arriendo_bodega(contrato, concepto, periodo, configuracion):
 				else:
 					pass
 
-	return total
+	return formato_moneda_local_sin_miles(request, total)
 
-def calcular_servicios_varios(contrato, concepto, periodo, configuracion):
+def calcular_servicios_varios(request, contrato, concepto, periodo, configuracion):
 
 	total 		= 0	
 	locales 	= contrato.locales.all()
@@ -1416,9 +1441,9 @@ def calcular_servicios_varios(contrato, concepto, periodo, configuracion):
 				cantidad_locales = servicio.locales.all().count()
 				total 			+= servicio.valor / cantidad_locales
 
-	return total
+	return formato_moneda_local_sin_miles(request, total)
 
-def calcular_multas(contrato, concepto, periodo, configuracion):
+def calcular_multas(request, contrato, concepto, periodo, configuracion):
 
 	total 	= 0
 
@@ -1433,9 +1458,9 @@ def calcular_multas(contrato, concepto, periodo, configuracion):
 
 		total += multa.valor * factor
 
-	return total
+	return formato_moneda_local_sin_miles(request, total)
 
-def calcular_gasto_asociado(contrato, concepto, periodo, configuracion):
+def calcular_gasto_asociado(request, contrato, concepto, periodo, configuracion):
 
 	total = 0
 
@@ -1490,10 +1515,10 @@ def calcular_gasto_asociado(contrato, concepto, periodo, configuracion):
 
 				if validar['estado'] is True:
 
-					valor = calcular_concepto(contrato, gasto_asociado.vinculo, periodo, configuracion)
+					valor = calcular_concepto(request, contrato, gasto_asociado.vinculo, periodo, configuracion)
 					total += valor * factor
 
-	return total
+	return formato_moneda_local_sin_miles(request, total)
 
 
 # API - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1563,7 +1588,7 @@ class FACTURA(View):
 				detalles.append({
 					'id'		: detalle.id,
 					'nombre' 	: detalle.nombre,
-					'total'		: formato_moneda(detalle.total),
+					'total'		: formato_moneda_local(self.request, detalle.total),
 					})
 
 			# Calculo Neto e IVA.
@@ -1574,9 +1599,9 @@ class FACTURA(View):
 				'fecha' 		: factura.propuesta.creado_en,
 				'fecha_inicio'	: factura.fecha_inicio,
 				'fecha_termino'	: factura.fecha_termino,
-				'neto'			: formato_moneda(float(valores[0])),
-				'iva'			: formato_moneda(float(valores[1])),
-				'total'			: formato_moneda(float(valores[2])),
+				'neto'			: formato_moneda_local(self.request, valores[0]),
+				'iva'			: formato_moneda_local(self.request, valores[1]),
+				'total'			: formato_moneda_local(self.request, valores[2]),
 				'estado' 		: estado,
 				'url_documento' : factura.url_documento,
 				'contrato' 		: contrato,

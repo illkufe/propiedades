@@ -30,7 +30,7 @@
 									<td>{{ item.contrato.nombre_local }}</td>
 									<td class="text-right">{{ item.mes|meses }}</td>
 									<td class="text-right">{{ item.anio }}</td>
-									<td class="text-right">{{ item.valor|formato_moneda }}</td>
+									<td class="text-right">{{ item.valor }}</td>
 									<td class="text-center">
 										<a class="btn btn-edit btn-bitbucket" href="{% url 'contrato:multa_update' item.id %}"><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'multa', 'tabla-multas', 'Multa')"><i class="fa fa-trash"></i></a>

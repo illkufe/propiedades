@@ -14,8 +14,8 @@ class Activo(models.Model):
 	direccion 		= models.CharField(max_length=250, blank=True)
 	comuna 			= models.CharField(max_length=250, blank=True)
 	ciudad 			= models.CharField(max_length=250, blank=True)
-	cabidad_terreno = models.FloatField(null=True, blank=True)
-	cabidad_construccion = models.FloatField(null=True, blank=True)
+	cabidad_terreno = models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
+	cabidad_construccion = models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
 
 	# atributos (informacion legal)
 	propietario 		= models.CharField(max_length=250)
@@ -38,11 +38,11 @@ class Activo(models.Model):
 
 	# atributos (datos economicos)
 	fecha_adquisicion 	= models.DateField(null=True, blank=True)
-	tasacion_fiscal 	= models.FloatField()
-	avaluo_comercial 	= models.FloatField(null=True, blank=True)
-	contribuciones 		= models.FloatField(null=True, blank=True)
-	precio_compra 		= models.FloatField(null=True, blank=True)
-	valor_tasacion		= models.FloatField(null=True, blank=True)
+	tasacion_fiscal 	= models.DecimalField(max_digits=24, decimal_places=4)
+	avaluo_comercial 	= models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
+	contribuciones 		= models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
+	precio_compra 		= models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
+	valor_tasacion		= models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
 	fecha_tasacion 		= models.DateField(null=True, blank=True)
 	tasacion_por 		= models.CharField(max_length=250, blank=True)
 	leasing 			= models.BooleanField(default=False)
@@ -123,7 +123,7 @@ class Gasto_Mensual(models.Model):
 
 	mes 			= models.IntegerField(choices=MESES)
 	anio			= models.IntegerField()
-	valor 			= models.FloatField()
+	valor 			= models.DecimalField(max_digits=24, decimal_places=4)
 
 	# atributos (por defecto)
 	visible 		= models.BooleanField(default=True)

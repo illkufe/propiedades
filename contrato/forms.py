@@ -181,7 +181,7 @@ class MultaTipoForm(forms.ModelForm):
 class MultaForm(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), label='Valor Multa', error_messages={'required': 'campo requerido'}, help_text='Valor de la Multa')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), error_messages={'required': 'campo requerido'}, help_text='Tipo de Moneda Asociado a la Multa')
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda_multa(this)'}), error_messages={'required': 'campo requerido'}, help_text='Tipo de Moneda Asociado a la Multa')
 
 	def __init__(self, *args, **kwargs):
 

@@ -27,7 +27,7 @@
 									<td>{{ item.nombre }}</td>
 									<td>{{ item.propietario }}</td>
 									<td class="text-right">{{ item.rut_propietario }}</td>
-									<td class="text-right">{{ item.tasacion_fiscal|formato_moneda }} </td>
+									<td class="text-right">{{ item.tasacion_fiscal }} </td>
 									<td class="text-center">
 										<a class="btn btn-edit btn-bitbucket" href='{% url "activo_update" item.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'activos', 'tabla-activos', 'Activo')"><i class="fa fa-trash"></i></a>
