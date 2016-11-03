@@ -523,9 +523,27 @@ class FondoPromocionForm(forms.ModelForm):
 
 class GastoAsociadoForm(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor del Gasto Asociado')
-	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar a partir de:', help_text='Fecha de Inicio de Cobro del Gasto Asociado')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Gasto Asociado')
+	valor = NumberField(
+		widget 			= forms.TextInput(attrs={'class': 'form-control format-number'}), 
+		error_messages 	= {'required': 'campo requerido', 'invalid': 'campo invalido'},
+		help_text 		= 'Valor del Gasto',
+		)
+
+	fecha = forms.DateField(
+		widget 			= forms.TextInput(attrs={'class': 'form-control format-date'}),
+		error_messages 	= {'required': 'campo requerido', 'invalid': 'campo invalido'},
+		help_text 		= 'Fecha de Inicio del Cobro',
+		label 			= 'Cobrar desde:', 
+		input_formats 	= ['%d/%m/%Y'],
+		required 		= True,
+		)
+
+	moneda = forms.ModelChoiceField(
+		widget 			= forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), 
+		error_messages 	= {'required': 'campo requerido'},
+		help_text 		= 'Moneda Aplicada al Gasto',
+		queryset 		= Moneda.objects.filter(id__in=[3,5,6]), 
+		)
 
 	def __init__(self, *args, **kwargs):
 
@@ -533,11 +551,7 @@ class GastoAsociadoForm(forms.ModelForm):
 
 		super(GastoAsociadoForm, self).__init__(*args, **kwargs)
 
-		self.fields['vinculo'].queryset = Concepto.objects.filter(empresa=contrato.empresa).exclude(concepto_tipo_id=10)
-
-		# if contrato is not None:
-		# 	self.fields['fecha'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
-			
+		self.fields['vinculo'].queryset = Concepto.objects.filter(empresa=contrato.empresa).exclude(concepto_tipo_id=6)
 
 	class Meta:
 		model 	= Gasto_Asociado
@@ -547,6 +561,11 @@ class GastoAsociadoForm(forms.ModelForm):
 		widgets = {
 			'periodicidad'	: forms.Select(attrs={'class': 'form-control'}),
 			'vinculo'		: forms.Select(attrs={'class': 'form-control'}),
+			'valor_fijo' 	: forms.CheckboxInput(attrs={'class': ''}),
+		}
+
+		labels = {
+			'vinculo' 		: 'Concepto asociado',
 		}
 
 		error_messages = {
@@ -554,9 +573,28 @@ class GastoAsociadoForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'periodicidad'	: 'Periodicidad del Gasto Asociado',
-			'vinculo'		: ''
+			'periodicidad'	: 'Periodicidad del Gasto',
+			'vinculo'		: 'Concepto Asociado',
+			'valor_fijo' 	: 'Valor Fijo',
 		}
+
+	def clean(self):
+
+		fijo 		= self.cleaned_data.get('valor_fijo')
+		vinculo 	= self.cleaned_data.get('vinculo', None)
+		moneda 		= self.cleaned_data.get('moneda', None)
+
+		if fijo and vinculo is not None:
+			self.add_error('vinculo', 'campo no requerido')
+		elif fijo and vinculo is None:
+			if moneda is not None and moneda.id == 6:
+				self.add_error('moneda', 'seleccionar otra moneda')
+		else:
+			if vinculo is None:
+				self.add_error('vinculo', 'campo requerido')
+			else:
+				if moneda is not None and moneda.id != 6:
+					self.add_error('moneda', 'seleccionar otra moneda')
 
 # propuesta
 class PropuestaForm(forms.ModelForm):

@@ -45,10 +45,9 @@
 											{{ form.descripcion.errors|striptags }}
 										</div>
 									</div>
-
 								</div>
-								<br>
-								<a href='{% url "multa_tipo_list" %}'><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+
+								<a href="{% url 'contrato:multa_tipo_list' %}"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-contrato-multa-tipo')">GUARDAR Y SEGUIR</button>
 							</form>

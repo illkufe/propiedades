@@ -38,54 +38,62 @@ $(document).ready(function(){
 
 });
 
-
-
 function initialize(){
 
 	// abrir el primer concepto
 	$('#accordion .panel-heading a').attr('aria-expanded', true)
 	$('#accordion .panel-collapse').first().addClass('in')
 
-    var accion = '{{ accion }}';
-    if(accion == 'update'){
-    $("[class*=moneda]").each(function () {
-        $(this).trigger('change')
-    })
-    }
-
-
+	var accion = '{{ accion }}';
+	if(accion == 'update'){
+		$("[class*=moneda]").each(function () {
+			$(this).trigger('change')
+		})
+	}
 }
 
 
-function guardar_formulario_conceptos(form, id){
+function agregar_fila_concepto(tabla, entidad, id){
+
+	var count 	= $('#'+tabla+' tbody').children().length;
+	var $tr 	= $('#'+tabla+' tbody tr:first');
+	var $clone 	= $tr.clone();
+	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count)
+	var $row 	= $(row)
+
+	$row.find('input').val('');
+	$row.find('select option:first-child').attr("selected", "selected");
+	$row.find('input:checkbox').prop('checked',false);
+	$row.find('.container-error').html('');
+
+	$('#'+tabla+' tbody').append('<tr></tr>')
+	$('#'+tabla+' tbody tr:last').append($row)
+
+	var cantidad = parseInt($('#container-concepto-'+id+' #id_'+entidad+'_set-TOTAL_FORMS').val())
+	cantidad += 1
+	$('#container-concepto-'+id+' #id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
+}
+
+
+function guardar_formulario_conceptos(form, id, concepto){
 
 	$.ajax({
 		type: 'post',
 		url: $('#'+form).attr('action'),
 		data: $('#'+form).serialize(),
 		success: function(response) {
-			console.log('succes')
 			window.location.href = '/contrato-concepto/'+id
 		},
 		error: function(data, textStatus, jqXHR) {
 
 			clear_errors_form('#'+form)
 			var errors = $.parseJSON(data.responseText)
-			// console.log(errors)
 			
 			$.each(errors, function(index, value) {
-				// console.log(value)
-
 				$.each(value, function(k, v) {
-					// console.log(k + ' : ' + v);
-					$("#id_gasto_comun_set-"+index+'-'+k).closest('.form-group').find('.container-error').append(v)
+					$('#'+form+' #id_'+concepto+'_set-'+index+'-'+k).closest('.form-group').find('.container-error').append(v)
 				})
-				// console.log(index)
-				// console.log(value)
-				// error_msg = value[0]
-				
 			});
-			
 		}
 	});
 	return false;

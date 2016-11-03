@@ -62,10 +62,10 @@
 	"model": "conceptos.concepto_tipo",
 	"pk": 6,
 	"fields": {
-		"nombre": "Fondo de Promoción",
-		"codigo": "FON-PRO",
-		"template": "fondo_promocion",
-		"descripcion": "Descripción Fondo de Promoción",
+		"nombre": "Gasto Asociado",
+		"codigo": "GAS-ASO",
+		"template": "gasto_asociado",
+		"descripcion": "Descripción Gasto Asociado",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00"
 	}
@@ -102,18 +102,6 @@
 		"codigo": "MULTAS",
 		"template": null,
 		"descripcion": "Descripción Multas",
-		"visible": true,
-		"creado_en": "2016-01-01 00:00:00"
-	}
-},
-{
-	"model": "conceptos.concepto_tipo",
-	"pk": 10,
-	"fields": {
-		"nombre": "Gasto Asociado",
-		"codigo": "GAS-ASO",
-		"template": "gasto_asociado",
-		"descripcion": "Descripción Gasto Asociado",
 		"visible": true,
 		"creado_en": "2016-01-01 00:00:00"
 	}

@@ -423,19 +423,20 @@ function agregar_fila(tabla, entidad){
 	var count 	= $('#'+tabla+' tbody').children().length;
 	var $tr 	= $('#'+tabla+' tbody tr:first');
 	var $clone 	= $tr.clone();
-	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count);
+	var row 	= $clone.html().replace(/_set-0/g, '_set-'+count)
 	var $row 	= $(row)
 
 	$row.find('input').val('');
 	$row.find('select option:first-child').attr("selected", "selected");
 	$row.find('input:checkbox').prop('checked',false);
+	$row.find('.container-error').html('');
 
 	$('#'+tabla+' tbody').append('<tr></tr>')
 	$('#'+tabla+' tbody tr:last').append($row)
 
-	var cantidad = parseInt($('#id_'+entidad+'_set-TOTAL_FORMS').val())
+	var cantidad = parseInt($('#'+tabla+' #id_'+entidad+'_set-TOTAL_FORMS').val())
 	cantidad += 1
-	$('#id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
+	$('#'+tabla+' #id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
 }
 
 function agregar_fila_final(tabla, entidad){

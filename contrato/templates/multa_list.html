@@ -11,7 +11,7 @@
 				<div class="ibox-title">
 					<h5>Lista de Multas</h5>
 					<div class="ibox-tools">
-						<a href='{% url "multa_new" %}'>
+						<a href="{% url 'contrato:multa_new' %}">
 							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nueva multa</button>
 						</a>
 					</div>
@@ -32,7 +32,7 @@
 									<td class="text-right">{{ item.anio }}</td>
 									<td class="text-right">{{ item.valor|formato_moneda }}</td>
 									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='{% url "multa_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-edit btn-bitbucket" href="{% url 'contrato:multa_update' item.id %}"><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'multa', 'tabla-multas', 'Multa')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
 									</td>
