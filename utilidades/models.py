@@ -23,7 +23,7 @@ class Moneda(models.Model):
 class Moneda_Historial(models.Model):
 
 	# atributos (generales)
-	valor   = models.FloatField()
+	valor   = models.DecimalField(max_digits=24, decimal_places=4)
 	fecha   = models.DateTimeField(auto_now=True)
 
 	# relaciones

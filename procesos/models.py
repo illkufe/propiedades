@@ -12,7 +12,7 @@ class Propuesta(models.Model):
 
 	# atributos (generales)
 	nombre 			= models.CharField(max_length=250)
-	uf_valor 		= models.FloatField()
+	uf_valor 		= models.DecimalField(max_digits=24, decimal_places=4)
 	uf_modificada 	= models.BooleanField(default=False)
 
 	# atributos (por defecto)
@@ -53,7 +53,7 @@ class Factura(models.Model):
     numero_pedido 	    = models.IntegerField(null=True, blank=True)
     fecha_inicio 	    = models.DateField()
     fecha_termino 	    = models.DateField()
-    total 			    = models.FloatField()
+    total 			    = models.DecimalField(max_digits=24, decimal_places=4)
     url_documento       = models.CharField(max_length=300, null=True, blank=True)
     numero_documento    = models.IntegerField(null=True, blank=True)
 
@@ -79,7 +79,7 @@ class Factura_Detalle(models.Model):
 
 	# atributos (generales)
 	nombre 		= models.CharField(max_length=250)
-	total 		= models.FloatField()
+	total 		= models.DecimalField(max_digits=24, decimal_places=4)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)

@@ -818,7 +818,7 @@ class MultaList(ListView):
 		queryset = Multa.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 
 		for item in queryset:
-			item.valor = item.valor * item.moneda.moneda_historial_set.all().order_by('-id').first().valor
+			item.valor = formato_moneda_local(self.request, item.valor * item.moneda.moneda_historial_set.all().order_by('-id').first().valor)
 
 		return queryset
 

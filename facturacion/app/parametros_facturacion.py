@@ -1,7 +1,9 @@
 from facturacion.models import *
 from django.db.models import *
 from django.db import transaction
+from decimal import Decimal
 import json
+
 
 from utilidades.views import formato_numero_sin_miles
 from administrador.views import Cliente
@@ -110,14 +112,15 @@ def editar_parametros_facturacion(**kwargs):
     return error
 
 def calculo_iva_total_documento(valor_neto, tasa_iva):
-
-    valor_iva   = round(valor_neto * (tasa_iva /100),0)
-    valor_total = valor_neto + valor_iva
-
+    try:
+        valor_iva   = valor_neto * Decimal((tasa_iva /100))
+        valor_total = valor_neto + valor_iva
+    except Exception as a:
+        error =a
     valores = [
-        formato_numero_sin_miles(valor_neto),
-        formato_numero_sin_miles(valor_iva),
-        formato_numero_sin_miles(valor_total)
+        valor_neto,
+        valor_iva,
+        valor_total
     ]
 
     return valores

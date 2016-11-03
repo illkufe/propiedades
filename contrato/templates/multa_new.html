@@ -113,16 +113,61 @@ $(document).ready(function(){
 
 });
 
-function initilize(){
+    function initilize(){
 
-	var fecha = new Date();
+        var fecha = new Date();
 
-	if (accion == 'create') {
-		$('#form-contrato-multa select[name="mes"]').val(fecha.getMonth() + 1)
-		$('#form-contrato-multa input[name="anio"]').val(fecha.getFullYear())
-	};
-	
-}
+        if (accion == 'create') {
+            $('#form-contrato-multa select[name="mes"]').val(fecha.getMonth() + 1)
+            $('#form-contrato-multa input[name="anio"]').val(fecha.getFullYear())
+        };
+
+
+        if(accion == 'update'){
+            $("[class*=moneda]").each(function () {
+                $(this).trigger('change')
+            })
+        }
+    }
+
+    function cambio_format_moneda_multa(obj) {
+
+        var moneda = parseInt($(obj).val())
+
+        if(! isNaN(moneda)){
+           change_config_money_selected_multa(moneda, obj)
+        }
+    }
+
+    function change_config_money_selected_multa(moneda, obj) {
+
+        $('.format-number').autoNumeric("init",{
+            aSep: LEASE_CURRENCY_THOUSANDS,
+            aDec: LEASE_CURRENCY_DECIMALS,
+            mDec: LEASE_CURRENCY_FORMAT,
+        })
+
+        $.ajax({
+            url: '/get/configuracion-monedas/'+moneda,
+            type: 'POST',
+            data: {csrfmiddlewaretoken: getCookie('csrftoken')},
+            success: function(data){
+                $(obj).parents().find('.format-number').autoNumeric("update",{
+                    aSep: data[0].format_mil,
+                    aDec: data[0].format_dec,
+                    mDec: data[0].decimal,
+                })
+            },
+            error:function(data){
+                var configuracion = {
+                    'toast_type'	: 'error',
+                    'toast_text' 	: 'no se puedo recuperar configuración de monedas',
+                    'toast_title' 	: 'Error',
+                }
+                notification_toast(configuracion)
+            }
+        })
+    }
 
 </script>
 {% endblock scripts %}
