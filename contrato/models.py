@@ -26,8 +26,8 @@ class Contrato_Tipo(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Tipo de Contrato"
-		verbose_name_plural = "Tipos de Contratos"
+		verbose_name 		= 'Tipo de Contrato'
+		verbose_name_plural = 'Tipos de Contratos'
 
 class Contrato_Estado(models.Model):
 
@@ -45,8 +45,8 @@ class Contrato_Estado(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Estado de Contrato"
-		verbose_name_plural = "Estados de Contratos"
+		verbose_name 		= 'Estado de Contrato'
+		verbose_name_plural = 'Estados de Contratos'
 
 class Contrato(models.Model):
 
@@ -88,8 +88,8 @@ class Contrato(models.Model):
 		return self.nombre_local
 
 	class Meta:
-		verbose_name 		= "Contrato"
-		verbose_name_plural = "Contratos"
+		verbose_name 		= 'Contrato'
+		verbose_name_plural = 'Contratos'
 
 class Garantia(models.Model):
 
@@ -144,8 +144,8 @@ class Propuesta_Contrato(models.Model):
 		return str(self.numero)
 
 	class Meta:
-		verbose_name 		= "Propuesta"
-		verbose_name_plural = "Propuestas"
+		verbose_name 		= 'Propuesta'
+		verbose_name_plural = 'Propuestas'
 
 class Propuesta_Version(models.Model):
 
@@ -189,8 +189,8 @@ class Propuesta_Version(models.Model):
 		return self.nombre_local
 
 	class Meta:
-		verbose_name 		= "Versione de Propuesta"
-		verbose_name_plural = "Versiones de Propuestas"
+		verbose_name 		= 'Versione de Propuesta'
+		verbose_name_plural = 'Versiones de Propuestas'
 
 class Propuesta_Proceso(models.Model):
 
@@ -206,8 +206,8 @@ class Propuesta_Proceso(models.Model):
 		return str(self.propuesta.numero)+' - '+self.proceso.nombre
 
 	class Meta:
-		verbose_name 		= "Proceso de Propuesta"
-		verbose_name_plural = "Procesos de Propuesta"
+		verbose_name 		= 'Proceso de Propuesta'
+		verbose_name_plural = 'Procesos de Propuesta'
 
 class Propuesta_Garantia(models.Model):
 
@@ -690,6 +690,7 @@ class Gasto_Asociado(models.Model):
 	fecha 			= models.DateField()
 	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
+	valor_fijo 		= models.BooleanField(default=False)
 
 	# atributos (por defecto)
 	visible 	= models.BooleanField(default=True)
@@ -699,7 +700,7 @@ class Gasto_Asociado(models.Model):
 	contrato 	= models.ForeignKey(Contrato)
 	concepto 	= models.ForeignKey(Concepto)
 	moneda 		= models.ForeignKey(Moneda)
-	vinculo 	= models.ForeignKey(Concepto, related_name='concepto_gasto_asociado')
+	vinculo 	= models.ForeignKey(Concepto, related_name='concepto_gasto_asociado', null=True, blank=True)
 
 	def __str__(self):
 		return self.contrato.nombre_local

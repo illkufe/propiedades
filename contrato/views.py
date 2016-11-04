@@ -1012,23 +1012,9 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				return JsonResponse(form.errors, status=400)
+				return JsonResponse(formulario.errors, status=400, safe=False)
 
 		elif concepto.concepto_tipo.id == 7:
-
-			if formulario.is_valid():
-				newscores = formulario.save(commit=False)
-
-				for obj in formulario.deleted_objects:
-					obj.delete()
-
-				for newscore in newscores:
-					newscore.concepto_id = concepto.id
-					newscore.save()
-			else:
-				return JsonResponse(form.errors, status=400)
-
-		elif concepto.concepto_tipo.id == 10:
 
 			if formulario.is_valid():
 				newscores = formulario.save(commit=False)
@@ -1061,7 +1047,7 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 		context['title'] 		= 'Contratos'
 		context['subtitle'] 	= 'Arriendo'
 		context['name'] 		= 'Nuevo'
-		context['href'] 		= 'contratos'
+		context['href'] 		= '/contrato/list'
 		context['contrato_id']	= self.kwargs['contrato_id']
 		
 		
@@ -1092,11 +1078,10 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 			elif concepto.concepto_tipo.id == 5:
 				context['formulario'] 	= CuotaIncorporacionFormet(self.request.POST, instance=contrato)
 			elif concepto.concepto_tipo.id == 6:
-				context['formulario'] 	= FondoPromocionFormSet(self.request.POST, instance=contrato)
+				# context['formulario'] 	= FondoPromocionFormSet(self.request.POST, instance=contrato)
+				context['formulario'] 	= GastoAsociadoFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			elif concepto.concepto_tipo.id == 7:
 				context['formulario'] 	= ArriendoBodegaFormSet(self.request.POST, instance=contrato)
-			elif concepto.concepto_tipo.id == 10:
-				context['formulario'] 	= GastoAsociadoFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			else:
 				pass
 
@@ -1173,10 +1158,10 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 					})
 
 				elif concepto.concepto_tipo.id == 6:
-					if Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto).exists():
-						form = FondoPromocionFormSet(instance=contrato, queryset=Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto))
+					if Gasto_Asociado.objects.filter(contrato=contrato, concepto=concepto).exists():
+						form = GastoAsociadoFormSet(instance=contrato, queryset=Gasto_Asociado.objects.filter(contrato=contrato, concepto=concepto), form_kwargs={'contrato': contrato})
 					else:
-						form = FondoPromocionFormSet()
+						form = GastoAsociadoFormSet(form_kwargs={'contrato': contrato})
 
 					formularios.append({
 						'fomulario' : form, 
@@ -1189,18 +1174,6 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 						form = ArriendoBodegaFormSet(instance=contrato, queryset=Arriendo_Bodega.objects.filter(contrato=contrato, concepto=concepto))
 					else:
 						form = ArriendoBodegaFormSet()
-
-					formularios.append({
-						'fomulario' : form, 
-						'contrato' 	: contrato,
-						'concepto' 	: concepto,
-					})
-
-				elif concepto.concepto_tipo.id == 10:
-					if Gasto_Asociado.objects.filter(contrato=contrato, concepto=concepto).exists():
-						form = GastoAsociadoFormSet(instance=contrato, queryset=Gasto_Asociado.objects.filter(contrato=contrato, concepto=concepto), form_kwargs={'contrato': contrato})
-					else:
-						form = GastoAsociadoFormSet(form_kwargs={'contrato': contrato})
 
 					formularios.append({
 						'fomulario' : form, 

@@ -10,7 +10,7 @@
 				<div class="ibox-title">
 					<h5>Lista de Tipos de Contrato</h5>
 					<div class="ibox-tools">
-						<a href='{% url "contrato_tipo_new" %}'>
+						<a href='{% url "contrato:contrato_tipo_new" %}'>
 							<button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo tipo de contrato</button>
 						</a>
 					</div>
@@ -27,7 +27,7 @@
 									<td>{{ item.nombre }}</td>
 									<td>{{ item.descripcion }}</td>
 									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='{% url "contrato_tipo_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-edit btn-bitbucket" href='{% url "contrato:contrato_tipo_update" item.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'contrato-tipo', 'tabla-contrato-tipos', 'Tipo de Contrato')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
 									</td>

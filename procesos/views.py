@@ -22,11 +22,12 @@ from procesos.models import *
 from operaciones.models import *
 from utilidades.models import *
 
-from utilidades.views import primer_dia, ultimo_dia, meses_entre_fechas, sumar_meses, formato_moneda,formato_moneda_local, \
-	formato_moneda_local_sin_miles
+from utilidades.views import primer_dia, ultimo_dia, meses_entre_fechas, sumar_meses, formato_moneda,formato_moneda_local, formato_moneda_local_sin_miles
 from django.db.models import Sum, Q
 from datetime import datetime, timedelta
+
 from decimal import Decimal
+
 
 import os
 import json
@@ -578,7 +579,7 @@ def validar_concepto(contrato, concepto, fecha):
 		return validar_cuota_de_incorporacion(contrato, concepto, fecha)
 
 	elif concepto.concepto_tipo.id == 6:
-		return validar_fondo_de_promocion(contrato, concepto, fecha)
+		return validar_gasto_asociado(contrato, concepto, fecha)
 
 	elif concepto.concepto_tipo.id == 7:
 		return validar_arriendo_bodega(contrato, concepto, fecha)
@@ -588,9 +589,6 @@ def validar_concepto(contrato, concepto, fecha):
 
 	elif concepto.concepto_tipo.id == 9:
 		return validar_multas(contrato, concepto, fecha)
-
-	elif concepto.concepto_tipo.id == 10:
-		return validar_gasto_asociado(contrato, concepto, fecha)
 
 	else:
 		return True
@@ -843,109 +841,6 @@ def validar_cuota_de_incorporacion(contrato, concepto, periodo):
 		'mensaje'	: mensajes[mensaje],
 	}
 
-def validar_fondo_de_promocion(contrato, concepto, periodo):
-
-	mensajes = [
-		'Correcto',
-		'No existe arriendo mínimo',
-		'No existe arriendo variable',
-		'No tiene fondo de promoción para este periodo',
-		'No tiene fondo de promoción asociado',
-	]
-
-	estado 	= False
-	mensaje = 4
-
-	if Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto).exists():
-
-		fondos_promociones = Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto)
-
-		for fondo_promocion in fondos_promociones:
-
-			estado 	= False
-			mensaje = 3
-
-			response = validar_arriendo_minimo(contrato, fondo_promocion.vinculo, periodo)
-
-			if response['estado']:
-
-				if Arriendo_Variable.objects.filter(contrato=contrato, arriendo_minimo=fondo_promocion.vinculo, visible=True).exists():
-
-					variable = Arriendo_Variable.objects.filter(contrato=contrato, arriendo_minimo=fondo_promocion.vinculo, visible=True).first()
-					response = validar_arriendo_variable(contrato, variable.concepto, periodo)
-
-					if response['estado'] is False:
-						return {
-							'estado'	: False,
-							'mensaje'	: response['mensaje'],
-						}
-
-				else:
-					return {
-						'estado'	: False,
-						'mensaje'	: mensajes[2],
-					}
-			else:
-				return {
-					'estado'	: False,
-					'mensaje'	: response['mensaje'],
-				}
-
-			if fondo_promocion.periodicidad == 4 and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
-
-				mes_1 = sumar_meses(fondo_promocion.fecha, 11)
-				
-				if periodo.month == mes_1.month:
-
-					return {
-						'estado'	: True,
-						'mensaje'	: mensajes[0],
-					}
-
-			elif fondo_promocion.periodicidad == 3:
-
-				mes_1 = sumar_meses(fondo_promocion.fecha, 5)
-				mes_2 = sumar_meses(fondo_promocion.fecha, 11)
-
-				if (periodo.month == mes_1.month or periodo.month==mes_2.month) and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
-
-					return {
-						'estado'	: True,
-						'mensaje'	: mensajes[0],
-					}
-
-			elif fondo_promocion.periodicidad == 2:
-
-				mes_1 = sumar_meses(fondo_promocion.fecha, 2)
-				mes_2 = sumar_meses(fondo_promocion.fecha, 5)
-				mes_3 = sumar_meses(fondo_promocion.fecha, 8)
-				mes_4 = sumar_meses(fondo_promocion.fecha, 11)
-
-				if (periodo.month == mes_1.month or periodo.month==mes_2.month or periodo.month==mes_3.month or periodo.month==mes_4.month) and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
-
-					return {
-						'estado'	: True,
-						'mensaje'	: mensajes[0],
-					}
-
-			elif fondo_promocion.periodicidad == 1:
-				
-				if periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
-
-					return {
-						'estado'	: True,
-						'mensaje'	: mensajes[0],
-					}
-
-			else:
-				estado 	= False
-				mensaje = 3
-
-	return {
-		'estado'	: estado,
-		'mensaje'	: mensajes[mensaje],
-	}
-
 def validar_arriendo_bodega(contrato, concepto, periodo):
 
 	mensajes = [
@@ -1141,7 +1036,7 @@ def validar_gasto_asociado(contrato, concepto, periodo):
 				pass
 
 			# validar vinculo del concepto
-			if estado is True:
+			if estado is True and gasto_asociado.valor_fijo is False:
 				
 				validar = validar_concepto(contrato, gasto_asociado.vinculo, periodo)
 
@@ -1176,7 +1071,7 @@ def calcular_concepto(request, contrato, concepto, periodo, configuracion):
 		return calcular_cuota_de_incorporacion(request, contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 6:
-		return calcular_fondo_de_promocion(request, contrato, concepto, periodo, configuracion)
+		return calcular_gasto_asociado(request, contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 7:
 		return calcular_arriendo_bodega(request, contrato, concepto, periodo, configuracion)
@@ -1186,9 +1081,6 @@ def calcular_concepto(request, contrato, concepto, periodo, configuracion):
 
 	elif concepto.concepto_tipo.id == 9:
 		return calcular_multas(request, contrato, concepto, periodo, configuracion)
-
-	elif concepto.concepto_tipo.id == 10:
-		return calcular_gasto_asociado(request, contrato, concepto, periodo, configuracion)
 
 	else:
 		return True
@@ -1392,77 +1284,78 @@ def calcular_cuota_de_incorporacion(request, contrato, concepto, periodo, config
 	
 	return formato_moneda_local_sin_miles(request, total)
 
-def calcular_fondo_de_promocion(request, contrato, concepto, periodo, configuracion):
+# def calcular_fondo_de_promocion(request, contrato, concepto, periodo, configuracion):
 
-	total = 0
+# 	total = 0
 
-	if Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto).exists():
+# 	if Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto).exists():
 
-		fondos_promociones = Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto)
+# 		fondos_promociones = Fondo_Promocion.objects.filter(contrato=contrato, concepto=concepto)
 
-		for fondo_promocion in fondos_promociones:
+# 		for fondo_promocion in fondos_promociones:
 
-			reajuste = 0
+# 			reajuste = 0
 
-			arriendo_minimo 	= calcular_arriendo_minimo(contrato, fondo_promocion.vinculo, periodo, configuracion)
-			variable 			= Arriendo_Variable.objects.filter(contrato=contrato, arriendo_minimo=fondo_promocion.vinculo, visible=True).first()
-			arriendo_variable 	= calcular_arriendo_variable(contrato, variable.concepto, periodo, configuracion)
+# 			arriendo_minimo 	= calcular_arriendo_minimo(contrato, fondo_promocion.vinculo, periodo, configuracion)
+# 			variable 			= Arriendo_Variable.objects.filter(contrato=contrato, arriendo_minimo=fondo_promocion.vinculo, visible=True).first()
+# 			arriendo_variable 	= calcular_arriendo_variable(contrato, variable.concepto, periodo, configuracion)
 
-			if fondo_promocion.periodicidad == 4 and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
+# 			if fondo_promocion.periodicidad == 4 and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
 
-				mes_1 = sumar_meses(fondo_promocion.fecha, 11)
+# 				mes_1 = sumar_meses(fondo_promocion.fecha, 11)
 				
-				if periodo.month == mes_1.month:
+# 				if periodo.month == mes_1.month:
 
-					valor 	= fondo_promocion.valor
-					factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
+# 					valor 	= fondo_promocion.valor
+# 					factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
-					total += valor * factor
-				else:
-					total += 0
+# 					total += valor * factor
+# 				else:
+# 					total += 0
 
-			elif fondo_promocion.periodicidad == 3:
+# 			elif fondo_promocion.periodicidad == 3:
 
-				mes_1 = sumar_meses(fondo_promocion.fecha, 5)
-				mes_2 = sumar_meses(fondo_promocion.fecha, 11)
+# 				mes_1 = sumar_meses(fondo_promocion.fecha, 5)
+# 				mes_2 = sumar_meses(fondo_promocion.fecha, 11)
 
-				if (periodo.month == mes_1.month or periodo.month==mes_2.month) and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
-					valor 	= fondo_promocion.valor
-					factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
+# 				if (periodo.month == mes_1.month or periodo.month==mes_2.month) and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
+# 					valor 	= fondo_promocion.valor
+# 					factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
-					total += valor * factor
-				else:
-					total += 0
+# 					total += valor * factor
+# 				else:
+# 					total += 0
 
-			elif fondo_promocion.periodicidad == 2:
+# 			elif fondo_promocion.periodicidad == 2:
 
-				mes_1 = sumar_meses(fondo_promocion.fecha, 2)
-				mes_2 = sumar_meses(fondo_promocion.fecha, 5)
-				mes_3 = sumar_meses(fondo_promocion.fecha, 8)
-				mes_4 = sumar_meses(fondo_promocion.fecha, 11)
+# 				mes_1 = sumar_meses(fondo_promocion.fecha, 2)
+# 				mes_2 = sumar_meses(fondo_promocion.fecha, 5)
+# 				mes_3 = sumar_meses(fondo_promocion.fecha, 8)
+# 				mes_4 = sumar_meses(fondo_promocion.fecha, 11)
 
-				if (periodo.month == mes_1.month or periodo.month==mes_2.month or periodo.month==mes_3.month or periodo.month==mes_4.month) and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
-					valor 	= fondo_promocion.valor
-					factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
+# 				if (periodo.month == mes_1.month or periodo.month==mes_2.month or periodo.month==mes_3.month or periodo.month==mes_4.month) and periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
+# 					valor 	= fondo_promocion.valor
+# 					factor 	= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
-					total += valor * factor
-				else:
-					total += 0
+# 					total += valor * factor
+# 				else:
+# 					total += 0
 
-			elif fondo_promocion.periodicidad == 1:
+# 			elif fondo_promocion.periodicidad == 1:
 
-				if periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
+# 				if periodo.month >= fondo_promocion.fecha.month and periodo.year >= fondo_promocion.fecha.year:
 
-					valor 		= fondo_promocion.valor
-					factor 		= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
-					reajuste 	= valor * factor
+# 					valor 		= fondo_promocion.valor
+# 					factor 		= fondo_promocion.moneda.moneda_historial_set.all().order_by('-id').first().valor
+# 					reajuste 	= valor * factor
 
-			else:
-				reajuste = 0
+# 			else:
+# 				reajuste = 0
 
-			total += (arriendo_minimo + arriendo_variable) * (reajuste/100)
+# 			total += (arriendo_minimo + arriendo_variable) * (reajuste/100)
 
-	return formato_moneda_local_sin_miles(request, total)
+# 	return formato_moneda_local_sin_miles(request, total)
+
 
 def calcular_arriendo_bodega(request, contrato, concepto, periodo, configuracion):
 
@@ -1698,9 +1591,7 @@ class FACTURA(View):
 					'total'		: formato_moneda_local(self.request, detalle.total),
 					})
 
-
-
-			#Calculo Neto e IVA.
+			# Calculo Neto e IVA.
 			valores = calculo_iva_total_documento(factura.total, 19)
 
 			data.append({

@@ -46,7 +46,7 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title" id="myModalLabel">Enviar Propuesta</h4>
 			</div>
-			<form id="propuesta-enviar-correo" action='{% url "propuesta_enviar_correo" %}' method="POST">
+			<form id="propuesta-enviar-correo" action="{% url 'contrato:propuesta_enviar_correo' %}" method="POST">
 				{% csrf_token %}
 				<input type="hidden" name="contenido">
 				<input type="hidden" name="propuesta_id" value="1">
@@ -185,7 +185,7 @@ function initialize(){
 	$('#new_propuesta').on('click', function () {
 
 		if('{{workflow}}' == 'True'){
-			location.href = '{% url 'propuesta_new' %}'
+			location.href = '{% url 'contrato:propuesta_new' %}'
 		}
 		else {
 			var configuracion = {

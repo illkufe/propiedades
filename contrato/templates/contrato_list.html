@@ -10,7 +10,7 @@
 				<div class="ibox-title">
 					<h5>Lista de Contratos</h5>
 					<div class="ibox-tools">
-						<a href='{% url "contrato_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo contrato</button></a>
+						<a href="{% url 'contrato:contrato_new' %}"><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo contrato</button></a>
 					</div>
 				</div>
 
@@ -35,9 +35,9 @@
 										{% else %}
 											<a class="btn btn-config btn-bitbucket" href="/contrato-concepto/{{ item.id }}"><i class="fa fa-cog"></i></a>
 										{% endif %}
-										<a class="btn btn-edit btn-bitbucket" href='{% url "contrato_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-edit btn-bitbucket" href="{% url 'contrato:contrato_update' item.id %}"><i class="fa fa-edit"></i></a>
 										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'contrato', 'tabla-contratos', 'Contrato')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-view btn-bitbucket" href='{% url "contrato_pdf" item.id %}'><i class="fa fa-eye"></i></a>
+										<a class="btn btn-view btn-bitbucket" href="{% url 'contrato:contrato_pdf' item.id %}"><i class="fa fa-eye"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
