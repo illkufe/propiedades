@@ -523,6 +523,14 @@ class VENTAS(View):
 				error = "Fecha Termino no puede ser menor a fecha Inicio."
 				list_error.append(error)
 
+			fecha_inicial 	= datetime.strptime(fechas[0], '%d-%m-%Y')
+			fecha_terminal 	= datetime.strptime(fechas[1], '%d-%m-%Y')
+
+			if fecha_inicial.month != fecha_terminal.month or fecha_inicial.year != fecha_terminal.year:
+				error = "Fecha Inicio y Fecha Termino deben contener mismo mes y año."
+				list_error.append(error)
+
+
 		return list_error
 
 	def delete(self, request):
