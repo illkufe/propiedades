@@ -4,7 +4,7 @@ from .models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas
 
 class LecturaElectricidadForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
 
 	class Meta:
 
@@ -39,7 +39,7 @@ class LecturaElectricidadForm(forms.ModelForm):
 
 class LecturaAguaForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
 
 	class Meta:
 
@@ -74,7 +74,7 @@ class LecturaAguaForm(forms.ModelForm):
 
 class LecturaGasForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
 
 	class Meta:
 

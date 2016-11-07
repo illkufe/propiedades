@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse_lazy
 from django.views.decorators.csrf import requires_csrf_token
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
-from utilidades.views import formato_numero
+from utilidades.views import formato_numero, formato_moneda_local
 
 from accounts.models import *
 from administrador.models import *
@@ -561,7 +561,7 @@ class VENTAS(View):
 				'nro_mes'		: int(venta['month']),
 				'mes'			: meses[int(venta['month'])-1],
 				'ano'			: venta['year'],
-				'valor'			: formato_numero(venta['valor__sum']),
+				'valor'			: formato_moneda_local(self.request, venta['valor__sum']),
 				})
 
 		return JsonResponse(data, safe=False)
@@ -605,7 +605,30 @@ class LOCAL(View):
 		return JsonResponse(data, safe=False)
 
 class VentaDiaria(View):
-	http_method_names = ['post']
+	http_method_names = ['get','post']
+
+	def get(self, request, id=None):
+
+		var_post 	= request.GET.copy()
+		local 		= json.loads(var_post['venta'])
+		local_id 	= local['local']
+		mes 		= local['mes']
+		ano 		= local['ano']
+
+		# activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
+		# locales = Local.objects.filter(activo_id__in=activos, visible=True)
+
+		if id == None:
+			self.object_list = Venta.objects.filter(local_id__in=local_id, fecha_inicio__year=ano, fecha_termino__year=ano,
+									  				fecha_inicio__month=mes, fecha_termino__month=mes)
+		else:
+			self.object_list = Venta.objects.filter(pk=id)
+
+		if request.is_ajax():
+			return self.json_to_response()
+
+		if self.request.GET.get('format', None) == 'json':
+			return self.json_to_response()
 
 	def post(self, request):
 		try:
@@ -639,3 +662,16 @@ class VentaDiaria(View):
 			estado 	= False
 
 		return JsonResponse({'estado': estado}, safe=False)
+
+
+	def json_to_response(self):
+		data = list()
+
+		for ventas in self.object_list:
+			data.append({
+				'id' 		: ventas.id,
+				'fecha' 	: ventas.fecha_inicio.strftime('%d-%m-%Y'),
+				'valor' 	: formato_moneda_local(self.request, ventas.valor),
+			})
+
+		return JsonResponse(data, safe=False)

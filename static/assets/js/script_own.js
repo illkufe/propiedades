@@ -4,45 +4,83 @@ $("span.pie").peity("pie", {
 
 $('td.delete input[type=checkbox]').hide()
 
+
 $('.format-number').autoNumeric("init",{
 	aSep: LEASE_CURRENCY_THOUSANDS,
 	aDec: LEASE_CURRENCY_DECIMALS,
 	mDec: LEASE_CURRENCY_FORMAT,
 })
 
+function change_config_money() {
 
-function change_config_money(moneda_activa, moneda) {
+	$('.format-number').each(function () {
 
-	if(moneda_activa){
-		$.ajax({
-			url: '/get/configuracion-monedas/'+moneda,
-			type: 'POST',
-			data: {csrfmiddlewaretoken: getCookie('csrftoken')},
-			success: function(data){
-				$('.format-number').autoNumeric("update",{
-					aSep: data[0].format_mil,
-					aDec: data[0].format_dec,
-					mDec: data[0].decimal,
-            	})
-			},
-			error:function(data){
-				var configuracion = {
-					'toast_type'	: 'error',
-					'toast_text' 	: 'no se puedo recuperar configuración de monedas',
-					'toast_title' 	: 'Error',
+		// Es moneda o factorial
+		if($(this).attr('data-es-moneda') == 'true')
+		{
+
+			var obj = $(this)
+			// Id moneda a formatear
+			if($(this).attr('data-moneda') == ''){
+
+				// Es tipo de Select
+				if($(this).attr('data-select') == 'false'){
+
+					$.ajax({
+						url: '/get/configuracion-monedas/'+LEASE_CURRENCY_LOCAL,
+						type: 'POST',
+						data: {csrfmiddlewaretoken: getCookie('csrftoken')},
+						success: function(data){
+							$(obj).autoNumeric("update",{
+								aSep: data[0].format_mil,
+								aDec: data[0].format_dec,
+								mDec: data[0].decimal,
+							})
+						},
+						error:function(data){
+							var configuracion = {
+								'toast_type'	: 'error',
+								'toast_text' 	: 'no se puedo recuperar configuración de monedas',
+								'toast_title' 	: 'Error',
+							}
+							notification_toast(configuracion)
+						}
+					})
 				}
-				notification_toast(configuracion)
-			}
-		})
-	}else{
-		$('.format-number').autoNumeric("init",{
-			aSep: LEASE_CURRENCY_THOUSANDS,
-			aDec: LEASE_CURRENCY_DECIMALS,
-			mDec: LEASE_CURRENCY_FORMAT,
-		})
-	}
-}
+			}else{
+				var moneda = parseInt($(this).attr('data-moneda'))
 
+				$.ajax({
+					url: '/get/configuracion-monedas/'+moneda,
+					type: 'POST',
+					data: {csrfmiddlewaretoken: getCookie('csrftoken')},
+					success: function(data){
+						$(obj).autoNumeric("update",{
+							aSep: data[0].format_mil,
+							aDec: data[0].format_dec,
+							mDec: data[0].decimal,
+						})
+					},
+					error:function(data){
+						var configuracion = {
+							'toast_type'	: 'error',
+							'toast_text' 	: 'no se puedo recuperar configuración de monedas',
+							'toast_title' 	: 'Error',
+						}
+						notification_toast(configuracion)
+					}
+				})
+			}
+		}else{
+			
+			$('.format-number').autoNumeric("update",{
+				aSep: LEASE_CURRENCY_THOUSANDS,
+				aDec: LEASE_CURRENCY_DECIMALS,
+				mDec: LEASE_CURRENCY_FORMAT,
+			})
+		}
+	});
+}
 
 function cambio_format_moneda(obj) {
 
@@ -54,33 +92,58 @@ function cambio_format_moneda(obj) {
 }
 
 function change_config_money_selected(moneda, obj) {
-
 	$('.format-number').autoNumeric("init",{
 		aSep: LEASE_CURRENCY_THOUSANDS,
 		aDec: LEASE_CURRENCY_DECIMALS,
 		mDec: LEASE_CURRENCY_FORMAT,
 	})
 
-    $.ajax({
-        url: '/get/configuracion-monedas/'+moneda,
-        type: 'POST',
-        data: {csrfmiddlewaretoken: getCookie('csrftoken')},
-        success: function(data){
-            $(obj).closest('tr').find('.format-number').autoNumeric("update",{
-                aSep: data[0].format_mil,
-                aDec: data[0].format_dec,
-                mDec: data[0].decimal,
-            })
-        },
-        error:function(data){
-            var configuracion = {
-                'toast_type'	: 'error',
-                'toast_text' 	: 'no se puedo recuperar configuración de monedas',
-                'toast_title' 	: 'Error',
-            }
-            notification_toast(configuracion)
-        }
-    })
+
+	if($(obj).attr('data-table') == 'true'){
+		$.ajax({
+			url: '/get/configuracion-monedas/'+moneda,
+			type: 'POST',
+			data: {csrfmiddlewaretoken: getCookie('csrftoken')},
+			success: function(data){
+				$(obj).closest('tr').find('.format-number').autoNumeric("update",{
+					aSep: data[0].format_mil,
+					aDec: data[0].format_dec,
+					mDec: data[0].decimal,
+				})
+			},
+			error:function(data){
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se puedo recuperar configuración de monedas',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
+			}
+		})
+	}else{
+		$.ajax({
+			url: '/get/configuracion-monedas/'+moneda,
+			type: 'POST',
+			data: {csrfmiddlewaretoken: getCookie('csrftoken')},
+			success: function(data){
+				$(obj).parent().parent().find('.format-number').autoNumeric("update",{
+					aSep: data[0].format_mil,
+					aDec: data[0].format_dec,
+					mDec: data[0].decimal,
+				})
+			},
+			error:function(data){
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se puedo recuperar configuración de monedas',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
+			}
+		})
+	}
+
+
 }
 
 $('.format-rut').rut({
