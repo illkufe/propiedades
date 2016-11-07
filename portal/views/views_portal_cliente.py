@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from xlrd import open_workbook
 from datetime import datetime
 
-from procesos.models import Propuesta, Factura
+from procesos.models import *
 from utilidades.views import formato_numero
 from locales.models import Local, Venta
 from administrador.models import Cliente
@@ -66,11 +66,10 @@ class VENTAS(View):
                 mes             = local['mes']
                 ano             = local['ano']
 
-                venta           = Venta.objects.get( local__nombre=nombre_local,
-                                                     fecha_inicio__year=ano, fecha_termino__year=ano,
-                                                     fecha_inicio__month=mes, fecha_termino__month=mes)
-                venta.delete()
+                ventas = Venta.objects.filter(local__id=nombre_local, fecha_inicio__year=ano, fecha_termino__year=ano, fecha_inicio__month=mes, fecha_termino__month=mes)
 
+                for venta in ventas:
+                    venta.delete()
 
                 estado = True
             except Exception as e:
@@ -410,13 +409,13 @@ def facturas_generadas(self):
 
 #Facturas
 class PropuestaProcesarPortalClienteList(ListView):
-	model           = Propuesta
+	model           = Factura
 	template_name   = 'portal_cliente/propuesta_procesar_list.html'
 
 	def get_context_data(self, **kwargs):
 
 		users       = self.request.user.userprofile.cliente.empresa.userprofile_set.all().values_list('user_id', flat=True)
-		propuestas  = Propuesta.objects.filter(user__in=users).values_list('id', flat=True)
+		propuestas  = Factura.objects.filter(user__in=users).values_list('id', flat=True)
 
 		context = super(PropuestaProcesarPortalClienteList, self).get_context_data(**kwargs)
 		context['title']    = 'Facturas / Pedidos'

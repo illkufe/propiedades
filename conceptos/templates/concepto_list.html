@@ -30,8 +30,8 @@
 									<td>{{ item.iva|formato_boolean }}</td>
 									<td>{{ item.descripcion }}</td>
 									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='{% url "concepto_update" item.id %}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'conceptos', 'tabla-conceptos', 'Concepto')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar concepto" href='{% url "concepto_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar concepto" onclick="open_modal_delete(this, {{item.id}}, 'conceptos', 'tabla-conceptos', 'Concepto')"><i class="fa fa-trash"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -49,12 +49,18 @@
 {% block scripts %}
 <script>
 
+var tabla_conceptos;
+
 $(document).ready(function(){
 
-	var tabla_conceptos = []
 	load_tabla_contratos()
+	initialize()
 
 });
+
+function initialize(){
+	$('[data-toggle="tooltip"]').tooltip();
+}
 
 function load_tabla_contratos(){
 

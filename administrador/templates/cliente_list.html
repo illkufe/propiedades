@@ -29,9 +29,9 @@
 									<td>{{ item.direccion }}</td>
 									<td>{{ item.telefono }}</td>
 									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='{% url "cliente_update" item.id %}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'clientes', 'tabla-clientes', 'Cliente')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar cliente" href='{% url "cliente_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar cliente" onclick="open_modal_delete(this, {{item.id}}, 'clientes', 'tabla-clientes', 'Cliente')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar cliente"><i class="fa fa-eye"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -49,13 +49,18 @@
 {% block scripts %}
 <script>
 
-var tabla_clientes = []
+var tabla_clientes;
 
 $(document).ready(function(){
 
 	load_tabla_clientes()
+	initialize()
 
 });
+
+function initialize(){
+	$('[data-toggle="tooltip"]').tooltip();
+}
 
 function load_tabla_clientes(){
 

@@ -17,7 +17,7 @@
 				</div>
 				<div class="ibox-content">
 					<div class="table-responsive">
-						<table id="tabla-multa-tipos" class="table table-striped table-bordered table-hover dataTables-example" >
+						<table id="tabla-multa-tipos" class="table table-striped table-bordered table-hover" style="width:100%">
 							<thead></thead>
 							<tbody>
 								{% for item in object_list %}
@@ -27,9 +27,9 @@
 									<td>{{ item.nombre }}</td>
 									<td>{{ item.descripcion }}</td>
 									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href="{% url 'contrato:multa_tipo_update' item.id %}"><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'multa-tipo', 'tabla-multa-tipos', 'Tipo de Multa')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar tipo de multa" href="{% url 'contrato:multa_tipo_update' item.id %}"><i class="fa fa-edit"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar tipo de multa" onclick="open_modal_delete(this, {{item.id}},'multa-tipo', 'tabla-multa-tipos', 'Tipo de Multa')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar tipo de multa"><i class="fa fa-eye"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -46,17 +46,23 @@
 {% block scripts %}
 <script>
 
+var tabla_multa_tipos;
+
 $(document).ready(function(){
 
-	var tabla_multa_tipos = []
 	load_tablas()
+	initialize()
 
 });
+
+function initialize(){
+	$('[data-toggle="tooltip"]').tooltip();
+}
 
 function load_tablas(){
 
 	var columns = [
-	{		
+	{
 		'data': 'id',
 		'visible': false,
 	},
@@ -83,7 +89,6 @@ function load_tablas(){
 	}];
 
 	tabla_multa_tipos = load_table('#tabla-multa-tipos', columns, {})
-
 }
 
 </script>

@@ -166,12 +166,18 @@
 													<div class="container-error"></div>
 												</div>
 
-												<div class="form-group col-sm-6">
+												<div class="form-group col-sm-12">
 													<span>
 														<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="..."></i>
 														<label>Conceptos:</label>
 													</span>
-													<select name="conceptos" class="form-control select2" multiple="multiple">
+
+													<span style="padding-left:10px">
+														<input type="checkbox" id="select-all-conceptos">
+														<label>Seleccionar todo</label>
+													</span>
+
+													<select id="s-conceptos" name="conceptos" class="form-control select2" multiple="multiple">
 														{% for concepto in conceptos %}
 														<option value="{{ concepto.id }}" data-abrv="{{concepto.codigo}}">{{ concepto.nombre }}</option>
 														{% endfor %}
@@ -186,7 +192,6 @@
 										</div>
 									</div>
 								</div>
-
 							</div>
 
 							<!-- seccion seleccionar contratos -->
@@ -348,6 +353,16 @@ function initialize(){
 			$('#form-generar-propuesta input[name="uf_valor"]').attr('readonly', true)
 		};
 	});
+
+	$("#select-all-conceptos").click(function(){
+		if($("#select-all-conceptos").is(':checked') ){
+			$("#s-conceptos > option").prop("selected","selected");
+			$("#s-conceptos").trigger("change");
+		}else{
+			$("#s-conceptos > option").removeAttr("selected");
+			$("#s-conceptos").trigger("change");
+		}
+	})
 }
 
 function form_filtrar_contratos(){
@@ -710,12 +725,6 @@ function seleccionar_todo(obj){
 	})
 }
 
-
-
-
-
-
-
 // sección generar propuesta
 function cargar_propuesta(contratos){
 
@@ -741,7 +750,8 @@ function cargar_propuesta(contratos){
 		aDec: LEASE_CURRENCY_DECIMALS,
 		mDec: LEASE_CURRENCY_FORMAT,
 	})
-    change_config_money(true, LEASE_CURRENCY_LOCAL)
+
+	change_config_money(true, LEASE_CURRENCY_LOCAL)
 
 	validar_form_propuesta()
 }

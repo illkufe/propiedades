@@ -31,13 +31,13 @@
 									<td class="text-center"><span class="label" style="color:{{item.estado.color}};background:{{item.estado.background}};">{{ item.estado }}</span></td>
 									<td class="text-center">
 										{% if item.cantidad == 0 %}
-											<a class="btn btn-config btn-bitbucket" onclick="alerta_contrato_sin_conceptos({{ item.id }})"><i class="fa fa-cog"></i></a>
+											<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="configurar conceptos" onclick="alerta_contrato_sin_conceptos({{ item.id }})"><i class="fa fa-cog"></i></a>
 										{% else %}
-											<a class="btn btn-config btn-bitbucket" href="/contrato-concepto/{{ item.id }}"><i class="fa fa-cog"></i></a>
+											<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="configurar conceptos" href="/contrato-concepto/{{ item.id }}"><i class="fa fa-cog"></i></a>
 										{% endif %}
-										<a class="btn btn-edit btn-bitbucket" href="{% url 'contrato:contrato_update' item.id %}"><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'contrato', 'tabla-contratos', 'Contrato')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-view btn-bitbucket" href="{% url 'contrato:contrato_pdf' item.id %}"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar contrato" href="{% url 'contrato:contrato_update' item.id %}"><i class="fa fa-edit"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar contrato" onclick="open_modal_delete(this, {{item.id}},'contrato', 'tabla-contratos', 'Contrato')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar contrato" href="{% url 'contrato:contrato_pdf' item.id %}"><i class="fa fa-eye"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -60,13 +60,18 @@ var tabla_contratos;
 $(document).ready(function(){
 
 	load_tabla_contratos()
+	initialize()
 
 });
+
+function initialize(){
+	$('[data-toggle="tooltip"]').tooltip();
+}
 
 function load_tabla_contratos(){
 
 	var columns = [
-	{		
+	{
 		'data': 'id',
 		'visible': false,
 	},

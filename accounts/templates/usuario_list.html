@@ -16,7 +16,6 @@
 					</div>
 				</div>
 				<div class="ibox-content">
-					<br>
 					<div class="table-responsive">
 						<table id="tabla-usuarios" class="table table-striped table-bordered table-hover" style="width:100%">
 							<thead></thead>
@@ -27,13 +26,14 @@
 									<td>{{ item.first_name }} {{ item.last_name }}</td>
 									<td class="text-right">{{ item.userprofile.rut }}</td>
 									<td>{{ item.email }}</td>
-									<td>activo</td>
+									<td class="text-center"><button type="button" class="btn btn-primary btn-xs">activo</button></td>
+									<td>{{ item.userprofile.tipo }}</td>
 									<td>{{ item.userprofile.cargo }}</td>
 									<td class="text-center">
-										<a class="btn btn-config btn-bitbucket" onclick="open_modal_password({{item.id}})"><i class="fa fa-key"></i></a>
-										<a class="btn btn-edit btn-bitbucket" href='{% url "accounts:usuario_update" item.id %}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'usuarios', 'tabla-usuarios', 'Usuario')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="cambiar contraseña" onclick="open_modal_password({{item.id}})"><i class="fa fa-key"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar usuario" href='{% url "accounts:usuario_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar usuario" onclick="open_modal_delete(this, {{item.id}}, 'usuarios', 'tabla-usuarios', 'Usuario')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar usuario"><i class="fa fa-eye"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -46,35 +46,39 @@
 	</div>
 </div>
 
-<!-- modal formulario actualizar password -->
-<div class="modal inmodal fade" id="m-form-password" tabindex="-1" role="dialog"  aria-hidden="true">
-	<div class="modal-dialog">
+<!-- modal: actualizar contraseña -->
+<div class="modal fade" id="m-form-password" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h6 class="modal-title text-left">Actualizar Contraseña</h6>
+				<h4 class="modal-title">Actualizar Contraseña</h4>
 			</div>
-			<form id="form-update-password" action="update-password" role="form" method="post">
+			<form id="form-actualizar-contrasena" action="update-password" role="form" method="post">
 				{% csrf_token %}
 
 				<div class="modal-body">
 					<div class="row">
-						<div class="col-sm-12">
 
-							<div class="form-group col-sm-6">
+						<div class="form-group col-sm-12">
+							<span>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="ingresar nueva contraseña, 8 caracteres mínimo"></i>
 								{{ form_password.password_nueva.label_tag }}
-								{{ form_password.password_nueva }}
-								<div class="container-error">
-									{{ form_password.password_nueva.errors }}
-								</div>
+							</span>
+							{{ form_password.password_nueva }}
+							<div class="container-error">
+								{{ form_password.password_nueva.errors }}
 							</div>
+						</div>
 
-							<div class="form-group col-sm-6">
+						<div class="form-group col-sm-12">
+							<span>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="repetir contraseña ingresada"></i>
 								{{ form_password.password_copia.label_tag }}
-								{{ form_password.password_copia }}
-								<div class="container-error">
-									{{ form_password.password_copia.errors }}
-								</div>
+							</span>
+							{{ form_password.password_copia }}
+							<div class="container-error">
+								{{ form_password.password_copia.errors }}
 							</div>
 						</div>
 					</div>
@@ -100,9 +104,13 @@ $(document).ready(function(){
 
 	load_tabla_usuarios()
 	update_password()
+	initialize()
 
 });
 
+function initialize(){
+	$('[data-toggle="tooltip"]').tooltip();
+}
 
 function load_tabla_usuarios(){
 
@@ -128,14 +136,20 @@ function load_tabla_usuarios(){
 		'title': 'Email',
 	},
 	{
-		'width': '15%',
+		'width': '10%',
 		'data': 'estado',
 		'title': 'Estado',
 	},
 	{
-		'width': '10%',
+		'width': '15%',
 		'data': 'tipo',
 		'title': 'Tipo',
+		'order': false,
+	},
+	{
+		'width': '10%',
+		'data': 'cargo',
+		'title': 'Cargo',
 	},
 	{
 		'width': '20%',
@@ -150,12 +164,14 @@ function load_tabla_usuarios(){
 function open_modal_password(id){
 
 	$('#m-form-password').modal('show')
-	$('#form-update-password').attr('action', '/update-password/'+id)
+	$('#form-actualizar-contrasena input').val('')
+	$('#form-actualizar-contrasena .container-error').html('')
+	$('#form-actualizar-contrasena').attr('action', '/update-password/'+id)
 }
 
 function update_password(){
 	
-	$("#form-update-password").validate({
+	$("#form-actualizar-contrasena").validate({
 		rules: {
 			password_nueva: {
 				required: true,
@@ -182,12 +198,12 @@ function update_password(){
 			error.appendTo(element.closest(".form-group").find('.container-error'));
 		},
 		submitHandler: function(form) {
-			$('#form-update-password').ajaxSubmit({
+			$('#form-actualizar-contrasena').ajaxSubmit({
 				dataType: 'json',
 				success: function(data){
 					$('#m-form-password').modal('hide')
-					clear_form('#form-update-password')
-					clear_errors_form('#form-update-password')
+					clear_form('#form-actualizar-contrasena')
+					clear_errors_form('#form-actualizar-contrasena')
 
 					var configuracion = {
 						'toast_type'	: 'success',
@@ -210,5 +226,3 @@ function update_password(){
 </script>
 
 {% endblock scripts %}
-
-

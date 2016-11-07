@@ -29,8 +29,8 @@
 									<td class="text-center">{{ item.user.first_name }}</td>
 									<td class="text-right">{{ item.valor }}</td>
 									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='{% url "gasto_mensual_update" item.id %}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'gastos-mensual', 'tabla-gastos-mensuales', 'Gasto Mensual')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar gasto mensual" href='{% url "gasto_mensual_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar gasto mensual" onclick="open_modal_delete(this, {{item.id}},'gastos-mensual', 'tabla-gastos-mensuales', 'Gasto Mensual')"><i class="fa fa-trash"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -48,15 +48,20 @@
 {% block scripts %}
 <script>
 
-var tabla_lecturas = []
+var tabla_gastos;
 
 $(document).ready(function(){
 
-	load_tabla_lecturas()
+	load_tabla_gastos()
+	initialize()
 
 });
 
-function load_tabla_lecturas(){
+function initialize(){
+	$('[data-toggle="tooltip"]').tooltip();
+}
+
+function load_tabla_gastos(){
 	
 	var columns = [
 	{		
@@ -101,7 +106,7 @@ function load_tabla_lecturas(){
 		'title': '<div class="text-center">Opciones</div>',
 	}];
 
-	tabla_lecturas = load_table('#tabla-gastos-mensuales', columns, {})
+	tabla_gastos = load_table('#tabla-gastos-mensuales', columns, {})
 
 }
 

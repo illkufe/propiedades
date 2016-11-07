@@ -96,16 +96,16 @@
 								<tr>
 									<td class="text-center"><input type="checkbox" class="checkbox-contrato"></td>
 									<td>{{ item.id }}</td>
-									<td>{{ item.propuesta.nombre }}</td>
+									<td>{{ item.nombre }}</td>
 									<td>{{ item.propuesta.creado_en|date:"d/m/Y" }}</td>
 									<td>{{ item.fecha_inicio|date:"d/m/Y" }} - {{ item.fecha_termino|date:"d/m/Y" }}</td>
 									<td>{{ item.contrato.numero }}</td>
 									<td>{{ item.contrato.cliente.nombre }}</td>
 									<td class="text-right">{{ item.total}}</td>
 									<td class="text-center">
-										<a class="btn btn-delete btn-bitbucket" onclick="eliminar_propuesta(this, {{item.id}}, 'tabla-facturas-propuestas')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-view btn-bitbucket" onclick="visualizar_propuesta({{item.id}})"><i class="fa fa-eye"></i></a>
-										<a class="btn btn-edit btn-bitbucket" onclick="enviar_propuesta({{item.id}})"><i class="fa fa-paper-plane"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar propuesta" onclick="eliminar_propuesta(this, {{item.id}}, 'tabla-facturas-propuestas')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar propuesta" onclick="visualizar_propuesta({{item.id}})"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="enviar a facturar propuesta" onclick="enviar_propuesta({{item.id}})"><i class="fa fa-paper-plane"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -138,7 +138,6 @@
 									<td>{{ item.id }}</td>
 									<td>{{ item.numero_pedido}}</td>
 									<td>{{ item.propuesta.nombre }}</td>
-									<td>{{ item.propuesta.creado_en|date:"d/m/Y" }}</td>
 									<td>{{ item.fecha_inicio|date:"d/m/Y" }} - {{ item.fecha_termino|date:"d/m/Y" }}</td>
 									<td>{{ item.contrato.numero }}</td>
 									<td>{{ item.contrato.cliente.nombre }}</td>
@@ -189,14 +188,14 @@ var tabla_facturas_enviadas;
 
 $(document).ready(function(){
 
-	initializar_datos()
-	
 	load_tabla_facturas_propuestas()
 	load_tabla_facturas_procesadas()
+	initialize()
 
 });
 
-function initializar_datos(){
+function initialize(){
+	$('[data-toggle="tooltip"]').tooltip();
 }
 
 function load_tabla_facturas_propuestas(){
@@ -277,11 +276,6 @@ function load_tabla_facturas_procesadas(){
 		'width': '20%',
 		'data': 'nombre_propuesta',
 		'title': 'Nombre Propuesta',
-	},
-	{
-		'data': 'fecha',
-		'title': 'Fecha',
-		'visible': false,
 	},
 	{
 		'width': '15%',
@@ -416,8 +410,8 @@ function enviar_propuesta(id){
 		success: function(data){
 			loading(false);
 			if (data[0].estado == true) {
-                swal({
-                    title 	: 'Documento Enviado',
+				swal({
+					title 	: 'Documento Enviado',
                     // text 	: '',
                     type 	: 'success',
                     html 	: '<a href="'+data[0].response[0].archivo_pdf+'" target="_blank"><span style="color:#575757">Descargar PDF<span>',
@@ -427,37 +421,37 @@ function enviar_propuesta(id){
                     allowOutsideClick 	: false,
                     allowEscapeKey 		: false
                 }).then(function() {
-                    console.log('enviar')
+                	console.log('enviar')
                 });
-{#                location.reload();#}
+                {#                location.reload();#}
             }else{
 
-                var error = '<div class="text-left" style="font-size:12px">';
-                for ( var a in data[0].response){
-                    error +='<p style="margin-bottom: 5px">'+ data[0].response[a].descripcion+ '</p>'
-                }
-                error += '</div>';
+            	var error = '<div class="text-left" style="font-size:12px">';
+            	for ( var a in data[0].response){
+            		error +='<p style="margin-bottom: 5px">'+ data[0].response[a].descripcion+ '</p>'
+            	}
+            	error += '</div>';
 
-                swal({
-                    title 	: 'Error Envio',
-                    type 	: 'error',
-                    html 	: error,
-                    showCancelButton 	: true,
-                    confirmButtonColor 	: '#FCC491',
-                    confirmButtonText 	: 'Cancelar',
-                    cancelButtonText 	: 'OK',
-                    allowOutsideClick 	: false,
-                    allowEscapeKey 		: false
-                }).then(function() {
-                    console.log('enviar')
-                });
+            	swal({
+            		title 	: 'Error Envio',
+            		type 	: 'error',
+            		html 	: error,
+            		showCancelButton 	: true,
+            		confirmButtonColor 	: '#FCC491',
+            		confirmButtonText 	: 'Cancelar',
+            		cancelButtonText 	: 'OK',
+            		allowOutsideClick 	: false,
+            		allowEscapeKey 		: false
+            	}).then(function() {
+            		console.log('enviar')
+            	});
             }
-		},
-		error: function(x,y,z){
-            console.log(x,y,z);
-			loading(false)
-		}
-	})
+        },
+        error: function(x,y,z){
+        	console.log(x,y,z);
+        	loading(false)
+        }
+    })
 }
 
 function eliminar_propuesta(obj, id, tabla){

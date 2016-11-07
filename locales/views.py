@@ -344,7 +344,7 @@ class VentaList(ListView):
 		return context
 
 class VENTAS(View):
-	http_method_names = ['get', 'post', 'put', 'delete']
+	http_method_names = ['get', 'post', 'put']
 
 	def get(self, request, id=None):
 
@@ -368,6 +368,7 @@ class VENTAS(View):
 	def post(self, request):
 
 		if self.request.POST.get('method') == 'delete':
+
 			try:
 				var_post 		= request.POST.copy()
 				local    		= json.loads(var_post['venta'])
@@ -375,10 +376,10 @@ class VENTAS(View):
 				mes	  			= local['mes']
 				ano   			= local['ano']
 
-				venta = Venta.objects.get(local__nombre=nombre_local,
-										  fecha_inicio__year=ano, fecha_termino__year=ano,
-										  fecha_inicio__month=mes, fecha_termino__month=mes)
-				venta.delete()
+				ventas = Venta.objects.filter(local__id=nombre_local, fecha_inicio__year=ano, fecha_termino__year=ano, fecha_inicio__month=mes, fecha_termino__month=mes)
+
+				for venta in ventas:
+					venta.delete()
 
 				estado = True
 			except Exception as e:
@@ -524,17 +525,6 @@ class VENTAS(View):
 				list_error.append(error)
 
 		return list_error
-
-	def delete(self, request):
-
-		try:
-			venta 		= Venta.objects.get(pk=id)
-			venta.delete()
-
-			estado = True
-		except Exception:
-			estado = False
-		return JsonResponse({'estado': estado}, safe=False)
 
 	def json_to_response(self):
 

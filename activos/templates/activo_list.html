@@ -29,9 +29,9 @@
 									<td class="text-right">{{ item.rut_propietario }}</td>
 									<td class="text-right">{{ item.tasacion_fiscal }} </td>
 									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='{% url "activo_update" item.id %}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}},'activos', 'tabla-activos', 'Activo')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar activo" href='{% url "activo_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar activo" onclick="open_modal_delete(this, {{item.id}},'activos', 'tabla-activos', 'Activo')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar activo"><i class="fa fa-eye"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -49,15 +49,21 @@
 {% block scripts %}
 <script>
 
-var table_activo = []
+var tabla_activos;
 
 $(document).ready(function(){
 
-	load_tabla_activos()	
+	load_tabla_activos()
+	initialize()
 
 });
 
+function initialize(){
+	$('[data-toggle="tooltip"]').tooltip();
+}
+
 function load_tabla_activos(){
+
 	var columns = [
 	{
 		'data': 'id',
@@ -96,11 +102,9 @@ function load_tabla_activos(){
 		'title': '<div class="text-center">Opciones</div>',
 	}]
 
-	table_activo = load_table('#tabla-activos', columns, {})
+	tabla_activos = load_table('#tabla-activos', columns, {})
 }
 
 </script>
 
 {% endblock scripts %}
-
-

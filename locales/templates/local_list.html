@@ -31,7 +31,7 @@
 								{% for item in object_list %}
 								<tr>
 									<td>{{ item.id }}</td>
-                                    <td>{{ item.codigo}}</td>
+									<td>{{ item.codigo}}</td>
 									<td>{{ item.nombre }}</td>
 									<td>{{ item.activo }}</td>
 									<td>{{ item.local_tipo }}</td>
@@ -39,9 +39,9 @@
 									<td>{{ item.nivel }}</td>
 									<td class="text-right">{{ item.metros_cuadrados|formato_numero }}</td>
 									<td class="text-center">
-										<a class="btn btn-edit btn-bitbucket" href='/activos/{{item.activo.id}}/locales/update/{{item.id}}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, {{item.id}}, 'locales', 'tabla-locales', 'Local')"><i class="fa fa-trash"></i></a>
-										<a class="btn btn-view btn-bitbucket"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar local" href='/activos/{{item.activo.id}}/locales/update/{{item.id}}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar local" onclick="open_modal_delete(this, {{item.id}}, 'locales', 'tabla-locales', 'Local')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar local"><i class="fa fa-eye"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -59,9 +59,21 @@
 {% block scripts %}
 <script>
 
+var tabla_locales;
+
 $(document).ready(function(){
 
-	var tabla_locales = []
+	load_tabla_locales()
+	load_select_activo()
+	initialize()
+
+});
+
+function initialize(){
+	$('[data-toggle="tooltip"]').tooltip();
+}
+
+function load_tabla_locales(){
 
 	var columns = [
 	{		
@@ -69,7 +81,7 @@ $(document).ready(function(){
 		'title': 'ID',
 		'visible': false,
 	},
-    {
+	{
 		'width': '9%',
 		'data': 'codigo',
 		'title': 'Código',
@@ -112,11 +124,7 @@ $(document).ready(function(){
 	}]
 
 	tabla_locales = load_table('#tabla-locales', columns, {})
-
-	load_select_activo()
-
-
-});
+}
 
 function cambiar_url(obj){
 	$('#url-new-local').attr('href', '/activos/'+$(obj).val()+'/locales/new')
@@ -152,7 +160,6 @@ function nuevo_local(){
 	}else{
 		window.location.href = href;
 	}
-
 }
 
 
