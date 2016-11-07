@@ -134,7 +134,7 @@ class ContratoForm(forms.ModelForm):
 class GarantiaForm(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de la Garantia')
-	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Asociada al Valor de la Garantia')
+	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Asociada al Valor de la Garantia')
 
 	class Meta:
 		model 	= Garantia
@@ -181,7 +181,7 @@ class MultaTipoForm(forms.ModelForm):
 class MultaForm(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), label='Valor Multa', error_messages={'required': 'campo requerido'}, help_text='Valor de la Multa')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda_multa(this)'}), error_messages={'required': 'campo requerido'}, help_text='Tipo de Moneda Asociado a la Multa')
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'onchange': 'cambio_format_moneda(this)', 'data-table': 'false'}), error_messages={'required': 'campo requerido'}, help_text='Tipo de Moneda Asociado a la Multa')
 
 	def __init__(self, *args, **kwargs):
 
@@ -236,7 +236,7 @@ class InformacionForm(forms.ModelForm):
 class ArriendoForm(forms.ModelForm):
 
 	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Reajuste')
-	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,6]), initial='6',widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), help_text='Tipo de Moneda del Reajuste')
+	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,6]), initial='6',widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'false', 'onchange': 'cambio_format_moneda(this)'}), help_text='Tipo de Moneda del Reajuste')
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), help_text='Fecha Inicio de Aplicación del Reajuste')
 
 	def __init__(self, *args, **kwargs):
@@ -281,7 +281,7 @@ class ArriendoForm(forms.ModelForm):
 class ArriendoDetalleForm(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor Asociado al Arriendo')
-	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), help_text='Tipo de Moneda Aplicado al Arriendo')
+	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Tipo de Moneda Aplicado al Arriendo')
 
 	class Meta:
 		model 	= Arriendo_Detalle
@@ -301,7 +301,7 @@ class ArriendoDetalleForm(forms.ModelForm):
 class ArriendoBodegaForm(forms.ModelForm):
 
 	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Arriendo Bodega')
-	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda' ,'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Valor del Arriendo')
+	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Valor del Arriendo')
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), help_text='Fecha de Inicio Arriendo Bodega')
 
 	def __init__(self, *args, **kwargs):
@@ -340,7 +340,7 @@ class ArriendoBodegaForm(forms.ModelForm):
 class ArriendoVariableForm(forms.ModelForm):
 
 	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Arriendo Variable')
-	moneda 			= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Valor de Arriendo variable')
+	moneda 			= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Valor de Arriendo variable')
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False, help_text='Fecha de Inicio de Arriendo Variable')
 	fecha_termino 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False, help_text='Fecha de Término de Arriendo Variable')
 
@@ -402,7 +402,7 @@ class ArriendoVariableForm(forms.ModelForm):
 class GastoComunForm(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Gasto Común')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Gasto Común')
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Gasto Común')
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
@@ -466,7 +466,7 @@ class CuotaIncorporacionForm(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Cuota de Incorporación')
 	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), help_text='Fecha')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada a la Cuota de Incorporación')
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada a la Cuota de Incorporación')
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
@@ -490,7 +490,7 @@ class FondoPromocionForm(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Fondo Promoción')
 	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar desde', help_text='Fecha de Inicio del Cobro Fondo Promoción')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Fondo Promoción')
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Fondo Promoción')
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
@@ -539,7 +539,7 @@ class GastoAsociadoForm(forms.ModelForm):
 		)
 
 	moneda = forms.ModelChoiceField(
-		widget 			= forms.Select(attrs={'class': 'form-control moneda','onchange': 'cambio_format_moneda(this)'}), 
+		widget 			= forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}),
 		error_messages 	= {'required': 'campo requerido'},
 		help_text 		= 'Moneda Aplicada al Gasto',
 		queryset 		= Moneda.objects.filter(id__in=[3,5,6]), 
@@ -689,7 +689,7 @@ class PropuestaForm(forms.ModelForm):
 class FormPropuestaGarantia(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de la Garantia')
-	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Asociada al Valor de la Garantia')
+	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Asociada al Valor de la Garantia')
 
 	class Meta:
 		model 	= Propuesta_Garantia
@@ -707,7 +707,7 @@ class FormPropuestaGarantia(forms.ModelForm):
 class FormPropuestaArriendo(forms.ModelForm):
 
 	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Reajuste')
-	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'onchange': 'cambio_format_moneda(this)'}), help_text='Tipo de Moneda del Reajuste')
+	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false', 'onchange': 'cambio_format_moneda(this)'}), help_text='Tipo de Moneda del Reajuste')
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), help_text='Fecha Inicio de Aplicación del Reajuste')
 
 	class Meta:
@@ -744,8 +744,8 @@ class FormPropuestaArriendo(forms.ModelForm):
 
 class FormPropuestaArriendoDetalle(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number config-moneda'}), help_text='Valor Asociado al Arriendo')
-	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'onchange': 'cambio_format_moneda(this)'}), help_text='Tipo de Moneda Aplicado al Arriendo')
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor Asociado al Arriendo')
+	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Tipo de Moneda Aplicado al Arriendo')
 
 	class Meta:
 		model 	= Propuesta_Arriendo_Minimo_Detalle
@@ -793,7 +793,7 @@ class FormPropuestaArriendoDetalle(forms.ModelForm):
 class FormPropuestaVariable(forms.ModelForm):
 
 	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Arriendo Variable')
-	moneda 			= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Valor de Arriendo variable')
+	moneda 			= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Valor de Arriendo variable')
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False, help_text='Fecha de Inicio de Arriendo Variable')
 	fecha_termino 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False, help_text='Fecha de Término de Arriendo Variable')
 
@@ -845,7 +845,7 @@ class FormPropuestaVariable(forms.ModelForm):
 class FormPropuestaBodega(forms.ModelForm):
 
 	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required'}), error_messages={'required': 'campo requerido'}, help_text='Valor de Arriendo Bodega')
-	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required moneda', 'onchange': 'cambio_format_moneda(this)'}), error_messages={'required': 'campo requerido'}, help_text='Moneda Aplicada al Valor del Arriendo')
+	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), error_messages={'required': 'campo requerido'}, help_text='Moneda Aplicada al Valor del Arriendo')
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'invalid': 'campo invalido'}, label='Fecha de Inicio', help_text='Fecha de Inicio Arriendo Bodega')
 
 	class Meta:
@@ -880,7 +880,7 @@ class FormPropuestaBodega(forms.ModelForm):
 class FormPropuestaCuota(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Cuota de Incorporación')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada a la Cuota de Incorporación')
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada a la Cuota de Incorporación')
 
 	class Meta:
 		model 	= Cuota_Incorporacion
@@ -910,8 +910,8 @@ class FormPropuestaCuota(forms.ModelForm):
 class FormPropuestaPromocion(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Fondo Promoción')
-	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date', 'onchange': 'cambio_format_moneda(this)'}), label='Cobrar a partir de:', help_text='Fecha de Inicio del Cobro Fondo Promoción')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda'}), help_text='Moneda Aplicada al Fondo Promoción')
+	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar a partir de:', help_text='Fecha de Inicio del Cobro Fondo Promoción')
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)' }), help_text='Moneda Aplicada al Fondo Promoción')
 
 	class Meta:
 		model 	= Propuesta_Fondo_Promocion
@@ -934,7 +934,7 @@ class FormPropuestaPromocion(forms.ModelForm):
 class FormPropuestaComun(forms.ModelForm):
 
 	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Gasto Común')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Gasto Común')
+	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Gasto Común')
 
 	class Meta:
 		model 	= Propuesta_Gasto_Comun

@@ -49,7 +49,7 @@ class VentasForm(forms.ModelForm):
 									help_text		= 'Fecha Venta Diaria'
 	)
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), label='Valor', error_messages={'required': 'campo requerido'}, help_text='Valor de la Venta')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), label='Valor', error_messages={'required': 'campo requerido'}, help_text='Valor de la Venta')
 
 	def __init__(self, *args, **kwargs):
 
@@ -85,10 +85,10 @@ class VentasForm(forms.ModelForm):
 
 class LocalForm(forms.ModelForm):
 
-	metros_cuadrados 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Metros Cuadrados del Local')
-	metros_lineales 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Metros Lineales del Local')
-	metros_compartidos 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Metros Compartidos del Local')
-	metros_bodega 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='Metros de Bodega del Local')
+	metros_cuadrados 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'false', 'data-moneda': '', 'data-select': 'false'}), error_messages={'required': 'campo requerido'}, help_text='Metros Cuadrados del Local')
+	metros_lineales 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'false', 'data-moneda': '', 'data-select': 'false'}), error_messages={'required': 'campo requerido'}, help_text='Metros Lineales del Local')
+	metros_compartidos 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'false', 'data-moneda': '', 'data-select': 'false'}), error_messages={'required': 'campo requerido'}, help_text='Metros Compartidos del Local')
+	metros_bodega 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'false', 'data-moneda': '', 'data-select': 'false'}), error_messages={'required': 'campo requerido'}, help_text='Metros de Bodega del Local')
 
 	def __init__(self, *args, **kwargs):
 
@@ -148,9 +148,9 @@ class LocalForm(forms.ModelForm):
 
 class ElectricidadForm(forms.ModelForm):
 
-	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Potencia de Medidor Electricidad')
-	potencia_presente 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Potencia Presente Medidor Electricidad')
-	potencia_fuera 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Potencia Fuera Medidor Electricidad')
+	potencia 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), help_text='Potencia de Medidor Electricidad')
+	potencia_presente 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), help_text='Potencia Presente Medidor Electricidad')
+	potencia_fuera 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), help_text='Potencia Fuera Medidor Electricidad')
 
 	class Meta:
 		model 	= Medidor_Electricidad
@@ -181,7 +181,7 @@ class ElectricidadForm(forms.ModelForm):
 
 class AguaForm(forms.ModelForm):
 
-	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Potencia Medidor Agua')
+	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), help_text='Potencia Medidor Agua')
 
 	class Meta:
 		model 	= Medidor_Agua
@@ -209,7 +209,7 @@ class AguaForm(forms.ModelForm):
 
 class GasForm(forms.ModelForm):
 
-	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Potencia Medidor Gas')
+	potencia = NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), help_text='Potencia Medidor Gas')
 
 	class Meta:
 		model 	= Medidor_Gas

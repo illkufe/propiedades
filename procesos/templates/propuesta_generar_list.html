@@ -57,7 +57,7 @@
 								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" data-original-title="..."></i>
 								<label>Valor UF (*)</label>
 							</span>
-							<input type="text" class="form-control format-number" name="uf_valor" readonly>
+							<input type="text" class="form-control format-number" data-es-moneda="true" data-moneda="3" data-select="false" name="uf_valor" readonly>
 							<div class="container-error"></div>
 						</div>
 					</div>
@@ -333,7 +333,6 @@ $(document).ready(function(){
 	initialize()
 	form_filtrar_contratos()
 	form_generar_propuesta()
-
 });
 
 function initialize(){
@@ -675,6 +674,8 @@ function modal_cargar_generar_propuesta(){
 			$('#m-generar-propuesta #form-generar-propuesta .uf-fecha').text(data[0].fecha)
 		}
 	})
+
+
 }
 
 function modal_abrir_generar_propuesta(){
@@ -701,6 +702,8 @@ function modal_abrir_generar_propuesta(){
 		}
 		notification_toast(configuracion)
 	};
+    // Configuracion de Moneda Pesos
+    change_config_money()
 }
 
 
@@ -745,14 +748,8 @@ function cargar_propuesta(contratos){
 		$('#container-propuesta').append(template_propuesta(contratos[i]))
 	}
 
-	$('.format-number').autoNumeric("init",{
-		aSep: LEASE_CURRENCY_THOUSANDS,
-		aDec: LEASE_CURRENCY_DECIMALS,
-		mDec: LEASE_CURRENCY_FORMAT,
-	})
-
-	change_config_money(true, LEASE_CURRENCY_LOCAL)
-
+    // Configuracion de Moneda Pesos
+    change_config_money()
 	validar_form_propuesta()
 }
 
@@ -784,7 +781,7 @@ function template_propuesta(contrato){
 		template += '<tr>'
 		template += '<input type="hidden" class="id" value="@concepto_id">'
 		template += '<td class="container-input"><input type="text" class="nombre"  name="nombre-@contrato_id-@concepto_id" value="@concepto_nombre"><div class="container-error"></div></td>'
-		template += '<td class="container-input"><input type="text" class="total text-right format-number" name="total-@contrato_id-@concepto_id"  value="@concepto_total"><div class="container-error"></div></td>'
+		template += '<td class="container-input"><input type="text" class="total text-right format-number" data-es-moneda="true" data-moneda="" data-select="false" name="total-@contrato_id-@concepto_id"  value="@concepto_total"><div class="container-error"></div></td>'
 		template += '</tr>'
 
 		template = template.replace(/@concepto_id/g, 		contrato.conceptos[i].id);
@@ -920,6 +917,7 @@ function validar_form_propuesta(){
 	});
 
 }
+
 
 
 

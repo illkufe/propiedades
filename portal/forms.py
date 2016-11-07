@@ -15,7 +15,7 @@ class VentasForm(forms.ModelForm):
 									help_text		= 'Fecha de ingreso de la venta'
 	)
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), label='Valor', error_messages={'required': 'campo requerido'}, help_text='Monto de la venta')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), label='Valor', error_messages={'required': 'campo requerido'}, help_text='Monto de la venta')
 
 	def __init__(self, *args, **kwargs):
 
