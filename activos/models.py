@@ -8,14 +8,14 @@ from administrador.models import Empresa
 class Activo(models.Model):
 
 	# atributos (identificacion Activo)
-	nombre 			= models.CharField(max_length=250)
-	codigo 			= models.CharField(max_length=10)
-	tipo 			= models.CharField(max_length=250, blank=True)
-	direccion 		= models.CharField(max_length=250, blank=True)
-	comuna 			= models.CharField(max_length=250, blank=True)
-	ciudad 			= models.CharField(max_length=250, blank=True)
-	cabidad_terreno = models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
-	cabidad_construccion = models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
+	nombre 					= models.CharField(max_length=250)
+	codigo 					= models.CharField(max_length=10)
+	tipo 					= models.CharField(max_length=250, blank=True)
+	direccion 				= models.CharField(max_length=250, blank=True)
+	comuna 					= models.CharField(max_length=250, blank=True)
+	ciudad 					= models.CharField(max_length=250, blank=True)
+	cabidad_terreno 		= models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
+	cabidad_construccion 	= models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
 
 	# atributos (informacion legal)
 	propietario 		= models.CharField(max_length=250)
@@ -49,50 +49,31 @@ class Activo(models.Model):
 	hipoteca 			= models.BooleanField(default=False)
 
 	# atributos (por defecto)
-	visible 		= models.BooleanField(default=True)
-	creado_en 		= models.DateTimeField(auto_now=True)
+	visible 			= models.BooleanField(default=True)
+	creado_en 			= models.DateTimeField(auto_now_add=True)
+	modificado_en 		= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	empresa 		= models.ForeignKey(Empresa)
+	empresa = models.ForeignKey(Empresa)
 
 	def __str__(self):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Activo"
-		verbose_name_plural = "Activos"
+		verbose_name 		= 'Activo'
+		verbose_name_plural = 'Activos'
 
 class Sector(models.Model):
 
 	# atributos (generales)
-	nombre 		= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=8, blank=True)
-	descripcion = models.TextField(blank=True)
+	nombre 			= models.CharField(max_length=250)
+	codigo 			= models.CharField(max_length=8, blank=True)
+	descripcion 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
-
-	# relaciones
-	activo 	= models.ForeignKey(Activo)
-
-	def __str__(self):
-		return self.nombre
-
-	class Meta:
-		verbose_name 		= "Sector"
-		verbose_name_plural = "Sectores"
-
-class Nivel(models.Model):
-
-	# atributos (generales)
-	nombre 		= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=8, blank=True)
-	descripcion = models.TextField(blank=True)
-	
-	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	activo = models.ForeignKey(Activo)
@@ -101,8 +82,30 @@ class Nivel(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Nivel"
-		verbose_name_plural = "Niveles"
+		verbose_name 		= 'Sector'
+		verbose_name_plural = 'Sectores'
+
+class Nivel(models.Model):
+
+	# atributos (generales)
+	nombre 			= models.CharField(max_length=250)
+	codigo 			= models.CharField(max_length=8, blank=True)
+	descripcion 	= models.TextField(blank=True)
+	
+	# atributos (por defecto)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	activo = models.ForeignKey(Activo)
+
+	def __str__(self):
+		return self.nombre
+
+	class Meta:
+		verbose_name 		= 'Nivel'
+		verbose_name_plural = 'Niveles'
 
 class Gasto_Mensual(models.Model):
 
@@ -121,13 +124,15 @@ class Gasto_Mensual(models.Model):
 		(12, 'DICIEMBRE'),
 	)
 
+	# atributos (generales)
 	mes 			= models.IntegerField(choices=MESES)
 	anio			= models.IntegerField()
 	valor 			= models.DecimalField(max_digits=24, decimal_places=4)
 
 	# atributos (por defecto)
 	visible 		= models.BooleanField(default=True)
-	creado_en 		= models.DateTimeField(auto_now=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	user 	= models.ForeignKey(User)
@@ -137,5 +142,5 @@ class Gasto_Mensual(models.Model):
 		return self.activo.nombre+' - '+str(self.mes)+' - '+str(self.anio)
 
 	class Meta:
-		verbose_name 		= "Gasto Mensual"
-		verbose_name_plural = "Gastos Mensuales"
+		verbose_name 		= 'Gasto Mensual'
+		verbose_name_plural = 'Gastos Mensuales'

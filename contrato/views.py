@@ -1306,7 +1306,7 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 class ContratosInactivosList(ListView):
 
 	model 			= Contrato
-	template_name 	= 'viewer/contratos/contratos_inactivos_list.html'
+	template_name 	= 'contrato_inactivo_list.html'
 
 	def get_context_data(self, **kwargs):
 
@@ -1314,7 +1314,7 @@ class ContratosInactivosList(ListView):
 		context['title'] 	= modulo
 		context['subtitle'] = 'Contrato Incativos'
 		context['name'] 	= 'Lista'
-		context['href'] 	= 'contratos/inactivos'
+		context['href'] 	= '/contratos/inactivos/list'
 
 		return context
 
@@ -1327,7 +1327,6 @@ class ContratosInactivosList(ListView):
 			item.fecha_termino 	= item.fecha_termino.strftime('%d/%m/%Y')
 
 		return queryset
-
 
 # get
 class CONTRATO(View):

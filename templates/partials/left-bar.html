@@ -89,14 +89,15 @@
 			<li>
 				<a><i class="fa fa-thumb-tack"></i> <span class="nav-label">Operaciones</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
-					<li><a href='{% url "lectura_medidor_list" %}'>Lectura Medidores</a></li>
+					<li><a href='{% url "operaciones:lectura_medidor_list" %}'>Lectura Medidores</a></li>
+					<li><a href='{% url "operaciones:gasto_servicio_basico_list" %}'>Gasto Servicios Básicos</a></li>
 					<li><a href="/contratos/inactivos/list">Activar Contratos</a></li>
 				</ul>
 			</li>
 
-			<li>
+			<!-- <li>
 				<a href="/reportes/list"><i class="fa fa-folder-open-o"></i> <span class="nav-label">Reporteria</span></a>
-			</li>
+			</li> -->
 
 			<li>
 				<a><i class="fa fa-cog"></i> <span class="nav-label">Configuración</span> <span class="fa arrow"></span></a>

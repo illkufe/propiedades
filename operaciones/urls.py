@@ -26,4 +26,10 @@ urlpatterns = [
 	url(r'^lectura-gas/delete/(?P<pk>\d+)$', views.LecturaGasDelete.as_view(), name='lectura_gas_delete'),
 	url(r'^lectura-gas/update/(?P<pk>\d+)$', views.LecturaGasUpdate.as_view(), name='lectura_gas_update'),
 
+	# gastos servicios basicos
+	url(r'^gasto-servicios-basicos/list$', views.GastoServicioBasicoList.as_view(), name='gasto_servicio_basico_list'),
+	url(r'^gasto-servicios-basicos/new$', views.GastoServicioBasicoNew.as_view(), name='gasto_servicio_basico_new'),
+	url(r'^gasto-servicios-basicos/delete/(?P<pk>\d+)$', views.GastoServicioBasicoDelete.as_view(), name='gasto_servicio_basico_delete'),
+	url(r'^gasto-servicios-basicos/update/(?P<pk>\d+)$', views.GastoServicioBasicoUpdate.as_view(), name='gasto_servicio_basico_update'),
+
 ]

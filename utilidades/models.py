@@ -1,24 +1,27 @@
+from __future__ import unicode_literals
+
 from django.db import models
 
-# Modelos
+# modelos
 class Moneda(models.Model):
 
 	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
-	simbolo     = models.CharField(max_length=250)
-	abrev       = models.CharField(max_length=250)
-	descripcion = models.TextField(blank=True)
+	nombre      	= models.CharField(max_length=250)
+	simbolo     	= models.CharField(max_length=250)
+	abrev       	= models.CharField(max_length=250)
+	descripcion 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
+	visible     	= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.abrev
 
 	class Meta:
-		verbose_name 		= "Moneda"
-		verbose_name_plural = "Monedas"
+		verbose_name 		= 'Moneda'
+		verbose_name_plural = 'Monedas'
 
 class Moneda_Historial(models.Model):
 
@@ -33,34 +36,36 @@ class Moneda_Historial(models.Model):
 		return self.moneda.nombre
 
 	class Meta:
-		verbose_name 		= "Historial de Moneda"
-		verbose_name_plural = "Historial de Monedas"
+		verbose_name 		= 'Historial de Moneda'
+		verbose_name_plural = 'Historial de Monedas'
 
 class Region(models.Model):
 
 	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
-	ordinal     = models.CharField(max_length=250)
+	nombre      	= models.CharField(max_length=250)
+	ordinal     	= models.CharField(max_length=250)
 
 	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
+	visible     	= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Región"
-		verbose_name_plural = "Regiones"
+		verbose_name 		= 'Región'
+		verbose_name_plural = 'Regiones'
 
 class Provincia(models.Model):
 
 	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
+	nombre      	= models.CharField(max_length=250)
 
 	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
+	visible     	= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	region = models.ForeignKey(Region)
@@ -69,17 +74,18 @@ class Provincia(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Provincia"
-		verbose_name_plural = "Provincias"
+		verbose_name 		= 'Provincia'
+		verbose_name_plural = 'Provincias'
 
 class Comuna(models.Model):
 
 	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
+	nombre      	= models.CharField(max_length=250)
 
 	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
+	visible     	= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	provincia = models.ForeignKey(Provincia)
@@ -88,45 +94,47 @@ class Comuna(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Comuna"
-		verbose_name_plural = "Comunas"
+		verbose_name 		= 'Comuna'
+		verbose_name_plural = 'Comunas'
 
 class Estado_Civil(models.Model):
 
 	# atributos (generales)
-	nombre      = models.CharField(max_length=250)
-	codigo     	= models.CharField(max_length=250)
-	descripcion = models.TextField(blank=True)
+	nombre      	= models.CharField(max_length=250)
+	codigo     		= models.CharField(max_length=250)
+	descripcion 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible     = models.BooleanField(default=True)
-	creado_en   = models.DateTimeField(auto_now=True)
+	visible     	= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Estado Civil"
-		verbose_name_plural = "Estados Civiles"
+		verbose_name 		= 'Estado Civil'
+		verbose_name_plural = 'Estados Civiles'
 
 class Tarifa_Electricidad(models.Model):
 
 	# atributos (generales)
-	nombre 		= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=250)
-	valor		= models.FloatField()
-	descripcion = models.TextField(blank=True)
+	nombre 			= models.CharField(max_length=250)
+	codigo 			= models.CharField(max_length=250)
+	valor			= models.FloatField()
+	descripcion 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.codigo
 
 	class Meta:
-		verbose_name 		= "Tarifa de Electricidad"
-		verbose_name_plural = "Tarifas de Electricidad"
+		verbose_name 		= 'Tarifa de Electricidad'
+		verbose_name_plural = 'Tarifas de Electricidad'
 
 class Giro(models.Model):
 
@@ -137,13 +145,13 @@ class Giro(models.Model):
 	categoria_tributaria 	= models.CharField(max_length=250)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.descripcion
 
 	class Meta:
-		verbose_name 		= "Giro"
-		verbose_name_plural = "Giros"
-
+		verbose_name 		= 'Giro'
+		verbose_name_plural = 'Giros'

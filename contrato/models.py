@@ -11,13 +11,14 @@ from utilidades.models import Moneda
 class Contrato_Tipo(models.Model):
 
 	# atributos (generales)
-	nombre  	= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=10, blank=True)
-	descripcion = models.TextField(blank=True)
+	nombre  		= models.CharField(max_length=250)
+	codigo 			= models.CharField(max_length=10, blank=True)
+	descripcion 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	empresa = models.ForeignKey(Empresa)
@@ -32,14 +33,15 @@ class Contrato_Tipo(models.Model):
 class Contrato_Estado(models.Model):
 
 	# atributos (generales)
-	nombre  	= models.CharField(max_length=250)
-	background 	= models.CharField(max_length=7)
-	color 		= models.CharField(max_length=7)
-	descripcion = models.TextField(blank=True)
+	nombre  		= models.CharField(max_length=250)
+	background 		= models.CharField(max_length=7)
+	color 			= models.CharField(max_length=7)
+	descripcion 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.nombre
@@ -51,9 +53,9 @@ class Contrato_Estado(models.Model):
 class Contrato(models.Model):
 
 	# atributos (generales)
-	numero 				= models.IntegerField()
-	nombre_local 		= models.CharField(max_length=250)
-	destino_comercial 	= models.TextField(blank=True)
+	numero 					= models.IntegerField()
+	nombre_local 			= models.CharField(max_length=250)
+	destino_comercial 		= models.TextField(blank=True)
 
 	# atributos (periodo)
 	fecha_contrato 			= models.DateField()
@@ -69,12 +71,13 @@ class Contrato(models.Model):
 	fecha_activacion 		= models.DateField(null=True, blank=True)	
 
 	# atributos (bodega)
-	bodega 				= models.BooleanField(default=False)
-	metros_bodega		= models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True, default=0)
+	bodega 			= models.BooleanField(default=False)
+	metros_bodega	= models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True, default=0)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	empresa 		= models.ForeignKey(Empresa)
@@ -94,16 +97,17 @@ class Contrato(models.Model):
 class Garantia(models.Model):
 
 	# atributos (generales)
-	nombre 		= models.CharField(max_length=250)
-	valor		= models.DecimalField(max_digits=24, decimal_places=4, default=0)
+	nombre 			= models.CharField(max_length=250)
+	valor			= models.DecimalField(max_digits=24, decimal_places=4, default=0)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	contrato 	= models.ForeignKey(Contrato)
-	moneda 		= models.ForeignKey(Moneda)
+	contrato 		= models.ForeignKey(Contrato)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return self.nombre
@@ -111,16 +115,17 @@ class Garantia(models.Model):
 class Multa_Tipo(models.Model):
 
 	# atributos (generales)
-	nombre  	= models.CharField(max_length=250)
-	codigo 		= models.CharField(max_length=10, blank=True)
-	descripcion = models.TextField(blank=True)
+	nombre  		= models.CharField(max_length=250)
+	codigo 			= models.CharField(max_length=10, blank=True)
+	descripcion 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	empresa 	= models.ForeignKey(Empresa)
+	empresa = models.ForeignKey(Empresa)
 
 	def __str__(self):
 		return self.nombre
@@ -130,11 +135,12 @@ class Multa_Tipo(models.Model):
 class Propuesta_Contrato(models.Model):
 
 	# atributos (generales)
-	numero = models.IntegerField()
+	numero 			= models.IntegerField()
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	empresa 	= models.ForeignKey(Empresa)
@@ -175,8 +181,9 @@ class Propuesta_Version(models.Model):
 	gasto_comun 		= models.BooleanField(default=False)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	user		= models.ForeignKey(User)
@@ -212,16 +219,17 @@ class Propuesta_Proceso(models.Model):
 class Propuesta_Garantia(models.Model):
 
 	# atributos (generales)
-	nombre 		= models.CharField(max_length=250)
-	valor		= models.DecimalField(max_digits=24, decimal_places=4, default=0)
+	nombre 			= models.CharField(max_length=250)
+	valor			= models.DecimalField(max_digits=24, decimal_places=4, default=0)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda)
+	propuesta 		= models.ForeignKey(Propuesta_Version)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return self.nombre
@@ -236,8 +244,9 @@ class Propuesta_Arriendo_Minimo(models.Model):
 	fecha_inicio 	= models.DateField()
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	propuesta 	= models.ForeignKey(Propuesta_Version)
@@ -270,8 +279,9 @@ class Propuesta_Arriendo_Minimo_Detalle(models.Model):
 	metros 			= models.BooleanField(default=False)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	propuesta_arriendo_minimo 	= models.ForeignKey(Propuesta_Arriendo_Minimo)
@@ -307,12 +317,13 @@ class Propuesta_Arriendo_Variable(models.Model):
 	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda)
+	propuesta 		= models.ForeignKey(Propuesta_Version)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)
@@ -334,12 +345,13 @@ class Propuesta_Arriendo_Bodega(models.Model):
 	fecha_inicio 	= models.DateField()
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda)
+	propuesta 		= models.ForeignKey(Propuesta_Version)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)
@@ -368,12 +380,13 @@ class Propuesta_Cuota_Incorporacion(models.Model):
 	metros 			= models.BooleanField(default=False)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda)
+	propuesta 		= models.ForeignKey(Propuesta_Version)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)
@@ -391,15 +404,15 @@ class Propuesta_Fondo_Promocion(models.Model):
 	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
 	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	fecha 			= models.DateField()
-	
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda)
+	propuesta 		= models.ForeignKey(Propuesta_Version)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)
@@ -412,20 +425,20 @@ class Propuesta_Gasto_Comun(models.Model):
 	)
 
 	# atributos (generales)
-	tipo	= models.IntegerField(choices=TIPO)
-	valor 	= models.DecimalField(max_digits=24, decimal_places=4)
+	tipo			= models.IntegerField(choices=TIPO)
+	valor 			= models.DecimalField(max_digits=24, decimal_places=4)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	propuesta 	= models.ForeignKey(Propuesta_Version)
-	moneda 		= models.ForeignKey(Moneda)
+	propuesta 		= models.ForeignKey(Propuesta_Version)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return str(self.propuesta.numero)
-
 
 
 # modelos (conceptos)
@@ -447,20 +460,21 @@ class Multa(models.Model):
 	)
 
 	# atributos (generales)
-	valor		= models.DecimalField(max_digits=24, decimal_places=4)
-	mes 		= models.IntegerField(choices=MESES)
-	anio		= models.IntegerField()
-	descripcion = models.TextField(blank=True)
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
+	mes 			= models.IntegerField(choices=MESES)
+	anio			= models.IntegerField()
+	descripcion 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	empresa 	= models.ForeignKey(Empresa)
-	multa_tipo 	= models.ForeignKey(Multa_Tipo)
-	contrato 	= models.ForeignKey(Contrato)
-	moneda 		= models.ForeignKey(Moneda)
+	empresa 		= models.ForeignKey(Empresa)
+	multa_tipo 		= models.ForeignKey(Multa_Tipo)
+	contrato 		= models.ForeignKey(Contrato)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return self.contrato.nombre_local
@@ -475,13 +489,14 @@ class Arriendo(models.Model):
 	fecha_inicio 	= models.DateField()
 	
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	contrato 	= models.ForeignKey(Contrato)
-	concepto 	= models.ForeignKey(Concepto)
-	moneda 		= models.ForeignKey(Moneda)
+	contrato 		= models.ForeignKey(Contrato)
+	concepto 		= models.ForeignKey(Concepto)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return self.contrato.nombre_local
@@ -510,12 +525,13 @@ class Arriendo_Detalle(models.Model):
 	metro_cuadrado 	= models.BooleanField(default=False)
 	
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	arriendo 	= models.ForeignKey(Arriendo)
-	moneda 		= models.ForeignKey(Moneda)
+	arriendo 		= models.ForeignKey(Arriendo)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return self.arriendo.contrato.nombre_local
@@ -536,13 +552,14 @@ class Arriendo_Bodega(models.Model):
 	metro_cuadrado 	= models.BooleanField(default=False)
 	
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	contrato 	= models.ForeignKey(Contrato)
-	concepto 	= models.ForeignKey(Concepto)
-	moneda 		= models.ForeignKey(Moneda)
+	contrato 		= models.ForeignKey(Contrato)
+	concepto 		= models.ForeignKey(Concepto)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return self.contrato.nombre_local
@@ -577,7 +594,8 @@ class Arriendo_Variable(models.Model):
 
 	# atributos (por defecto)
 	visible 		= models.BooleanField(default=True)
-	creado_en 		= models.DateTimeField(auto_now=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	contrato 		= models.ForeignKey(Contrato)
@@ -601,8 +619,9 @@ class Gasto_Comun(models.Model):
 	metros_cuadrado = models.BooleanField(default=False)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	contrato 	= models.ForeignKey(Contrato)
@@ -620,13 +639,14 @@ class Servicio_Basico(models.Model):
 	valor_gas			= models.FloatField()
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	contrato 	= models.ForeignKey(Contrato)
-	locales 	= models.ManyToManyField(Local)
-	concepto 	= models.ForeignKey(Concepto)
+	contrato 		= models.ForeignKey(Contrato)
+	locales 		= models.ManyToManyField(Local)
+	concepto 		= models.ForeignKey(Concepto)
 
 	def __str__(self):
 		return self.contrato.nombre_local
@@ -639,40 +659,14 @@ class Cuota_Incorporacion(models.Model):
 	metro_cuadrado 	= models.BooleanField(default=False)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	contrato 	= models.ForeignKey(Contrato)
-	moneda 		= models.ForeignKey(Moneda)
-	concepto 	= models.ForeignKey(Concepto)
-
-	def __str__(self):
-		return self.contrato.nombre_local
-
-class Fondo_Promocion(models.Model):
-
-	PERIODICIDAD = (
-		(1, 'MENSUAL'),
-		(2, 'TRIMESTRAL'),
-		(3, 'SEMESTRAL'),
-		(4, 'ANUAL'),
-	)
-
-	# atributos (generales)
-	fecha 			= models.DateField()
-	valor			= models.DecimalField(max_digits=24, decimal_places=4)
-	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
-
-	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
-
-	# relaciones
-	contrato 	= models.ForeignKey(Contrato)
-	concepto 	= models.ForeignKey(Concepto)
-	moneda 		= models.ForeignKey(Moneda)
-	vinculo 	= models.ForeignKey(Concepto, related_name='vinculo')
+	contrato 		= models.ForeignKey(Contrato)
+	moneda 			= models.ForeignKey(Moneda)
+	concepto 		= models.ForeignKey(Concepto)
 
 	def __str__(self):
 		return self.contrato.nombre_local
@@ -693,14 +687,15 @@ class Gasto_Asociado(models.Model):
 	valor_fijo 		= models.BooleanField(default=False)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	contrato 	= models.ForeignKey(Contrato)
-	concepto 	= models.ForeignKey(Concepto)
-	moneda 		= models.ForeignKey(Moneda)
-	vinculo 	= models.ForeignKey(Concepto, related_name='concepto_gasto_asociado', null=True, blank=True)
+	contrato 		= models.ForeignKey(Contrato)
+	concepto 		= models.ForeignKey(Concepto)
+	moneda 			= models.ForeignKey(Moneda)
+	vinculo 		= models.ForeignKey(Concepto, related_name='concepto_gasto_asociado', null=True, blank=True)
 
 	def __str__(self):
 		return self.contrato.nombre_local

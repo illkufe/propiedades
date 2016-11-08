@@ -227,14 +227,13 @@ def propuesta_generar(request):
 
 			if validar_concepto(contrato, concepto, fecha)['estado'] == True:
 
-				total = formato_moneda_local_sin_miles(request, calcular_concepto(contrato, concepto, fecha, configuracion))
+				total = calcular_concepto(contrato, concepto, fecha, configuracion)
 
 				if total is not 0:
 					conceptos.append({
 						'id'		: concepto.id,
 						'nombre'	: concepto.nombre,
 						'total'		: total,
-						# 'total'		: formato_numero(total),
 						})
 
 		cliente = {
@@ -263,28 +262,42 @@ def propuesta_guardar(request):
 	try:
 		with transaction.atomic():
 
+			nombre 			= var_post['nombre']
+			fecha_inicio	= primer_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y"))
+			fecha_termino	= ultimo_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y"))
+
 			for item in data:
 
 				total 		= 0 
-				contrato_id = item['id']
+				contrato 	= Contrato.objects.get(id=int(item['id']))
+				estado 		= Factura_Estado.objects.get(id=int(1))			
 				conceptos 	= item['conceptos']
-				estado_id 	= 1
 
 				factura = Factura(
-					nombre 			= var_post['nombre'],
-					fecha_inicio	= primer_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y")),
-					fecha_termino	= ultimo_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y")),
+					nombre 			= nombre,
+					fecha_inicio	= fecha_inicio,
+					fecha_termino	= fecha_termino,
 					uf_valor		= Decimal(var_post.get('uf_valor').replace(".", "").replace(",", ".")),
 					uf_modificada	= True if var_post.get('uf_modificada') == 'true' else False,
-					contrato_id 	= contrato_id,
-					estado_id 		= estado_id,
-					total 			= 0,
+					contrato 		= contrato,
+					estado 			= estado,
+					total 			= total,
 					user 			= request.user,
 					motor_emision 	= request.user.userprofile.empresa.configuracion.motor_factura,
 				)
 				factura.save()
 				
 				for concepto in conceptos:
+					if Factura_Detalle.objects.filter(factura__contrato=contrato, concepto_id=concepto['id'], factura__fecha_inicio=fecha_inicio, factura__fecha_termino=fecha_termino).exists():
+						factura_detalle 		= Factura_Detalle.objects.get(factura__contrato=contrato, concepto_id=concepto['id'], factura__fecha_inicio=fecha_inicio, factura__fecha_termino=fecha_termino)
+						factura_anterior 		= factura_detalle.factura
+						factura_anterior.total 	= factura_anterior.total - factura_detalle.total
+						factura_anterior.save()
+						factura_detalle.delete()
+
+						if factura_anterior.factura_detalle_set.all().count() == 0:
+							factura_anterior.delete()
+							
 
 					concepto_id 		= concepto['id']
 					concepto_nombre 	= concepto['nombre']
@@ -313,144 +326,6 @@ def propuesta_guardar(request):
 		mensaje = str(error)
 
 	return JsonResponse({'estado':estado, 'mensaje':mensaje, 'id':id}, safe=False)
-
-
-
-# def propuesta_guardar(request):
-
-# 	response 	= list()
-# 	var_post 	= request.POST.copy()
-# 	data 		= json.loads(var_post['contratos'])
-
-# 	try:
-# 		with transaction.atomic():
-# 			propuesta = Propuesta(
-# 				nombre 			= var_post['nombre'],
-# 				uf_valor		= Decimal(var_post.get('uf_valor').replace(".", "").replace(",", ".")),
-# 				uf_modificada	= True if var_post.get('uf_modificada') == 'true' else False,
-# 				user 			= request.user,
-# 			)
-# 			propuesta.save()
-
-# 			for item in data:
-
-# 				total 		= 0 
-# 				contrato_id = item['id']
-# 				conceptos 	= item['conceptos']
-# 				estado_id 	= 1
-
-# 				factura = Factura(
-# 					fecha_inicio	= primer_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y")),
-# 					fecha_termino	= ultimo_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y")),
-# 					propuesta 		= propuesta,
-# 					contrato_id 	= contrato_id,
-# 					estado_id 		= estado_id,
-# 					total 			= 0,
-# 					motor_emision 	= request.user.userprofile.empresa.configuracion.motor_factura,
-
-# 				)
-# 				factura.save()
-				
-# 				for concepto in conceptos:
-
-# 					concepto_id 		= concepto['id']
-# 					concepto_nombre 	= concepto['nombre']
-# 					# concepto_total 		= concepto['total']
-# 					concepto_total 		= Decimal(concepto['total'].replace(".", "").replace(",", "."))
-# 					concepto_modificado = concepto['modified']
-
-# 					Factura_Detalle(
-# 						nombre 			= concepto_nombre,
-# 						total 			= concepto_total,
-# 						factura 		= factura,
-# 						concepto_id 	= int(concepto_id),
-# 					).save()
-
-# 					total += concepto_total
-
-# 				factura.total = total
-# 				factura.save()
-
-# 			id 		= propuesta.id
-# 			estado 	= True
-# 			mensaje = 'ok'
-
-# 	except Exception as error:
-# 		id 		= None
-# 		estado 	= False
-# 		mensaje = str(error)
-
-# 	return JsonResponse({'estado':estado, 'mensaje':mensaje, 'id':id}, safe=False)
-
-@transaction.atomic
-def propuesta_guardar_final(request):
-
-	response 	= list()
-	var_post 	= request.POST.copy()
-	data 		= json.loads(var_post['contratos'])
-
-	try:
-		with transaction.atomic():
-
-			for item in data:
-
-				total 			= 0 
-				conceptos 		= item['conceptos']
-				contrato 		= Contrato.objects.get(id=int(item['id']))
-				estado 			= Factura_Estado.objects.get(id=1)
-				nombre 			= var_post['nombre']
-				fecha_inicio 	= primer_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y"))
-				fecha_termino 	= ultimo_dia(datetime.strptime('01/'+var_post['mes']+'/'+var_post['anio']+'', "%d/%m/%Y"))
-
-				factura = Factura(
-					nombre 			= nombre,
-					fecha_inicio	= fecha_inicio,
-					fecha_termino	= fecha_termino,
-					total 			= total,
-					uf_valor		= Decimal(var_post.get('uf_valor').replace(".", "").replace(",", ".")),
-					uf_modificada	= True if var_post.get('uf_modificada') == 'true' else False,
-					motor_emision 	= request.user.userprofile.empresa.configuracion.motor_factura,
-					user 			= request.user,
-					contrato 		= contrato,
-					estado 			= estado,
-				)
-				factura.save()
-
-				for concepto in conceptos:
-
-					concepto_id 		= concepto['id']
-					concepto_nombre 	= concepto['nombre']
-					concepto_total 		= Decimal(concepto['total'].replace(".", "").replace(",", "."))
-					concepto_modificado = concepto['modified']
-
-					if Factura_Detalle.objects.filter(concepto_id=concepto_id, factura__contrato=contrato, factura__fecha_inicio=fecha_inicio, factura__fecha_termmino=fecha_termino).exists():
-						# eliminar
-						factura_detalle = Factura_Detalle.objects.filter(concepto_id=concepto_id, factura__contrato=contrato, factura__fecha_inicio=fecha_inicio, factura__fecha_termmino=fecha_termino)
-						factura_detalle.delete()
-
-					Factura_Detalle(
-						nombre 		= concepto_nombre,
-						total 		= concepto_total,
-						factura 	= factura,
-						concepto_id = int(concepto_id),
-					).save()
-
-					total += concepto_total
-
-				factura.total = total
-				factura.save()
-
-			id 		= propuesta.id
-			estado 	= True
-			mensaje = 'ok'
-
-	except Exception as error:
-		id 		= None
-		estado 	= False
-		mensaje = str(error)
-
-	return JsonResponse({'estado':estado, 'mensaje':mensaje, 'id':id}, safe=False)
-
 
 def propuesta_pdf(request, pk=None):
 

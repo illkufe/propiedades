@@ -455,8 +455,8 @@ function form_filtrar_contratos(){
 					notification_toast(configuracion)
 				}
 			});
-		}
-	})
+}
+})
 }
 
 function form_generar_propuesta(){
@@ -541,8 +541,8 @@ function form_generar_propuesta(){
 					loading(false)
 				}
 			});
-		}
-	})
+}
+})
 }
 
 function load_tabla_contratos(conceptos){
@@ -702,8 +702,8 @@ function modal_abrir_generar_propuesta(){
 		}
 		notification_toast(configuracion)
 	};
-    // Configuracion de Moneda Pesos
-    change_config_money()
+	// Configuracion de Moneda Pesos
+	change_config_money()
 }
 
 
@@ -748,8 +748,13 @@ function cargar_propuesta(contratos){
 		$('#container-propuesta').append(template_propuesta(contratos[i]))
 	}
 
-    // Configuracion de Moneda Pesos
-    change_config_money()
+	// Configuracion de Moneda Pesos
+	$('.format-number').autoNumeric("init",{
+		aSep: LEASE_CURRENCY_THOUSANDS,
+		aDec: LEASE_CURRENCY_DECIMALS,
+		mDec: LEASE_CURRENCY_FORMAT,
+	})
+	change_config_money()
 	validar_form_propuesta()
 }
 
@@ -893,8 +898,8 @@ function validar_form_propuesta(){
 					loading(false)
 				}
 			})
-		}
-	})
+}
+})
 
 	// agregar validacion a los campos nombre
 	$("#form-validar-propuesta [name^=nombre]").each(function () {

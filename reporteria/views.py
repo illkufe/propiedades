@@ -16,9 +16,9 @@ class REPORTES(View):
 	def get(self, request, id=None):
 		
 		if id == None:
-			self.object_list = Reporte.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+			self.object_list = Reporte_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
 		else:
-			self.object_list = Reporte.objects.filter(pk=id)
+			self.object_list = Reporte_Tipo.objects.filter(pk=id)
 
 		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
 
@@ -26,16 +26,16 @@ class REPORTES(View):
 
 		else:
 
-			tipos 		= request.user.userprofile.empresa.reporte_tipo_set.all()
-			reportes 	= Reporte.objects.filter(empresa=request.user.userprofile.empresa)
+			# tipos 		= request.user.userprofile.empresa.reporte_tipo_set.all()
+			# reportes 	= Reporte_Tipo.objects.filter(empresa=request.user.userprofile.empresa)
 
 			return render(request, 'reporte_list.html', {
 				'title' 	: 'Reporteria',
 				'href' 		: 'reportes',
 				'subtitle'	: 'Reportes',
 				'name' 		: 'Lista',
-				'tipos' 	: tipos,
-				'reportes' 	: reportes,
+				'tipos' 	: '',
+				'reportes' 	: '',
 				})
 	
 	def post(self, request):

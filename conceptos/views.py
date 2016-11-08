@@ -2,7 +2,7 @@
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse_lazy
 
-from django.views.generic import ListView, FormView, DeleteView, UpdateView
+from django.views.generic import ListView, FormView, DeleteView, UpdateView, View
 
 from .forms import ConceptoForm
 from .models import Concepto
@@ -105,3 +105,42 @@ class ConceptoUpdate(ConceptoMixin, UpdateView):
 		context['accion'] 	= 'update'
 
 		return context
+
+
+# get - concepto
+class CONCEPTO(View):
+
+	http_method_names = ['get']
+	
+	def get(self, request, id=None):
+
+		if id == None:
+			self.object_list = Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		else:
+			self.object_list = Concepto.objects.filter(pk=id)
+
+		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
+			return self.json_to_response()
+
+	def json_to_response(self):
+
+		data = list()
+
+		for item in self.object_list:
+
+			tipo = {
+				'id' 		: item.concepto_tipo.id,
+				'nombre' 	: item.concepto_tipo.nombre,
+				'codigo' 	: item.concepto_tipo.codigo,
+			}
+
+			data.append({
+				'id' 			: item.id,
+				'nombre'		: item.nombre,
+				'codigo'		: item.codigo,
+				'descripcion'	: item.descripcion,
+				'tipo'			: tipo,
+			})
+
+		return JsonResponse(data, safe=False)
+

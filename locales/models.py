@@ -10,13 +10,14 @@ from utilidades.models import Tarifa_Electricidad
 class Local_Tipo(models.Model):
 
 	# atributos (generales)
-	nombre  	= models.CharField(max_length=250)
-	descripcion = models.TextField(blank=True)
-	prorrateo 	= models.BooleanField(default=False) #{falta: sacar campo}
+	nombre  		= models.CharField(max_length=250)
+	descripcion 	= models.TextField(blank=True)
+	prorrateo 		= models.BooleanField(default=False) #{falta: sacar campo}
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	empresa = models.ForeignKey(Empresa)
@@ -25,8 +26,8 @@ class Local_Tipo(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Tipo de Local"
-		verbose_name_plural = "Tipos de Locales"
+		verbose_name 		= 'Tipo de Local'
+		verbose_name_plural = 'Tipos de Locales'
 
 class Local(models.Model):
 
@@ -40,33 +41,29 @@ class Local(models.Model):
 	descripcion 		= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 			= models.BooleanField(default=True)
+	creado_en 			= models.DateTimeField(auto_now_add=True)
+	modificado_en 		= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	activo 					= models.ForeignKey(Activo)
-	sector 					= models.ForeignKey(Sector)
-	nivel 					= models.ForeignKey(Nivel)
-	local_tipo 				= models.ForeignKey(Local_Tipo)
-	clasificaciones  		= models.ManyToManyField(Clasificacion_Detalle)
+	activo 				= models.ForeignKey(Activo)
+	sector 				= models.ForeignKey(Sector)
+	nivel 				= models.ForeignKey(Nivel)
+	local_tipo 			= models.ForeignKey(Local_Tipo)
+	clasificaciones  	= models.ManyToManyField(Clasificacion_Detalle)
 
 	def __str__(self):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Local"
-		verbose_name_plural = "Locales"
+		verbose_name 		= 'Local'
+		verbose_name_plural = 'Locales'
 
 class Venta(models.Model):
 
 	PERIODICIDAD = (
-		(0, 'ANUAL'),
-		(1, 'SEMESTRAL'),
-		(2, 'TRIMESTRAL'),
-		(3, 'MENSUAL'),
-		(4, 'QUINCENAL'),
-		(5, 'SEMANAL'),
-		(6, 'DIARIA'),
+		(1, 'DIARIA'),
+		(2, 'MENSUAL'),
 	)
 
 	# atributos (generales)
@@ -76,18 +73,19 @@ class Venta(models.Model):
 	valor 			= models.DecimalField(max_digits=24, decimal_places=4, null=True, blank=True)
 	
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	local 		= models.ForeignKey(Local)
+	local = models.ForeignKey(Local)
 
 	def __str__(self):
 		return self.local.nombre
 
 	class Meta:
-		verbose_name 		= "Venta"
-		verbose_name_plural = "Ventas"
+		verbose_name 		= 'Venta'
+		verbose_name_plural = 'Ventas'
 
 class Medidor_Electricidad(models.Model):
 
@@ -100,7 +98,8 @@ class Medidor_Electricidad(models.Model):
 
 	# atributos (por defecto)
 	visible 			= models.BooleanField(default=True)
-	creado_en 			= models.DateTimeField(auto_now=True)
+	creado_en 			= models.DateTimeField(auto_now_add=True)
+	modificado_en 		= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	local 				= models.ForeignKey(Local)
@@ -110,50 +109,52 @@ class Medidor_Electricidad(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Medidor de Electricidad"
-		verbose_name_plural = "Medidores de Electricidad"
+		verbose_name 		= 'Medidor de Electricidad'
+		verbose_name_plural = 'Medidores de Electricidad'
 
 class Medidor_Agua(models.Model):
 
 	# atributos (generales)
-	nombre 				= models.CharField(max_length=250)
-	numero_rotulo 		= models.CharField(max_length=250)
-	potencia			= models.FloatField(default=0, null=True, blank=True)
+	nombre 			= models.CharField(max_length=250)
+	numero_rotulo 	= models.CharField(max_length=250)
+	potencia		= models.FloatField(default=0, null=True, blank=True)
 
 	# atributos (por defecto)
-	visible 			= models.BooleanField(default=True)
-	creado_en 			= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	local 			= models.ForeignKey(Local)
+	local = models.ForeignKey(Local)
 
 	def __str__(self):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Medidor de Agua"
-		verbose_name_plural = "Medidores de Agua"
+		verbose_name 		= 'Medidor de Agua'
+		verbose_name_plural = 'Medidores de Agua'
 
 class Medidor_Gas(models.Model):
 
 	# atributos (generales)
-	nombre 				= models.CharField(max_length=250)
-	numero_rotulo 		= models.CharField(max_length=250)
-	potencia			= models.FloatField(default=0, null=True, blank=True)
+	nombre 			= models.CharField(max_length=250)
+	numero_rotulo 	= models.CharField(max_length=250)
+	potencia		= models.FloatField(default=0, null=True, blank=True)
 
 	# atributos (por defecto)
-	visible 			= models.BooleanField(default=True)
-	creado_en 			= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	local 	= models.ForeignKey(Local)
+	local = models.ForeignKey(Local)
 
 	def __str__(self):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Medidor de Gas"
-		verbose_name_plural = "Medidores de Gas"
+		verbose_name 		= 'Medidor de Gas'
+		verbose_name_plural = 'Medidores de Gas'
 
 class Gasto_Servicio(models.Model):
 
@@ -172,17 +173,19 @@ class Gasto_Servicio(models.Model):
 		(12, 'DICIEMBRE'),
 	)
 
-	nombre 		= models.CharField(max_length=250)
-	mes 		= models.IntegerField(choices=MESES)
-	anio		= models.IntegerField()
-	valor 		= models.DecimalField(max_digits=24, decimal_places=4)
-	imagen_file = models.FileField(upload_to='gastos-servicios', blank=True)
-	imagen_type = models.CharField(max_length=250, blank=True)
-	imagen_size = models.CharField(max_length=250, blank=True)
+	# atributos (por defecto)
+	nombre 			= models.CharField(max_length=250)
+	mes 			= models.IntegerField(choices=MESES)
+	anio			= models.IntegerField()
+	valor 			= models.DecimalField(max_digits=24, decimal_places=4)
+	imagen_file 	= models.FileField(upload_to='gastos-servicios', blank=True)
+	imagen_type 	= models.CharField(max_length=250, blank=True)
+	imagen_size 	= models.CharField(max_length=250, blank=True)
 
 	# atributos (por defecto)
 	visible 		= models.BooleanField(default=True)
-	creado_en 		= models.DateTimeField(auto_now=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	user 	= models.ForeignKey(User)
@@ -192,6 +195,5 @@ class Gasto_Servicio(models.Model):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Gasto de Servicio"
-		verbose_name_plural = "Gastos de Servicios"
-
+		verbose_name 		= 'Gasto de Servicio'
+		verbose_name_plural = 'Gastos de Servicios'

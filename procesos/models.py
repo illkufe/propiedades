@@ -5,26 +5,26 @@ from django.contrib.auth.models import User, Group
 from conceptos.models import Concepto
 from contrato.models import Contrato
 from facturacion.models import MotorFacturacion
-from locales.models import Local, Medidor_Electricidad, Medidor_Agua, Medidor_Gas
 
 # modelos
 class Factura_Estado(models.Model):
 
 	# atributos (generales)
-	nombre 		= models.CharField(max_length=250)
-	color 		= models.CharField(max_length=7)
-	descripcion = models.TextField(blank=True)
+	nombre 			= models.CharField(max_length=250)
+	color 			= models.CharField(max_length=7)
+	descripcion 	= models.TextField(blank=True)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Estado de Factura"
-		verbose_name_plural = "Estados de Factura"
+		verbose_name 		= 'Estado de Factura'
+		verbose_name_plural = 'Estados de Factura'
 
 class Factura(models.Model):
 
@@ -44,7 +44,8 @@ class Factura(models.Model):
 
 	# atributos (por defecto)
 	visible 			= models.BooleanField(default=True)
-	creado_en 			= models.DateTimeField(auto_now=True)
+	creado_en 			= models.DateTimeField(auto_now_add=True)
+	modificado_en 		= models.DateTimeField(auto_now=True)
 
 	# relaciones
 	user 				= models.ForeignKey(User)
@@ -56,26 +57,27 @@ class Factura(models.Model):
 		return self.nombre+' - '+self.contrato.nombre_local
 
 	class Meta:
-		verbose_name 		= "Factura"
-		verbose_name_plural = "Facturas"
+		verbose_name 		= 'Factura'
+		verbose_name_plural = 'Facturas'
 
 class Factura_Detalle(models.Model):
 
 	# atributos (generales)
-	nombre 		= models.CharField(max_length=250)
-	total 		= models.DecimalField(max_digits=24, decimal_places=4)
+	nombre 			= models.CharField(max_length=250)
+	total 			= models.DecimalField(max_digits=24, decimal_places=4)
 
 	# atributos (por defecto)
-	visible 	= models.BooleanField(default=True)
-	creado_en 	= models.DateTimeField(auto_now=True)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	factura		= models.ForeignKey(Factura)
-	concepto	= models.ForeignKey(Concepto)
+	factura			= models.ForeignKey(Factura)
+	concepto		= models.ForeignKey(Concepto)
 	
 	def __str__(self):
 		return self.nombre
 
 	class Meta:
-		verbose_name 		= "Detalle de Factura"
-		verbose_name_plural = "Detalles de Factura"
+		verbose_name 		= 'Detalle de Factura'
+		verbose_name_plural = 'Detalles de Factura'

@@ -9,7 +9,6 @@ from conceptos.models import Concepto
 from utilidades.models import Moneda
 
 from .models import *
-
 from utilidades.views import *
 from datetime import datetime, timedelta
 
@@ -486,41 +485,6 @@ class CuotaIncorporacionForm(forms.ModelForm):
 			'metro_cuadrado' : 'Valor Aplicado por Metro Cuadrado'
 		}
 
-class FondoPromocionForm(forms.ModelForm):
-
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Fondo Promoción')
-	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar desde', help_text='Fecha de Inicio del Cobro Fondo Promoción')
-	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Fondo Promoción')
-
-	def __init__(self, *args, **kwargs):
-		contrato = kwargs.pop('contrato', None)
-		super(FondoPromocionForm, self).__init__(*args, **kwargs)
-
-		self.fields['vinculo'].queryset = Concepto.objects.filter(concepto_tipo_id=1)
-
-		if contrato is not None:
-			self.fields['fecha'].initial = contrato.fecha_inicio.strftime('%d/%m/%Y')
-			
-
-	class Meta:
-		model 	= Fondo_Promocion
-		fields 	= '__all__'
-		exclude = ['visible', 'creado_en', 'concepto']
-
-		widgets = {
-			'periodicidad'	: forms.Select(attrs={'class': 'form-control'}),
-			'vinculo'		: forms.Select(attrs={'class': 'form-control'}),
-		}
-
-		error_messages = {
-			'periodicidad'	: {'required': 'campo requerido'},
-		}
-
-		help_texts = {
-			'periodicidad'	: 'Periodicidad de Fondo Promoción',
-			'vinculo'		: ''
-		}
-
 class GastoAsociadoForm(forms.ModelForm):
 
 	valor = NumberField(
@@ -972,6 +936,5 @@ CuotaIncorporacionFormet 	= inlineformset_factory(Contrato, Cuota_Incorporacion,
 ArriendoBodegaFormSet 		= inlineformset_factory(Contrato, Arriendo_Bodega, form=ArriendoBodegaForm, extra=1, can_delete=True)
 GarantiaFormSet 			= inlineformset_factory(Contrato, Garantia, form=GarantiaForm, extra=1, can_delete=True)
 ArriendoDetalleFormSet 		= inlineformset_factory(Arriendo, Arriendo_Detalle, form=ArriendoDetalleForm, extra=1, can_delete=True)
-FondoPromocionFormSet 		= inlineformset_factory(Contrato, Fondo_Promocion, form=FondoPromocionForm, extra=1, can_delete=True)
 GastoAsociadoFormSet 		= inlineformset_factory(Contrato, Gasto_Asociado, form=GastoAsociadoForm, extra=1, can_delete=True)
 

@@ -16,7 +16,8 @@ from .models import *
 
 # variables
 modulo 	= 'Operaciones'
-
+meses 	= ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+tipos 	= ['Electicidad','Agua y Alcantarillado','Gas']
 
 # lecturas
 class LecturaMedidorList(ListView):
@@ -688,6 +689,113 @@ class LecturaGasUpdate(LecturaGasMixin, UpdateView):
 		context['subtitle'] = 'lectura medidor de gas'
 		context['name'] 	= 'editar'
 		context['href'] 	= '/lectura-medidores/list'
+		context['accion'] 	= 'update'
+		return context
+
+
+
+
+
+
+# gasto servicios basicos
+class GastoServicioBasicoList(ListView):
+
+	model 			= Gasto_Servicio_Basico
+	template_name 	= 'gasto_servicio_basico_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(GastoServicioBasicoList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Gasto Servicios Básicos'
+		context['name'] 	= 'Lista'
+		context['href'] 	= 'list'
+
+		return context
+
+	def get_queryset(self):
+
+		queryset = Gasto_Servicio_Basico.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		for item in queryset:
+
+			item.mes 	= meses[int(item.mes)-1]
+			item.tipo 	= tipos[int(item.tipo)-1]
+
+		return queryset
+
+class GastoServicioBasicoMixin(object):
+
+	template_name 	= 'gasto_servicio_basico_new.html'
+	form_class 		= GastoServicioBasicoForm
+	success_url 	= '/gasto-servicios-basicos/list'
+
+	def form_invalid(self, form):
+
+		response = super(GastoServicioBasicoMixin, self).form_invalid(form)
+		if self.request.is_ajax():
+			return JsonResponse(form.errors, status=400)
+		else:
+			return response
+
+	def form_valid(self, form):
+
+		obj 		= form.save(commit=False)
+		obj.empresa = self.request.user.userprofile.empresa
+
+		if Gasto_Servicio_Basico.objects.filter(tipo= obj.tipo, mes=obj.mes, anio=obj.anio).exists():
+
+			Gasto_Servicio_Basico.objects.get(tipo= obj.tipo, mes=obj.mes, anio=obj.anio).delete()
+
+		obj.save()
+
+		response = super(GastoServicioBasicoMixin, self).form_valid(form)
+		if self.request.is_ajax():
+			data = {'estado': True,}
+			return JsonResponse(data)
+		else:
+			return response
+
+class GastoServicioBasicoNew(GastoServicioBasicoMixin, FormView):
+
+	def get_context_data(self, **kwargs):
+		
+		context 			= super(GastoServicioBasicoNew, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Gasto Servicios Básicos'
+		context['name'] 	= 'nueva'
+		context['href'] 	= 'list'
+		context['accion'] 	= 'create'
+		return context
+
+class GastoServicioBasicoDelete(DeleteView):
+
+	model 		= Gasto_Servicio_Basico
+	success_url = reverse_lazy('/gasto-servicios-basicos/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object 		= self.get_object()
+		self.object.visible = False
+		self.object.save()
+		data = {'estado': True}
+
+		return JsonResponse(data, safe=False)
+
+class GastoServicioBasicoUpdate(GastoServicioBasicoMixin, UpdateView):
+
+	model 			= Gasto_Servicio_Basico
+	form_class 		= GastoServicioBasicoForm
+	template_name 	= 'gasto_servicio_basico_new.html'
+	success_url 	= '/gasto-servicios-basicos/list'
+
+	def get_context_data(self, **kwargs):
+		
+		context 			= super(GastoServicioBasicoUpdate, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Gasto Servicios Básicos'
+		context['name'] 	= 'editar'
+		context['href'] 	= 'list'
 		context['accion'] 	= 'update'
 		return context
 

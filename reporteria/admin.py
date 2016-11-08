@@ -1,8 +1,5 @@
 from django.contrib import admin
 from .models import *
 
-# Modelos
+# modelos
 admin.site.register(Reporte_Tipo)
-admin.site.register(Reporte)
-
-

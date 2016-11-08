@@ -31,42 +31,78 @@
 	</div>
 </div>
 
-<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- modal: ventas diarias -->
+<div class="modal fade" id="m-venta-diaria" tabindex="-1" role="dialog"  aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
+
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h4 class="modal-title">Archivo</h4>
+				<h4 class="modal-title">Venta Diaria</h4>
 			</div>
+
 			<div class="modal-body">
+				<form id="form-venta-new" role="form" action="" method="post">
+					{% csrf_token %}
+					<div class="row">
+						<div class="form-group col-sm-4">
+							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_venta.local.help_text }}" ></i>
+							{{ form_venta.local.label_tag }}
+							{{ form_venta.local }}
+							<div class="container-error">
+								{{ form_venta.local.errors|striptags }}
+							</div>
+						</div>
+						<div class="form-group col-sm-4">
+							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_venta.fecha_inicio.help_text }}" ></i>
+							{{ form_venta.fecha_inicio.label_tag }}
+							{{ form_venta.fecha_inicio }}
+							<div class="container-error">
+								{{ form_venta.fecha_inicio.errors|striptags }}
+							</div>
+						</div>
+						<div class="form-group col-sm-4">
+							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_venta.valor.help_text }}" ></i>
+							{{ form_venta.valor.label_tag }}
+							{{ form_venta.valor }}
+							<div class="container-error">
+								{{ form_venta.valor.errors|striptags }}
+							</div>
+						</div>
+					</div>
+				</form>
 			</div>
+
 			<div class="modal-footer">
-				<p class="text-center">
-					<button type="button" class="btn btn-w-m btn-sm btn-primary" data-dismiss="modal">OK</button>
-				</p>
+				<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+				<button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="guardar_ventas()">GUARDAR</button>
 			</div>
 		</div>
 	</div>
 </div>
 
-<div class="modal fade" id="modal-new-carga-masiva" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- modal: ventas masiva -->
+<div class="modal fade" id="m-venta-masiva" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
+
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h4 class="modal-title text-center">Subir Plantilla de Ventas</h4>
+				<h4 class="modal-title">Subir Plantilla de Ventas</h4>
 			</div>
-			<div class="modal-body" style="padding:15px 0px 0px 0px">
-				<form id="form-carga-new" role="form" action="/ventas/" method="post" enctype="multipart/form-data">
-					<div class="ibox-content">
-						{% csrf_token %}
-						<div class="ibox-tools">
-							<a href="/media/formatos/formato_ventas.xls" class="btn btn-primary btn-xs" role="button"><i class="fa fa-download"></i>
-								Descargar Plantilla
-							</a>
+
+			<form id="form-carga-new" role="form" action="/ventas/" method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+
+				<div class="modal-body">
+
+					<div class="row">
+						<div class="col-xs-12">
+							<a href="/media/formatos/formato_ventas.xls" class="btn btn-primary btn-xs pull-right" role="button"><i class="fa fa-download"></i> Descargar Plantilla</a>
+							<br>
 						</div>
-						<div class="row">
-							<div class="form-group col-sm-8">
+						<div class="col-sm-12">
+							<div class="form-group">
 								<span>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="Archivo Excel de Ventas a Cargar" ></i>
 									<label for="">Archivo</label>
@@ -75,90 +111,70 @@
 								<div class="container-error"></div>
 							</div>
 						</div>
+						
 					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
-						<button type="submit" class="btn btn-w-m btn-sm btn-primary pull-right" >SUBIR ARCHIVO</button>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+					<button type="submit" class="btn btn-w-m btn-sm btn-primary pull-right" >SUBIR ARCHIVO</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!--  modal: detalle ventas mensuales -->
+<div class="modal fade" id="m-ventas-detalle" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Detalle Ventas</h4>
+			</div>
+
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12">
+						<table id="tabla-ventas-diarias" class="table">
+							<thead>
+								<tr>
+									<th hidden>id</th>
+									<th class="text-center">Fecha</th>
+									<th class="text-center">Valor</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
 					</div>
-				</form>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
 			</div>
 		</div>
 	</div>
 </div>
 
-<div class="modal inmodal fade" id="modal-venta-diaria" tabindex="-1" role="dialog"  aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title text-center">Venta Diarias</h4>
-            </div>
-            <div class="modal-body" style="padding:15px 0px 0px 0px">
-                <div class="ibox-content">
-					<table id="tabla-ventas-diarias" class="table">
-                        <thead>
-                            <tr>
-                                <th hidden>id</th>
-                                <th class="text-center">Fecha</th>
-                                <th class="text-center">Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="m-venta-diaria" tabindex="-1" role="dialog"  aria-hidden="true">
+<!-- modal: errores ventas, carga masiva -->
+<div class="modal fade" id="m-ventas-errores" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
+
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h4 class="modal-title">Venta Diaria</h4>
+				<h4 class="modal-title">Archivo</h4>
 			</div>
 
-
 			<div class="modal-body">
-				<form id="form-venta-new" role="form" action="" method="post">
-						{% csrf_token %}
-						<div class="row">
-							<div class="form-group col-sm-4">
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_venta.local.help_text }}" ></i>
-								{{ form_venta.local.label_tag }}
-								{{ form_venta.local }}
-								<div class="container-error">
-									{{ form_venta.local.errors|striptags }}
-								</div>
-							</div>
-							<div class="form-group col-sm-4">
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_venta.fecha_inicio.help_text }}" ></i>
-								{{ form_venta.fecha_inicio.label_tag }}
-								{{ form_venta.fecha_inicio }}
-								<div class="container-error">
-									{{ form_venta.fecha_inicio.errors|striptags }}
-								</div>
-							</div>
-							<div class="form-group col-sm-4">
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_venta.valor.help_text }}" ></i>
-								{{ form_venta.valor.label_tag }}
-								{{ form_venta.valor }}
-								<div class="container-error">
-									{{ form_venta.valor.errors|striptags }}
-								</div>
-							</div>
-						</div>
-					</form>
-
 			</div>
 
 			<div class="modal-footer">
-				<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
-				<button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="guardar_ventas()">GUARDAR</button>
+				<p class="text-center">
+					<button type="button" class="btn btn-w-m btn-sm btn-primary" data-dismiss="modal">OK</button>
+				</p>
 			</div>
 		</div>
 	</div>
@@ -172,6 +188,7 @@
 var tabla_ventas;
 
 $(document).ready(function(){
+
 	var configuracion = {
 		'order': [[1, 'asc'],[2, 'asc']],
 	}
@@ -218,10 +235,10 @@ $(document).ready(function(){
 	tabla_ventas = load_table('#tabla-ventas', columns, configuracion)
 
 	load_tabla_ventas()
-    load_function();
-    $(":file").filestyle();
-    guardar_carga_masiva()
-    change_config_money()
+	load_function();
+	$(":file").filestyle();
+	guardar_carga_masiva()
+	change_config_money()
 
 });
 
@@ -236,7 +253,7 @@ function load_function() {
 	$('.carga_masiva').on('click', function () {
 		clear_errors_form('#form-carga-new');
 		clear_form('#form-carga-new');
-		$('#modal-new-carga-masiva').modal('show');
+		$('#m-venta-masiva').modal('show');
 		$(":file").filestyle();
 	})
 
@@ -265,14 +282,12 @@ function guardar_ventas(){
 				}
 			}
 			notification_toast(configuracion)
+			load_tabla_ventas()
 		},
 		error: function(data, textStatus, jqXHR) {
-			clear_errors_form('#form-proceso-new');
+			clear_errors_form('#form-venta-new');
 			var errors = $.parseJSON(data.responseText);
 			apply_errors_form(errors);
-		},
-		complete: function () {
-			load_tabla_ventas();
 		}
 	})
 }
@@ -329,7 +344,7 @@ function guardar_carga_masiva() {
 				dataType: 'json',
 				beforeSubmit: function(){
 					console.log('enviando')
-					$('#modal-new-carga-masiva').modal('hide');
+					$('#m-venta-masiva').modal('hide');
 				},
 				success: function(data){
 
@@ -399,63 +414,59 @@ function guardar_carga_masiva() {
 						template += '</div>'
 					}
 
-					$('#modalError').find('.modal-body').html(template);
+					$('#m-ventas-errores').find('.modal-body').html(template);
 					load_tabla_ventas()
 					clear_form('#form-carga-new')
 					$("#file").filestyle('clear');
 
 				},
 				complete:function () {
-					/*Cambiar por una función */
-					/*                    setTimeout(function(){$('#modalError').modal('show')}, 158);*/
-					setTimeout(function(){$('#modalError').modal('show')}, 500);
+					/*Cambiar por una función*/
+					/*setTimeout(function(){$('#m-ventas-errores').modal('show')}, 158);*/
+					setTimeout(function(){$('#m-ventas-errores').modal('show')}, 500);
 				}
 			})
-
+		}
+	})
 }
-})
-}
-
-
-
 
 function open_modal_ventas_diarias(obj) {
 
-    var local   = $(obj).attr('data-local')
-    var mes     = $(obj).attr('data-mes')
-    var ano     = $(obj).attr('data-ano')
+	var local   = $(obj).attr('data-local')
+	var mes     = $(obj).attr('data-mes')
+	var ano     = $(obj).attr('data-ano')
 
-    var data = {
-                'local': local,
-                'mes': mes,
-                'ano': ano,
-    }
+	var data = {
+		'local': local,
+		'mes': mes,
+		'ano': ano,
+	}
 
-    $.ajax({
-        url: '{% url 'venta_diaria' %}',
-        type: 'get',
-        data: {
-            venta               : JSON.stringify(data),
-            csrfmiddlewaretoken : getCookie('csrftoken'),
-        },
-        success: function(data){
+	$.ajax({
+		url: '{% url 'venta_diaria' %}',
+		type: 'get',
+		data: {
+			venta               : JSON.stringify(data),
+			csrfmiddlewaretoken : getCookie('csrftoken'),
+		},
+		success: function(data){
 
-            var template = ''
+			var template = ''
 
-            for (var i = 0; i < data.length; i++) {
+			for (var i = 0; i < data.length; i++) {
 
-                template += '<tr>'
-                template += '<td hidden>' + data[i].id + '</td>'
-                template += '<td class="text-center">' + data[i].fecha  + '</td>'
-                template += '<td class="text-right">' + data[i].valor  + '</td>'
-                template += '</tr>'
-            }
+				template += '<tr>'
+				template += '<td hidden>' + data[i].id + '</td>'
+				template += '<td class="text-center">' + data[i].fecha  + '</td>'
+				template += '<td class="text-right">' + data[i].valor  + '</td>'
+				template += '</tr>'
+			}
 
-            $('#modal-venta-diaria').find('#tabla-ventas-diarias tbody').html(template);
+			$('#m-ventas-detalle').find('#tabla-ventas-diarias tbody').html(template);
 
-            $('#modal-venta-diaria').modal('show')
-        },
-    })
+			$('#m-ventas-detalle').modal('show')
+		},
+	})
 
 }
 

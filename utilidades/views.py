@@ -108,7 +108,7 @@ def sumar_meses(fecha, meses):
 
 
 # funciones globales (numeros)
-def formato_moneda(valor):
+def formato_moneda(valor): #{cambiar por formato_moneda_final}
 
 	moneda = '${:,.4f}'.format(valor)
 
@@ -117,6 +117,17 @@ def formato_moneda(valor):
 	moneda = moneda.replace('*', ',')
 
 	return moneda
+
+def formato_moneda_final(valor):
+
+	moneda = '${:,.4f}'.format(valor)
+
+	moneda = moneda.replace('.', '*')
+	moneda = moneda.replace(',', '.')
+	moneda = moneda.replace('*', ',')
+
+	return moneda
+
 
 def formato_numero(valor):
 
@@ -147,7 +158,7 @@ def formato_numero_sin_miles_decimales(valor):
 	return moneda
 
 
-def formato_moneda_local(request, valor):
+def formato_moneda_local(request, valor):#{cambiar por formato_moneda_final}
 
 	try:
 		user 			= request.user
@@ -170,28 +181,6 @@ def formato_moneda_local(request, valor):
 
 	return moneda
 
-def formato_moneda_local_sin_miles(request, valor):
-
-	try:
-		user 			= request.user
-		empresa 		= user.userprofile.empresa
-		configuracion 	= empresa.configuracion
-		moneda_local    = empresa.configuracion_monedas_set.get(moneda_local=True)
-
-		decimales       = configuracion.cantidad_decimales if moneda_local.cantidad_decimales is None else moneda_local.cantidad_decimales
-
-		formato = '{:.'+str(decimales)+'f}'
-		moneda  = formato.format(valor)
-
-	except Exception:
-		formato = '{:.'+str(configuracion.cantidad_decimales)+'f}'
-		moneda 	= formato.format(valor)
-
-	moneda = moneda.replace('.', '*')
-	moneda = moneda.replace(',', '.')
-	moneda = moneda.replace('*', ',')
-
-	return moneda
 
 # funciones avatar
 def avatar_usuario(user):

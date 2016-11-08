@@ -30,7 +30,7 @@ urlpatterns = [
     url(r'^', include('contrato.urls',  namespace='contrato')),
     url(r'^', include('conceptos.urls')),
     url(r'^', include('procesos.urls')),
-    url(r'^', include('operaciones.urls')),
+    url(r'^', include('operaciones.urls', namespace='operaciones')),
     url(r'^', include('notificaciones.urls')),
     url(r'^', include('reporteria.urls')),
     url(r'^', include('facturacion.urls')),

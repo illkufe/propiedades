@@ -1,6 +1,6 @@
 from django import forms
 from utilidades.views import NumberField
-from .models import Lectura_Electricidad, Lectura_Agua, Lectura_Gas
+from .models import *
 
 class LecturaElectricidadForm(forms.ModelForm):
 
@@ -105,4 +105,40 @@ class LecturaGasForm(forms.ModelForm):
 			'mes'			: 'Mes de Lectura',
 			'anio'			: 'Año de Lectura',
 			'imagen_file'	: 'Imagen Asociada a Lectura',
+		}
+
+
+class GastoServicioBasicoForm(forms.ModelForm):
+
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='valor asociado al gasto')
+	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'false', 'onchange': 'cambio_format_moneda(this, 1)'}), help_text='moneda asociada al gasto')
+
+	class Meta:
+
+		model 	= Gasto_Servicio_Basico
+		fields 	= '__all__'
+		exclude = [ 'visible', 'creado_en', 'empresa']
+
+		widgets = {
+			'tipo'	: forms.Select(attrs={'class': 'form-control'}),
+			'mes'	: forms.Select(attrs={'class': 'form-control'}),
+			'anio'	: forms.NumberInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'tipo' 	: {'required': 'campo requerido'},
+			'mes' 	: {'required': 'campo requerido'},
+			'anio' 	: {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'tipo'	: 'Tipo de gasto',
+			'mes'	: 'Mes',
+			'anio'	: 'Año',
+		}
+
+		help_texts = {
+			'tipo'	: 'tipo de gasto',
+			'mes'	: 'mes del gasto',
+			'anio'	: 'año del gasto',
 		}
