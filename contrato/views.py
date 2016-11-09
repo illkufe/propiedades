@@ -927,21 +927,18 @@ class ContratoConceptoMixin(object):
 		formulario 	= context['formulario']
 
 		if concepto.concepto_tipo.id == 1:
-			
+
 			if formulario.is_valid():
-				formulario_detalle 	= context['formulario_detalle']
+				newscores = formulario.save(commit=False)
 
-				newscore = formulario.save(commit=False)
-				newscore.concepto_id = concepto.id
-				newscore.save()
+				for obj in formulario.deleted_objects:
+					obj.delete()
 
-				if formulario_detalle.is_valid():
-					formulario_detalle.save()
-				else:
-					return JsonResponse(form.errors, status=400)
-
+				for newscore in newscores:
+					newscore.concepto_id = concepto.id
+					newscore.save()
 			else:
-				return JsonResponse(form.errors, status=400)
+				return JsonResponse(formulario.errors, status=400, safe=False)
 
 		elif concepto.concepto_tipo.id == 2:
 
@@ -955,10 +952,11 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				return JsonResponse(form.errors, status=400)
+				return JsonResponse(form.errors, status=400, safe=False)
 
 		# gasto común
 		elif concepto.concepto_tipo.id == 3:
+
 			if formulario.is_valid():
 				newscores = formulario.save(commit=False)
 
@@ -985,7 +983,7 @@ class ContratoConceptoMixin(object):
 				formulario.save_m2m()
 
 			else:
-				return JsonResponse(form.errors, status=400)
+				return JsonResponse(formulario.errors, status=400, safe=False)
 			
 		elif concepto.concepto_tipo.id == 5:
 
@@ -999,7 +997,7 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				return JsonResponse(form.errors, status=400)
+				return JsonResponse(formulario.errors, status=400, safe=False)
 
 		elif concepto.concepto_tipo.id == 6:
 			if formulario.is_valid():
@@ -1026,7 +1024,20 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				return JsonResponse(form.errors, status=400)
+				return JsonResponse(formulario.errors, status=400, safe=False)
+
+		elif concepto.concepto_tipo.id == 10:
+			if formulario.is_valid():
+				newscores = formulario.save(commit=False)
+
+				for obj in formulario.deleted_objects:
+					obj.delete()
+
+				for newscore in newscores:
+					newscore.concepto_id = concepto.id
+					newscore.save()
+			else:
+				return JsonResponse(formulario.errors, status=400, safe=False)
 
 		else:
 			pass
@@ -1061,14 +1072,7 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 			concepto 				= Concepto.objects.get(id=context['concepto_id'])
 
 			if concepto.concepto_tipo.id == 1:
-				if Arriendo.objects.filter(contrato=contrato, concepto=concepto).exists():
-					arriendo_minimo 				= Arriendo.objects.get(contrato=contrato, concepto=concepto)
-					context['formulario'] 			= ArriendoForm(self.request.POST, instance=arriendo_minimo)
-					context['formulario_detalle'] 	= ArriendoDetalleFormSet(self.request.POST, instance=arriendo_minimo)
-				else:
-					context['formulario'] 			= ArriendoForm(self.request.POST)
-					context['formulario_detalle'] 	= ArriendoDetalleFormSet(self.request.POST)
-
+				context['formulario'] 	= ArriendoMinimoFormSet(self.request.POST, instance=contrato)
 			elif concepto.concepto_tipo.id == 2:
 				context['formulario'] 	= ArriendoVariableFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			elif concepto.concepto_tipo.id == 3:
@@ -1078,10 +1082,11 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 			elif concepto.concepto_tipo.id == 5:
 				context['formulario'] 	= CuotaIncorporacionFormet(self.request.POST, instance=contrato)
 			elif concepto.concepto_tipo.id == 6:
-				# context['formulario'] 	= FondoPromocionFormSet(self.request.POST, instance=contrato)
 				context['formulario'] 	= GastoAsociadoFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			elif concepto.concepto_tipo.id == 7:
 				context['formulario'] 	= ArriendoBodegaFormSet(self.request.POST, instance=contrato)
+			elif concepto.concepto_tipo.id == 10:
+				context['formulario'] 	= ReajusteFormSet(self.request.POST, instance=contrato, form_kwargs={'contrato': contrato})
 			else:
 				pass
 
@@ -1092,21 +1097,35 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 			for concepto in conceptos:
 
 				if concepto.concepto_tipo.id == 1:
-					if Arriendo.objects.filter(contrato=contrato, concepto=concepto).exists():
-						arriendo 				= Arriendo.objects.get(contrato=contrato, concepto=concepto)
-						arriendo.fecha_inicio 	= arriendo.fecha_inicio.strftime('%d/%m/%Y')
-						form 					= ArriendoForm(instance=arriendo, contrato=contrato)
-						form_detalle 			= ArriendoDetalleFormSet(instance=arriendo)
+
+					if Arriendo_Minimo.objects.filter(contrato=contrato, concepto=concepto).exists():
+						form = ArriendoMinimoFormSet(instance=contrato, queryset=Arriendo_Minimo.objects.filter(contrato=contrato, concepto=concepto))
 					else:
-						form 			= ArriendoForm(contrato=contrato)
-						form_detalle 	= ArriendoDetalleFormSet()
+						form = ArriendoMinimoFormSet()
 
 					formularios.append({
-						'fomulario' 		: form, 
-						'fomulario_detalle' : form_detalle,
-						'contrato' 			: contrato,
-						'concepto' 			: concepto,
+						'fomulario' : form, 
+						'contrato' 	: contrato,
+						'concepto' 	: concepto,
 					})
+
+
+					# pass
+				# 	if Arriendo.objects.filter(contrato=contrato, concepto=concepto).exists():
+				# 		arriendo 				= Arriendo.objects.get(contrato=contrato, concepto=concepto)
+				# 		arriendo.fecha_inicio 	= arriendo.fecha_inicio.strftime('%d/%m/%Y')
+				# 		form 					= ArriendoForm(instance=arriendo, contrato=contrato)
+				# 		form_detalle 			= ArriendoDetalleFormSet(instance=arriendo)
+				# 	else:
+				# 		form 			= ArriendoForm(contrato=contrato)
+				# 		form_detalle 	= ArriendoDetalleFormSet()
+
+				# 	formularios.append({
+				# 		'fomulario' 		: form, 
+				# 		'fomulario_detalle' : form_detalle,
+				# 		'contrato' 			: contrato,
+				# 		'concepto' 			: concepto,
+				# 	})
 
 				elif concepto.concepto_tipo.id == 2:
 					if Arriendo_Variable.objects.filter(contrato=contrato, concepto=concepto).exists():
@@ -1181,123 +1200,23 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 						'concepto' 	: concepto,
 					})
 
+				elif concepto.concepto_tipo.id == 10:
+					if Reajuste.objects.filter(contrato=contrato, concepto=concepto).exists():
+						form = ReajusteFormSet(instance=contrato, queryset=Reajuste.objects.filter(contrato=contrato, concepto=concepto), form_kwargs={'contrato': contrato})
+					else:
+						form = ReajusteFormSet(form_kwargs={'contrato': contrato})
+
+					formularios.append({
+						'fomulario' : form, 
+						'contrato' 	: contrato,
+						'concepto' 	: concepto,
+					})
+
 				else:
 					pass
 
 				context['formularios'] 	= formularios
 				context['accion'] 		= 'update'
-
-		# if self.request.POST:
-
-		# 	contrato = Contrato.objects.get(id=self.kwargs['contrato_id'])
-
-		# 	# arriendo mínimo
-		# 	try:
-		# 		arriendo_minimo 			= Arriendo.objects.get(contrato_id=self.kwargs['contrato_id'])
-		# 		context['formset_arriendo'] = ArriendoForm(self.request.POST, instance=arriendo_minimo)
-		# 		context['formset_detalle'] 	= ArriendoDetalleFormSet(self.request.POST,  instance=arriendo_minimo)
-		# 	except Exception:
-		# 		context['formset_arriendo'] = ArriendoForm(self.request.POST)
-		# 		context['formset_detalle'] 	= ArriendoDetalleFormSet(self.request.POST)
-
-			
-		# 	# try:
-		# 	# 	arriendo_bodega 				= Arriendo_Bodega.objects.filter(contrato_id=self.kwargs['contrato_id'])
-		# 	# 	context['form_arriendo_bodega'] = ArriendoBodegaFormSet(self.request.POST, instance=contrato)
-		# 	# except Exception:
-		# 	# 	context['form_arriendo_bodega'] = ArriendoBodegaFormSet(self.request.POST)
-
-		# 	# arriendo variable
-		# 	try:
-		# 		arriendo_variable 					= Arriendo_Variable.objects.filter(contrato_id=self.kwargs['contrato_id'])
-		# 		context['form_arriendo_variable'] 	= ArriendoVariableFormSet(self.request.POST, instance=contrato)
-		# 	except Exception:
-		# 		context['form_arriendo_variable'] 	= ArriendoVariableFormSet(self.request.POST)
-
-		# 	# gasto común
-		# 	try:
-		# 		gasto_comun 				= Gasto_Comun.objects.filter(contrato_id=self.kwargs['contrato_id'])
-		# 		context['form_gasto_comun'] = GastoComunFormSet(self.request.POST, instance=contrato)
-		# 	except Exception:
-		# 		context['form_gasto_comun'] = GastoComunFormSet(self.request.POST)
-
-		# 	# servicios básicos
-		# 	try:
-		# 		servicio_basico 					= Servicio_Basico.objects.filter(contrato=contrato)
-		# 		context['form_servicios_basicos'] 	= ServicioBasicoFormSet(self.request.POST, instance=contrato)
-		# 	except Exception:
-		# 		context['form_servicios_basicos'] 	= ServicioBasicoFormSet(self.request.POST)
-
-		# 	# cuota incorporacion
-		# 	try:
-		# 		cuota_incorporacion 				= Cuota_Incorporacion.objects.filter(contrato_id=self.kwargs['contrato_id'])
-		# 		context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(self.request.POST, instance=contrato)
-		# 	except Exception:
-		# 		context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(self.request.POST)
-
-		# 	# fondo promoción
-		# 	try:
-		# 		fondo_promocion 				= Fondo_Promocion.objects.filter(contrato_id=self.kwargs['contrato_id'])
-		# 		context['form_fondo_promocion'] = FondoPromocionFormSet(self.request.POST, instance=contrato)
-		# 	except Exception:
-		# 		context['form_fondo_promocion'] = FondoPromocionFormSet(self.request.POST)
-
-		# else:
-
-		# 	contrato_id = self.kwargs['contrato_id']
-		# 	contrato 	= Contrato.objects.get(id=contrato_id)
-
-		# 	# arriendo mínimo
-		# 	# try:
-		# 	# 	arriendo_minimo 				= Arriendo.objects.get(contrato_id=contrato_id)
-		# 	# 	arriendo_minimo.fecha_inicio 	= arriendo_minimo.fecha_inicio.strftime('%d/%m/%Y')
-		# 	# 	context['formset_arriendo'] 	= ArriendoForm(instance=arriendo_minimo, contrato=contrato)
-		# 	# 	context['formset_detalle'] 		= ArriendoDetalleFormSet(instance=arriendo_minimo)
-		# 	# except Exception:
-		# 	# 	context['formset_arriendo'] 	= ArriendoForm(contrato=contrato)
-		# 	# 	context['formset_detalle'] 		= ArriendoDetalleFormSet()
-
-		# 	# arriendo bodega
-		# 	# try:
-		# 	# 	arriendo_bodega 				= Arriendo_Bodega.objects.filter(contrato_id=contrato_id)
-		# 	# 	context['form_arriendo_bodega'] = ArriendoBodegaFormSet(instance=contrato)
-		# 	# except Exception:
-		# 	# 	context['form_arriendo_bodega'] = ArriendoBodegaFormSet()
-
-		# 	# arriendo variable
-		# 	try:
-		# 		arriendo_variable 					= Arriendo_Variable.objects.filter(contrato_id=contrato_id)
-		# 		context['form_arriendo_variable'] 	= ArriendoVariableFormSet(instance=contrato)
-		# 	except Exception:
-		# 		context['form_arriendo_variable'] 	= ArriendoVariableFormSet()
-
-		# 	# gasto común
-		# 	try:
-		# 		gasto_comun 				= Gasto_Comun.objects.filter(contrato=contrato)
-		# 		context['form_gasto_comun'] = GastoComunFormSet(instance=contrato, form_kwargs={'contrato': contrato})
-		# 	except Exception:
-		# 		context['form_gasto_comun'] = GastoComunFormSet(form_kwargs={'contrato': contrato})
-
-		# 	# servicios básicos
-		# 	try:
-		# 		servicio_basico 					= Servicio_Basico.objects.filter(contrato=contrato)
-		# 		context['form_servicios_basicos'] 	= ServicioBasicoFormSet(instance=contrato, form_kwargs={'contrato': contrato})
-		# 	except Exception:
-		# 		context['form_servicios_basicos'] 	= ServicioBasicoFormSet(form_kwargs={'contrato': contrato})
-
-		# 	# cuota incorporación
-		# 	try:
-		# 		cuota_incorporacion 				= Cuota_Incorporacion.objects.filter(contrato_id=contrato_id)
-		# 		context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(instance=contrato, form_kwargs={'contrato': contrato})
-		# 	except Exception:
-		# 		context['form_cuota_incorporacion'] = CuotaIncorporacionFormet(form_kwargs={'contrato': contrato})
-
-		# 	# fondo promoción
-		# 	try:
-		# 		fondo_promocion 				= Fondo_Promocion.objects.filter(contrato_id=contrato_id)
-		# 		context['form_fondo_promocion'] = FondoPromocionFormSet(instance=contrato, form_kwargs={'contrato': contrato})
-		# 	except Exception:
-		# 		context['form_fondo_promocion'] = FondoPromocionFormSet(form_kwargs={'contrato': contrato})
 
 		return context
 

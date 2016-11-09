@@ -445,18 +445,18 @@ class Propuesta_Gasto_Comun(models.Model):
 class Multa(models.Model):
 
 	MESES = (
-		(1, 'ENERO'),
-		(2, 'FEBRERO'),
-		(3, 'MARZO'),
-		(4, 'ABRIL'),
-		(5, 'MAYO'),
-		(6, 'JUNIO'),
-		(7, 'JULIO'),
-		(8, 'AGOSTO'),
-		(9, 'SEPTIEMBRE'),
-		(10, 'OCTUBRE'),
-		(11, 'NOVIEMBRE'),
-		(12, 'DICIEMBRE'),
+		(1, 'Enero'),
+		(2, 'Febrero'),
+		(3, 'Marzo'),
+		(4, 'Abril'),
+		(5, 'Mayo'),
+		(6, 'Junio'),
+		(7, 'Julio'),
+		(8, 'Agosto'),
+		(9, 'Septiembre'),
+		(10, 'Octubre'),
+		(11, 'Noviembre'),
+		(12, 'Diciembre'),
 	)
 
 	# atributos (generales)
@@ -479,76 +479,31 @@ class Multa(models.Model):
 	def __str__(self):
 		return self.contrato.nombre_local
 
-class Arriendo(models.Model):
-
-	# atributos (generales)
-	reajuste 		= models.BooleanField(default=False)
-	por_meses 		= models.BooleanField(default=False)
-	meses 			= models.IntegerField(default=0)
-	valor			= models.DecimalField(max_digits=24, decimal_places=4, default=0)
-	fecha_inicio 	= models.DateField()
-	
-	# atributos (por defecto)
-	visible 		= models.BooleanField(default=True)
-	creado_en 		= models.DateTimeField(auto_now_add=True)
-	modificado_en 	= models.DateTimeField(auto_now=True)
-
-	# relaciones
-	contrato 		= models.ForeignKey(Contrato)
-	concepto 		= models.ForeignKey(Concepto)
-	moneda 			= models.ForeignKey(Moneda)
-
-	def __str__(self):
-		return self.contrato.nombre_local
-
-class Arriendo_Detalle(models.Model):
+class Arriendo_Minimo(models.Model):
 
 	MESES = (
-		(1, 'ENERO'),
-		(2, 'FEBRERO'),
-		(3, 'MARZO'),
-		(4, 'ABRIL'),
-		(5, 'MAYO'),
-		(6, 'JUNIO'),
-		(7, 'JULIO'),
-		(8, 'AGOSTO'),
-		(9, 'SEPTIEMBRE'),
-		(10, 'OCTUBRE'),
-		(11, 'NOVIEMBRE'),
-		(12, 'DICIEMBRE'),
+		(1, 'Enero'),
+		(2, 'Febrero'),
+		(3, 'Marzo'),
+		(4, 'Abril'),
+		(5, 'Mayo'),
+		(6, 'Junio'),
+		(7, 'Julio'),
+		(8, 'Agosto'),
+		(9, 'Septiembre'),
+		(10, 'Octubre'),
+		(11, 'Noviembre'),
+		(12, 'Diciembre'),
 	)
 
 	# atributos (generales
 	mes_inicio 		= models.IntegerField(choices=MESES)
 	mes_termino		= models.IntegerField(choices=MESES)
-	valor			= models.DecimalField(max_digits=24, decimal_places=4)
-	metro_cuadrado 	= models.BooleanField(default=False)
-	
-	# atributos (por defecto)
-	visible 		= models.BooleanField(default=True)
-	creado_en 		= models.DateTimeField(auto_now_add=True)
-	modificado_en 	= models.DateTimeField(auto_now=True)
-
-	# relaciones
-	arriendo 		= models.ForeignKey(Arriendo)
-	moneda 			= models.ForeignKey(Moneda)
-
-	def __str__(self):
-		return self.arriendo.contrato.nombre_local
-
-class Arriendo_Bodega(models.Model):
-
-	PERIODICIDAD = (
-		(1, 'MENSUAL'),
-		(2, 'TRIMESTRAL'),
-		(3, 'SEMESTRAL'),
-		(4, 'ANUAL'),
-	)
-
-	# atributos (generales
-	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
-	valor			= models.DecimalField(max_digits=24, decimal_places=4)
+	anio_inicio		= models.IntegerField()
+	anio_termino 	= models.IntegerField()
 	fecha_inicio 	= models.DateField()
+	fecha_termino 	= models.DateField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
 	metro_cuadrado 	= models.BooleanField(default=False)
 	
 	# atributos (por defecto)
@@ -601,7 +556,35 @@ class Arriendo_Variable(models.Model):
 	contrato 		= models.ForeignKey(Contrato)
 	moneda 			= models.ForeignKey(Moneda)
 	concepto 		= models.ForeignKey(Concepto)
-	arriendo_minimo = models.ForeignKey(Concepto, related_name='arriendo_minimo', null=True, blank=True)
+	vinculo 		= models.ForeignKey(Concepto, related_name='concepto_arriendo_minimo', null=True, blank=True)
+
+	def __str__(self):
+		return self.contrato.nombre_local
+
+class Arriendo_Bodega(models.Model):
+
+	PERIODICIDAD = (
+		(1, 'MENSUAL'),
+		(2, 'TRIMESTRAL'),
+		(3, 'SEMESTRAL'),
+		(4, 'ANUAL'),
+	)
+
+	# atributos (generales
+	periodicidad	= models.IntegerField(choices=PERIODICIDAD)
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
+	fecha_inicio 	= models.DateField()
+	metro_cuadrado 	= models.BooleanField(default=False)
+	
+	# atributos (por defecto)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	contrato 		= models.ForeignKey(Contrato)
+	concepto 		= models.ForeignKey(Concepto)
+	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):
 		return self.contrato.nombre_local
@@ -609,8 +592,8 @@ class Arriendo_Variable(models.Model):
 class Gasto_Comun(models.Model):
 
 	TIPO = (
-		(1, 'FIJO'),
-		(2, 'PRORRATEO'),
+		(1, 'Fijo'),
+		(2, 'Prorrateo'),
 	)
 
 	# atributos (generales)
@@ -633,7 +616,13 @@ class Gasto_Comun(models.Model):
 
 class Servicio_Basico(models.Model):
 
+	TIPO = (
+		(1, 'Fijo'),
+		(2, 'Prorrateo'),
+	)
+
 	# atributos (generales)
+	tipo 				= models.IntegerField(choices=TIPO)
 	valor_electricidad	= models.FloatField()
 	valor_agua			= models.FloatField()
 	valor_gas			= models.FloatField()
@@ -696,6 +685,46 @@ class Gasto_Asociado(models.Model):
 	concepto 		= models.ForeignKey(Concepto)
 	moneda 			= models.ForeignKey(Moneda)
 	vinculo 		= models.ForeignKey(Concepto, related_name='concepto_gasto_asociado', null=True, blank=True)
+
+	def __str__(self):
+		return self.contrato.nombre_local
+
+class Reajuste(models.Model):
+
+	MESES = (
+		(1, 'Enero'),
+		(2, 'Febrero'),
+		(3, 'Marzo'),
+		(4, 'Abril'),
+		(5, 'Mayo'),
+		(6, 'Junio'),
+		(7, 'Julio'),
+		(8, 'Agosto'),
+		(9, 'Septiembre'),
+		(10, 'Octubre'),
+		(11, 'Noviembre'),
+		(12, 'Diciembre'),
+	)
+
+	# atributos (generales)
+	mes_inicio 		= models.IntegerField(choices=MESES)
+	mes_termino		= models.IntegerField(choices=MESES)
+	anio_inicio		= models.IntegerField()
+	anio_termino 	= models.IntegerField()
+	fecha_inicio 	= models.DateField()
+	fecha_termino 	= models.DateField()
+	valor			= models.DecimalField(max_digits=24, decimal_places=4)
+
+	# atributos (por defecto)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	contrato 		= models.ForeignKey(Contrato)
+	concepto 		= models.ForeignKey(Concepto)
+	moneda 			= models.ForeignKey(Moneda)
+	vinculo 		= models.ForeignKey(Concepto, related_name='concepto_reajuste')
 
 	def __str__(self):
 		return self.contrato.nombre_local

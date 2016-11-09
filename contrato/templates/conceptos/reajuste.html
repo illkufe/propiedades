@@ -55,8 +55,8 @@
 									{{ form.moneda.label_tag }}
 								</th>
 								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.metro_cuadrado.help_text }}" ></i>
-									{{ form.metro_cuadrado.label_tag }}
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.vinculo.help_text }}" ></i>
+									{{ form.vinculo.label_tag }}
 								</th>
 								<th></th>
 								{% endif %}
@@ -115,9 +115,9 @@
 									</td>
 									<td class="text-center">
 										<div class="form-group">
-											{{ form.metro_cuadrado }}
+											{{ form.vinculo }}
 											<div class="container-error">
-												{{ form.metro_cuadrado.errors }}
+												{{ form.vinculo.errors }}
 											</div>
 										</div>
 									</td>
@@ -135,8 +135,9 @@
 				</div>
 			</form>
 
-			<a href="/contrato/list" class="btn btn-w-m btn-sm btn-default" >CANCELAR</a>
-			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}', 'arriendo_minimo')">GUARDAR Y SEGUIR</button>
+			<br>
+			<a href="/contratos/list" class="btn btn-w-m btn-sm btn-default" >CANCELAR</a>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}', 'reajuste')">GUARDAR Y SEGUIR</button>
 		</div>
 	</div>
 </div>

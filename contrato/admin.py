@@ -10,8 +10,7 @@ admin.site.register(Multa_Tipo)
 
 # modelos: conceptos
 admin.site.register(Multa)
-admin.site.register(Arriendo)
-admin.site.register(Arriendo_Detalle)
+admin.site.register(Arriendo_Minimo)
 admin.site.register(Arriendo_Bodega)
 admin.site.register(Arriendo_Variable)
 admin.site.register(Gasto_Comun)

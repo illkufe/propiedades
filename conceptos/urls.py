@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
 
 from . import views
 
@@ -14,6 +13,6 @@ urlpatterns = [
 	url(r'^conceptos/update/(?P<pk>\d+)$', views.ConceptoUpdate.as_view(), name='concepto_update'),
 
 	# get - conceptos
-	url(r'^get/conceptos/$', csrf_exempt(views.CONCEPTO.as_view()),name='get_concepto'),
+	url(r'^get/conceptos/$', views.CONCEPTO.as_view(), name='get_concepto'),
 
 ]

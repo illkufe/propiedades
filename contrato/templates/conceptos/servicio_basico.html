@@ -15,7 +15,7 @@
 				
 				{% csrf_token %}
 
-				<div class="row">
+				<div id="container-concepto-{{forloop.counter}}" class="row">
 					<div class="col-sm-12">
 
 						{{ formulario.fomulario.management_form }}
@@ -31,6 +31,10 @@
 
 								{% for form in formulario.fomulario %}
 								{% if forloop.first %}
+								<th>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+									{{ form.tipo.label_tag }}
+								</th>
 								<th>
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.locales.help_text }}" ></i>
 									{{ form.locales.label_tag }}
@@ -59,6 +63,15 @@
 											{{ form.locales }}
 											<div class="container-error">
 												{{ form.locales.errors }}
+											</div>
+										</div>
+									</td>
+
+									<td>
+										<div class="form-group">
+											{{ form.tipo }}
+											<div class="container-error">
+												{{ form.tipo.errors }}
 											</div>
 										</div>
 									</td>
@@ -106,7 +119,7 @@
 			<br>
 
 			<a href="/contratos/list" class="btn btn-w-m btn-sm btn-default" >CANCELAR</a>
-			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
+			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}', 'servicio_basico')">GUARDAR Y SEGUIR</button>
 		</div>
 	</div>
 </div>

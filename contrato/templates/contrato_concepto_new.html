@@ -88,6 +88,8 @@ function guardar_formulario_conceptos(form, id, concepto){
 
 			clear_errors_form('#'+form)
 			var errors = $.parseJSON(data.responseText)
+
+			console.log(errors)
 			
 			$.each(errors, function(index, value) {
 				$.each(value, function(k, v) {

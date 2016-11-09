@@ -105,7 +105,7 @@ class PROPUESTA_CONSULTAR(View):
 			'name' 		: 'consultar',
 			'href' 		: '/propuesta/consultar',
 			})
-		
+
 	def post(self, request):
 
 		data 		= list()
@@ -119,7 +119,7 @@ class PROPUESTA_CONSULTAR(View):
 
 		for contrato in contratos:
 
-			data_conceptos 	= list()
+			data_conceptos = list()
 
 			for concepto in conceptos:
 
@@ -597,33 +597,44 @@ def validar_concepto(contrato, concepto, fecha):
 def validar_arriendo_minimo(contrato, concepto, periodo):
 
 	mensajes = [
-		'arriendo mínimo : correcto',
-		'arriendo mínimo : incorrecto',
-		'arriendo mínimo : no existe',
-		'arriendo mínimo : no existe para este período',
-		'arriendo mínimo : existen varios detalles para este período',
+		'arriendo mínimo: tiene',
+		'arriendo mínimo: no tiene',
+		'arriendo mínimo: no tiene para este periodo',
+		'arriendo mínimo: tiene más de uno para este período',
+		'arriendo mínimo: tiene más de uno para este período para el reajuste',
 	]
 
-	estado 	= False
-	mensaje = 2
-	
-	if Arriendo.objects.filter(contrato=contrato, concepto=concepto).exists() and Arriendo.objects.filter(contrato=contrato, concepto=concepto).count() == 1:
+	# arriendo minimo
+	if Arriendo_Minimo.objects.filter(contrato=contrato, concepto=concepto).exists():
 
-		arriendo = Arriendo.objects.get(contrato=contrato, concepto=concepto)
+		if Arriendo_Minimo.objects.filter(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo).count() < 1:
 
-		if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month).exists():
+			estado 	= False
+			mensaje = 2
+
+		elif Arriendo_Minimo.objects.filter(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo).count() == 1:
 
 			estado 	= True
 			mensaje = 0
 
-			if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month).count() > 1:
-
-				estado 	= False
-				mensaje = 4
-
 		else:
+
 			estado 	= False
 			mensaje = 3
+
+	else:
+		estado 	= False
+		mensaje = 1
+
+	# reajuste
+	if estado is True:
+
+		reajuste = validar_reajuste(contrato, concepto, periodo)
+
+		if reajuste is False:
+
+			estado 	= False
+			mensaje = 4
 
 	return {
 		'estado'	: estado,
@@ -1053,6 +1064,26 @@ def validar_multas(contrato, concepto, periodo):
 		'mensaje'	: mensajes[mensaje],
 	}
 
+def validar_reajuste(contrato, concepto, periodo):
+
+	if Reajuste.objects.filter(contrato=contrato, vinculo=concepto).exists():
+
+		if Reajuste.objects.filter(contrato=contrato, vinculo=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo).count() < 1:
+
+			estado 	= True
+
+		elif Reajuste.objects.filter(contrato=contrato, vinculo=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo).count() == 1:
+
+			estado 	= True
+
+		else:
+
+			estado 	= False
+
+	else:
+		estado = True
+
+	return estado
 
 
 # calcular conceptos - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1091,62 +1122,34 @@ def calcular_concepto(contrato, concepto, periodo, configuracion):
 
 def calcular_arriendo_minimo(contrato, concepto, periodo, configuracion):
 
-	total = 0	
+	total = 0
 
-	if Arriendo.objects.filter(contrato=contrato, concepto=concepto).exists() and Arriendo.objects.filter(contrato=contrato, concepto=concepto).count() == 1:
+	if Arriendo_Minimo.objects.filter(contrato=contrato, concepto=concepto).exists():
 
-		arriendo = Arriendo.objects.get(contrato=contrato, concepto=concepto)
+		if Arriendo_Minimo.objects.filter(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo).count() == 1:
 
-		if Arriendo_Detalle.objects.filter(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month).count() == 1:
-
-			detalle 		= Arriendo_Detalle.objects.get(arriendo=arriendo, mes_inicio__lte=periodo.month, mes_termino__gte=periodo.month)
-			detalle_valor 	= detalle.valor
+			arriendo 	= Arriendo_Minimo.objects.get(contrato=contrato, concepto=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo)
+			valor 		= arriendo.valor
 
 			# moneda
-			if detalle.moneda.id == 3:
-				detalle_moneda = configuracion['uf']
+			if arriendo.moneda.id == 3:
+				moneda = configuracion['uf']
 			else:
-				detalle_moneda = detalle.moneda.moneda_historial_set.all().order_by('-id').first().valor
+				moneda = arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
 			# metros cuadrados
-			if detalle.metro_cuadrado is True:
-				detalle_metros = contrato.locales.all().aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+			if arriendo.metro_cuadrado is True:
+				metros = contrato.locales.all().aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 			else:
-				detalle_metros = 1
+				metros = 1
 
-			# total detalle
-			detalle_total 	= detalle_valor * detalle_moneda * detalle_metros
-			total 			= detalle_total
-			# reajuste
-			if arriendo.reajuste is True and periodo >= arriendo.fecha_inicio:
+			total = valor * moneda * metros
+	
 
-				# reajuste valor
-				if arriendo.moneda.id == 3:
-					arriendo_valor = arriendo.valor * configuracion['uf']
-				elif arriendo.moneda.id == 6:
-					arriendo_valor = ((arriendo.valor)/100)+1
-				else:
-					arriendo_valor = arriendo.valor * arriendo.moneda.moneda_historial_set.all().order_by('-id').first().valor
+	if validar_reajuste(contrato, concepto, periodo) is True:
 
-				if arriendo.por_meses is True:
-					if periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
-						if arriendo.meses == 0:
-							reajuste_factor = 1
-						else:
-							reajuste_factor = int((meses_entre_fechas(arriendo.fecha_inicio, periodo) -1)/arriendo.meses)
+		total = calcular_reajuste(contrato, concepto, periodo, total)
 
-						if arriendo.moneda.id == 6:
-							total = detalle_total * (arriendo_valor * reajuste_factor)
-						else:
-							total = detalle_total + (arriendo_valor * reajuste_factor)
-
-				else:
-
-					if periodo >= sumar_meses(arriendo.fecha_inicio, arriendo.meses):
-						if arriendo.moneda.id == 6:
-							total = detalle_total * arriendo_valor
-						else:
-							total = detalle_total + arriendo_valor
 
 	return total
 
@@ -1449,7 +1452,16 @@ def calcular_multas(contrato, concepto, periodo, configuracion):
 
 	return total
 
+def calcular_reajuste(contrato, concepto, periodo, total):
 
+	if Reajuste.objects.filter(contrato=contrato, vinculo=concepto).exists():
+
+		if Reajuste.objects.filter(contrato=contrato, vinculo=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo).count() == 1:
+
+			reajuste = Reajuste.objects.get(contrato=contrato, vinculo=concepto, fecha_inicio__lte=periodo, fecha_termino__gte=periodo)
+			total = total * (( reajuste.valor /100 ) + 1)
+
+	return total
 
 # API - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

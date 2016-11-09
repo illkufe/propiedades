@@ -49,7 +49,6 @@ def flag_currencies(request):
 
 	return JsonResponse(data, safe=False)
 
-
 def flag_commercial(request):
 
 	data 		= []
@@ -66,7 +65,6 @@ def flag_commercial(request):
 			})
 
 	return JsonResponse(data, safe=False)
-
 
 def chart_vacancia(request):
 
