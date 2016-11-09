@@ -158,7 +158,7 @@ class VENTAS(View):
                             fecha_termino	= fecha_termino,
                             valor			= valor,
                             local_id 		= Local.objects.get(codigo=local).id,
-                            periodicidad	= 3,
+                            periodicidad	= 2,
                         )
                         venta.save()
 
@@ -253,11 +253,11 @@ class VentaDiaria(View):
 
     def get(self, request, id=None):
 
-        var_post = request.GET.copy()
-        local = json.loads(var_post['venta'])
-        local_id = local['local']
-        mes = local['mes']
-        ano = local['ano']
+        var_post    = request.GET.copy()
+        local       = json.loads(var_post['venta'])
+        local_id    = local['local']
+        mes         = local['mes']
+        ano         = local['ano']
 
         # contrato	= Contrato.objects.filter(cliente_id=self.request.user.userprofile.cliente, visible=True).values_list('locales', flat=True)
         # locales 	= Local.objects.filter(id__in=contrato, visible=True)
@@ -265,7 +265,7 @@ class VentaDiaria(View):
         if id == None:
             self.object_list = Venta.objects.filter(local_id__in=local_id, fecha_inicio__year=ano,
                                                     fecha_termino__year=ano,
-                                                    fecha_inicio__month=mes, fecha_termino__month=mes)
+                                                    fecha_inicio__month=mes, fecha_termino__month=mes).order_by('-periodicidad', 'fecha_inicio')
         else:
             self.object_list = Venta.objects.filter(pk=id)
 
@@ -297,7 +297,7 @@ class VentaDiaria(View):
                     new_venta.fecha_inicio  = fecha
                     new_venta.fecha_termino = fecha
                     new_venta.valor         = valor
-                    new_venta.periodicidad  = 3
+                    new_venta.periodicidad  = 1
                     new_venta.save()
             else:
                 return JsonResponse(form_venta.errors, status=400)
@@ -310,12 +310,18 @@ class VentaDiaria(View):
 
     def json_to_response(self):
         data = list()
+        PERIODICIDAD = (
+            (1, 'DIARIA'),
+            (2, 'MENSUAL'),
+        )
 
         for ventas in self.object_list:
             data.append({
-                'id' 	    : ventas.id,
-                'fecha' 	: ventas.fecha_inicio.strftime('%d-%m-%Y'),
-                'valor' 	: formato_moneda_local(self.request, ventas.valor),
+                'id' 	        : ventas.id,
+                'fecha_inicio' 	: ventas.fecha_inicio.strftime('%d-%m-%Y'),
+                'fecha_termino' : ventas.fecha_termino.strftime('%d-%m-%Y'),
+                'tipo_venta'    : PERIODICIDAD[ventas.periodicidad -1][1],
+                'valor' 	    : formato_moneda_local(self.request, ventas.valor),
             })
 
         return JsonResponse(data, safe=False)

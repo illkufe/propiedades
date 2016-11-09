@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse_lazy
 from django.views.decorators.csrf import requires_csrf_token
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
-from utilidades.views import formato_numero, formato_moneda_local
+from utilidades.views import formato_numero, formato_moneda_local, primer_dia, ultimo_dia
 
 from accounts.models import *
 from administrador.models import *
@@ -470,7 +470,7 @@ class VENTAS(View):
 							fecha_termino	= fecha_termino,
 							valor			= valor,
 							local_id 		= Local.objects.get(codigo=local).id,
-							periodicidad	= 3,
+							periodicidad	= 2,
 						)
 						venta.save()
 
@@ -513,7 +513,7 @@ class VENTAS(View):
 				datetime.strptime(a, '%d-%m-%Y')
 			except Exception as e:
 
-				error 		= "Formato fecha no válido."
+				error 		= "Formato de fecha o fecha no válida"
 				error_fecha = True
 
 				if not error in list_error:
@@ -528,8 +528,20 @@ class VENTAS(View):
 			fecha_terminal 	= datetime.strptime(fechas[1], '%d-%m-%Y')
 
 			if fecha_inicial.month != fecha_terminal.month or fecha_inicial.year != fecha_terminal.year:
-				error = "Fecha Inicio y Fecha Termino deben contener mismo mes y año."
+				error = "Fechas deben contener mismo mes y año."
 				list_error.append(error)
+
+			fecha_inicio_mes 	= primer_dia(fecha_inicial)
+			fecha_termino_mes 	= ultimo_dia(fecha_inicial)
+
+			if fecha_inicial.date() == fecha_terminal.date():
+				pass
+			else:
+				if fecha_inicio_mes == fecha_inicial.date() and fecha_termino_mes == fecha_terminal.date():
+					pass
+				else:
+					error = "Rango de fechas no corresponde a mensual o diaria"
+					list_error.append(error)
 
 
 		return list_error
@@ -610,7 +622,7 @@ class VentaDiaria(View):
 
 		if id == None:
 			self.object_list = Venta.objects.filter(local_id__in=local_id, fecha_inicio__year=ano, fecha_termino__year=ano,
-									  				fecha_inicio__month=mes, fecha_termino__month=mes)
+									  				fecha_inicio__month=mes, fecha_termino__month=mes).order_by('-periodicidad', 'fecha_inicio')
 		else:
 			self.object_list = Venta.objects.filter(pk=id)
 
@@ -621,47 +633,68 @@ class VentaDiaria(View):
 			return self.json_to_response()
 
 	def post(self, request):
-		try:
-			form_venta = VentasForm(self.request.POST, request=self.request)
-			if form_venta.is_valid():
-				data = form_venta.cleaned_data
-				fecha = data.get('fecha_inicio')
-				local = data.get('local')
-				valor = data.get('valor')
 
-				if Venta.objects.filter(fecha_inicio=fecha, fecha_termino=fecha, local=local).exists():
+		if self.request.POST.get('method') == 'delete':
+			try:
 
-					update_venta 				= Venta.objects.get(fecha_inicio=fecha, fecha_termino=fecha, local=local)
-					update_venta.valor 			= valor
-					update_venta.save()
+				venta_id 	= self.request.POST.get('venta')
+
+				venta 		= Venta.objects.get(id=venta_id)
+				venta.delete()
+
+				estado = True
+			except Exception as e:
+				estado = False
+			return JsonResponse({'estado': estado}, safe=False)
+		else:
+			try:
+				form_venta = VentasForm(self.request.POST, request=self.request)
+				if form_venta.is_valid():
+					data = form_venta.cleaned_data
+					fecha = data.get('fecha_inicio')
+					local = data.get('local')
+					valor = data.get('valor')
+
+					if Venta.objects.filter(fecha_inicio=fecha, fecha_termino=fecha, local=local).exists():
+
+						update_venta 				= Venta.objects.get(fecha_inicio=fecha, fecha_termino=fecha, local=local)
+						update_venta.valor 			= valor
+						update_venta.save()
 
 
+					else:
+						new_venta 				= Venta()
+						new_venta.local 		= local
+						new_venta.fecha_inicio 	= fecha
+						new_venta.fecha_termino = fecha
+						new_venta.valor 		= valor
+						new_venta.periodicidad  = 1
+						new_venta.save()
 				else:
-					new_venta 				= Venta()
-					new_venta.local 		= local
-					new_venta.fecha_inicio 	= fecha
-					new_venta.fecha_termino = fecha
-					new_venta.valor 		= valor
-					new_venta.periodicidad  = 3
-					new_venta.save()
-			else:
-				return JsonResponse(form_venta.errors, status=400)
-			estado = True
-		except Exception as d:
-			error 	= d
-			estado 	= False
+					return JsonResponse(form_venta.errors, status=400)
+				estado = True
+			except Exception as d:
+				error 	= d
+				estado 	= False
 
-		return JsonResponse({'estado': estado}, safe=False)
+			return JsonResponse({'estado': estado}, safe=False)
 
 
 	def json_to_response(self):
 		data = list()
 
+		PERIODICIDAD = (
+			(1, 'DIARIA'),
+			(2, 'MENSUAL'),
+		)
+
 		for ventas in self.object_list:
 			data.append({
-				'id' 		: ventas.id,
-				'fecha' 	: ventas.fecha_inicio.strftime('%d-%m-%Y'),
-				'valor' 	: formato_moneda_local(self.request, ventas.valor),
+				'id' 			: ventas.id,
+				'fecha_inicio' 	: ventas.fecha_inicio.strftime('%d-%m-%Y'),
+				'fecha_termino' : ventas.fecha_termino.strftime('%d-%m-%Y'),
+				'tipo_venta'    : PERIODICIDAD[ventas.periodicidad -1][1],
+				'valor' 	    : formato_moneda_local(self.request, ventas.valor),
 			})
 
 		return JsonResponse(data, safe=False)

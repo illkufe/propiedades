@@ -13,4 +13,8 @@ urlpatterns = [
 	url(r'^flag_commercial/$', views.flag_commercial, name='flag_commercial'),
 
 	url(r'^dashboard/vacancia/$', views.chart_vacancia, name='chart_vacancia'),
+	url(r'^dashboard/ingreso-centro/$', views.chart_ingreso_centro, name='chart_ingreso_centro'),
+
+	# get - conceptos
+	url(r'^get/conceptos-activo/(?P<id>\d+)$', csrf_exempt(views.CONCEPTOS_ACTIVOS.as_view()), name='get_conceptos_activo'),
 ]
