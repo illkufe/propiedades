@@ -148,8 +148,11 @@
                         <thead>
                             <tr>
                                 <th hidden>id</th>
-                                <th class="text-center">Fecha</th>
+                                <th class="text-center">Fecha Inicio</th>
+                                <th class="text-center">Fecha Termino</th>
+                                <th class="text-center">Periodicidad</th>
                                 <th class="text-center">Valor</th>
+                                <th class="text-center">Options</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -445,8 +448,11 @@ function open_modal_ventas_diarias(obj) {
 
                 template += '<tr>'
                 template += '<td hidden>' + data[i].id + '</td>'
-                template += '<td class="text-center">' + data[i].fecha  + '</td>'
+                template += '<td class="text-center">' + data[i].fecha_inicio + '</td>'
+                template += '<td class="text-center">' + data[i].fecha_termino + '</td>'
+                template += '<td class="text-center">' + data[i].tipo_venta + '</td>'
                 template += '<td class="text-right">' + data[i].valor  + '</td>'
+                template += '<td  class="text-center"><a class="btn btn-delete btn-bitbucket" data-id="'+data[i].id+'" onclick="open_modal_delete_ventas_diarias(this)"><i class="fa fa-trash"></i></a></td>'
                 template += '</tr>'
             }
 
@@ -457,6 +463,57 @@ function open_modal_ventas_diarias(obj) {
     })
 
 }
+
+function open_modal_delete_ventas_diarias(obj) {
+
+    var venta_id   = $(obj).attr('data-id')
+
+    $('#modal-venta-diaria').modal('hide');
+
+    swal({
+		title: '¿ Eliminar Venta ?',
+		text: '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#F8BB86',
+		cancelButtonColor: '#D0D0D0',
+		confirmButtonText: 'Si, eliminar',
+		cancelButtonText: 'Cancelar',
+		closeOnConfirm: true,
+	}).then(function() {
+        $.ajax({
+            url: '{% url 'venta_diaria' %}',
+            type: 'post',
+            data: {
+                method             : 'delete',
+                venta               : venta_id,
+                csrfmiddlewaretoken : getCookie('csrftoken'),
+            },
+            success: function(data){
+
+                if (data.estado == true ) {
+                    var configuracion = {
+                        'toast_type'	: 'success',
+                        'toast_text' 	: 'Eliminado correctamente',
+                        'toast_title' 	: 'ÉXITO',
+                    }
+
+                }else{
+                    var configuracion = {
+                        'toast_type'	: 'error',
+                        'toast_text' 	: 'No se pudo eliminar',
+                        'toast_title' 	: 'Error',
+                    }
+                }
+                notification_toast(configuracion)
+            },
+            complete: function () {
+                load_tabla_ventas();
+            }
+        })
+	})
+}
+
 
 function open_modal_delete_ventas(obj) {
     var local   = $(obj).attr('data-local')
