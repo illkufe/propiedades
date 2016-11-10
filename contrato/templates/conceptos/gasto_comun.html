@@ -25,7 +25,7 @@
 						{% endfor %}
 						{% endfor %}
 
-						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-gastos-comunes-{{forloop.counter}}', 'gasto_comun')"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila_concepto('tabla-gastos-comunes-{{forloop.counter}}', 'gasto_comun', {{forloop.counter}})"><i class="fa fa-plus"></i> Nuevo Periodo</button>
 						<table id="tabla-gastos-comunes-{{forloop.counter}}" class="table">
 							<thead>
 
