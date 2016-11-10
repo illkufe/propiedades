@@ -27,7 +27,6 @@ def dashboard(request):
 	else:
 		return render(request, 'viewer/dashboard.html')
 
-
 def flag_currencies(request):
 
 	data 		= []

@@ -135,7 +135,7 @@
 				</div>
 			</form>
 
-			<a href="/contrato/list" class="btn btn-w-m btn-sm btn-default" >CANCELAR</a>
+			<a href="{% url 'contrato:contrato_list' %}" class="btn btn-w-m btn-sm btn-default" >CANCELAR</a>
 			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}', 'arriendo_minimo')">GUARDAR Y SEGUIR</button>
 		</div>
 	</div>

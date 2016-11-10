@@ -120,7 +120,7 @@
 			</form>
 
 			<br>
-			<a href="/contratos/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+			<a href="{% url 'contrato:contrato_list' %}"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}')">GUARDAR Y SEGUIR</button>
 		</div>
 	</div>
