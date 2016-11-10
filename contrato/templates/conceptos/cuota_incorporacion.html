@@ -25,8 +25,8 @@
 						{% endfor %}
 						{% endfor %}
 
-						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-cuota-incorporacion', 'cuota_incorporacion')"><i class="fa fa-plus"></i> Nueva Cuota</button>
-						<table id="tabla-cuota-incorporacion" class="table">
+						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-cuota-incorporacion-{{forloop.counter}}', 'cuota_incorporacion')"><i class="fa fa-plus"></i> Nueva Cuota</button>
+						<table id="tabla-cuota-incorporacion-{{forloop.counter}}" class="table">
 							<thead>
 
 								{% for form in formulario.fomulario %}

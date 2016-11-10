@@ -234,21 +234,22 @@ class InformacionForm(forms.ModelForm):
 class ArriendoMinimoForm(forms.ModelForm):
 
 	valor = NumberField(
-		widget=forms.TextInput(attrs={'class': 'form-control format-number'}),
-		error_messages 	= {'required': 'campo requerido', 'invalid': 'campo invalido'},
-		help_text='Valor Asociado al Arriendo Mínimo',
+		widget = forms.TextInput(attrs={'class': 'form-control format-number'}),
+		error_messages = {'required': 'campo requerido', 'invalid': 'campo invalido'},
+		help_text = 'Valor Asociado al Arriendo Mínimo',
 		)
 
 	moneda = forms.ModelChoiceField(
-		widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}),
-		help_text='Tipo de Moneda Aplicado al Arriendo Mínimo',
-		queryset=Moneda.objects.filter(id__in=[3,5]),
+		widget = forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}),
+		help_text = 'Tipo de Moneda Aplicado al Arriendo Mínimo',
+		queryset = Moneda.objects.filter(id__in=[3,5]),
 		)
 
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False)
 	fecha_termino 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False)
 
 	class Meta:
+
 		model 	= Arriendo_Minimo
 		fields 	= '__all__'
 		exclude = ['visible', 'creado_en', 'concepto']
@@ -261,12 +262,20 @@ class ArriendoMinimoForm(forms.ModelForm):
 			'metro_cuadrado' 	: forms.CheckboxInput(attrs={'class': ''}),
 		}
 
+		labels = {
+			'mes_inicio'		: 'Mes de inicio',
+			'mes_termino'		: 'Mes de término',
+			'anio_inicio' 		: 'Año de inicio',
+			'anio_termino' 		: 'Año de término',
+			'metro_cuadrado' 	: 'Valor x m²',
+		}
+
 		help_texts ={
-			'mes_inicio'		: 'Mes de Inicio del Arriendo',
-			'mes_termino'		: 'Mes de Término del Arriendo',
-			'anio_inicio'		: 'Año de Inicio del Arriendo',
-			'anio_termino'		: 'Año de Término del Arriendo',
-			'metro_cuadrado'	: 'Valor Arriendo Aplicado al Metro Cuadrado'
+			'mes_inicio'		: 'mes de inicio del arriendo',
+			'mes_termino'		: 'mes de término del arriendo',
+			'anio_inicio'		: 'año de inicio del arriendo',
+			'anio_termino'		: 'año de término del arriendo',
+			'metro_cuadrado'	: 'valor arriendo aplicado al metro cuadrado'
 		}
 
 		error_messages = {
@@ -275,7 +284,6 @@ class ArriendoMinimoForm(forms.ModelForm):
 			'anio_inicio' 		: {'required': 'campo requerido'},
 			'anio_termino' 		: {'required': 'campo requerido'},
 		}
-
 
 	def clean_fecha_inicio(self):
 
@@ -290,6 +298,90 @@ class ArriendoMinimoForm(forms.ModelForm):
 		anio_termino 	= str(self.cleaned_data.get("anio_termino"))
 
 		return ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+anio_termino+'', "%d/%m/%Y"))
+
+class ArriendoVariableForm(forms.ModelForm):
+
+	valor = NumberField(
+		widget = forms.TextInput(attrs={'class': 'form-control format-number'}),
+		help_text='Valor de Arriendo Variable'
+		)
+
+	moneda = forms.ModelChoiceField(
+		widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}),
+		help_text='Moneda Aplicada al Valor de Arriendo variable',
+		queryset=Moneda.objects.filter(id__in=[6]),
+		)
+
+	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False,)
+	fecha_termino 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False,)
+
+	def __init__(self, *args, **kwargs):
+
+		contrato = kwargs.pop('contrato', None)
+
+		super(ArriendoVariableForm, self).__init__(*args, **kwargs)
+
+		self.fields['vinculo'].queryset = Concepto.objects.filter(concepto_tipo_id=1, empresa=contrato.empresa)
+	
+	class Meta:
+		model 	= Arriendo_Variable
+		fields 	= '__all__'
+		exclude = ['visible', 'creado_en', 'concepto']
+
+		widgets = {		
+			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
+			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
+			'anio_inicio'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio_termino'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'dia_reajuste'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'relacion'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'vinculo' 		: forms.Select(attrs={'class': 'form-control'}),
+		}
+
+		labels = {
+			'mes_inicio'		: 'Mes de inicio',
+			'mes_termino'		: 'Mes de término',
+			'anio_inicio' 		: 'Año de inicio',
+			'anio_termino' 		: 'Año de término',
+			'relacion' 			: 'Relación',
+			'vinculo' 			: 'Concepto',
+			'dia_reajuste'  	: 'Día reajuste',
+		}
+
+		help_texts = {
+			'mes_inicio'	: 'Mes de Inicio Arriendo Variable',
+			'mes_termino'	: 'Mes de Término Arriendo Variable',
+			'anio_inicio'	: 'Año de Inicio Arriendo Variable',
+			'anio_termino'	: 'Año de Término Arriendo Variable',
+			'dia_reajuste'	: 'Día del mes para reajustar las ventas',
+			'relacion'		: 'Si esta relacionado a un concepto o solo a las ventas',
+			'vinculo' 		: 'Concepto asociado',
+		}
+
+		error_messages = {
+			'mes_inicio' 	: {'required': 'campo requerido'},
+			'mes_termino' 	: {'required': 'campo requerido'},
+			'anio_inicio' 	: {'required': 'campo requerido'},
+			'anio_termino' 	: {'required': 'campo requerido'},
+			'dia_reajuste' 	: {'required': 'campo requerido'},
+			'relacion' 		: {'required': 'campo requerido'},
+			'vinculo' 		: {'required': 'campo requerido'},
+		}
+
+	def clean_fecha_inicio(self):
+
+		mes_inicio 	= str(self.cleaned_data.get("mes_inicio")).zfill(2)
+		anio_inicio = str(self.cleaned_data.get("anio_inicio"))
+
+		return datetime.strptime('01/'+mes_inicio+'/'+anio_inicio+'', "%d/%m/%Y").date()
+
+	def clean_fecha_termino(self):
+
+		mes_termino 	= str(self.cleaned_data.get("mes_termino")).zfill(2)
+		anio_termino 	= str(self.cleaned_data.get("anio_termino"))
+
+		return ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+anio_termino+'', "%d/%m/%Y"))
+
 
 class ArriendoBodegaForm(forms.ModelForm):
 
@@ -329,68 +421,6 @@ class ArriendoBodegaForm(forms.ModelForm):
 			'periodicidad' 		: 'Periodicidad del Arriendo de Bodega',
 			'metro_cuadrado'	: 'Valor Aplicado por Metro Cuadrado',
 		}
-
-class ArriendoVariableForm(forms.ModelForm):
-
-	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Arriendo Variable')
-	moneda 			= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Valor de Arriendo variable')
-	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False, help_text='Fecha de Inicio de Arriendo Variable')
-	fecha_termino 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False, help_text='Fecha de Término de Arriendo Variable')
-
-	def __init__(self, *args, **kwargs):
-		contrato = kwargs.pop('contrato', None)
-		super(ArriendoVariableForm, self).__init__(*args, **kwargs)
-		self.fields['vinculo'].queryset = Concepto.objects.filter(concepto_tipo_id=1, empresa=contrato.empresa)
-	
-	class Meta:
-		model 	= Arriendo_Variable
-		fields 	= '__all__'
-		exclude = ['visible', 'creado_en', 'concepto']
-
-		widgets = {		
-			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
-			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
-			'anio_inicio'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'anio_termino'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'dia_reajuste'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'relacion'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
-			'vinculo' 		: forms.Select(attrs={'class': 'form-control'}),
-		}
-
-		error_messages = {
-			'moneda'		: {'required': 'campo requerido'},
-		}
-
-		labels = {
-			'anio_inicio' 	: 'Año inicio',
-			'mes_termino'	: 'Mes término',
-			'anio_termino' 	: 'Año término',
-			'dia_reajuste'  : 'Día reajuste'
-		}
-
-		help_texts = {
-			'mes_inicio'	: 'Mes de Inicio Arriendo Variable',
-			'mes_termino'	: 'Mes de Término Arriendo Variable',
-			'anio_inicio'	: 'Año de Inicio Arriendo Variable',
-			'anio_termino'	: 'Año de Término Arriendo Variable',
-			'dia_reajuste'	: '',
-			'relacion'		: '',
-			'vinculo' 		: '',
-		}
-
-	def clean_fecha_inicio(self):
-
-		mes_inicio 	= str(self.cleaned_data.get("mes_inicio")).zfill(2)
-		anio_inicio = str(self.cleaned_data.get("anio_inicio"))
-
-		return datetime.strptime('01/'+mes_inicio+'/'+anio_inicio+'', "%d/%m/%Y").date()
-
-	def clean_fecha_termino(self):
-
-		mes_termino 	= str(self.cleaned_data.get("mes_termino")).zfill(2)
-		anio_termino 	= str(self.cleaned_data.get("anio_termino"))
-
-		return ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+anio_termino+'', "%d/%m/%Y"))
 
 class GastoComunForm(forms.ModelForm):
 

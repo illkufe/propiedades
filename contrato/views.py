@@ -1056,12 +1056,11 @@ class ContratoConceptoNew(ContratoConceptoMixin, FormView):
 
 		context 				= super(ContratoConceptoNew, self).get_context_data(**kwargs)
 		context['title'] 		= 'Contratos'
-		context['subtitle'] 	= 'Arriendo'
-		context['name'] 		= 'Nuevo'
+		context['subtitle'] 	= 'Contratos'
+		context['name'] 		= 'Conceptos'
 		context['href'] 		= '/contrato/list'
 		context['contrato_id']	= self.kwargs['contrato_id']
-		
-		
+
 		formularios	= list()
 		conceptos 	= Contrato.objects.get(id=self.kwargs['contrato_id']).conceptos.all()
 		contrato 	= Contrato.objects.get(id=self.kwargs['contrato_id'])

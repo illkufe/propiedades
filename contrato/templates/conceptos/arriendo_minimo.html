@@ -25,8 +25,8 @@
 						{% endfor %}
 						{% endfor %}
 
-						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-arriendo-variable', 'arriendo_variable')"><i class="fa fa-plus"></i> nuevo reajuste</button>
-						<table id="tabla-arriendo-variable" class="table">
+						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-arriendo-minimo-{{forloop.counter}}', 'arriendo_minimo')"><i class="fa fa-plus"></i> nuevo reajuste</button>
+						<table id="tabla-arriendo-minimo-{{forloop.counter}}" class="table">
 							<thead>
 								{% for form in formulario.fomulario %}
 								{% if forloop.first %}
