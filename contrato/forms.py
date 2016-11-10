@@ -340,7 +340,7 @@ class ArriendoVariableForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
 		super(ArriendoVariableForm, self).__init__(*args, **kwargs)
-		self.fields['arriendo_minimo'].queryset = Concepto.objects.filter(concepto_tipo_id=1, empresa=contrato.empresa)
+		self.fields['vinculo'].queryset = Concepto.objects.filter(concepto_tipo_id=1, empresa=contrato.empresa)
 	
 	class Meta:
 		model 	= Arriendo_Variable
@@ -348,13 +348,13 @@ class ArriendoVariableForm(forms.ModelForm):
 		exclude = ['visible', 'creado_en', 'concepto']
 
 		widgets = {		
-			'mes_inicio'		: forms.Select(attrs={'class': 'form-control'}),
-			'mes_termino'		: forms.Select(attrs={'class': 'form-control'}),
-			'anio_inicio'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'anio_termino'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'dia_reajuste'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'relacion'			: forms.CheckboxInput(attrs={'class': 'form-control'}),
-			'arriendo_minimo' 	: forms.Select(attrs={'class': 'form-control'}),
+			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
+			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
+			'anio_inicio'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio_termino'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'dia_reajuste'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'relacion'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'vinculo' 		: forms.Select(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
@@ -369,13 +369,13 @@ class ArriendoVariableForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'mes_inicio'		: 'Mes de Inicio Arriendo Variable',
-			'mes_termino'		: 'Mes de Término Arriendo Variable',
-			'anio_inicio'		: 'Año de Inicio Arriendo Variable',
-			'anio_termino'		: 'Año de Término Arriendo Variable',
-			'dia_reajuste'		: '',
-			'relacion'			: '',
-			'arriendo_minimo' 	: '',
+			'mes_inicio'	: 'Mes de Inicio Arriendo Variable',
+			'mes_termino'	: 'Mes de Término Arriendo Variable',
+			'anio_inicio'	: 'Año de Inicio Arriendo Variable',
+			'anio_termino'	: 'Año de Término Arriendo Variable',
+			'dia_reajuste'	: '',
+			'relacion'		: '',
+			'vinculo' 		: '',
 		}
 
 	def clean_fecha_inicio(self):
