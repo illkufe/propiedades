@@ -45,7 +45,7 @@ class PropuestaGenerarList(ListView):
 		context['name'] 	= 'generar'
 		context['href'] 	= 'propuesta/generar'
 
-		context['conceptos'] 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		context['conceptos'] 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True).exclude(concepto_tipo_id=10)
 		context['activos'] 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		
 		return context

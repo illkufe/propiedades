@@ -569,7 +569,7 @@ class GastoAsociadoForm(forms.ModelForm):
 
 		super(GastoAsociadoForm, self).__init__(*args, **kwargs)
 
-		self.fields['vinculo'].queryset = Concepto.objects.filter(empresa=contrato.empresa).exclude(concepto_tipo_id=6)
+		self.fields['vinculo'].queryset = Concepto.objects.filter(empresa=contrato.empresa).exclude(concepto_tipo_id__in=[6,10])
 
 	class Meta:
 		model 	= Gasto_Asociado
