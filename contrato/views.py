@@ -952,7 +952,7 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				return JsonResponse(form.errors, status=400, safe=False)
+				return JsonResponse(formulario.errors, status=400, safe=False)
 
 		# gasto común
 		elif concepto.concepto_tipo.id == 3:
@@ -967,7 +967,7 @@ class ContratoConceptoMixin(object):
 					newscore.concepto_id = concepto.id
 					newscore.save()
 			else:
-				return JsonResponse(formulario.errors, safe=False, status=400)
+				return JsonResponse(formulario.errors, status=400, safe=False)
 
 		elif concepto.concepto_tipo.id == 4:
 

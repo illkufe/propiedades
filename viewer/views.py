@@ -181,7 +181,7 @@ def get_conceptos_activo(request, id):
 
 			for a in range(1, datetime.now().month + 1):
 				total_activo = Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id,
-									   creado_en__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+									   fecha_inicio__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
 				total_activo 		= total_activo if total_activo is not None else 0
 				meses[a] 			= formato_moneda_local(request, total_activo)
@@ -194,7 +194,7 @@ def get_conceptos_activo(request, id):
 
 		for a in range(1, datetime.now().month + 1):
 
-			total_mes 			= Factura.objects.filter(contrato_id__in=contratos, visible=True, creado_en__month=a)\
+			total_mes 			= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__month=a)\
 										.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
 			total_mes 			= total_mes if total_mes is not None else 0
@@ -219,9 +219,9 @@ def get_conceptos_activo(request, id):
 
 				for b in semestral:
 					total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True,
-														  factura_detalle__concepto_id=item.id, creado_en__year=a,
-														  creado_en__month__gte=b[0],
-														  creado_en__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+														  factura_detalle__concepto_id=item.id, fecha_inicio__year=a,
+														  fecha_inicio__month__gte=b[0],
+														  fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
 					total_activo 	= total_activo if total_activo is not None else 0
 					anos[aux] 		= formato_moneda_local(request, total_activo)
@@ -235,8 +235,8 @@ def get_conceptos_activo(request, id):
 		for a in range(ano_anterior, datetime.now().year + 1):
 			for b in semestral:
 				total_mes 					= Factura.objects.filter(contrato_id__in=contratos, visible=True,
-																	  creado_en__year=a, creado_en__month__gte=b[0],
-																	  creado_en__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+																	  fecha_inicio__year=a, fecha_inicio__month__gte=b[0],
+																	  fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
 				total_mes 					= total_mes if total_mes is not None else 0
 				data_valor_total[count_2] 	= formato_moneda_local(request ,total_mes)
@@ -295,7 +295,7 @@ class CONCEPTOS_ACTIVOS(View):
 			for item in data_conceptos:
 				mes = {}
 				for a in range(1, datetime.now().month + 1):
-					total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, creado_en__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+					total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, fecha_inicio__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 					total_activo 	= total_activo if total_activo is not None else 0
 					mes[a] 			= formato_moneda_local(self.request, total_activo)
 
@@ -306,7 +306,7 @@ class CONCEPTOS_ACTIVOS(View):
 
 			data_total_meses = {}
 			for a in range(1, datetime.now().month + 1):
-				total_mes 			= Factura.objects.filter(contrato_id__in=contratos, visible=True, creado_en__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+				total_mes 			= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 				total_mes 			= total_mes if total_mes is not None else 0
 				data_total_meses[a] = formato_moneda_local(self.request ,total_mes)
 
@@ -338,7 +338,7 @@ class CONCEPTOS_ACTIVOS(View):
 				for a in range(datetime.now().year - 1, datetime.now().year + 1):
 
 					for b in semestral:
-						total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, creado_en__year=a, creado_en__month__gte=b[0], creado_en__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+						total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, fecha_inicio__year=a, fecha_inicio__month__gte=b[0], fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 						total_activo 	= total_activo if total_activo is not None else 0
 						anos[aux] 		= formato_moneda_local(self.request, total_activo)
 						aux += 1
@@ -350,7 +350,7 @@ class CONCEPTOS_ACTIVOS(View):
 			data_total_ano 	= {}
 			for a in range(datetime.now().year - 1, datetime.now().year + 1):
 				for b in semestral:
-					total_mes 				= Factura.objects.filter(contrato_id__in=contratos, visible=True, creado_en__year=a, creado_en__month__gte=b[0], creado_en__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+					total_mes 				= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__year=a, fecha_inicio__month__gte=b[0], fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 					total_mes 				= total_mes if total_mes is not None else 0
 					data_total_ano[aux2] 	= formato_moneda_local(self.request ,total_mes)
 					aux2 +=1
@@ -383,7 +383,7 @@ class CONCEPTOS_ACTIVOS(View):
 				for a in range(datetime.now().year - 1, datetime.now().year + 1):
 
 					for b in semestral:
-						total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, creado_en__year=a, creado_en__month__gte=b[0], creado_en__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+						total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, fecha_inicio__year=a, fecha_inicio__month__gte=b[0], fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 						total_activo 	= total_activo if total_activo is not None else 0
 						anos[aux] 		= formato_moneda_local(self.request, total_activo)
 						aux += 1
@@ -395,7 +395,7 @@ class CONCEPTOS_ACTIVOS(View):
 			data_total_ano 	= {}
 			for a in range(datetime.now().year - 1, datetime.now().year + 1):
 				for b in semestral:
-					total_mes 				= Factura.objects.filter(contrato_id__in=contratos, visible=True, creado_en__year=a, creado_en__month__gte=b[0], creado_en__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+					total_mes 				= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__year=a, fecha_inicio__month__gte=b[0], fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 					total_mes 				= total_mes if total_mes is not None else 0
 					data_total_ano[aux2] 	= formato_moneda_local(self.request ,total_mes)
 					aux2 +=1
@@ -421,7 +421,7 @@ class CONCEPTOS_ACTIVOS(View):
 					aux 	= 0
 					anos 	= {}
 					for a in range(datetime.now().year - 1, datetime.now().year + 1):
-						total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, creado_en__year=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+						total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, fecha_inicio__year=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 						total_activo 	= total_activo if total_activo is not None else 0
 						anos[aux] 		= formato_moneda_local(self.request, total_activo)
 						aux += 1
@@ -433,7 +433,7 @@ class CONCEPTOS_ACTIVOS(View):
 				aux2 			= 0
 				data_total_ano 	= {}
 				for a in range(datetime.now().year - 1, datetime.now().year + 1):
-					total_mes 				= Factura.objects.filter(contrato_id__in=contratos, visible=True, creado_en__year=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+					total_mes 				= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__year=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 					total_mes 				= total_mes if total_mes is not None else 0
 					data_total_ano[aux2] 	= formato_moneda_local(self.request ,total_mes)
 					aux2 +=1
@@ -466,7 +466,7 @@ class CONCEPTOS_ACTIVOS(View):
 				mes 			= {}
 				for a in range(1, datetime.now().month + 1):
 
-					total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True,factura_detalle__concepto_id=item.id, creado_en__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+					total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True,factura_detalle__concepto_id=item.id, fecha_inicio__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 					total_activo 	= total_activo if total_activo is not None else 0
 					mes[a] 			= formato_moneda_local(self.request, total_activo)
 
@@ -477,7 +477,7 @@ class CONCEPTOS_ACTIVOS(View):
 
 		data_total_meses = {}
 		for a in range(1, datetime.now().month + 1):
-			total_mes = Factura.objects.filter(contrato_id__in=contratos, visible=True, creado_en__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+			total_mes = Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 			total_mes = total_mes if total_mes is not None else 0
 			data_total_meses[a] = formato_moneda_local(self.request,total_mes)
 
