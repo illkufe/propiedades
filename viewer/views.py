@@ -120,7 +120,8 @@ def chart_ingreso_centro(request):
 	conceptos = json.loads(var_post['conceptos'])
 
 	if conceptos is '' or conceptos is None:
-		conceptos = ['4', '3', '2', '1', '9', '10', '11', '12', '13', '14']
+		conceptos = Concepto.objects.filter(empresa=request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
+		# conceptos = ['4', '3', '2', '1', '9', '10', '11', '12', '13', '14']
 
 	activos = Activo.objects.filter(empresa_id=request.user.userprofile.empresa, visible=True)
 
