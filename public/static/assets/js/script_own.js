@@ -152,7 +152,10 @@ function load_table(tabla_id, columnas, configuracion){
 		'columns': columnas,
 		'dom': '<"top">fl<"html5buttons"B>rt <"bottom"ip><"clear">',
 		'buttons': configuracion.buttons == null  ? buttons : configuracion.buttons,
-
+		'scrollY': configuracion.scrollY == null ? false : configuracion.scrollY,
+        'scrollX': configuracion.scrollX == null ? false : configuracion.scrollX,
+        'scrollCollapse': configuracion.scrollCollapse == null ? false : configuracion.scrollCollapse,
+		'fixedColumns':configuracion.fixedColumns == null ? false : configuracion.fixedColumns,
 	});
 
 	return tabla;
