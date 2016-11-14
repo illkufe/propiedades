@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <style>
+
+        table, tr, td, th, tbody, thead, tfoot {
+            padding: 2px 6px !important;
+        }
+
+        table{
+            font-family: 'Courier';
+            font-size: 10px;
+        }
+
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+            border-top: none !important;
+            border-bottom:  none !important;
+        }
+
+        .table>thead>tr>th {
+            border-top: 1px solid #000 !important;
+            border-bottom:  1px solid #000 !important;
+        }
+
+
+        body{
+            margin  : 0 !important;
+            padding : 0 !important;
+        }
+
+        thead { display: table-header-group }
+        tfoot { display: table-row-group }
+        tr { page-break-inside: avoid }
+
+        p{
+            font-family: 'Courier';
+            font-size: 11px;
+            margin: 0px 0px 1px !important;
+        }
+
+        /* utilities */
+        .page{
+            font-family: 'Courier';
+        }
+
+
+    </style>
+
+</head>
+<body>
+    <div class="page">
+        <div class="col-lg-12">
+            <table class="table table-giros">
+                <thead>
+                <tr>
+                    <th>Activo</th>
+                    <th>Cliente</th>
+                    <th>Contrato</th>
+                    {% for cabecera in data_cabecera%}
+                        <th>{{ cabecera }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for item in data %}
+                    <tr>
+                    {% for a in item %}
+                        <td>{{a}}</td>
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -121,10 +121,8 @@ def chart_ingreso_centro(request):
 
 	if conceptos is '' or conceptos is None:
 		conceptos = Concepto.objects.filter(empresa=request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
-		# conceptos = ['4', '3', '2', '1', '9', '10', '11', '12', '13', '14']
 
 	activos = Activo.objects.filter(empresa_id=request.user.userprofile.empresa, visible=True)
-
 
 	data['table'] 			= {}
 	data['table']['data'] 	= list()
@@ -147,7 +145,6 @@ def chart_ingreso_centro(request):
 		data['chart'].append(grafico)
 
 	return JsonResponse(data, safe=False)
-
 
 
 def get_conceptos_activo(request, id):
@@ -203,10 +200,13 @@ def get_conceptos_activo(request, id):
 
 
 		## FILTRO TRIMESTRAL
-	elif filtro == 1:
+	elif filtro == 1 or filtro ==2:
 
-		meses 			= ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct','Nov', 'Dic']
-		semestral 		= [[1, 3], [4, 6], [7, 9], [10, 12]]
+		if filtro == 1:
+			meses 			= ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct','Nov', 'Dic']
+			semestral 		= [[1, 3], [4, 6], [7, 9], [10, 12]]
+		else:
+			semestral 		= [[1, 6], [7, 12]]
 
 		for b in range(ano_anterior, datetime.now().year + 1):
 			for a in semestral:
@@ -243,15 +243,35 @@ def get_conceptos_activo(request, id):
 				data_valor_total[count_2] 	= formato_moneda_local(request ,total_mes)
 				count_2 += 1
 
-	## FILTRO SEMESTRAL
-	elif filtro == 2:
-		pass
-
-
 	## FILTRO ANUAL
 	elif filtro == 3:
-		pass
 
+		while (ano_anterior <= datetime.now().year):
+			data_encabezado[count] = ano_anterior
+
+			for item in data_conceptos:
+				aux 	= 0
+				anos 	= {}
+				for a in range(datetime.now().year - 1, datetime.now().year + 1):
+					total_activo = Factura.objects.filter(contrato_id__in=contratos, visible=True,
+														  factura_detalle__concepto_id=item.id,
+														  fecha_inicio__year=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+
+					total_activo 	= total_activo if total_activo is not None else 0
+					anos[aux] 		= formato_moneda_local(request, total_activo)
+					aux += 1
+
+				data_concepto.append({
+					'concepto': item.nombre,
+					'valores': anos,
+				})
+
+
+			for a in range(datetime.now().year - 1, datetime.now().year + 1):
+				total_mes 					= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__year=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+				total_mes 					= total_mes if total_mes is not None else 0
+				data_valor_total[count_2] 	= formato_moneda_local(request, total_mes)
+				count_2 += 1
 
 	return JsonResponse({'meses': data_encabezado, 'conceptos': data_concepto, 'total_mes': data_valor_total}, safe=False)
 
@@ -312,6 +332,7 @@ class CONCEPTOS_ACTIVOS(View):
 				data_total_meses[a] = formato_moneda_local(self.request ,total_mes)
 
 			return JsonResponse({'meses': data_meses ,'conceptos' : concepto, 'total_mes': data_total_meses}, safe=False)
+
 		# 1	> Trimestral
 		elif filtro == 1:
 			ano_anterior 	= datetime.now().year -1
