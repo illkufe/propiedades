@@ -16,8 +16,7 @@ function change_config_money() {
 	$('.format-number').each(function () {
 
 		// Es moneda o factorial
-		if($(this).attr('data-es-moneda') == 'true')
-		{
+		if($(this).attr('data-es-moneda') == 'true'){
 
 			var obj = $(this)
 			// Id moneda a formatear
