@@ -1,4 +1,9 @@
 /* STYLE botons */
+
+/*.btn{
+	padding: 4px 8px;
+}*/
+
 .btn-default,
 .btn-config,
 .btn-edit,
@@ -65,8 +70,14 @@
 	color: #C1C1C1;
 }
 
+/* cambio z-index del select2 para modal*/
+.select2-dropdown {
+    z-index: 9999;
+}
+
 label {
 	font-size: 12px;
+	font-weight: 600;
 }
 
 /* STYLE widget report */
@@ -77,9 +88,6 @@ label {
 .widget-report:hover{
 	opacity: .8;
 }
-
-
-
 
 
 form .container-error{
@@ -126,6 +134,19 @@ a.delete-row {
 	border-radius: 4px;
 	text-transform: uppercase;
 	font-size: 12px;
+}
+
+.avatar-default {
+	width: 30px;
+	height: 30px;
+	background: #286ca0;
+	display: inline-block;
+	border-radius: 50%;
+	margin: 0 auto;
+	text-align: center;
+	line-height: 32px;
+	color: #fff;
+	margin: 0px 1px;
 }
 
 
@@ -241,7 +262,7 @@ input[type=checkbox], input[type=radio]{
 
 #tabla-formulas input{
 	width: 90px;
-};
+}
 
 
 

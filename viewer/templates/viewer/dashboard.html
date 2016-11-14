@@ -307,6 +307,7 @@ function load_section_vacant(obj, add_month){
 			csrfmiddlewaretoken: getCookie('csrftoken'),
 		},
 		success: function(data){
+			// console.log(data)
 
 			$('#tabla-vacancia tbody').html('')
 
@@ -362,7 +363,7 @@ function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
 
 	var fecha_inicio = '01-01-'+ anio
 
-	var text    = 'Desde: '+fecha_inicio  +'   Hasta: '+ fecha_actual.toLocaleDateString('es-CL')
+	var text    = 'Desde: '+fecha_inicio  +'   Hasta: '+ moment(fecha_actual).format("DD-MM-YYYY");
 
 
 	if (obj == null) {
@@ -509,7 +510,6 @@ function detalle_conceptos_activo(obj) {
 			$('#modal-dashbord-lg').modal('show')
 		}
 	})
-
 }
 
 function load_filtro_concepto_activo(obj, type_filter) {
