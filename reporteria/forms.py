@@ -9,10 +9,10 @@ from .models import *
 
 class FiltroIngresoActivo(forms.Form):
     PERIODICIDAD = (
-        (0, 'MENSUAL'),
-        (1, 'TRIMESTRAL'),
-        (2, 'SEMESTRAL'),
-        (3, 'ANUAL'),
+        (1, 'MENSUAL'),
+        (2, 'TRIMESTRAL'),
+        (3, 'SEMESTRAL'),
+        (4, 'ANUAL'),
     )
 
     CANTIDAD_PERIODO = (

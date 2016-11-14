@@ -106,6 +106,84 @@ def sumar_meses(fecha, meses):
 
 	return datetime.strptime(fecha, "%d/%m/%Y").date()
 
+def calcular_periodos(tipo, periodos):
+
+	response 		= list()
+	fecha_actual 	= datetime.now()
+
+	if tipo == 1:
+
+		for periodo in range(0, periodos):
+
+			response.insert(0, {
+				'fecha_inicio': primer_dia(fecha_actual),
+				'fecha_termino': ultimo_dia(fecha_actual),
+				})
+
+			fecha_actual = sumar_meses(fecha_actual, -1)
+
+	elif tipo == 2:
+
+		for periodo in range(0, periodos):
+
+			if fecha_actual.month <= 3:
+				fecha_inicio 	= date(int(fecha_actual.year), 1, 1)
+				fecha_termino 	= date(int(fecha_actual.year), 3, 31)
+			elif fecha_actual.month <= 6:
+				fecha_inicio 	= date(int(fecha_actual.year), 4, 1)
+				fecha_termino 	= date(int(fecha_actual.year), 6, 30)
+			elif fecha_actual.month <= 9:
+				fecha_inicio 	= date(int(fecha_actual.year), 7, 1)
+				fecha_termino 	= date(int(fecha_actual.year), 9, 30)
+			elif fecha_actual.month <= 12:
+				fecha_inicio 	= date(int(fecha_actual.year), 10, 1)
+				fecha_termino 	= date(int(fecha_actual.year), 12, 31)
+			else:
+				pass
+
+			response.insert(0, {
+				'fecha_inicio': fecha_inicio,
+				'fecha_termino': fecha_termino,
+				})
+
+			fecha_actual = sumar_meses(fecha_actual, -3)
+
+	elif tipo == 3:
+
+		for periodo in range(0, periodos):
+
+			if fecha_actual.month <= 6:
+				fecha_inicio 	= date(int(fecha_actual.year), 1, 1)
+				fecha_termino 	= date(int(fecha_actual.year), 6, 30)
+			elif fecha_actual.month >= 7:
+				fecha_inicio 	= date(int(fecha_actual.year), 7, 1)
+				fecha_termino 	= date(int(fecha_actual.year), 12, 31)
+			else:
+				pass
+
+			response.insert(0, {
+				'fecha_inicio': fecha_inicio,
+				'fecha_termino': fecha_termino,
+				})
+
+			fecha_actual = sumar_meses(fecha_actual, -6)
+
+	elif tipo == 4:
+
+		for periodo in range(0, periodos):
+
+			response.insert(0, {
+				'fecha_inicio': primer_dia(datetime.strptime('01/01/'+str(fecha_actual.year), "%d/%m/%Y")),
+				'fecha_termino': ultimo_dia(fecha_actual),
+				})
+
+			fecha_actual = primer_dia(datetime.strptime('01/12/'+str(fecha_actual.year), "%d/%m/%Y"))
+			fecha_actual = sumar_meses(fecha_actual, -12)
+	else:
+		pass
+
+	return response
+
 
 # funciones globales (numeros)
 def formato_moneda(valor): #{cambiar por formato_moneda_final}

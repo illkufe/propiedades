@@ -171,7 +171,11 @@ class REPORTE_INGRESO_ACTIVO(View):
 		count_2 		= 0
 		ano_anterior 	= datetime.now().year - int(var_post['cantidad_periodos'])
 
-		if int(var_post['periodos']) == 0:
+		tipo 		= int(var_post['periodos'])
+		periodos 	= int(var_post['cantidad_periodos'])
+
+
+		if int(var_post['periodos']) == 1:
 
 			fecha_inicial = sumar_meses(datetime.now(), -int(var_post['cantidad_periodos']) )
 
@@ -231,7 +235,7 @@ class REPORTE_INGRESO_ACTIVO(View):
 					})
 
 		#TREMESTRAL O SEMESTRAL
-		elif int(var_post['periodos']) == 1 or int(var_post['periodos']) == 2:
+		elif int(var_post['periodos']) == 2 or int(var_post['periodos']) == 3:
 
 			if int(var_post['periodos']) == 1:
 				nombre_meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct', 'Nov', 'Dic']
@@ -292,7 +296,7 @@ class REPORTE_INGRESO_ACTIVO(View):
 						'valores'	: meses
 					})
 		#ANUAL
-		elif int(var_post['periodos']) == 3:
+		elif int(var_post['periodos']) == 4:
 
 
 			for ano in range(ano_anterior, datetime.now().year + 1):
@@ -345,6 +349,7 @@ class REPORTE_INGRESO_ACTIVO(View):
 
 		return JsonResponse({'cabecera': data_cabecera, 'data':data_concepto} , safe=False)
 
+
 def ingreso_activo_xls(request):
 
 	var_post 		= request.POST.copy()
@@ -384,7 +389,7 @@ def ingreso_activo_xls(request):
 	colums.append({'header': 'Contrato', 'header_format': format, 'format': format_cell})
 
 	# MENSUAL
-	if int(var_post['periodos']) == 0:
+	if int(var_post['periodos']) == 1:
 
 		fecha_inicial = sumar_meses(datetime.now(), -int(var_post['cantidad_periodos']))
 		##Armar Cabecera dinamica de Excel
@@ -444,7 +449,7 @@ def ingreso_activo_xls(request):
 				data.append(x)
 
 	# TREMESTRAL O SEMESTRAL
-	elif int(var_post['periodos']) == 1 or int(var_post['periodos']) == 2:
+	elif int(var_post['periodos']) == 2 or int(var_post['periodos']) == 3:
 
 		if int(var_post['periodos']) == 1:
 			nombre_meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct', 'Nov', 'Dic']
@@ -503,7 +508,7 @@ def ingreso_activo_xls(request):
 				data.append(x)
 
 	# ANUAL
-	elif int(var_post['periodos']) == 3:
+	elif int(var_post['periodos']) == 4:
 
 		for ano in range(ano_anterior, datetime.now().year + 1):
 			colums.append({'header': 'Año ' + str(ano), 'header_format': format, 'format': format_cell_number})
@@ -575,7 +580,7 @@ def ingreso_activo_pdf(request):
 
 
 	# MENSUAL
-	if int(var_post['periodos']) == 0:
+	if int(var_post['periodos']) == 1:
 
 		fecha_inicial = sumar_meses(datetime.now(), -int(var_post['cantidad_periodos']))
 		##Armar Cabecera dinamica de Excel
@@ -637,7 +642,7 @@ def ingreso_activo_pdf(request):
 				data.append(x)
 
 	# TREMESTRAL O SEMESTRAL
-	elif int(var_post['periodos']) == 1 or int(var_post['periodos']) == 2:
+	elif int(var_post['periodos']) == 2 or int(var_post['periodos']) == 3:
 
 		if int(var_post['periodos']) == 1:
 			nombre_meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct', 'Nov', 'Dic']
@@ -697,7 +702,7 @@ def ingreso_activo_pdf(request):
 				data.append(x)
 
 	# ANUAL
-	elif int(var_post['periodos']) == 3:
+	elif int(var_post['periodos']) == 4:
 
 		for ano in range(ano_anterior, datetime.now().year + 1):
 			data_cabecera.append('Año ' + str(ano))
@@ -788,6 +793,4 @@ def ingreso_activo_pdf(request):
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	pdf.close()
 	return response  # returns the response.
-
-
 
