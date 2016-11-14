@@ -140,214 +140,111 @@ def vacancia_por_centro_comercial(request):
 
 
 class REPORTE_INGRESO_ACTIVO(View):
-	http_method_names = ['get', 'post']
+    http_method_names = ['get', 'post']
 
-	def get(self, request, id=None):
+    def get(self, request, id=None):
 
-		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
+        if request.is_ajax() or self.request.GET.get('format', None) == 'json':
 
-			return self.json_to_response()
+            return self.json_to_response()
 
-		else:
+        else:
 
-			return render(request, 'reportes/reporte_ingreso_activo.html', {
-				'title' 	: 'Reporteria',
-				'href' 		: 'reportes',
-				'subtitle'	: 'Reportes',
-				'name' 		: 'Ingreso Activos',
-				'form'		: FiltroIngresoActivo(request=self.request)
-			})
+            return render(request, 'reportes/reporte_ingreso_activo.html', {
+                'title' 	: 'Reporteria',
+                'href' 		: 'reportes',
+                'subtitle'	: 'Reportes',
+                'name' 		: 'Ingreso Activos',
+                'form'		: FiltroIngresoActivo(request=self.request)
+            })
 
-	def post(self, request):
+    def post(self, request):
 
-		var_post 		= request.POST.copy()
+        var_post 		= request.POST.copy()
 
-		nombre_meses 	= ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre',
-							'Octubre', 'Noviembre', 'Diciembre']
+        nombre_meses 	= ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre',
+                            'Octubre', 'Noviembre', 'Diciembre']
 
-		data_cabecera 	= {}
-		data_concepto 	= list()
-		count 			= 0
-		count_2 		= 0
-		ano_anterior 	= datetime.now().year - int(var_post['cantidad_periodos'])
-
-		tipo 		= int(var_post['periodos'])
-		periodos 	= int(var_post['cantidad_periodos'])
+        data_cabecera 	= {}
+        data_concepto 	= list()
+        count 			= 0
 
 
-		if int(var_post['periodos']) == 1:
+        tipo 		    = int(var_post['periodos'])
+        periodos 	    = int(var_post['cantidad_periodos'])
+        activo          = var_post['activo']
+        cliente         = var_post['cliente']
+        conceptos       = var_post['conceptos']
 
-			fecha_inicial = sumar_meses(datetime.now(), -int(var_post['cantidad_periodos']) )
+        response        = calcular_periodos(tipo, periodos)
 
-			while fecha_inicial < datetime.now().date():
-				dias 					= calendar.monthrange(fecha_inicial.year, fecha_inicial.month)[1]
-				fecha_inicial 			+= timedelta(days=dias)
-				data_cabecera[count] 	= str(nombre_meses[fecha_inicial.month -1]) + ' '+str(fecha_inicial.year)
-				count 					+=1
+        ## Se obtiene el detalle de la tabla
+        if activo  != '':
+            activos = Activo.objects.filter(id=activo , empresa=request.user.userprofile.empresa,
+                                            visible=True).order_by('nombre')
+        else:
+            activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
+        for activo in activos:
 
-			if var_post['activo'] != '':
-				activos = Activo.objects.filter(id=int(var_post['activo']), empresa=request.user.userprofile.empresa, visible=True)
-			else:
-				activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+            locales = Local.objects.filter(activo_id=activo.id, visible=True)
 
+            if cliente  != '':
+                contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
+                                                    cliente_id=cliente, visible=True).order_by('cliente', 'numero')
+            else:
+                contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
+                                                    visible=True).order_by('cliente', 'numero')
 
-			for activo in activos:
+            for contrato in contratos:
+                meses = {}
+                aux = 0
 
-				locales 	= Local.objects.filter(activo_id=activo.id, visible=True)
+                for data in response:
 
-				if var_post['cliente'] !='':
-					contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id=int(var_post['cliente']), visible=True)
-				else:
-					contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, visible=True)
+                    if var_post['conceptos'] != '':
+                        total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
+                                                              factura_detalle__concepto_id=conceptos,
+                                                              fecha_inicio__gte=data['fecha_inicio'],
+                                                              fecha_inicio__lte=data['fecha_termino']) \
+                            .aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+                    else:
+                        total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
+                                                              fecha_inicio__gte=data['fecha_inicio'],
+                                                              fecha_inicio__lte=data['fecha_termino']) \
+                            .aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
-				for contrato in contratos:
-					meses 			= {}
-					aux   			= 0
-					fecha_inicial 	= sumar_meses(datetime.now(), -int(var_post['cantidad_periodos']))
-					dias 			= calendar.monthrange(fecha_inicial.year, fecha_inicial.month)[1]
-					fecha_inicial 	+= timedelta(days=dias)
-					while fecha_inicial <= datetime.now().date():
+                    total_activo = total_activo if total_activo is not None else 0
 
-						if var_post['conceptos'] != '':
-							total_activo 	= Factura.objects.filter(contrato_id=contrato.id, visible=True, factura_detalle__concepto_id=int(var_post['conceptos']),
-																	  fecha_inicio__month=fecha_inicial.month,
-																	  fecha_inicio__year=fecha_inicial.year)\
-											.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-						else:
-							total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-																  fecha_inicio__month=fecha_inicial.month,
-																  fecha_inicio__year=fecha_inicial.year) \
-								.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+                    if tipo == 1:
+                        meses[aux]  = [str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year),formato_moneda_local(request, total_activo)]
+                    elif tipo ==2 or tipo == 3:
+                        meses[aux] 	= [str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year)), formato_moneda_local(request, total_activo)]
+                    elif tipo == 4:
+                        meses[aux]  = ['Año ' + str(data['fecha_inicio'].year), formato_moneda_local(request, total_activo)]
 
-						total_activo 	= total_activo if total_activo is not None else 0
-						meses[aux] 		= [str(nombre_meses[fecha_inicial.month -1]) + ' '+str(fecha_inicial.year), formato_moneda_local(request, total_activo)]
+                    aux += 1
 
-						dias 			= calendar.monthrange(fecha_inicial.year, fecha_inicial.month)[1]
-						fecha_inicial  += timedelta(days=dias)
-						aux			   += 1
+                data_concepto.append({
+                    'activo'    : activo.nombre,
+                    'cliente'	: contrato.cliente.nombre,
+                    'contrato'  : contrato.numero,
+                    'valores'	: meses
+                })
 
-					data_concepto.append({
-						'activo' 	: activo.nombre,
-						'cliente'	: contrato.cliente.nombre,
-						'contrato'  : contrato.numero,
-						'valores'	: meses
-					})
+        ## Se obtiene Cabecera de las tablas
+        for data in response:
 
-		#TREMESTRAL O SEMESTRAL
-		elif int(var_post['periodos']) == 2 or int(var_post['periodos']) == 3:
+            if tipo == 1:
+                data_cabecera[count] = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
+            elif tipo == 2 or tipo == 3:
+                data_cabecera[count] = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
+            elif tipo == 4:
+                data_cabecera[count] = 'Año ' + str(data['fecha_inicio'].year)
 
-			if int(var_post['periodos']) == 1:
-				nombre_meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct', 'Nov', 'Dic']
-				semestral = [[1, 3], [4, 6], [7, 9], [10, 12]]
-			else:
-				semestral = [[1, 6], [7, 12]]
+            count += 1
 
-			for ano in range(ano_anterior, datetime.now().year + 1):
-				for semestre in semestral:
-					data_cabecera[count] = str(nombre_meses[semestre[0] - 1]) + '-' + str(ano) + '  ' + str(nombre_meses[semestre[1] - 1]) + '-' + str(ano)
-					count 				+= 1
-
-			if var_post['activo'] != '':
-				activos = Activo.objects.filter(id=int(var_post['activo']),
-												empresa=request.user.userprofile.empresa, visible=True)
-			else:
-				activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
-
-			for activo in activos:
-
-				locales = Local.objects.filter(activo_id=activo.id, visible=True)
-
-				if var_post['cliente'] != '':
-					contratos = Contrato.objects.filter(locales__in=locales,
-														empresa=request.user.userprofile.empresa,
-														cliente_id=int(var_post['cliente']), visible=True)
-				else:
-					contratos = Contrato.objects.filter(locales__in=locales,
-														empresa=request.user.userprofile.empresa, visible=True)
-
-				for contrato in contratos:
-					meses 	= {}
-					aux 	= 0
-					for ano in range(ano_anterior, datetime.now().year + 1):
-						for semestre in semestral:
-							if var_post['conceptos'] != '':
-								total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-																  	factura_detalle__concepto_id=int(var_post['conceptos']),
-																	fecha_inicio__month__gte=semestre[0],
-																	fecha_inicio__month__lte=semestre[1],
-																  	fecha_inicio__year=ano)\
-											.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-							else:
-								total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-																	  fecha_inicio__month__gte=semestre[0],
-																	  fecha_inicio__month__lte=semestre[1],
-																	  fecha_inicio__year=ano) \
-									.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-							total_activo 	= total_activo if total_activo is not None else 0
-							meses[aux] 		= [str(str(nombre_meses[semestre[0] - 1]) + '-' + str(ano) + '  ' + str(nombre_meses[semestre[1] - 1]) + '-' + str(ano)), formato_moneda_local(request, total_activo)]
-							aux 			+= 1
-
-					data_concepto.append({
-						'activo' 	: activo.nombre,
-						'cliente'	: contrato.cliente.nombre,
-						'contrato'  : contrato.numero,
-						'valores'	: meses
-					})
-		#ANUAL
-		elif int(var_post['periodos']) == 4:
-
-
-			for ano in range(ano_anterior, datetime.now().year + 1):
-				data_cabecera[count] = 'Año ' + str(ano)
-				count += 1
-
-			if var_post['activo'] != '':
-				activos = Activo.objects.filter(id=int(var_post['activo']),
-												empresa=request.user.userprofile.empresa, visible=True)
-			else:
-				activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
-
-			for activo in activos:
-
-				locales = Local.objects.filter(activo_id=activo.id, visible=True)
-
-				if var_post['cliente'] != '':
-					contratos = Contrato.objects.filter(locales__in=locales,
-														empresa=request.user.userprofile.empresa,
-														cliente_id=int(var_post['cliente']), visible=True)
-				else:
-					contratos = Contrato.objects.filter(locales__in=locales,
-														empresa=request.user.userprofile.empresa, visible=True)
-
-				for contrato in contratos:
-					meses 	= {}
-					aux 	= 0
-					for ano in range(ano_anterior, datetime.now().year + 1):
-						if var_post['conceptos'] != '':
-							total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-																  factura_detalle__concepto_id=int(
-																	  var_post['conceptos']),
-																  fecha_inicio__year=ano) \
-								.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-						else:
-							total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-																  fecha_inicio__year=ano) \
-								.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-						total_activo 	= total_activo if total_activo is not None else 0
-						meses[aux] 		= ['Año ' + str(ano), formato_moneda_local(request, total_activo)]
-						aux            += 1
-
-					data_concepto.append({
-						'activo'	: activo.nombre,
-						'cliente'	: contrato.cliente.nombre,
-						'contrato'	: contrato.numero,
-						'valores'	: meses
-					})
-
-		return JsonResponse({'cabecera': data_cabecera, 'data':data_concepto} , safe=False)
+        return JsonResponse({'cabecera': data_cabecera, 'data':data_concepto} , safe=False)
 
 
 def ingreso_activo_xls(request):
@@ -355,16 +252,23 @@ def ingreso_activo_xls(request):
 	var_post 		= request.POST.copy()
 	fecha          	= str(time.strftime('%d-%m-%Y'))
 	hora           	= str(time.strftime("%X"))
-	ano_anterior 	= datetime.now().year - int(var_post['cantidad_periodos'])
 	count 			= 2
 	nombre_meses 	= ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre',
 						'Octubre', 'Noviembre', 'Diciembre']
 
-	data    = []
-	output  = io.BytesIO()
+	tipo 			= int(var_post['periodos'])
+	periodos 		= int(var_post['cantidad_periodos'])
+	activo 			= var_post['activo']
+	cliente 		= var_post['cliente']
+	conceptos 		= var_post['conceptos']
 
-	workbook 	= xlsxwriter.Workbook(output, {'in_memory': True})
-	worksheet 	= workbook.add_worksheet()
+	response 		= calcular_periodos(tipo, periodos)
+
+	data_excel		= []
+	output  		= io.BytesIO()
+
+	workbook 		= xlsxwriter.Workbook(output, {'in_memory': True})
+	worksheet 		= workbook.add_worksheet()
 
 	footer = '&CPage &P of &N'
 	worksheet.set_footer(footer)
@@ -388,172 +292,68 @@ def ingreso_activo_xls(request):
 	colums.append({'header': 'Cliente', 'header_format': format, 'format': format_cell})
 	colums.append({'header': 'Contrato', 'header_format': format, 'format': format_cell})
 
-	# MENSUAL
-	if int(var_post['periodos']) == 1:
 
-		fecha_inicial = sumar_meses(datetime.now(), -int(var_post['cantidad_periodos']))
-		##Armar Cabecera dinamica de Excel
-		while fecha_inicial < datetime.now().date():
-			dias 			 = calendar.monthrange(fecha_inicial.year, fecha_inicial.month)[1]
-			fecha_inicial 	+= timedelta(days=dias)
-			count 			+= 1
-			colums.append({'header': str(nombre_meses[fecha_inicial.month - 1]) + ' ' + str(fecha_inicial.year), 'header_format': format, 'format': format_cell_number})
+	## Se obtiene Cabecera de las tablas
+	for data in response:
 
-		##Armar detalle de excel de acuerdo a los filtros
-		if var_post['activo'] != '':
-			activos = Activo.objects.filter(id=int(var_post['activo']), empresa=request.user.userprofile.empresa,
-											visible=True).order_by('nombre')
+		cabecera  = ''
+		if tipo == 1:
+			cabecera = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
+		elif tipo == 2 or tipo == 3:
+			cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
+		elif tipo == 4:
+			cabecera = 'Año ' + str(data['fecha_inicio'].year)
+
+		colums.append({'header': cabecera,'header_format': format, 'format': format_cell_number})
+
+		count += 1
+
+
+	## Se obtiene el detalle de la tabla
+	if activo != '':
+		activos = Activo.objects.filter(id=activo, empresa=request.user.userprofile.empresa,
+										visible=True).order_by('nombre')
+	else:
+		activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
+
+	for activo in activos:
+
+		locales = Local.objects.filter(activo_id=activo.id, visible=True)
+
+		if cliente != '':
+			contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
+												cliente_id=cliente, visible=True).order_by('cliente', 'numero')
 		else:
-			activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
+			contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
+												visible=True).order_by('cliente', 'numero')
 
-		for activo in activos:
+		for contrato in contratos:
+			x = []
+			x.append(activo.nombre)
+			x.append(contrato.cliente.nombre)
+			x.append(contrato.numero)
 
-			locales = Local.objects.filter(activo_id=activo.id, visible=True)
+			for data in response:
 
-			if var_post['cliente'] != '':
-				contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
-													cliente_id=int(var_post['cliente']), visible=True).order_by('cliente', 'numero')
-			else:
-				contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
-													visible=True).order_by('cliente', 'numero')
+				if var_post['conceptos'] != '':
+					total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
+														  factura_detalle__concepto_id=conceptos,
+														  fecha_inicio__gte=data['fecha_inicio'],
+														  fecha_inicio__lte=data['fecha_termino']) \
+						.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+				else:
+					total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
+														  fecha_inicio__gte=data['fecha_inicio'],
+														  fecha_inicio__lte=data['fecha_termino']) \
+						.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
-			for contrato in contratos:
+				total_activo = total_activo if total_activo is not None else 0
 
-				fecha_inicial 	= sumar_meses(datetime.now(), -int(var_post['cantidad_periodos']))
-				dias 			= calendar.monthrange(fecha_inicial.year, fecha_inicial.month)[1]
-				fecha_inicial  += timedelta(days=dias)
+				x.append(total_activo)
 
-				x = []
-				x.append(activo.nombre)
-				x.append(contrato.cliente.nombre)
-				x.append(contrato.numero)
-				while fecha_inicial <= datetime.now().date():
+			data_excel.append(x)
 
-					if var_post['conceptos'] != '':
-						total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-															  factura_detalle__concepto_id=int(var_post['conceptos']),
-															  fecha_inicio__month=fecha_inicial.month,
-															  fecha_inicio__year=fecha_inicial.year) \
-							.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-					else:
-						total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-															  fecha_inicio__month=fecha_inicial.month,
-															  fecha_inicio__year=fecha_inicial.year) \
-							.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-					total_activo = total_activo if total_activo is not None else 0
-					x.append(total_activo)
-					dias 			= calendar.monthrange(fecha_inicial.year, fecha_inicial.month)[1]
-					fecha_inicial += timedelta(days=dias)
-
-				data.append(x)
-
-	# TREMESTRAL O SEMESTRAL
-	elif int(var_post['periodos']) == 2 or int(var_post['periodos']) == 3:
-
-		if int(var_post['periodos']) == 1:
-			nombre_meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct', 'Nov', 'Dic']
-			semestral = [[1, 3], [4, 6], [7, 9], [10, 12]]
-		else:
-			semestral = [[1, 6], [7, 12]]
-
-		for ano in range(ano_anterior, datetime.now().year + 1):
-			for semestre in semestral:
-				cabecera = str(nombre_meses[semestre[0] - 1]) + '-' + str(ano) + '  ' + str(nombre_meses[semestre[1] - 1]) + '-' + str(ano)
-				colums.append({'header': cabecera, 'header_format': format, 'format': format_cell_number})
-				count 	+= 1
-
-		if var_post['activo'] != '':
-			activos = Activo.objects.filter(id=int(var_post['activo']),
-											empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-		else:
-			activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-
-		for activo in activos:
-
-			locales = Local.objects.filter(activo_id=activo.id, visible=True)
-
-			if var_post['cliente'] != '':
-				contratos = Contrato.objects.filter(locales__in=locales,
-													empresa=request.user.userprofile.empresa,
-													cliente_id=int(var_post['cliente']), visible=True).order_by('cliente', 'numero')
-			else:
-				contratos = Contrato.objects.filter(locales__in=locales,
-													empresa=request.user.userprofile.empresa, visible=True).order_by('cliente', 'numero')
-
-			for contrato in contratos:
-				x = []
-				x.append(activo.nombre)
-				x.append(contrato.cliente.nombre)
-				x.append(contrato.numero)
-				for ano in range(ano_anterior, datetime.now().year + 1):
-					for semestre in semestral:
-						if var_post['conceptos'] != '':
-							total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-																  factura_detalle__concepto_id=int
-																	  (var_post['conceptos']),
-																  fecha_inicio__month__gte=semestre[0],
-																  fecha_inicio__month__lte=semestre[1],
-																  fecha_inicio__year=ano) \
-								.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-						else:
-							total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-																  fecha_inicio__month__gte=semestre[0],
-																  fecha_inicio__month__lte=semestre[1],
-																  fecha_inicio__year=ano) \
-								.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-						total_activo 	= total_activo if total_activo is not None else 0
-						x.append(total_activo)
-				data.append(x)
-
-	# ANUAL
-	elif int(var_post['periodos']) == 4:
-
-		for ano in range(ano_anterior, datetime.now().year + 1):
-			colums.append({'header': 'Año ' + str(ano), 'header_format': format, 'format': format_cell_number})
-			count += 1
-
-		if var_post['activo'] != '':
-			activos = Activo.objects.filter(id=int(var_post['activo']),
-											empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-		else:
-			activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-
-		for activo in activos:
-
-			locales = Local.objects.filter(activo_id=activo.id, visible=True)
-
-			if var_post['cliente'] != '':
-				contratos = Contrato.objects.filter(locales__in=locales,
-													empresa=request.user.userprofile.empresa,
-													cliente_id=int(var_post['cliente']), visible=True).order_by('cliente', 'numero')
-			else:
-				contratos = Contrato.objects.filter(locales__in=locales,
-													empresa=request.user.userprofile.empresa, visible=True).order_by('cliente', 'numero')
-
-			for contrato in contratos:
-				x = []
-				x.append(activo.nombre)
-				x.append(contrato.cliente.nombre)
-				x.append(contrato.numero)
-				for ano in range(ano_anterior, datetime.now().year + 1):
-					if var_post['conceptos'] != '':
-						total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-															  factura_detalle__concepto_id=int(
-																  var_post['conceptos']),
-															  fecha_inicio__year=ano) \
-							.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-					else:
-						total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-															  fecha_inicio__year=ano) \
-							.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-					total_activo 	= total_activo if total_activo is not None else 0
-					x.append(total_activo)
-				data.append(x)
-
-	worksheet.add_table(6, 0, data.__len__()+6, count, {'data': data, 'columns': colums, 'autofilter': False,})
+	worksheet.add_table(6, 0, data_excel.__len__()+6, count, {'data': data_excel, 'columns': colums, 'autofilter': False,})
 	worksheet.set_column(0,count, 20)
 	workbook.close()
 	# Rewind the buffer.
@@ -571,191 +371,88 @@ def ingreso_activo_xls(request):
 def ingreso_activo_pdf(request):
 
 	var_post 		= request.POST.copy()
-	data 			= []
+	data_pdf 		= []
 	data_cabecera 	= []
-	ano_anterior 	= datetime.now().year - int(var_post['cantidad_periodos'])
-	count 			= 2
 	nombre_meses 	= ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre',
 						'Octubre', 'Noviembre', 'Diciembre']
 
+	tipo 			= int(var_post['periodos'])
+	periodos 		= int(var_post['cantidad_periodos'])
+	activo 			= var_post['activo']
+	cliente 		= var_post['cliente']
+	conceptos 		= var_post['conceptos']
 
-	# MENSUAL
-	if int(var_post['periodos']) == 1:
-
-		fecha_inicial = sumar_meses(datetime.now(), -int(var_post['cantidad_periodos']))
-		##Armar Cabecera dinamica de Excel
-		while fecha_inicial < datetime.now().date():
-			dias 			= calendar.monthrange(fecha_inicial.year, fecha_inicial.month)[1]
-			fecha_inicial  += timedelta(days=dias)
-			data_cabecera.append(str(nombre_meses[fecha_inicial.month - 1]) + ' ' + str(fecha_inicial.year))
+	response 		= calcular_periodos(tipo, periodos)
 
 
+	## Se obtiene Cabecera de las tablas
+	for data in response:
 
-		##Armar detalle de excel de acuerdo a los filtros
-		if var_post['activo'] != '':
-			activos = Activo.objects.filter(id=int(var_post['activo']), empresa=request.user.userprofile.empresa,
-											visible=True).order_by('nombre')
+		cabecera  = ''
+		if tipo == 1:
+			cabecera = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
+		elif tipo == 2 or tipo == 3:
+			cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
+		elif tipo == 4:
+			cabecera = 'Año ' + str(data['fecha_inicio'].year)
+
+		data_cabecera.append(cabecera)
+
+
+	## Se obtiene el detalle de la tabla
+	if activo != '':
+		activos = Activo.objects.filter(id=activo, empresa=request.user.userprofile.empresa,
+										visible=True).order_by('nombre')
+	else:
+		activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
+
+	for activo in activos:
+
+		locales = Local.objects.filter(activo_id=activo.id, visible=True)
+
+		if cliente != '':
+			contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
+												cliente_id=cliente, visible=True).order_by('cliente', 'numero')
 		else:
-			activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
+			contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
+												visible=True).order_by('cliente', 'numero')
 
-		for activo in activos:
+		for contrato in contratos:
+			x = []
+			x.append(activo.nombre)
+			x.append(contrato.cliente.nombre)
+			x.append(contrato.numero)
 
-			locales = Local.objects.filter(activo_id=activo.id, visible=True)
+			for data in response:
 
-			if var_post['cliente'] != '':
-				contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
-													cliente_id=int(var_post['cliente']), visible=True).order_by(
-					'cliente', 'numero')
-			else:
-				contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
-													visible=True).order_by('cliente', 'numero')
+				if var_post['conceptos'] != '':
+					total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
+														  factura_detalle__concepto_id=conceptos,
+														  fecha_inicio__gte=data['fecha_inicio'],
+														  fecha_inicio__lte=data['fecha_termino']) \
+						.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+				else:
+					total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
+														  fecha_inicio__gte=data['fecha_inicio'],
+														  fecha_inicio__lte=data['fecha_termino']) \
+						.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
-			for contrato in contratos:
+				total_activo = total_activo if total_activo is not None else 0
 
-				fecha_inicial 	= sumar_meses(datetime.now(), -int(var_post['cantidad_periodos']))
-				dias 			= calendar.monthrange(fecha_inicial.year, fecha_inicial.month)[1]
-				fecha_inicial  += timedelta(days=dias)
-				x = []
-				x.append(activo.nombre)
-				x.append(contrato.cliente.nombre)
-				x.append(contrato.numero)
-				while fecha_inicial <= datetime.now().date():
+				x.append(formato_moneda_local(request, total_activo))
 
-					if var_post['conceptos'] != '':
-						total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-															  factura_detalle__concepto_id=int(var_post['conceptos']),
-															  fecha_inicio__month=fecha_inicial.month,
-															  fecha_inicio__year=fecha_inicial.year) \
-							.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-					else:
-						total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-															  fecha_inicio__month=fecha_inicial.month,
-															  fecha_inicio__year=fecha_inicial.year) \
-							.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+			data_pdf.append(x)
 
-					total_activo 	= total_activo if total_activo is not None else 0
-					dias 			= calendar.monthrange(fecha_inicial.year, fecha_inicial.month)[1]
-					fecha_inicial  += timedelta(days=dias)
 
-					x.append(formato_moneda_local(request, total_activo))
 
-				data.append(x)
-
-	# TREMESTRAL O SEMESTRAL
-	elif int(var_post['periodos']) == 2 or int(var_post['periodos']) == 3:
-
-		if int(var_post['periodos']) == 1:
-			nombre_meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct', 'Nov', 'Dic']
-			semestral = [[1, 3], [4, 6], [7, 9], [10, 12]]
-		else:
-			semestral = [[1, 6], [7, 12]]
-
-		for ano in range(ano_anterior, datetime.now().year + 1):
-			for semestre in semestral:
-				cabecera = str(nombre_meses[semestre[0] - 1]) + '-' + str(ano) + '  ' + str(nombre_meses[semestre[1] - 1]) + '-' + str(ano)
-				data_cabecera.append(cabecera)
-
-		if var_post['activo'] != '':
-			activos = Activo.objects.filter(id=int(var_post['activo']),
-											empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-		else:
-			activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-
-		for activo in activos:
-
-			locales = Local.objects.filter(activo_id=activo.id, visible=True)
-
-			if var_post['cliente'] != '':
-				contratos = Contrato.objects.filter(locales__in=locales,
-													empresa=request.user.userprofile.empresa,
-													cliente_id=int(var_post['cliente']), visible=True).order_by(
-					'cliente', 'numero')
-			else:
-				contratos = Contrato.objects.filter(locales__in=locales,
-													empresa=request.user.userprofile.empresa, visible=True).order_by(
-					'cliente', 'numero')
-
-			for contrato in contratos:
-				x = []
-				x.append(activo.nombre)
-				x.append(contrato.cliente.nombre)
-				x.append(contrato.numero)
-				for ano in range(ano_anterior, datetime.now().year + 1):
-					for semestre in semestral:
-						if var_post['conceptos'] != '':
-							total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-																  factura_detalle__concepto_id=int
-																  (var_post['conceptos']),
-																  fecha_inicio__month__gte=semestre[0],
-																  fecha_inicio__month__lte=semestre[1],
-																  fecha_inicio__year=ano) \
-								.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-						else:
-							total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-																  fecha_inicio__month__gte=semestre[0],
-																  fecha_inicio__month__lte=semestre[1],
-																  fecha_inicio__year=ano) \
-								.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-						total_activo = total_activo if total_activo is not None else 0
-						x.append(formato_moneda_local(request, total_activo))
-				data.append(x)
-
-	# ANUAL
-	elif int(var_post['periodos']) == 4:
-
-		for ano in range(ano_anterior, datetime.now().year + 1):
-			data_cabecera.append('Año ' + str(ano))
-
-		if var_post['activo'] != '':
-			activos = Activo.objects.filter(id=int(var_post['activo']),
-											empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-		else:
-			activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-
-		for activo in activos:
-
-			locales = Local.objects.filter(activo_id=activo.id, visible=True)
-
-			if var_post['cliente'] != '':
-				contratos = Contrato.objects.filter(locales__in=locales,
-													empresa=request.user.userprofile.empresa,
-													cliente_id=int(var_post['cliente']), visible=True).order_by(
-					'cliente', 'numero')
-			else:
-				contratos = Contrato.objects.filter(locales__in=locales,
-													empresa=request.user.userprofile.empresa, visible=True).order_by(
-					'cliente', 'numero')
-
-			for contrato in contratos:
-				x = []
-				x.append(activo.nombre)
-				x.append(contrato.cliente.nombre)
-				x.append(contrato.numero)
-				for ano in range(ano_anterior, datetime.now().year + 1):
-					if var_post['conceptos'] != '':
-						total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-															  factura_detalle__concepto_id=int(
-																  var_post['conceptos']),
-															  fecha_inicio__year=ano) \
-							.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-					else:
-						total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
-															  fecha_inicio__year=ano) \
-							.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-					total_activo = total_activo if total_activo is not None else 0
-					x.append(formato_moneda_local(request, total_activo))
-				data.append(x)
-
-	hora = str(time.strftime("%X"))
+	hora 	= str(time.strftime("%X"))
 	context = {'empresa': request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
 			   'modulo': 'INGRESOS POR ACTIVOS', 'rut': request.user.userprofile.empresa.rut,
 			   'direccion': request.user.userprofile.empresa.direccion, 'hora': hora}
 
-	content = render_to_string('reportes/ingreso_activo_pdf.html', context)
+	content = render_to_string('pdf/cabeceras/cabecera_default.html', context)
 
-	with open('reporteria/templates/reportes/cabecera_table.html', 'w', encoding='UTF-8') as static_file:
+	with open('public/media/reportes/cabecera.html', 'w', encoding='UTF-8') as static_file:
 		static_file.write(content)
 
 	options = {
@@ -765,16 +462,16 @@ def ingreso_activo_pdf(request):
 		'margin-right'	: '0.55in',
 		'margin-bottom'	: '0.55in',
 		'margin-left'	: '0.55in',
-		'header-html'	: 'reporteria/templates/reportes/cabecera_table.html',
+		'header-html'	: 'public/media/reportes/cabecera.html',
 	}
 
 	css 		= 'static/assets/css/bootstrap.min.css'
-	template 	= get_template('reportes/ingreso_activo_pdf_detalle.html')
+	template 	= get_template('pdf/reportes/ingreso_activo_detalle.html')
 	fecha 		= str(time.strftime('%d-%m-%Y'))
 	hora 		= str(time.strftime("%X"))
 
 	context = {
-		'data'			: data,
+		'data'			: data_pdf,
 		'data_cabecera'	: data_cabecera,
 		'user'			: request.user.userprofile,
 		'fecha'			: fecha,
@@ -783,8 +480,8 @@ def ingreso_activo_pdf(request):
 
 	html = template.render(context)  # Renders the template with the context data.
 
-	pdfkit.from_string(html, 'public/media/reportes/prueba.pdf', options=options, css=css)
-	pdf = open('public/media/reportes/prueba.pdf', 'rb')
+	pdfkit.from_string(html, 'public/media/reportes/ingresos-activos.pdf', options=options, css=css)
+	pdf = open('public/media/reportes/ingresos-activos.pdf', 'rb')
 
 	dt 			= datetime.now()
 	filename 	= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-ingreso-activo-' + dt.strftime('%Y%m%d') + '.pdf'
@@ -793,4 +490,3 @@ def ingreso_activo_pdf(request):
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	pdf.close()
 	return response  # returns the response.
-

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script>
+        function substitutePdfVariables() {
+            var vars={};
+
+            var x=window.location.search.substring(1).split('&');
+            for (var i in x) {
+                var z=x[i].split('=',2);
+                vars[z[0]] = unescape(z[1]);
+            }
+
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection', 'date'];
+            for (var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for (var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+            }
+        }
+    </script>
+    <style>
+
+        table, tr, td, th, tbody, thead, tfoot {
+            padding: 2px 4px !important;
+        }
+        table{
+            font-family: 'Courier';
+            font-size: 8px;
+        }
+
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+            border-top: none !important;
+            border-bottom:  none !important;
+        }
+
+        .table>thead>tr>th {
+            border-top: 1px solid #000 !important;
+            border-bottom:  1px solid #000 !important;
+        }
+
+
+        body{
+            margin  : 0 !important;
+            padding : 0 !important;
+        }
+
+        thead { display: table-header-group }
+        tfoot { display: table-row-group }
+        tr { page-break-inside: avoid }
+
+        p{
+            font-family: 'Courier';
+            font-size: 8px;
+            margin: 0px 0px 1px !important;
+        }
+
+        .page{
+            font-family: 'Courier';
+        }
+
+    </style>
+</head>
+
+<body style="border:0; margin: 0;" onload="substitutePdfVariables()">
+
+    <table style="width: 100%">
+        <tr>
+            <td style="text-align:left;   width: 33%"><p><span>Informat S.A</span></p></td>
+            <td style="text-align:center; width: 33%"><p><span><strong>INGRESOS POR ACTIVOS</strong></span></p></td>
+            <td style="text-align:right;  width: 33%"><p>Fecha:<span class="date"></span></p></td>
+        </tr>
+        <tr>
+            <td style="text-align:left;   width: 33%"><p><span>17716299-K</span></p></td>
+            <td style="text-align:center; width: 33%"><span><strong></strong></span></td>
+            <td style="text-align:right;  width: 33%"><p><span>Hora:</span>15:45:59</p></td>
+        </tr>
+        <tr>
+            <td style="text-align:left;   width: 33%"><p><span>AV. VITACURA 2771 of 504</span></p></td>
+            <td style="text-align:center; width: 33%"></td>
+            <td style="text-align:right;  width: 33%">Pag <span class="page"></span> de <span class="topage"></span></td>
+        </tr>
+        <tr>
+            <td style="text-align:left;   width: 33%"><p><span>SANTIAGO</span></p></td>
+            <td style="text-align:center; width: 33%"></td>
+            <td style="text-align:right;  width: 33%"></td>
+        </tr>
+        <tr>
+            <td style="text-align:left;   width: 33%"></td>
+            <td style="text-align:center; width: 33%"></td>
+            <td style="text-align:right;  width: 33%"></td>
+        </tr>
+    </table>
+</body>
+</html>
