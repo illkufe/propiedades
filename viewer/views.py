@@ -69,6 +69,25 @@ def flag_commercial(request):
 
 	return JsonResponse(data, safe=False)
 
+def chart_vacancia_final(request):
+	
+	response 	= list()
+	activos 	= Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+
+	for activo in activos:
+		locales 	= Contrato.objects.values_list('locales', flat=True).filter(empresa=request.user.userprofile.empresa, fecha_termino__gt=fecha, visible=True).distinct()
+		response.append({
+			id
+			})
+
+	return response
+
+
+
+
+
+
+
 def chart_vacancia(request):
 
 	data 		= {}
