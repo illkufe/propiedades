@@ -184,6 +184,11 @@ def calcular_periodos(tipo, periodos):
 
 	return response
 
+def meses(valor):
+
+	meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+
+	return meses[int(valor)-1]
 
 # funciones globales (numeros)
 def formato_moneda(valor): #{cambiar por formato_moneda_final}

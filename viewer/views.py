@@ -141,21 +141,52 @@ def chart_vacancia(request):
 
 def chart_ingreso_centro(request):
 
-	data		= {}
+	data_table	= {}
 	var_post 	= request.POST.copy()
-
-	conceptos = json.loads(var_post['conceptos'])
+	conceptos 	= json.loads(var_post['conceptos'])
 
 	if conceptos is '' or conceptos is None:
 		conceptos = Concepto.objects.filter(empresa=request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
 
 	activos = Activo.objects.filter(empresa_id=request.user.userprofile.empresa, visible=True)
 
-	data['table'] 			= {}
-	data['table']['data'] 	= list()
-	data['chart']			= []
+	data_table['table'] 		= {}
+	data_table['table']['data'] = list()
+	data_table['chart']			= list()
+	data_table['fechas'] 		= list()
 
+	## Data Grafico
+	response = calcular_periodos(1, 12)
 
+	fecha_inicial 	= datetime.strftime(response[0]['fecha_inicio'], "%d-%m-%Y")
+	fecha_final 	= datetime.strftime(response[response.__len__() -1]['fecha_termino'], "%d-%m-%Y")
+
+	data_table['fechas'].append(fecha_inicial)
+	data_table['fechas'].append(fecha_final)
+
+	cabecera = []
+	cabecera.append('x')
+	for data in response:
+		fecha = data['fecha_inicio']
+		cabecera.append(fecha)
+
+	data_table['chart'].append(cabecera)
+
+	for activo in activos:
+		cabecera = []
+		cabecera.append(activo.nombre)
+		for data in response:
+			locales 		= Local.objects.filter(activo=activo, visible=True)
+			contratos 		= Contrato.objects.filter(locales__in=locales)
+			total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True,
+													 fecha_inicio__gte=data['fecha_inicio'], fecha_inicio__lte=data['fecha_termino'],
+													 factura_detalle__concepto__in=conceptos).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+
+			total_activo 	= total_activo if total_activo is not None else 0
+			cabecera.append(total_activo)
+		data_table['chart'].append(cabecera)
+
+	## Data Tabla
 	for item in activos:
 
 		locales 		= Local.objects.filter(activo_id=item.id, visible=True)
@@ -164,20 +195,15 @@ def chart_ingreso_centro(request):
 
 		total_activo 	= total_activo if total_activo is not None else 0
 
+		data_table['table']['data'].append({'activo_id': item.id, 'activo': item.nombre, 'totales': formato_moneda_local(request, total_activo) })
 
-		data['table']['data'].append({'activo_id': item.id, 'activo': item.nombre, 'totales': formato_moneda_local(request, total_activo) })
-
-		grafico = [item.nombre, total_activo]
-
-		data['chart'].append(grafico)
-
-	return JsonResponse(data, safe=False)
+	return JsonResponse(data_table, safe=False)
 
 
 def get_conceptos_activo(request, id):
 
 	var_post 			= request.POST.copy()
-	filtro 				= json.loads(var_post['tipo_filtro'])
+	tipo_periodo    	= json.loads(var_post['tipo_filtro'])
 
 	nombre_meses 		= ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
 			 				'Noviembre', 'Diciembre']
@@ -188,117 +214,75 @@ def get_conceptos_activo(request, id):
 	data_encabezado 	= {}
 	data_valor_total 	= {}
 	count				= 0
-	count_2             = 0
-	ano_anterior 		= datetime.now().year - 1
+
 	data_conceptos 		= Concepto.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+	response 			= calcular_periodos(tipo_periodo, 12)
 
+	## Se obtiene Cabecera de las tablas
+	for data in response:
 
-	## FILTRO MENSUAL
-	if filtro == 0:
+		if tipo_periodo == 1:
+			data_encabezado[count] = str(nombre_meses[data['fecha_inicio'].month - 1][:3]) + '-' + str(data['fecha_inicio'].year)
+		elif tipo_periodo == 2 or tipo_periodo == 3:
+			data_encabezado[count] = str(
+				str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year) + '  ' + str(
+					nombre_meses[data['fecha_termino'].month - 1])[:3] + '-' + str(data['fecha_termino'].year))
+		elif tipo_periodo == 4:
+			data_encabezado[count] = 'Año ' + str(data['fecha_inicio'].year)
 
+		count += 1
 
-		for a in range(1, datetime.now().month + 1):
-			data_encabezado[a] = nombre_meses[a - 1]
+	for item in data_conceptos:
+		meses 	= {}
+		aux     = 0
 
+		for data in response:
+			total_activo = Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id,
+												  fecha_inicio__gte=data['fecha_inicio'],
+												  fecha_inicio__lte=data['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
-		for item in data_conceptos:
-			meses = {}
+			total_activo 	= total_activo if total_activo is not None else 0
+			if tipo_periodo == 1:
 
-			for a in range(1, datetime.now().month + 1):
-				total_activo = Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id,
-									   fecha_inicio__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+				nombre_cabecera = str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year)
+				meses[aux] 		= [nombre_cabecera, formato_moneda_local(request, total_activo)]
 
-				total_activo 		= total_activo if total_activo is not None else 0
-				meses[a] 			= formato_moneda_local(request, total_activo)
+			elif tipo_periodo == 2 or tipo_periodo == 3:
 
-			data_concepto.append({
-				'concepto': item.nombre,
-				'valores': meses,
-			})
+				nombre_cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1])[:3] + '-' + str(data['fecha_termino'].year))
+				meses[aux] 		= [nombre_cabecera, formato_moneda_local(request, total_activo)]
+			elif tipo_periodo == 4:
 
+				nombre_cabecera ='Año ' + str(data['fecha_inicio'].year),
+				meses[aux]		= [nombre_cabecera, formato_moneda_local(request, total_activo)]
 
-		for a in range(1, datetime.now().month + 1):
+			aux +=1
 
-			total_mes 			= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__month=a)\
-										.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+		data_concepto.append({
+			'concepto': item.nombre,
+			'valores': meses,
+		})
 
-			total_mes 			= total_mes if total_mes is not None else 0
-			data_valor_total[a] = formato_moneda_local(request, total_mes)
+	for data in response:
+		total_mes = Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__gte=data['fecha_inicio'],fecha_inicio__lte=data['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
+		total_mes = total_mes if total_mes is not None else 0
 
-		## FILTRO TRIMESTRAL
-	elif filtro == 1 or filtro ==2:
+		if tipo_periodo == 1:
 
-		if filtro == 1:
-			meses 			= ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct','Nov', 'Dic']
-			semestral 		= [[1, 3], [4, 6], [7, 9], [10, 12]]
-		else:
-			semestral 		= [[1, 6], [7, 12]]
+			nombre_cabecera 					= str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year)
+			data_valor_total[nombre_cabecera] 	= formato_moneda_local(request, total_mes)
 
-		for b in range(ano_anterior, datetime.now().year + 1):
-			for a in semestral:
-				data_encabezado[count] = str(meses[a[0] - 1]) + '-' + str(b) + '  ' + str(meses[a[1] - 1]) + '-' + str(b)
-				count += 1
+		elif tipo_periodo == 2 or tipo_periodo == 3:
 
-		for item in data_conceptos:
-			aux 	= 0
-			anos 	= {}
-			for a in range(ano_anterior, datetime.now().year + 1):
+			nombre_cabecera 					= str(str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1])[:3] + '-' + str(data['fecha_termino'].year))
+			data_valor_total[nombre_cabecera] 	= formato_moneda_local(request, total_mes)
 
-				for b in semestral:
-					total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True,
-														  factura_detalle__concepto_id=item.id, fecha_inicio__year=a,
-														  fecha_inicio__month__gte=b[0],
-														  fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+		elif tipo_periodo == 4:
 
-					total_activo 	= total_activo if total_activo is not None else 0
-					anos[aux] 		= formato_moneda_local(request, total_activo)
-					aux += 1
+			nombre_cabecera 					= 'Año ' + str(data['fecha_inicio'].year),
+			data_valor_total[nombre_cabecera] 	= formato_moneda_local(request, total_mes)
 
-			data_concepto.append({
-				'concepto' : item.nombre,
-				'valores'	: anos,
-			})
-
-		for a in range(ano_anterior, datetime.now().year + 1):
-			for b in semestral:
-				total_mes 					= Factura.objects.filter(contrato_id__in=contratos, visible=True,
-																	  fecha_inicio__year=a, fecha_inicio__month__gte=b[0],
-																	  fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-				total_mes 					= total_mes if total_mes is not None else 0
-				data_valor_total[count_2] 	= formato_moneda_local(request ,total_mes)
-				count_2 += 1
-
-	## FILTRO ANUAL
-	elif filtro == 3:
-
-		while (ano_anterior <= datetime.now().year):
-			data_encabezado[count] = ano_anterior
-
-			for item in data_conceptos:
-				aux 	= 0
-				anos 	= {}
-				for a in range(datetime.now().year - 1, datetime.now().year + 1):
-					total_activo = Factura.objects.filter(contrato_id__in=contratos, visible=True,
-														  factura_detalle__concepto_id=item.id,
-														  fecha_inicio__year=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-					total_activo 	= total_activo if total_activo is not None else 0
-					anos[aux] 		= formato_moneda_local(request, total_activo)
-					aux += 1
-
-				data_concepto.append({
-					'concepto': item.nombre,
-					'valores': anos,
-				})
-
-
-			for a in range(datetime.now().year - 1, datetime.now().year + 1):
-				total_mes 					= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__year=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-				total_mes 					= total_mes if total_mes is not None else 0
-				data_valor_total[count_2] 	= formato_moneda_local(request, total_mes)
-				count_2 += 1
 
 	return JsonResponse({'meses': data_encabezado, 'conceptos': data_concepto, 'total_mes': data_valor_total}, safe=False)
 
