@@ -354,7 +354,7 @@ def ingreso_activo_xls(request):
 			data_excel.append(x)
 
 	worksheet.add_table(6, 0, data_excel.__len__()+6, count, {'data': data_excel, 'columns': colums, 'autofilter': False,})
-	worksheet.set_column(0,count, 20)
+	worksheet.set_column(0,count, 25)
 	workbook.close()
 	# Rewind the buffer.
 	output.seek(0)

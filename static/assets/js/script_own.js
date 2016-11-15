@@ -287,7 +287,10 @@ function load_table(tabla_id, columnas, configuracion){
 		'columns': columnas,
 		'dom': '<"top">fl<"html5buttons"B>rt <"bottom"ip><"clear">',
 		'buttons': configuracion.buttons == null  ? buttons : configuracion.buttons,
-
+		'scrollY': configuracion.scrollY == null ? false : configuracion.scrollY,
+        'scrollX': configuracion.scrollX == null ? false : configuracion.scrollX,
+        'scrollCollapse': configuracion.scrollCollapse == null ? false : configuracion.scrollCollapse,
+		'fixedColumns':configuracion.fixedColumns == null ? false : configuracion.fixedColumns,
 	});
 
 	return tabla;
@@ -588,3 +591,21 @@ function diferencia_entre_meses(fecha_inicio, fecha_termino) {
 }
 
 $('[data-toggle="tooltip"]').tooltip();
+
+/*
+var myFormatters = d3.locale({
+	  "decimal": ".",
+	  "thousands": ",",
+	  "grouping": [3],
+	  "currency": ["$", ""],
+	  "dateTime": "%a %b %e %X %Y",
+	  "date": "%m/%d/%Y",
+	  "time": "%H:%M:%S",
+	  "periods": ["AM", "PM"],
+	  "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+	  "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+	  "months": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+	  "shortMonths": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+});
+
+d3.shortMonths.format = myFormatters.shortMonths; */
