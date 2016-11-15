@@ -3,6 +3,7 @@
 
 <div class="wrapper wrapper-content">
 	<div class="row flags">
+
 		<div class="col-lg-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
@@ -15,6 +16,7 @@
 				</div>
 			</div>
 		</div>
+
 		<div class="col-lg-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
@@ -26,6 +28,7 @@
 				</div>
 			</div>
 		</div>
+
 		<div class="col-lg-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
@@ -39,11 +42,11 @@
 							<div class="stat-percent font-bold text-navy">12/02/2014</div>
 							<small>Nombre Cliente</small>
 						</div>
-						
 					</div>
 				</div>
 			</div>
 		</div>
+
 		<div class="col-lg-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
@@ -66,40 +69,55 @@
 		<div class="col-lg-12 s-vacancia">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5 class="title">Vacancia (<span></span>)</h5>
+					<h5 class="title">Vacancia por Activos</h5>
 					<div class="ibox-tools">
 						<a class="collapse-link">
 							<i class="fa fa-chevron-up"></i>
 						</a>
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<i class="fa fa-wrench"></i>
+							<i class="fa fa-gear"></i>
 						</a>
 						<ul class="dropdown-menu dropdown-user">
-							<li><a onclick="load_section_vacant(this, 0)">Actual</a></li>
-							<li><a onclick="load_section_vacant(this, 1)">Próximo mes</a></li>
-							<li><a onclick="load_section_vacant(this, 3)">Próximos 3 meses</a></li>
-							<li><a onclick="load_section_vacant(this, 6)">Próximos 6 meses</a></li>
-							<li><a onclick="load_section_vacant(this, 9)">Próximos 9 meses</a></li>
-							<li><a onclick="load_section_vacant(this, 12)">Próximo año</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 0)">Actual</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 1)">Próximo mes</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 3)">Próximos 3 meses</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 6)">Próximos 6 meses</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 9)">Próximos 9 meses</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 12)">Próximo año</a></li>
 						</ul>
 					</div>
 				</div>
 				<div class="ibox-content">
 					<div class="row">
-						<div class="col-lg-5">
+
+						<div class="col-xs-12 no-data hide">
+							<div class="text-center">
+								<p>No existen activos, pulse <a href='{% url "activo_new" %}'>aquí</a> para crear un activo.</p>
+							</div>
+						</div>
+
+						<div class="col-lg-5 container-chart hide">
+							<div class="text-left">
+								<small class="block text-muted">
+									<i class="fa fa-clock-o"></i> vacancia hasta la fecha: <span class="fecha"></span>
+								</small>
+							</div>
+
+							<br>
+
 							<div id="pie"></div>
 						</div>
-						<div class="col-lg-7">
-							<br>
-							<br>
-							<table id="tabla-vacancia" class="table table-hover" style="width:100%">
+
+						<div class="col-lg-7 container-table hide">
+
+							<table id="tabla-vacancia" class="table" style="width:100%">
 								<thead>
 									<tr>
-										<th>Tipo de Local</th>
-										<th>m² Totales</th>
-										<th>m² Ocupados</th>
-										<th>m² Disponibles</th>
-										<th class="text-center">%</th>
+										<th></th>
+										<th>Activo</th>
+										<th class="text-right">m² Totales</th>
+										<th class="text-right">m² Vacantes</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody></tbody>
@@ -148,65 +166,184 @@
 			</div>
 		</div>
 	</div>
+</div>
 
-	<div class="modal inmodal fade" id="modal-dashbord" tabindex="-1" role="dialog"  aria-hidden="true">
-		<div class="modal-dialog" id="tamano-modal">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">Titulo</h4>
-				</div>
-				<div class="modal-body">
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-white" data-dismiss="modal">Cancelar</button>
-					<button type="button" class="btn btn-primary" onclick="filtrar_conceptos()">Filtrar</button>
-				</div>
+<div class="modal fade" id="m-vacancia" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Vacancia</h4>
 			</div>
-		</div>
-	</div>
+			<div class="modal-body">
 
-	<div class="modal inmodal fade" id="modal-dashbord-lg" tabindex="-1" role="dialog"  aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<div class="ibox-title">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h4 class="modal-title">Titulo</h4>
-						<div class="ibox-tools">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-								<i class="fa fa-wrench"></i>
-							</a>
-							<ul class="dropdown-menu dropdown-user">
-								<li><a onclick="load_filtro_concepto_activo(this, 0)">Mensual</a></li>
-								<li><a onclick="load_filtro_concepto_activo(this, 1)">Trimestral</a></li>
-								<li><a onclick="load_filtro_concepto_activo(this, 2)">Semestral</a></li>
-								<li><a onclick="load_filtro_concepto_activo(this, 3)">Anual</a></li>
-							</ul>
+				<div class="row">
+
+					<div class="col-lg-5 container-chart">
+
+						<div class="row">
+							<div class="form-group col-sm-6">
+								<span>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="tipo de agrupación para generar la vacancia del activo"></i>
+									<label for="id_tipo">Agrupar por:</label>
+								</span>
+								<select class="form-control" id="id_tipo" name="tipo">
+									<option value="1">Tipo de Local</option>
+									<option value="2">Nivel</option>
+									<option value="3">Sector</option>
+								</select>
+							</div>
+
+							<div class="form-group col-sm-6">
+								<span>
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="indica la fecha hasta donde buscar la vacancia"></i>
+									<label for="id_tipo">Vacancia hasta:</label>
+								</span>
+								<select class="form-control" id="id_fecha" name="tipo">
+									<option value="0">Fecha Actual</option>
+									<option value="1">Próximo Mes</option>
+									<option value="3">Próximos 3 Meses</option>
+									<option value="6">Próximos 6 Meses</option>
+									<option value="9">Próximos 9 Meses</option>
+									<option value="12">Próximos 12 Meses</option>
+								</select>
+							</div>
 						</div>
+
+						<br>
+
+						<div id="pie-tipo"></div>
+					</div>
+
+					<div class="col-lg-7 container-table">
+
+						<table id="tabla-vacancia-tipo" class="table" style="width:100%">
+							<thead>
+								<tr>								
+									<th>Tipos de Locales</th>
+									<th class="text-right">m² Totales</th>
+									<th class="text-right">m² Vacantes</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
 					</div>
 				</div>
-				<div class="modal-body">
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-white" data-dismiss="modal">Cancelar</button>
-				</div>
+
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>			
 			</div>
 		</div>
 	</div>
 </div>
 
+
+<div class="modal inmodal fade" id="modal-dashbord" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" id="tamano-modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Titulo</h4>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-white" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-primary" onclick="filtrar_conceptos()">Filtrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal inmodal fade" id="modal-dashbord-lg" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="ibox-title">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">Titulo</h4>
+					<div class="ibox-tools">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							<i class="fa fa-wrench"></i>
+						</a>
+						<ul class="dropdown-menu dropdown-user">
+							<li><a onclick="load_filtro_concepto_activo(this, 0)">Mensual</a></li>
+							<li><a onclick="load_filtro_concepto_activo(this, 1)">Trimestral</a></li>
+							<li><a onclick="load_filtro_concepto_activo(this, 2)">Semestral</a></li>
+							<li><a onclick="load_filtro_concepto_activo(this, 3)">Anual</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-white" data-dismiss="modal">Cancelar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.no-data p{
+	margin: 20px 0;
+	font-weight: 300;
+	font-size: 14px;
+}
+
+.btn-circle {
+	width: 22px;
+	height: 22px;
+	padding: 0px;
+}
+
+</style>
+
 {% endblock section %}
 
 {% block scripts %}
 <script>
+
+var fecha_actual;
+
+fecha_actual = new Date();
+fecha_actual = moment(fecha_actual).format("DD/MM/YYYY")
+
 $(document).ready(function(){
-	load_section_vacant(null, 0)
+
+	cargar_seccion_vacancia(fecha_actual)
+
 	load_section_ingreso_centro_comercial(null, 0, '')
 	load_flag_currencies()
 	load_flag_commercial()
+	inicial()
 });
 
+function inicial(){
+
+	$('#m-vacancia #id_tipo').change(function(){
+
+		var tipo 	= $(this).val()
+		var fecha 	= new Date();
+		fecha.setMonth(fecha.getMonth() + parseInt($('#m-vacancia #id_fecha').val()));
+		fecha = moment(fecha).format("DD/MM/YYYY")
+
+		cargar_modal_vacancia(1, tipo, fecha)
+	})
+
+	$('#m-vacancia #id_fecha').change(function(){
+
+		var tipo 	= $('#m-vacancia #id_tipo').val()
+		var fecha 	= new Date();
+		fecha.setMonth(fecha.getMonth() + parseInt($(this).val()));
+		fecha = moment(fecha).format("DD/MM/YYYY")
+
+		cargar_modal_vacancia(1, tipo, fecha)
+	})
+}
 
 function load_flag_currencies(){
 
@@ -279,76 +416,159 @@ function load_flag_commercial(){
 	})
 }
 
-function load_section_vacant(obj, add_month){
-
-	if (obj == null) {
-		$(".s-vacancia h5.title span").text('Actual')
-	}
-	else{
-		$(".s-vacancia h5.title span").text($(obj).text())
-	}
-
-	var fecha_actual = new Date();
-
-	fecha_actual.setMonth(fecha_actual.getMonth() + add_month);
-
-	var dia 	= fecha_actual.getDate()
-	var mes 	= fecha_actual.getMonth() + 1
-	var anio 	= fecha_actual.getFullYear()
+function cargar_seccion_vacancia(fecha){
 
 	$.ajax({
 		url: '/dashboard/vacancia/',
 		type: 'post',
 		dataType: 'json',
 		data:{
-			dia 	: dia,
-			mes 	: mes,
-			anio 	: anio,
+			fecha 	: fecha,
 			csrfmiddlewaretoken: getCookie('csrftoken'),
 		},
 		success: function(data){
-			// console.log(data)
+
+			var chart = [];
+
+			if (data.length == 0) {
+				$('.s-vacancia .no-data').removeClass('hide')
+			}else{
+				$('.s-vacancia .container-chart').removeClass('hide')
+				$('.s-vacancia .container-table').removeClass('hide')
+			}
 
 			$('#tabla-vacancia tbody').html('')
+			$('.container-chart .fecha').html(fecha)
 
-			for (var i = 0; i < data.table.data.length; i++) {
-				ocupado = data.table.data[i].metros_ocupados/data.table.data[i].metros_totales
-				desocupado = data.table.data[i].metros_disponibles/data.table.data[i].metros_totales				
+			for (var i = 0; i < data.length; i++) {
 
 				temp_body = ''
 				temp_body += '<tr>'
-				temp_body += '<td>'+data.table.data[i].nombre+'</td>'
-				temp_body += '<td>'+data.table.data[i].metros_totales+'</td>'
-				temp_body += '<td>'+data.table.data[i].metros_ocupados+'</td>'
-				temp_body += '<td>'+data.table.data[i].metros_disponibles+'</td>'
-				temp_body += '<td><span class="pie">'+ocupado+','+desocupado+'</span></td>'
+				temp_body += '<td><button data-id="@id" class="btn btn-success btn-circle btn-activo-detalle" type="button"><i class="fa fa-info"></i></button></td>'
+				temp_body += '<td>@nombre</td>'
+				temp_body += '<td class="text-right">@m_totales</td>'
+				temp_body += '<td class="text-right">@m_disponibles</td>'
+				temp_body += '<td class="text-right"><span class="sparkline-@index"></span></td>'
 				temp_body += '</tr>'
 
-				$('#tabla-vacancia tbody').append(temp_body)
-			};
+				temp_body = temp_body.replace(/@index/g, i);
+				temp_body = temp_body.replace(/@id/g, data[i].id);
+				temp_body = temp_body.replace(/@nombre/g, data[i].nombre);
+				temp_body = temp_body.replace(/@m_totales/g, data[i].m_totales == null ? '-' : data[i].m_totales);
+				temp_body = temp_body.replace(/@m_disponibles/g, data[i].m_disponibles  == null ? '-' : data[i].m_disponibles);
 
-			
-			$("span.pie").peity("pie", {
-				fill: ['#1ab394', '#d7d7d7', '#ffffff']
-			})
+				$('#tabla-vacancia tbody').append(temp_body)
+
+				m_ocupados 		= data[i].m_ocupados  == null ? 0 : data[i].m_ocupados
+				m_disponibles 	= data[i].m_disponibles  == null ? 0 : data[i].m_disponibles
+
+				$('.sparkline-'+i).sparkline([m_ocupados, m_disponibles], {
+					type: 'pie',
+					sliceColors: ['#1a7bb9','#d7d7d7'],
+				});
+
+				chart.push([data[i].nombre, data[i].m_disponibles])
+			};
 
 			c3.generate({
 				size: {
 					height: 220,
 				},
+				color: {
+					pattern: ['#009688', '#00BCD4', '#4CAF50', '#FF9800', '#98df8a', '#2196F3', '#F44336', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+				},
 				bindto: '#pie',
 				data:{
-					columns: data.chart.data,
-					colors:{
-						ocupado: '#1ab394',
-						disponible: '#BABABA'
-					},
+					columns: chart,
+					type : 'donut'
+				}
+			});
+
+			$('.btn-activo-detalle').click(abrir_modal_vacancia)
+		}
+	})
+}
+
+function abrir_modal_vacancia(){
+
+	$('#m-vacancia').modal('show')
+	$('#m-vacancia').on('shown.bs.modal', function (e) {
+		cargar_modal_vacancia(1, 1, fecha_actual)
+	})
+
+}
+
+function cargar_modal_vacancia(id, tipo, fecha){
+	
+	$.ajax({
+		url: '/dashboard/vacancia/tipo',
+		type: 'post',
+		dataType: 'json',
+		data:{
+			id  	: id,
+			fecha 	: fecha,
+			tipo 	: tipo,
+			csrfmiddlewaretoken: getCookie('csrftoken'),
+		},
+		success: function(data){
+
+			var chart = [];
+
+			if (data.length == 0) {
+				$('.s-vacancia .no-data').removeClass('hide')
+			}else{
+				$('.s-vacancia .container-chart').removeClass('hide')
+				$('.s-vacancia .container-table').removeClass('hide')
+			}
+
+			$('#tabla-vacancia-tipo tbody').html('')
+
+			$('#pie-tipo').html('')
+
+			for (var i = 0; i < data.length; i++) {
+
+				temp_body = ''
+				temp_body += '<tr>'
+				temp_body += '<td>@nombre</td>'
+				temp_body += '<td class="text-right">@m_totales</td>'
+				temp_body += '<td class="text-right">@m_disponibles</td>'
+				temp_body += '<td class="text-right"><span class="sparkline-modal-@index"></span></td>'
+				temp_body += '</tr>'
+
+				temp_body = temp_body.replace(/@index/g, i);
+				temp_body = temp_body.replace(/@id/g, data[i].id);
+				temp_body = temp_body.replace(/@nombre/g, data[i].nombre);
+				temp_body = temp_body.replace(/@m_totales/g, data[i].m_totales == null ? '-' : data[i].m_totales);
+				temp_body = temp_body.replace(/@m_disponibles/g, data[i].m_disponibles  == null ? '-' : data[i].m_disponibles);
+
+				$('#tabla-vacancia-tipo tbody').append(temp_body)
+
+				m_ocupados 		= data[i].m_ocupados  == null ? 0 : data[i].m_ocupados
+				m_disponibles 	= data[i].m_disponibles  == null ? 0 : data[i].m_disponibles
+
+				$('.sparkline-modal-'+i).sparkline([m_ocupados, m_disponibles], {
+					type: 'pie',
+					sliceColors: ['#1a7bb9','#d7d7d7'],
+				});
+
+				chart.push([data[i].nombre, data[i].m_disponibles])
+			};
+
+			c3.generate({
+				size: {
+					height: 220,
+				},
+				color: {
+					pattern: ['#009688', '#00BCD4', '#4CAF50', '#FF9800', '#98df8a', '#2196F3', '#F44336', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+				},
+				bindto: '#pie-tipo',
+				data:{
+					columns: chart,
 					type : 'donut'
 				}
 			});
 		}
 	})
-
 }
 
 function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
@@ -534,7 +754,7 @@ function load_filtro_concepto_activo(obj, type_filter) {
 			csrfmiddlewaretoken: getCookie('csrftoken'),
 		},
 		beforeSend: function () {
-		   loading(true)
+			loading(true)
 		},
 		success: function (data) {
 
