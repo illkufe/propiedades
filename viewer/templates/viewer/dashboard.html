@@ -133,7 +133,7 @@
 		<div class="col-lg-12 s-ingreso-centro">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5 class="title">Ingresos Centro Comercial   <span></span></h5>
+					<h5 class="title">Ingresos por Activos   <span></span></h5>
 					<div class="ibox-tools">
 						<a class="" data-toggle="modal" onclick="load_conceptos()">
 							<i class="fa fa-gear"></i>
@@ -142,12 +142,12 @@
 				</div>
 				<div class="ibox-content">
 					<div class="row">
-						<div class="col-lg-5">
+						<div class="col-lg-7">
 							<div class="flot-chart">
-								<div class="flot-chart-pie-content" id="flot-pie-chart"></div>
+								<div class="flot-chart-pie-content" id="flot-pie-chart" style="position: absolute !important;"></div>
 							</div>
 						</div>
-						<div class="col-lg-7">
+						<div class="col-lg-5">
 							<br>
 							<br>
 							<table id="tabla-ingreso-centro" class="table table-hover">
@@ -240,7 +240,6 @@
 	</div>
 </div>
 
-
 <div class="modal inmodal fade" id="modal-dashbord" tabindex="-1" role="dialog"  aria-hidden="true">
 	<div class="modal-dialog" id="tamano-modal">
 		<div class="modal-content">
@@ -265,7 +264,7 @@
 				<div class="ibox-title">
 					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 					<h4 class="modal-title">Titulo</h4>
-					<div class="ibox-tools">
+					<!-- <div class="ibox-tools">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 							<i class="fa fa-wrench"></i>
 						</a>
@@ -275,10 +274,14 @@
 							<li><a onclick="load_filtro_concepto_activo(this, 2)">Semestral</a></li>
 							<li><a onclick="load_filtro_concepto_activo(this, 3)">Anual</a></li>
 						</ul>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<div class="modal-body">
+				<div class="table-responsive">
+					<table id="tabla-conceptos-activos" class="table table-striped table-bordered table-hover" style="width:100%">
+					</table>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-white" data-dismiss="modal">Cancelar</button>
@@ -286,6 +289,14 @@
 		</div>
 	</div>
 </div>
+
+<style>
+.flot-chart-pie-content {
+	height: 200px;
+	margin: unset;
+	width: 200px;
+}
+</style>
 
 <style>
 .no-data p{
@@ -308,9 +319,11 @@
 <script>
 
 var fecha_actual;
+var table_conceptos_activos;
 
 fecha_actual = new Date();
 fecha_actual = moment(fecha_actual).format("DD/MM/YYYY")
+
 
 $(document).ready(function(){
 
@@ -619,15 +632,26 @@ function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
 				$('#tabla-ingreso-centro tbody').append(temp_body)
 			};
 
+			var text    = 'Desde: '+data.fechas[0]  +'   Hasta: '+ data.fechas[1];
+			$(".s-ingreso-centro h5.title span").text(text)
 
 			c3.generate({
 				size: {
 					height: 220,
+					width: 570,
 				},
 				bindto: '#flot-pie-chart',
 				data: {
+					x: 'x',
 					columns: data.chart,
-					type: 'pie'
+				},
+				axis: {
+					x: {
+						type: 'timeseries',
+						tick: {
+							format: '%Y-%b',
+						}
+					}
 				}
 			});
 		}
@@ -678,72 +702,11 @@ function detalle_conceptos_activo(obj) {
 
 	activo          = $(obj).attr('data-activo-id')
 	nombre_activo   = $(obj).attr('data-activo-nombre')
+	load_filtro_concepto_activo(obj, 1)
 
-	$.ajax({
-		url: '/get/conceptos-activo/'+ activo,
-		type: 'get',
-		dataType: 'json',
-		data: {
-			csrfmiddlewaretoken: getCookie('csrftoken'),
-		},
-		success: function (data) {
-
-			$('#modal-dashbord-lg .modal-title').html('')
-			$('#modal-dashbord-lg .modal-body').html('')
-
-			var temp_concepto = ''
-			temp_concepto += '<table id="tabla-conceptos-activos" class="table table-hover">'
-			temp_concepto += '<thead>'
-			temp_concepto += '<tr>'
-			temp_concepto += '<th></th>'
-			for (var i in data.meses) {
-				temp_concepto += '<th class="text-center">'+data.meses[i]+'</th>'
-			}
-
-			temp_concepto += '</tr>'
-			temp_concepto += '</thead>'
-			temp_concepto += '<tbody>'
-
-			for(var a = 0; a < data.conceptos.length; a++){
-				temp_concepto += '<tr>'
-				temp_concepto += '<td>'+data.conceptos[a].concepto+'</td>'
-
-				for(var b in data.conceptos[a].valores){
-					temp_concepto += '<td>'+data.conceptos[a].valores[b]+'</td>'
-				}
-
-				temp_concepto += '</tr>'
-			}
-
-			temp_concepto += '<tr>'
-			temp_concepto += '<td><strong>TOTALES MES</strong></td>'
-			for (var c in data.total_mes) {
-				temp_concepto += '<td><strong>'+data.total_mes[c]+'</strong></td>'
-			}
-			temp_concepto += '</tr>'
-			temp_concepto += '<tbody>'
-			temp_concepto += '</table>'
-			var texto = 'Detalle de Conceptos ' + nombre_activo +' (MENSUAL)'
-
-			$('#modal-dashbord-lg .modal-title').html(texto)
-			$('#modal-dashbord-lg .modal-body').append(temp_concepto)
-			$('#modal-dashbord-lg').modal('show')
-		}
-	})
 }
 
 function load_filtro_concepto_activo(obj, type_filter) {
-
-	var text_filter = ''
-	if (type_filter == 0){
-		text_filter = 'MENSUAL'
-	}else if (type_filter == 1){
-		text_filter = 'TRIMESTRAL'
-	}else if (type_filter == 2){
-		text_filter = 'SEMESTRAL'
-	}else if (type_filter == 3){
-		text_filter = 'ANUAL'
-	}
 
 	$.ajax({
 		url: '/get/conceptos-activo/'+ activo,
@@ -759,45 +722,59 @@ function load_filtro_concepto_activo(obj, type_filter) {
 		success: function (data) {
 
 			$('#modal-dashbord-lg .modal-title').html('')
-			$('#modal-dashbord-lg .modal-body').html('')
+			$('#modal-dashbord-lg .modal-body #tabla-conceptos-activos').html('')
 
-			var temp_concepto = ''
-			temp_concepto += '<table id="tabla-conceptos-activos" class="table table-hover">'
-			temp_concepto += '<thead>'
-			temp_concepto += '<tr>'
-			temp_concepto += '<th></th>'
-			for (var i in data.meses) {
-				temp_concepto += '<th>'+data.meses[i]+'</th>'
+			if (table_conceptos_activos != undefined) {
+				table_conceptos_activos.destroy();
+				$('#tabla-conceptos-activos').empty();
 			}
 
-			temp_concepto += '</tr>'
-			temp_concepto += '</thead>'
-			temp_concepto += '<tbody>'
-
-			for(var a = 0; a < data.conceptos.length; a++){
-				temp_concepto += '<tr>'
-				temp_concepto += '<td>'+data.conceptos[a].concepto+'</td>'
-
-				for(var b in data.conceptos[a].valores){
-					temp_concepto += '<td>'+data.conceptos[a].valores[b]+'</td>'
+			var configuracion = {
+				'buttons': [
+				],
+				'scrollX':        true,
+				'fixedColumns':{
+					leftColumns: 1,
 				}
+			};
 
-				temp_concepto += '</tr>'
+			var columns = [];
+
+			columns.push({
+				'width': '20%',
+				'data': 'conceptos',
+				'title': 'Conceptos',
+			})
+
+			for (var i in data.meses) {
+				val             = {};
+				val.width       = '6%';
+				val.data        = data.meses[i].replace(/\s/g,"_").toLowerCase();
+				val.title       = data.meses[i];
+				val.orderable   = false
+				columns.push(val)
 			}
 
-			temp_concepto += '<tr>'
-			temp_concepto += '<td><strong>TOTALES '+text_filter+'</strong></td>'
-			for (var c in data.total_mes) {
-				temp_concepto += '<td><strong>'+data.total_mes[c]+'</strong></td>'
-			}
-			temp_concepto += '</tr>'
-			temp_concepto += '<tbody>'
-			temp_concepto += '</table>'
-			var texto = 'Detalle de Conceptos ' + nombre_activo +'  ('+text_filter+')'
-			loading(false)
+			table_conceptos_activos = load_table('#tabla-conceptos-activos', columns, configuracion)
 
+			var rows        = [];
+
+			for (var i in data.conceptos){
+				var row = {};
+
+				row.conceptos   = data.conceptos[i].concepto;
+
+				for(var v in data.conceptos[i].valores){
+					row[data.conceptos[i].valores[v][0].replace(/\s/g,"_").toLowerCase()] = data.conceptos[i].valores[v][1]
+				}
+				rows.push(row);
+			}
+
+			table_conceptos_activos.rows.add(rows).draw();
+
+			var texto = 'Detalle de Conceptos ' + nombre_activo
 			$('#modal-dashbord-lg .modal-title').html(texto)
-			$('#modal-dashbord-lg .modal-body').append(temp_concepto)
+			loading(false)
 			$('#modal-dashbord-lg').modal('show')
 		}
 	})

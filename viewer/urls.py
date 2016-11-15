@@ -17,5 +17,5 @@ urlpatterns = [
 	url(r'^dashboard/ingreso-centro/$', views.chart_ingreso_centro, name='chart_ingreso_centro'),
 
 	# get - conceptos
-	url(r'^get/conceptos-activo/(?P<id>\d+)$', csrf_exempt(views.CONCEPTOS_ACTIVOS.as_view()), name='get_conceptos_activo'),
+	url(r'^get/conceptos-activo/(?P<id>\d+)$', views.get_conceptos_activo, name='get_conceptos_activo'),
 ]
