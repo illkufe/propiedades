@@ -329,28 +329,26 @@ def propuesta_guardar(request):
 
 def propuesta_pdf(request, pk=None):
 
+	print ('asd')
+
 	data 		= list()
 	total 		= 0
-	propuesta 	= Propuesta.objects.get(id=pk)
+	propuesta 	= Factura.objects.get(id=pk)
+	conceptos 	= list()
 
-	for factura in propuesta.factura_set.all():
-
-		conceptos 	= list()
+	for factura in propuesta.factura_detalle_set.all():
+		
 		subtotal	= 0
+		subtotal 	+= factura.total
+		total 		+= factura.total
 
-		for detalle in factura.factura_detalle_set.all():
+		conceptos.append({
+			'nombre'	: factura.nombre,
+			'total'		: formato_moneda(factura.total),
+			})
 
-			subtotal 	+= detalle.total
-			total 		+= detalle.total
-
-			conceptos.append({
-				'nombre'	: detalle.nombre,
-				'total'		: formato_moneda(detalle.total),
-				})
-
-		item = {'contrato': factura.contrato, 'conceptos':conceptos, 'subtotal': formato_moneda(subtotal)}
-
-		data.append(item)
+	item = {'contrato': propuesta.contrato, 'conceptos':conceptos, 'subtotal': formato_moneda(total)}
+	data.append(item)
 
 	options = {
 		'margin-top'	: '0.5in',
