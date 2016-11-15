@@ -623,7 +623,8 @@ function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
 
 				temp_body = ''
 				temp_body += '<tr>'
-				temp_body += '<td class="text-center"><a data-original-title="visualizar local" onclick="detalle_conceptos_activo(this)" data-activo-nombre="'+data.table.data[i].activo+'" data-activo-id="'+data.table.data[i].activo_id+'" data-placement="top" data-toggle="tooltip" class="btn btn-default btn-bitbucket"><i class="fa fa-eye"></i></a></td>'
+
+				temp_body += '<td class="text-center"><button class="btn btn-success btn-circle btn-activo-detalle" type="button" onclick="detalle_conceptos_activo(this)" data-activo-nombre="'+data.table.data[i].activo+'" data-activo-id="'+data.table.data[i].activo_id+'" data-placement="top" data-toggle="tooltip"><i class="fa fa-info"></i></button></td>'
 				/*temp_body += '<td class="text-center"><a href="/static/assets/img/alexis.gif" class="btn btn-default btn-bitbucket" role="button"><i class="fa fa-eye"></i></a></td>'*/
 				temp_body += '<td>' + data.table.data[i].activo + '</td>'
 				temp_body += '<td class="text-center">' + data.table.data[i].totales + '</td>'
