@@ -69,75 +69,105 @@ def flag_commercial(request):
 
 	return JsonResponse(data, safe=False)
 
-# def chart_vacancia(request):
-	
-# 	response 	= list()
-# 	activos 	= Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
-
-# 	for activo in activos:
-
-# 		# locales = Contrato.objects.values_list('locales', flat=True).filter(empresa=request.user.userprofile.empresa, fecha_termino__gt=fecha, visible=True).distinct()
-
-# 		response.append({
-# 			'id'			: activo.id,
-# 			'codigo'		: activo.codigo,
-# 			'nombre'		: activo.nombre,
-# 			'm_totales'		: 0,
-# 			'm_ocupados'	: 0,
-# 			'm_disponibles'	: 0,
-# 			})
-
-# 	return JsonResponse(response, safe=False)
-
-
-
-
-
-
-
-
 def chart_vacancia(request):
 
-	data 		= {}
+	response 	= list()
 	var_post 	= request.POST.copy()
-
-	fecha 		= datetime.strptime(var_post['dia']+'/'+var_post['mes']+'/'+var_post['anio'], "%d/%m/%Y")
+	fecha 		= datetime.strptime(str(var_post['fecha']), "%d/%m/%Y")
 	activos 	= Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
-	locales 	= Contrato.objects.values_list('locales', flat=True).filter(empresa=request.user.userprofile.empresa, fecha_termino__gt=fecha, visible=True).distinct()
 
-	# chart	
-	metros_total 		= Local.objects.filter(activo_id__in=activos, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-	metros_ocupados 	= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+	for activo in activos:
 
-	metros_total	 	= metros_total if metros_total is not None else 0
-	metros_ocupados 	= metros_ocupados if metros_ocupados is not None else 0
-	metros_disponibles 	= metros_total - metros_ocupados
+		m_totales 	= activo.local_set.all().filter(visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+		locales 	= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gt=fecha, visible=True)
+		m_ocupados 	= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-	if metros_total == 0:
-		ocupado 	= 0
-		disponible 	= 0
+		m_totales 	= m_totales if m_totales is not None else 0
+		m_ocupados 	= m_ocupados if m_ocupados is not None else 0
+
+		response.append({
+			'id'			: activo.id,
+			'codigo'		: activo.codigo,
+			'nombre'		: activo.nombre,
+			'm_totales'		: m_totales,
+			'm_ocupados'	: m_ocupados,
+			'm_disponibles'	: m_totales - m_ocupados,
+			})
+
+	return JsonResponse(response, safe=False)
+
+
+def chart_vacancia_tipo(request):
+
+	response 	= list()
+
+	var_post 	= request.POST.copy()
+	fecha 		= datetime.strptime(str(var_post['fecha']), "%d/%m/%Y")
+	activo 		= Activo.objects.get(id=int(var_post['id']))
+	indice 		= int(var_post['tipo'])
+
+	if indice == 1:
+
+		tipos 	= Local_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+		locales = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gt=fecha, visible=True)
+
+		for tipo in tipos:
+
+			m_totales 	= Local.objects.filter(activo=activo, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+			m_ocupados 	= Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+			m_totales 	= m_totales if m_totales is not None else 0
+			m_ocupados 	= m_ocupados if m_ocupados is not None else 0
+
+			response.append({
+				'id'			: tipo.id,
+				'nombre'		: tipo.nombre,
+				'm_totales'		: m_totales,
+				'm_ocupados'	: m_ocupados,
+				'm_disponibles'	: m_totales - m_ocupados,
+				})
+
+	elif indice == 2:
+
+		niveles = activo.nivel_set.all()
+		locales = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gt=fecha, visible=True)
+
+		for nivel in niveles:
+
+			m_totales 	= Local.objects.filter(activo=activo, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+			m_ocupados 	= Local.objects.filter(id__in=locales, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+			m_totales 	= m_totales if m_totales is not None else 0
+			m_ocupados 	= m_ocupados if m_ocupados is not None else 0
+
+			response.append({
+				'id'			: nivel.id,
+				'nombre'		: nivel.nombre,
+				'm_totales'		: m_totales,
+				'm_ocupados'	: m_ocupados,
+				'm_disponibles'	: m_totales - m_ocupados,
+				})
+	elif indice == 3:
+
+		sectores 	= activo.sector_set.all()
+		locales 	= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gt=fecha, visible=True)
+
+		for sector in sectores:
+
+			m_totales 	= Local.objects.filter(activo=activo, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+			m_ocupados 	= Local.objects.filter(id__in=locales, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+			m_totales 	= m_totales if m_totales is not None else 0
+			m_ocupados 	= m_ocupados if m_ocupados is not None else 0
+
+			response.append({
+				'id'			: sector.id,
+				'nombre'		: sector.nombre,
+				'm_totales'		: m_totales,
+				'm_ocupados'	: m_ocupados,
+				'm_disponibles'	: m_totales - m_ocupados,
+				})
 	else:
-		ocupado 	= (metros_ocupados * 100)/metros_total
-		disponible 	= (metros_disponibles * 100)/metros_total
+		pass
 
-	data['chart'] = {'data': [['ocupado', ocupado], ['disponible', disponible]]}
-
-	# table
-	tipos 					= Local_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
-	data['table'] 			= {}
-	data['table']['data'] 	= list()
-
-	for tipo in tipos:
-		metros_total 		= Local.objects.filter(activo_id__in=activos, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-		metros_ocupados 	= Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-
-		metros_total	 	= metros_total if metros_total is not None else 0
-		metros_ocupados 	= metros_ocupados if metros_ocupados is not None else 0
-		metros_disponibles 	= metros_total - metros_ocupados
-
-		data['table']['data'].append({'nombre':tipo.nombre, 'metros_totales':metros_total, 'metros_ocupados':metros_ocupados, 'metros_disponibles':metros_disponibles})
-
-	return JsonResponse(data, safe=False)
+	return JsonResponse(response, safe=False)
 
 def chart_ingreso_centro(request):
 
@@ -156,7 +186,7 @@ def chart_ingreso_centro(request):
 	data_table['fechas'] 		= list()
 
 	## Data Grafico
-	response = calcular_periodos(1, 12)
+	response = calcular_periodos(1, 6)
 
 	fecha_inicial 	= datetime.strftime(response[0]['fecha_inicio'], "%d-%m-%Y")
 	fecha_final 	= datetime.strftime(response[response.__len__() -1]['fecha_termino'], "%d-%m-%Y")
