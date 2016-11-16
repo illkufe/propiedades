@@ -229,12 +229,12 @@ def propuesta_generar(request):
 
 				total = calcular_concepto(contrato, concepto, fecha, configuracion)
 
-				if total is not 0:
-					conceptos.append({
-						'id'		: concepto.id,
-						'nombre'	: concepto.nombre,
-						'total'		: total,
-						})
+				# if total is not 0:
+				conceptos.append({
+					'id'		: concepto.id,
+					'nombre'	: concepto.nombre,
+					'total'		: total,
+					})
 
 		cliente = {
 			'id' 		: contrato.cliente.id,
@@ -663,7 +663,7 @@ def validar_arriendo_variable(contrato, concepto, periodo):
 
 					if arriendo.relacion is True:
 
-						if Factura_Detalle.objects.filter(concepto=arriendo.arriendo_minimo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).exists():
+						if Factura_Detalle.objects.filter(concepto=arriendo.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).exists():
 							estado 	= True
 							mensaje = 0
 						else:
@@ -947,7 +947,7 @@ def validar_gasto_asociado(contrato, concepto, periodo):
 			# validar vinculo del concepto
 			if estado is True and gasto_asociado.valor_fijo is False:
 
-				if Factura_Detalle.objects.filter(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=sumar_meses(periodo, -1).month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=sumar_meses(periodo, -1).month, factura__fecha_termino__year=periodo.year).exists():
+				if Factura_Detalle.objects.filter(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).exists():
 					estado 	= True
 					mensaje = 0
 				else:
@@ -1205,9 +1205,9 @@ def calcular_arriendo_variable(contrato, concepto, periodo, configuracion):
 
 					if arriendo.relacion is True:
 
-						if Factura_Detalle.objects.filter(concepto=arriendo.arriendo_minimo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).exists():
+						if Factura_Detalle.objects.filter(concepto=arriendo.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).exists():
 							
-							arriendo_minimo = Factura_Detalle.objects.filter(concepto=arriendo.arriendo_minimo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).last()
+							arriendo_minimo = Factura_Detalle.objects.filter(concepto=arriendo.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).last()
 							arriendo_minimo = arriendo_minimo.total
 
 							if valor > arriendo_minimo:
@@ -1487,8 +1487,8 @@ def calcular_gasto_asociado(contrato, concepto, periodo, configuracion):
 				if  gasto_asociado.valor_fijo is True:
 					total += factor
 				else:
-					if Factura_Detalle.objects.filter(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=sumar_meses(periodo, -1).month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=sumar_meses(periodo, -1).month, factura__fecha_termino__year=periodo.year).exists():
-						concepto_facturado = Factura_Detalle.objects.get(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=sumar_meses(periodo, -1).month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=sumar_meses(periodo, -1).month, factura__fecha_termino__year=periodo.year)
+					if Factura_Detalle.objects.filter(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).exists():
+						concepto_facturado = Factura_Detalle.objects.get(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year)
 						total += concepto_facturado.total * (factor/100)
 
 	return total

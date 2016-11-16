@@ -60,9 +60,9 @@ class ContratoForm(forms.ModelForm):
 		super(ContratoForm, self).__init__(*args, **kwargs)	
 
 		if self.instance.pk is not None:
-			locales_id = Contrato.objects.values_list('locales', flat=True).filter(estado=4, visible=True).exclude(id=self.instance.pk)
+			locales_id = Contrato.objects.values_list('locales', flat=True).filter(visible=True).exclude(id=self.instance.pk)
 		else:
-			locales_id = Contrato.objects.values_list('locales', flat=True).filter(estado=4, visible=True)
+			locales_id = Contrato.objects.values_list('locales', flat=True).filter(visible=True)
 
 		self.fields['locales'].queryset 	= Local.objects.filter(activo__in=activos, visible=True).exclude(id__in=locales_id)
 		self.fields['conceptos'].queryset 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)

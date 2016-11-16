@@ -404,7 +404,7 @@ class LECTURASMEDIDOR(View):
 				'anio'		: item_e.anio,
 				'lectura'	: item_e.valor,
 				'creado'	: item_e.creado_en,
-				'image'		: '' if not item_e.imagen_file else item_e.imagen_file,
+				'image'		: '' if not item_e.imagen_file else str(item_e.imagen_file),
 				'tipo' 		: 'Electricidad',
 				'url' 		: 'electricidad',
 			})
@@ -419,7 +419,7 @@ class LECTURASMEDIDOR(View):
 				'anio'		: item_a.anio,
 				'lectura'	: item_a.valor,
 				'creado'	: item_a.creado_en,
-				'image'		: '' if not item_a.imagen_file else item_a.imagen_file,
+				'image'		: '' if not item_a.imagen_file else str(item_a.imagen_file),
 				'tipo' 		: 'Agua',
 				'url' 		: 'agua',
 			})
@@ -435,7 +435,7 @@ class LECTURASMEDIDOR(View):
 				'anio'		: item_g.anio,
 				'lectura'	: item_g.valor,
 				'creado'	: item_g.creado_en,
-				'image'		: '' if not item_g.imagen_file else item_g.imagen_file,
+				'image'		: '' if not item_g.imagen_file else str(item_g.imagen_file),
 				'tipo' 		: 'Gas',
 				'url' 		: 'gas',
 			})

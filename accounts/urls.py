@@ -3,6 +3,8 @@ from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import views as auth_views
+from django.views.decorators.csrf import csrf_exempt
+
 
 from . import views
 
@@ -19,8 +21,8 @@ urlpatterns = [
 	url(r'^perfil$', views.profile, name='perfil'),
 	url(r'^update-profile$', views.update_profile, name='update_profile'),
 
-	url(r'^update-password/(?P<pk>\d+)$', views.update_password, name='update_password_id'),
-	url(r'^update-password', views.update_password, name='update_password'),
+	url(r'^update-password/(?P<pk>\d+)$', csrf_exempt(views.update_password), name='update_password_id'),
+	url(r'^update-password', csrf_exempt(views.update_password), name='update_password'),
 
 ]
 
