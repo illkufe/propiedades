@@ -3573,12 +3573,12 @@ def consulta_estado_control_folios(fecha_emision, secuencia):
 def envio_factura_inet(request):
 
     datos_conexion  = {}
-    resultado_xml   = armar_xml_inet(request)
+    resultado_xml   = armar_xml_inet_docvta(request)
 
     if not resultado_xml[0]:
 
         ##Obtener datos de conexion IDTE -------------------------------------------------------------------------------
-        error, conexion = obtener_datos_conexion_ws_inet('axmldocvtaext')
+        error, conexion = obtener_datos_conexion_ws_inet('axmldocvta')
 
         if not error:
             datos_conexion['codigo_contexto'] = conexion.codigo_contexto

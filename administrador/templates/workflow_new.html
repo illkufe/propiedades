@@ -179,7 +179,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
-					<button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="validate_condicion()">GUARDAR</button>
+					<button type="button" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="guardar_data_condicion()">GUARDAR</button>
 				</div>
 			</form>
 		</div>
@@ -216,7 +216,6 @@ table#tabla-procesos tbody img{
         load_data_procesos();
         validate_btn_proceso();
         validate_workflow();
-        guardar_data_condicion();
     });
 
      function validate_btn_proceso() {
@@ -631,94 +630,48 @@ table#tabla-procesos tbody img{
                 clear_errors_form('#form-condicion-new');
                 $('#m-condicion-new').modal('show');
                 $('#form-condicion-new').find('.id_proceso').val(proceso_condicion)
-                guardar_data_condicion();
             }
         })
 
     }
 
-    function validate_condicion() {
-        $("#form-condicion-new").submit();
-    }
-
     function guardar_data_condicion() {
 
-        $("#form-condicion-new").validate({
-            ignore: 'input[type=hidden]',
-            rules: {},
-            messages: {},
-            errorPlacement: function (error, element) {
-                console.log('error 1')
-                console.log(error)
-                console.log(element)
-                error.appendTo(element.closest(".form-group").find('.container-error'));
-            },
-            submitHandler: function (form) {
-                $.ajax({
-                    url: '/workflow/condicion',
-                    type: 'post',
-                    data: $('#form-condicion-new').serialize(),
-                    success: function (data) {
-                        if (data.estado == true) {
-                            var configuracion = {
-                                'toast_type': 'success',
-                                'toast_text': 'Guardado correctamente',
-                                'toast_title': 'ÉXITO',
-                            }
-                            $('#m-condicion-new').modal('hide');
-                        } else {
-                            var configuracion = {
-                                'toast_type': 'error',
-                                'toast_text': 'No se pudo guardar',
-                                'toast_title': 'Error',
-                            }
-                        }
-                        notification_toast(configuracion)
-                    },
-                    error: function (data, textStatus, jqXHR) {
-                        clear_errors_form('#form-condicion-new');
-                        var errors = $.parseJSON(data.responseText);
-                        console.log('error 2')
-                        apply_errors_form(errors);
-                    },
-                    complete: function () {
-                        load_data_procesos();
+        $.ajax({
+            url: '/workflow/condicion',
+            type: 'post',
+            data: $('#form-condicion-new').serialize(),
+            success: function (data) {
+                if (data.estado == true) {
+                    var configuracion = {
+                        'toast_type': 'success',
+                        'toast_text': 'Guardado correctamente',
+                        'toast_title': 'ÉXITO',
                     }
+                    $('#m-condicion-new').modal('hide');
+                } else {
+                    var configuracion = {
+                        'toast_type': 'error',
+                        'toast_text': 'No se pudo guardar',
+                        'toast_title': 'Error',
+                    }
+                }
+                notification_toast(configuracion)
+            },
+            error: function (data, textStatus, jqXHR) {
+                clear_errors_form('#form-condicion-new');
+                var errors = $.parseJSON(data.responseText)
+
+                $.each(errors, function(index, value) {
+                    $.each(value, function(k, v) {
+                        $('#form-condicion-new #id_form-'+index+'-'+k).closest('.form-group').find('.container-error').append(v)
+                    })
                 });
+            },
+            complete: function () {
+                load_data_procesos();
             }
         });
-
-
-        $("[name*=entidad]").each(function(){
-
-            $(this).rules("add", {
-                required : true,
-                messages: {
-                    required: "Este campo es obligatorio."
-                }
-            } );
-        });
-
-        $("[name*=operacion]").each(function(){
-
-            $(this).rules("add", {
-                required : true,
-                messages: {
-                    required: "Este campo es obligatorio."
-                }
-            } );
-        });
-
-        $("[name*=valor]").each(function(){
-
-            $(this).rules("add", {
-                required : true,
-                messages: {
-                    required: "Este campo es obligatorio."
-                }
-            } );
-        });
-
     }
 
     function nueva_condicion(tabla, entidad) {

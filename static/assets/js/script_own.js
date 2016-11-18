@@ -499,6 +499,7 @@ function agregar_fila(tabla, entidad){
 	$('#'+tabla+' tbody tr:last').append($row)
 
 	var cantidad = parseInt($('#'+tabla+' #id_'+entidad+'_set-TOTAL_FORMS').val())
+	console.log(cantidad)
 	cantidad += 1
 	$('#'+tabla+' #id_'+entidad+'_set-TOTAL_FORMS').val(cantidad)
 }
