@@ -389,6 +389,7 @@ def propuesta_enviar(request):
 
 	parametro_de_facturacion = empresa.configuracion.motor_factura_id
 
+	#Facturación INET
 	if parametro_de_facturacion == 1:
 		response_ws = envio_factura_inet(request)
 
@@ -441,6 +442,7 @@ def propuesta_enviar(request):
 					 })
 			return JsonResponse(data, safe=False)
 
+	# Facturación IDTE
 	elif parametro_de_facturacion == 2:
 
 		resultado 	= armar_dict_documento(request)

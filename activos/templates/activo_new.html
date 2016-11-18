@@ -438,7 +438,7 @@
 						<div class="row">
 
 							<div class="col-xs-12 col-sm-6">
-								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-niveles', 'nivel')"><i class="fa fa-plus"></i> Nuevo Nivel</button>
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila_final('tabla-niveles', 'nivel')"><i class="fa fa-plus"></i> Nuevo Nivel</button>
 								
 								{{ nivelform.management_form }}
 
@@ -480,7 +480,7 @@
 							</div>
 
 							<div class="col-xs-12 col-sm-6">
-								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-sectores', 'sector')"><i class="fa fa-plus"></i> Nuevo Sector</button>
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila_final('tabla-sectores', 'sector')"><i class="fa fa-plus"></i> Nuevo Sector</button>
 								{{ sectorform.management_form }}
 								{% for form in sectorform %}
 								{% for hidden in form.hidden_fields %}

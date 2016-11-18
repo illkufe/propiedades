@@ -2,6 +2,7 @@ from django.db import transaction
 from suds.client import Client
 from xml.etree.ElementTree import *
 
+from contrato.models import Contrato
 from facturacion.app.parametros_facturacion import calculo_iva_total_documento
 from facturacion.models import FoliosDocumentosElectronicos, ConexionFacturacion, CodigoConcepto
 from datetime import datetime
@@ -2055,8 +2056,8 @@ def armar_xml_inet(request):
         etree.SubElement(Facturacion, 'IdVendedor').text        = str(factura.contrato.empresa.conexion.cod_vendedor)
         etree.SubElement(Facturacion, 'Sucursal_Cod').text      = str(factura.contrato.empresa.conexion.cod_sucursal)
         etree.SubElement(Facturacion, 'ListaPrecio_Cod').text   = str(factura.contrato.empresa.conexion.cod_lista_precio)
-        etree.SubElement(Facturacion, 'Fecha_Atencion').text    = '2016-08-19' ## ver fecha
-        etree.SubElement(Facturacion, 'Fecha_Documento').text   = '2016-08-19' ## ver fecha
+        etree.SubElement(Facturacion, 'Fecha_Atencion').text    = factura.creado_en.strftime('%Y-%m-%d')  ## ver fecha
+        etree.SubElement(Facturacion, 'Fecha_Documento').text   = factura.creado_en.strftime('%Y-%m-%d') ## ver fecha
 
     except Exception as p:
         error       = 'Error al crear cabecera XML ' + str(p)
@@ -2098,8 +2099,8 @@ def armar_xml_inet(request):
 
             Producto = etree.SubElement(Item, 'Producto')
 
-            Producto_Vta = etree.SubElement(Producto, 'Producto_Vta').text  = d.concepto.codigo_producto
-            Unidad = etree.SubElement(Producto, 'Unidad').text              = 'Unid'
+            Producto_Vta    = etree.SubElement(Producto, 'Producto_Vta').text  = d.concepto.codigo_producto
+            Unidad          = etree.SubElement(Producto, 'Unidad').text        = 'Unid'
         except Exception as p:
             error       = "Error al crear detalle XML " + str(p)
             resultado   = [
@@ -2115,12 +2116,245 @@ def armar_xml_inet(request):
     valores = calculo_iva_total_documento(total_linea, 19)
 
     # SDT_DocVentaExtDetDoc/ResumenDoc
-    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = valores[0]
+    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = formato_numero_sin_miles(valores[0])
     etree.SubElement(ResumenDoc, 'CodigoDescuento').text            = '0'
     etree.SubElement(ResumenDoc, 'TotalDescuento').text             = '0'
-    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = valores[1]
+    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = formato_numero_sin_miles(valores[1])
     etree.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text        = '0'
-    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = valores[2]
+    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = formato_numero_sin_miles(valores[2])
+    TotalConceptos = etree.SubElement(ResumenDoc, 'TotalConceptos')
+
+    # SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
+
+    conceptos   = CodigoConcepto.objects.all().order_by('id')
+
+
+    # aux         = 0
+    # for a in conceptos:
+    #     try:
+            # CREAR UN FOR
+    Conceptos = etree.SubElement(TotalConceptos, 'Conceptos')
+    etree.SubElement(Conceptos, 'Concepto_Cod')
+    etree.SubElement(Conceptos, 'ValorConcepto')
+        # except Exception as p:
+        #     po = p
+        # aux += 1
+
+
+    # Recaudacion
+    Encabezado = etree.SubElement(Recaudacion, 'Encabezado')
+    Detalle = etree.SubElement(Recaudacion, 'Detalle')
+
+    # Recaudacion/Encabezado
+    etree.SubElement(Encabezado, 'IdCajero')
+    etree.SubElement(Encabezado, 'Tipo_Vuelto')
+    etree.SubElement(Encabezado, 'IdCliente')
+    etree.SubElement(Encabezado, 'DigitoVerificador')
+    etree.SubElement(Encabezado, 'NombreCompleto')
+    etree.SubElement(Encabezado, 'Direccion')
+    etree.SubElement(Encabezado, 'Ciudad')
+    etree.SubElement(Encabezado, 'Comuna')
+    etree.SubElement(Encabezado, 'Telefono')
+    etree.SubElement(Encabezado, 'Email')
+    etree.SubElement(Encabezado, 'TotalaRecaudar')
+    RecaudacionEnc_ext = etree.SubElement(Encabezado, 'RecaudacionEnc_ext')
+
+    # Recaudacion/Encabezado/RecaudacionEnc_ext
+    REnExt_Item = etree.SubElement(RecaudacionEnc_ext, 'REnExt_Item')
+    etree.SubElement(REnExt_Item, 'RecEnc_opcion')
+    etree.SubElement(REnExt_Item, 'RecEnd_datos')
+
+    # Recaudacion/Detalle/FormaPago
+    FormaPago = etree.SubElement(Detalle, 'FormaPago')
+    etree.SubElement(FormaPago, 'Cod_FormaPago')
+    etree.SubElement(FormaPago, 'Cod_MonedaFP')
+    etree.SubElement(FormaPago, 'NroCheque')
+    etree.SubElement(FormaPago, 'FechaCheque')
+    etree.SubElement(FormaPago, 'FechaVencto')
+    etree.SubElement(FormaPago, 'Cod_Banco')
+    etree.SubElement(FormaPago, 'Cod_Plaza')
+    etree.SubElement(FormaPago, 'Referencia')
+    etree.SubElement(FormaPago, 'MontoaRec')
+    etree.SubElement(FormaPago, 'ParidadRec')
+
+    xml = etree.tostring(SDT_DocVentaExt, short_empty_elements=False, method='xml')
+    error = ''
+    resultado = [
+        error,
+        xml
+    ]
+
+    return resultado
+
+
+def armar_xml_inet_docvta(request):
+
+    var_post        = request.POST.copy()
+    data            = list()
+    xml             = None
+    string_locales  = ''
+    factura         = Factura.objects.get(id=var_post['id'])
+    locales         = factura.contrato.locales.values_list('codigo', flat=True)
+
+    for local in locales:
+        string_locales +=  local +' - '
+
+    # obtener datos de conexión
+
+    SDT_DocVentaExt = etree.Element('SDT_DocVenta')
+    SDT_DocVentaExt.set('xmlns', 'http://www.informat.cl/ws')
+
+    # SDT_DocVentaExt
+    EncDoc      = etree.SubElement(SDT_DocVentaExt, 'EncDoc')
+    DetDoc      = etree.SubElement(SDT_DocVentaExt, 'DetDoc')
+    ResumenDoc  = etree.SubElement(SDT_DocVentaExt, 'ResumenDoc')
+    Recaudacion = etree.SubElement(SDT_DocVentaExt, 'Recaudacion')
+
+    # SDT_DocVentaExt/EncDoc
+    # SDT_DocVentaExt/EncDoc
+    RefDoc = etree.SubElement(EncDoc, 'RefDoc')
+    Cliente = etree.SubElement(EncDoc, 'Cliente')
+
+    try:
+        # SDT_DocVentaExt/EncDoc/RefDoc
+        etree.SubElement(RefDoc, 'NroRefCliente').text  = str(factura.numero_documento)+ '-' + str(factura.contrato.empresa.conexion.cod_sucursal) +'-' + datetime.now().__str__()
+        etree.SubElement(RefDoc, 'Modulo').text         = 'IPRO'
+        etree.SubElement(RefDoc, 'ObsUno').text         = string_locales[:-3]
+        etree.SubElement(RefDoc, 'ObsDos').text         = str(factura.nombre)
+        etree.SubElement(RefDoc, 'ObsTre')
+        etree.SubElement(RefDoc, 'NroOrdCom').text      = '0'
+
+        # SDT_DocVentaExt/EncDoc/RefDoc
+        Identificacion = etree.SubElement(Cliente, 'Identificacion')
+        Facturacion = etree.SubElement(Cliente, 'Facturacion')
+
+        # SDT_DocVentaExt/EncDoc/RefDoc/Identificacion
+        etree.SubElement(Identificacion, 'IdCliente').text          = factura.contrato.cliente.rut[:-2].replace('.','')  # SIN DIGITO VERIFICADOR
+        etree.SubElement(Identificacion, 'Nombre_Completo').text    = factura.contrato.cliente.nombre
+        etree.SubElement(Identificacion, 'Primer_Nombre')
+        etree.SubElement(Identificacion, 'Apellido_Pat')
+        etree.SubElement(Identificacion, 'Apellido_Mat')
+        etree.SubElement(Identificacion, 'Secuencia').text          = '0'  # IDENTIIFCAR SI ES CLIENTE O PROVEEDOR
+        etree.SubElement(Identificacion, 'Direccion').text          = factura.contrato.cliente.direccion
+        etree.SubElement(Identificacion, 'Comuna').text             = factura.contrato.cliente.comuna
+        etree.SubElement(Identificacion, 'Ciudad').text             = factura.contrato.cliente.ciudad
+        etree.SubElement(Identificacion, 'Telefono').text           = factura.contrato.cliente.telefono
+        etree.SubElement(Identificacion, 'Fax')
+        etree.SubElement(Identificacion, 'Email').text              = factura.contrato.cliente.email
+
+        # SDT_DocVentaExt/EncDoc/RefDoc/Facturacion
+        etree.SubElement(Facturacion, 'ContactoFact').text      = '1'
+        etree.SubElement(Facturacion, 'MedioPago').text         = '1'
+        etree.SubElement(Facturacion, 'MedioPago_Dsc').text     = '1'
+        etree.SubElement(Facturacion, 'Clausula').text          = '1'
+        etree.SubElement(Facturacion, 'Clausula_Dsc').text      = '1'
+        etree.SubElement(Facturacion, 'Moneda').text            = '1'
+        etree.SubElement(Facturacion, 'Moneda_Dsc')
+        etree.SubElement(Facturacion, 'Tasa').text              = '1'
+        etree.SubElement(Facturacion, 'Tipo_Tasa').text         = '0'
+        etree.SubElement(Facturacion, 'CondVenta').text         = str(factura.contrato.empresa.conexion.cod_condicion_venta)  #2 SI ES CONTADO, EN CREDITO ETC
+        etree.SubElement(Facturacion, 'CondVenta_Dsc')
+        etree.SubElement(Facturacion, 'Origen').text            = '2'
+        etree.SubElement(Facturacion, 'DocAGenerar').text       = str(factura.numero_documento)
+        etree.SubElement(Facturacion, 'DocAGenerar_Dsc')
+        etree.SubElement(Facturacion, 'DocRef').text            = '0'
+        etree.SubElement(Facturacion, 'NroDocRef').text         = '0'
+        etree.SubElement(Facturacion, 'NroDoc').text            = '0'
+        etree.SubElement(Facturacion, 'Estado').text            = '0'
+        etree.SubElement(Facturacion, 'Equipo').text            = '0'  # AVERIGUAR QUE ES
+        etree.SubElement(Facturacion, 'Bodega_Salida').text     = str(factura.contrato.empresa.conexion.cod_bodega_salida)
+        etree.SubElement(Facturacion, 'Bodega_Salida_Nom')
+        etree.SubElement(Facturacion, 'Bodega_Entrada').text    = str(factura.contrato.empresa.conexion.cod_bodega_salida)
+        etree.SubElement(Facturacion, 'Bodega_Entrada_Nom')
+        etree.SubElement(Facturacion, 'IdVendedor').text        = str(factura.contrato.empresa.conexion.cod_vendedor)
+        etree.SubElement(Facturacion, 'Vendedor_Nom')
+        etree.SubElement(Facturacion, 'Sucursal_Cod').text      = str(factura.contrato.empresa.conexion.cod_sucursal)
+        etree.SubElement(Facturacion, 'Sucursal_Nom')
+        etree.SubElement(Facturacion, 'ListaPrecio_Cod').text   = str(factura.contrato.empresa.conexion.cod_lista_precio)
+        etree.SubElement(Facturacion, 'ListaPrecio_Nom')
+        etree.SubElement(Facturacion, 'Moneda_LisPre').text     = '1'
+        etree.SubElement(Facturacion, 'Moneda_LisPre_Nom')
+        etree.SubElement(Facturacion, 'Fecha_Atencion').text    = factura.creado_en.strftime('%Y-%m-%d')  ## ver fecha
+        etree.SubElement(Facturacion, 'Fecha_Documento').text   = factura.creado_en.strftime('%Y-%m-%d') ## ver fecha
+        etree.SubElement(Facturacion, 'Pasaporte')
+
+    except Exception as p:
+        error       = 'Error al crear cabecera XML ' + str(p)
+        resultado   = [
+            error,
+            xml
+        ]
+
+        return resultado
+
+    # SDT_DocVentaExtDetDoc/DetDoc
+    Items = etree.SubElement(DetDoc, 'Items')
+
+    ## Recuperar detalle de productos de la factura.
+
+    detalle     = factura.factura_detalle_set.all()
+    linea       = 1
+    total_linea = 0
+
+    for d in detalle:
+
+        try:
+            # SDT_DocVentaExtDetDoc/DetDoc/Items
+            Item = etree.SubElement(Items, 'Item')
+
+            etree.SubElement(Item, 'NumItem').text      = str(linea)
+
+            Producto = etree.SubElement(Item, 'Producto')
+
+            Producto_Vta        = etree.SubElement(Producto, 'Producto_Vta').text   = str(d.concepto.codigo_producto).strip()
+            Producto_Vta_Desc   = etree.SubElement(Producto, 'Descripcion').text    = str(d.concepto.nombre).upper()
+            Unidad              = etree.SubElement(Producto, 'Unidad').text         = 'Unid'
+            Unidad_Desc         = etree.SubElement(Producto, 'Unidad_Dsc')
+            Agrupacion          = etree.SubElement(Producto, 'Agrupacion').text     = str(d.concepto.codigo_producto).strip()
+
+
+            etree.SubElement(Item, 'FechaEntrega').text = '0'
+            etree.SubElement(Item, 'PrecioRef').text    = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'Cantidad').text     = '1'
+
+            Glosas  = etree.SubElement(Item, 'Glosas')
+
+            glosa_1 = etree.SubElement(Glosas, 'Glosa1').text   = string_locales[:-3]
+            glosa_2 = etree.SubElement(Glosas, 'Glosa2').text   = str(factura.nombre)+''+str(request.user.userprofile.empresa).upper()
+            glosa_3 = etree.SubElement(Glosas, 'Glosa3').text   = str(d.concepto.descripcion).upper()
+
+            etree.SubElement(Item, 'DescUno_Cod').text  = '0'
+            etree.SubElement(Item, 'PorcUno').text      = '0'
+            etree.SubElement(Item, 'MontoUno').text     = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'DescDos_Cod').text  = '0'
+            etree.SubElement(Item, 'DescTre_Cod').text  = '0'
+            etree.SubElement(Item, 'MontoImpUno').text  = '0'
+            etree.SubElement(Item, 'PorcImpUno').text   = '0'
+            etree.SubElement(Item, 'MontoImpDos').text  = '0'
+            etree.SubElement(Item, 'PorcImpDos').text   = '0'
+            etree.SubElement(Item, 'TotalDocLin').text  = formato_numero_sin_miles(d.total)
+
+        except Exception as p:
+            error       = "Error al crear detalle XML " + str(p)
+            resultado   = [
+                error,
+                xml
+            ]
+
+            return resultado
+
+        linea       += 1
+        total_linea += d.total
+
+    valores = calculo_iva_total_documento(total_linea, 19)
+
+    # SDT_DocVentaExtDetDoc/ResumenDoc
+    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = formato_numero_sin_miles(valores[0])
+    etree.SubElement(ResumenDoc, 'CodigoDescuento').text            = '0'
+    etree.SubElement(ResumenDoc, 'TotalDescuento').text             = '0'
+    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = formato_numero_sin_miles(valores[1])
+    etree.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text        = '0'
+    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = formato_numero_sin_miles(valores[2])
     TotalConceptos = etree.SubElement(ResumenDoc, 'TotalConceptos')
 
     # SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
@@ -2223,7 +2457,7 @@ def call_service_inet(url):
     except suds.WebFault as detail:
         error = str(detail.fault)
     except Exception as e:
-        error = "No se pudo realizar la conexion con el servidor de INET, por favor verifique los datos."
+        error = "No se pudo realizar la conexion con el servidor de INET, por favor verifique los datos. " + str(e)
 
     resultado = [
         error,

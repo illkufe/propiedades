@@ -757,22 +757,11 @@ class WORKFLOW_CONDICION(View):
 							new_condicion.valor     = data.get('valor')
 							new_condicion.save()
 
-
-
-				# instances = form_condicion.save(commit=False)
-				# if form_condicion.can_delete == True:
-				#     for obj in form_condicion.deleted_objects:
-				#         obj.delete()
-				#
-				# form_condicion.save()
-
 				workflow            = Workflow.objects.get(empresa=self.request.user.userprofile.empresa)
 				workflow.validado   = False
 				workflow.save()
 			else:
-				for errors in form_condicion.errors:
-					pass
-				return JsonResponse(errors, status=400)
+				return JsonResponse(form_condicion.errors, status=400, safe=False)
 			estado = True
 		except Exception as d:
 			error   = d
