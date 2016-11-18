@@ -17,39 +17,28 @@
 
 				<div id="container-concepto-{{forloop.counter}}" class="row">
 					<div class="col-sm-12">
-
 						{{ formulario.fomulario.management_form }}
 						{% for form in formulario.fomulario %}
 						{% for hidden in form.hidden_fields %}
 						{{ hidden }}
 						{% endfor %}
 						{% endfor %}
-
 						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila_concepto('tabla-servicios-basico', 'servicio_basico', {{forloop.counter}})"><i class="fa fa-plus"></i> Nuevo Periodo</button>
-						<table id="tabla-servicios-basico" class="table">
+						<table id="tabla-servicios-basico" class="table table-bordered">
 							<thead>
-
 								{% for form in formulario.fomulario %}
 								{% if forloop.first %}
 								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
-									{{ form.tipo.label_tag }}
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo_servicio.help_text }}" ></i>
+									{{ form.tipo_servicio.label_tag }}
 								</th>
 								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.locales.help_text }}" ></i>
-									{{ form.locales.label_tag }}
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo_cobro.help_text }}" ></i>
+									{{ form.tipo_cobro.label_tag }}
 								</th>
 								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_electricidad.help_text }}" ></i>
-									{{ form.valor_electricidad.label_tag }}
-								</th>
-								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_agua.help_text }}" ></i>
-									{{ form.valor_agua.label_tag }}
-								</th>
-								<th>
-									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor_gas.help_text }}" ></i>
-									{{ form.valor_gas.label_tag }}
+									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+									{{ form.valor.label_tag }}
 								</th>
 								<th></th>
 								{% endif %}
@@ -58,47 +47,27 @@
 							<tbody>
 								{% for form in formulario.fomulario %}
 								<tr>
-									<td style="width:35%">
-										<div class="form-group">
-											{{ form.locales }}
-											<div class="container-error">
-												{{ form.locales.errors }}
-											</div>
-										</div>
-									</td>
-
 									<td>
 										<div class="form-group">
-											{{ form.tipo }}
+											{{ form.tipo_servicio }}
 											<div class="container-error">
-												{{ form.tipo.errors }}
+												{{ form.tipo_servicio.errors }}
 											</div>
 										</div>
 									</td>
-
 									<td>
 										<div class="form-group">
-											{{ form.valor_electricidad }}
+											{{ form.tipo_cobro }}
 											<div class="container-error">
-												{{ form.valor_electricidad.errors }}
+												{{ form.tipo_cobro.errors }}
 											</div>
 										</div>
 									</td>
-
 									<td>
 										<div class="form-group">
-											{{ form.valor_agua }}
+											{{ form.valor }}
 											<div class="container-error">
-												{{ form.valor_agua.errors }}
-											</div>
-										</div>
-									</td>
-
-									<td class="text-center">
-										<div class="form-group">
-											{{ form.valor_gas }}
-											<div class="container-error">
-												{{ form.valor_gas.errors }}
+												{{ form.valor.errors }}
 											</div>
 										</div>
 									</td>
@@ -115,9 +84,6 @@
 					</div>
 				</div>
 			</form>
-
-			<br>
-
 			<a href="{% url 'contrato:contrato_list' %}" class="btn btn-w-m btn-sm btn-default" >CANCELAR</a>
 			<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario_conceptos('form-conceptos-{{forloop.counter}}', '{{contrato_id}}', 'servicio_basico')">GUARDAR Y SEGUIR</button>
 		</div>

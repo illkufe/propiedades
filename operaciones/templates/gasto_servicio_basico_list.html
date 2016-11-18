@@ -23,6 +23,7 @@
 								{% for item in object_list %}
 								<tr>
 									<td>{{ item.id }}</td>
+									<td>{{ item.activo }}</td>
 									<td>{{ item.tipo }}</td>
 									<td>{{ item.mes }}</td>
 									<td>{{ item.anio }}</td>
@@ -71,6 +72,11 @@ function load_tabla_gastos(){
 	{
 		'data': 'id',
 		'visible':false,
+	},
+	{
+		'width': '20%',
+		'data': 'activo',
+		'title': 'Activo',
 	},
 	{
 		'width': '20%',

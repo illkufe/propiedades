@@ -382,7 +382,6 @@ class ArriendoVariableForm(forms.ModelForm):
 
 		return ultimo_dia(datetime.strptime('01/'+mes_termino+'/'+anio_termino+'', "%d/%m/%Y"))
 
-
 class ArriendoBodegaForm(forms.ModelForm):
 
 	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Arriendo Bodega')
@@ -457,16 +456,14 @@ class GastoComunForm(forms.ModelForm):
 
 class ServicioBasicoForm(forms.ModelForm):
 
-	valor_electricidad 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor Servicio Electricidad')
-	valor_agua 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor Servicio Agua')
-	valor_gas 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor Servicio Gas')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor Servicio')
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
 		super(ServicioBasicoForm, self).__init__(*args, **kwargs)
 
-		if contrato is not None:
-			self.fields['locales'].queryset = contrato.locales.all()
+		# if contrato is not None:
+		# 	self.fields['locales'].queryset = contrato.locales.all()
 
 	class Meta:
 		model 	= Servicio_Basico
@@ -474,21 +471,22 @@ class ServicioBasicoForm(forms.ModelForm):
 		exclude = ['visible', 'creado_en', 'concepto']
 
 		widgets = {
-			'locales'	: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
-			'tipo' 		: forms.Select(attrs={'class': 'form-control'}),
+			'tipo_servicio' : forms.Select(attrs={'class': 'form-control'}),
+			'tipo_cobro' 	: forms.Select(attrs={'class': 'form-control'}),
+			# 'locales'		: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 			}
 
 		error_messages = {
-			'locales' 	: {'required': 'campo requerido'},		
+			# 'locales' 	: {'required': 'campo requerido'},
 			}
 
 		help_texts = {
-			'locales' 	: 'Locales donde Aplican Servicio Básico',
+			# 'locales' 	: 'Locales donde Aplican Servicio Básico',
 			}
 
-	def clean(self):
+	# def clean(self):
 
-		print (self.__dict__)
+		# print (self.__dict__)
 
 		# for form in self.forms:
 

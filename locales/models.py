@@ -106,7 +106,7 @@ class Medidor_Electricidad(models.Model):
 	tarifa_electricidad	= models.ForeignKey(Tarifa_Electricidad)
 	
 	def __str__(self):
-		return self.nombre
+		return self.local.nombre+' - '+self.nombre
 
 	class Meta:
 		verbose_name 		= 'Medidor de Electricidad'
@@ -128,7 +128,7 @@ class Medidor_Agua(models.Model):
 	local = models.ForeignKey(Local)
 
 	def __str__(self):
-		return self.nombre
+		return self.local.nombre+' - '+self.nombre
 
 	class Meta:
 		verbose_name 		= 'Medidor de Agua'
@@ -150,7 +150,7 @@ class Medidor_Gas(models.Model):
 	local = models.ForeignKey(Local)
 
 	def __str__(self):
-		return self.nombre
+		return self.local.nombre+' - '+self.nombre
 
 	class Meta:
 		verbose_name 		= 'Medidor de Gas'

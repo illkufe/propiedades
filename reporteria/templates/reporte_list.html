@@ -51,26 +51,30 @@
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
+
 			<form id="form-reporte-1" role="form" action="/reportes" method="POST">
+
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title" id="myModalLabel">Modal title</h4>
 				</div>
+
 				<div class="modal-body">
 					<div class="row">
-
 						<div class="form-group col-sm-3">
 							<input type="text" class="form-control" name="nombre">
 							<input type="hidden" class="form-control" name="tipo" value="1">
 						</div>
 					</div>
-					
 				</div>
+
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
 					<button type="submit" class="btn btn-primary">Aceptar</button>
 				</div>
+
 			</form>
+
 		</div>
 	</div>
 </div>
@@ -181,7 +185,6 @@ function data_tabla_procesos(){
 	})
 }
 
-
 function procesar_contratos(){
 	$("#form-reporte-1").validate({
 		rules: {
@@ -203,7 +206,6 @@ function procesar_contratos(){
 				dataType: 'json',
 				success: function(data){
 					// cerrar modal
-
 					if (data.estado == true) {
 						// actualizar tabla
 						data_tabla_procesos()

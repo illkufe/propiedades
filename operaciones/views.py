@@ -448,7 +448,6 @@ class LECTURASMEDIDOR(View):
 
 		return JsonResponse(data, safe=False)
 
-
 # lecturas electricidad
 class LecturaElectricidadMixin(object):
 
@@ -715,7 +714,7 @@ class GastoServicioBasicoList(ListView):
 
 	def get_queryset(self):
 
-		queryset = Gasto_Servicio_Basico.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		queryset = Gasto_Servicio_Basico.objects.filter(activo__empresa=self.request.user.userprofile.empresa, visible=True)
 
 		for item in queryset:
 
@@ -729,6 +728,13 @@ class GastoServicioBasicoMixin(object):
 	template_name 	= 'gasto_servicio_basico_new.html'
 	form_class 		= GastoServicioBasicoForm
 	success_url 	= '/gasto-servicios-basicos/list'
+
+	def get_form_kwargs(self):
+
+		kwargs 				= super(GastoServicioBasicoMixin, self).get_form_kwargs()
+		kwargs['request'] 	= self.request
+
+		return kwargs
 
 	def form_invalid(self, form):
 

@@ -616,16 +616,21 @@ class Gasto_Comun(models.Model):
 
 class Servicio_Basico(models.Model):
 
-	TIPO = (
+	TIPO_SERVICIO = (
+		(1, 'Electricidad'),
+		(2, 'Agua'),
+		(3, 'Gas'),
+	)
+
+	TIPO_COBRO = (
 		(1, 'Fijo'),
 		(2, 'Prorrateo'),
 	)
 
 	# atributos (generales)
-	tipo 				= models.IntegerField(choices=TIPO)
-	valor_electricidad	= models.FloatField()
-	valor_agua			= models.FloatField()
-	valor_gas			= models.FloatField()
+	tipo_servicio 	= models.IntegerField(choices=TIPO_SERVICIO)
+	tipo_cobro 		= models.IntegerField(choices=TIPO_COBRO)
+	valor			= models.FloatField()
 
 	# atributos (por defecto)
 	visible 		= models.BooleanField(default=True)
@@ -634,7 +639,6 @@ class Servicio_Basico(models.Model):
 
 	# relaciones
 	contrato 		= models.ForeignKey(Contrato)
-	locales 		= models.ManyToManyField(Local)
 	concepto 		= models.ForeignKey(Concepto)
 
 	def __str__(self):

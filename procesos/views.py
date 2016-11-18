@@ -274,16 +274,17 @@ def propuesta_guardar(request):
 				conceptos 	= item['conceptos']
 
 				factura = Factura(
-					nombre 			= nombre,
-					fecha_inicio	= fecha_inicio,
-					fecha_termino	= fecha_termino,
-					uf_valor		= Decimal(var_post.get('uf_valor').replace(".", "").replace(",", ".")),
-					uf_modificada	= True if var_post.get('uf_modificada') == 'true' else False,
-					contrato 		= contrato,
-					estado 			= estado,
-					total 			= total,
-					user 			= request.user,
-					motor_emision 	= request.user.userprofile.empresa.configuracion.motor_factura,
+					nombre 				= nombre,
+					fecha_inicio		= fecha_inicio,
+					fecha_termino		= fecha_termino,
+					uf_valor			= Decimal(var_post.get('uf_valor').replace(".", "").replace(",", ".")),
+					uf_modificada		= True if var_post.get('uf_modificada') == 'true' else False,
+					contrato 			= contrato,
+					estado 				= estado,
+					total 				= total,
+					user 				= request.user,
+					motor_emision 		= request.user.userprofile.empresa.configuracion.motor_factura,
+					numero_documento 	= 220,
 				)
 				factura.save()
 				
@@ -727,127 +728,137 @@ def validar_gasto_comun(contrato, concepto, periodo):
 		'mensaje'	: mensajes[mensaje],
 	}
 
-# def validar_servicios_basicos(contrato, concepto, periodo):
-
-# 	mensajes = [
-# 		'Correcto',
-# 		'No tiene ingresado el consumo para este periodo',
-# 		'No tiene servicos basicos',
-# 	]
-
-# 	estado 	= False
-# 	mensaje = 2
-
-# 	if Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto).exists():
-
-# 		estado 	= True
-# 		mensaje = 0
-
-# 		if Gasto_Servicio_Basico.objects.filter(mes=periodo.month, anio=periodo.year, visible=True).exists() is False:
-
-# 			estado 	= False
-# 			mensaje = 1
-
-# 	return {
-# 		'estado'	: estado,
-# 		'mensaje'	: mensajes[mensaje],
-# 	}
-
 def validar_servicios_basicos(contrato, concepto, periodo):
 
 	mensajes = [
-		'Correcto',
-		'No tiene ingresado el consumo para este periodo',
-		'No tiene servicos basicos',
+		'servicios básicos: correcto',
+		'servicios básicos: no tiene servicios asociados',
+		'servicios básicos: no tiene medidores asignados',
+		'servicios básicos: no tiene ingresado el gasto del servicio',
 	]
 
-	estado 	= False
-	mensaje = 2
+	estado 	= True
+	mensaje = 0
 
 	if Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto).exists():
 
-		estado 	= True
-		mensaje = 0
+		servicio 	= Servicio_Basico.objects.get(contrato=contrato, concepto=concepto)
+		activo 		= Activo.objects.get(id__in=contrato.locales.all().values_list('activo', flat=True).distinct())
 
-		servicios_basicos = Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto)
+		count = 0
 
-		for servicio_basico in servicios_basicos:
+		if servicio.tipo_servicio == 1:
+			count += Medidor_Electricidad.objects.filter(local__in= contrato.locales.all()).count()
+		elif servicio.tipo_servicio == 2:
+			count += Medidor_Agua.objects.filter(local__in= contrato.locales.all()).count()
+		elif servicio.tipo_servicio == 3:
+			count += Medidor_Gas.objects.filter(local__in= contrato.locales.all()).count()
+		else:
+			pass
 
-			for local in servicio_basico.locales.all():
+		if count > 0:
 
-				medidores_luz  	= Medidor_Electricidad.objects.filter(local=local)
-				medidores_agua  = Medidor_Agua.objects.filter(local=local)
-				medidores_gas  	= Medidor_Gas.objects.filter(local=local)
+			if servicio.tipo_cobro == 1:
 
-				for medidor_luz in medidores_luz:
-					if Lectura_Electricidad.objects.filter(medidor_electricidad=medidor_luz, mes=(periodo.month-1), anio=periodo.year).exists():
-						if Lectura_Electricidad.objects.filter(medidor_electricidad=medidor_luz, mes=(periodo.month), anio=periodo.year).exists() is False:
-							return {
-								'estado'	: False,
-								'mensaje'	: 'falta lectura electricidad de este periodo',
-							}
+				print ('valor fijo')
+
+			else:
+
+				if Gasto_Servicio_Basico.objects.filter(activo=activo, tipo=servicio.tipo_servicio, mes=periodo.month, anio=periodo.year, visible=True).exists():
+
+					locales 	= activo.local_set.all()
+					medidores 	= list()
+
+					for local in locales:
+
+						if servicio.tipo_servicio == 1:
+
+							for medidor in local.medidor_electricidad_set.all():
+
+								if Lectura_Electricidad.objects.filter(medidor_electricidad=medidor, mes=(periodo.month-1), anio=periodo.year).exists():
+
+									if Lectura_Electricidad.objects.filter(medidor_electricidad=medidor, mes=(periodo.month), anio=periodo.year).exists() is False:
+										return {
+											'estado'	: False,
+											'mensaje'	: 'servicios básicos: falta lectura electricidad de este periodo',
+										}
+									else:
+										lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=(periodo.month-1), anio=periodo.year).valor
+										lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=(periodo.month), anio=periodo.year).valor
+
+										if lectura_anterior > lectura_actual:
+											return {
+												'estado'	: False,
+												'mensaje'	: 'servicios básicos: lectura electricidad mes actual mayor que el mes anterior',
+											}
+								else:
+									return {
+										'estado'	: False,
+										'mensaje'	: 'servicios básicos: falta lectura electricidad mes anterior',
+									}
+						elif servicio.tipo_servicio == 2:
+
+							for medidor in local.medidor_agua_set.all():
+
+								if Lectura_Agua.objects.filter(medidor_agua=medidor, mes=(periodo.month-1), anio=periodo.year).exists():
+
+									if Lectura_Agua.objects.filter(medidor_agua=medidor, mes=(periodo.month), anio=periodo.year).exists() is False:
+										return {
+											'estado'	: False,
+											'mensaje'	: 'servicios básicos: falta lectura electricidad de este periodo',
+										}
+									else:
+										lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor, mes=(periodo.month-1), anio=periodo.year).valor
+										lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor, mes=(periodo.month), anio=periodo.year).valor
+
+										if lectura_anterior > lectura_actual:
+											return {
+												'estado'	: False,
+												'mensaje'	: 'servicios básicos: lectura electricidad mes actual mayor que el mes anterior',
+											}
+								else:
+									return {
+										'estado'	: False,
+										'mensaje'	: 'servicios básicos: falta lectura electricidad mes anterior',
+									}
+
+						elif servicio.tipo_servicio == 3:
+
+							for medidor in local.medidor_gas_set.all():
+								if Lectura_Gas.objects.filter(medidor_gas=medidor, mes=(periodo.month-1), anio=periodo.year).exists():
+
+									if Lectura_Gas.objects.filter(medidor_gas=medidor, mes=(periodo.month), anio=periodo.year).exists() is False:
+										return {
+											'estado'	: False,
+											'mensaje'	: 'servicios básicos: falta lectura electricidad de este periodo',
+										}
+									else:
+										lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor, mes=(periodo.month-1), anio=periodo.year).valor
+										lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor, mes=(periodo.month), anio=periodo.year).valor
+
+										if lectura_anterior > lectura_actual:
+											return {
+												'estado'	: False,
+												'mensaje'	: 'servicios básicos: lectura electricidad mes actual mayor que el mes anterior',
+											}
+								else:
+									return {
+										'estado'	: False,
+										'mensaje'	: 'servicios básicos: falta lectura electricidad mes anterior',
+									}
+
 						else:
-							lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month-1), anio=periodo.year).valor
-							lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month), anio=periodo.year).valor
+							pass
 
-							if lectura_anterior > lectura_actual:
-								return {
-									'estado'	: False,
-									'mensaje'	: 'lectura electricidad mes actual mayor que el mes anterior',
-								}								
+				else:
+					estado 	= False
+					mensaje = 3
 
-					else:
-						return {
-							'estado'	: False,
-							'mensaje'	: 'falta lectura electricidad mes anterior',
-						}
+		else:
+			estado 	= False
+			mensaje = 2
 
-				for medidor_agua in medidores_agua:
-					if Lectura_Agua.objects.filter(medidor_agua=medidor_agua, mes=(periodo.month-1), anio=periodo.year).exists():
-						if Lectura_Agua.objects.filter(medidor_agua=medidor_agua, mes=(periodo.month), anio=periodo.year).exists() is False:
-							return {
-								'estado'	: False,
-								'mensaje'	: 'falta lectura agua de este periodo',
-							}
-						else:
-							lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month-1), anio=periodo.year).valor
-							lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month), anio=periodo.year).valor
-
-							if lectura_anterior > lectura_actual:
-								return {
-									'estado'	: False,
-									'mensaje'	: 'lectura agua mes actual mayor que el mes anterior',
-								}
-					else:
-						return {
-							'estado'	: False,
-							'mensaje'	: 'falta lectura agua mes anterior',
-						}
-
-				for medidor_gas in medidores_gas:
-					if Lectura_Gas.objects.filter(medidor_gas=medidor_gas, mes=(periodo.month-1), anio=periodo.year).exists():
-						if Lectura_Gas.objects.filter(medidor_gas=medidor_gas, mes=(periodo.month), anio=periodo.year).exists() is False:
-							return {
-								'estado'	: False,
-								'mensaje'	: 'falta lectura gas de este periodo',
-							}
-						else:
-							lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month-1), anio=periodo.year).valor
-							lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month), anio=periodo.year).valor
-
-							if lectura_anterior > lectura_actual:
-								return {
-									'estado'	: False,
-									'mensaje'	: 'lectura gas mes actual mayor que el mes anterior',
-								}
-					else:
-						return {
-							'estado'	: False,
-							'mensaje'	: 'falta lectura gas mes anterior',
-						}
-
-	if Gasto_Servicio_Basico.objects.filter(mes=periodo.month, anio=periodo.year, visible=True).exists() is False:
-
+	else:
 		estado 	= False
 		mensaje = 1
 
@@ -855,6 +866,91 @@ def validar_servicios_basicos(contrato, concepto, periodo):
 		'estado'	: estado,
 		'mensaje'	: mensajes[mensaje],
 	}
+
+# def validar_servicios_basicos(contrato, concepto, periodo):
+# 	mensajes = [
+# 		'Correcto',
+# 		'No tiene ingresado el consumo para este periodo',
+# 		'No tiene servicos basicos',
+# 	]
+# 	estado 	= False
+# 	mensaje = 2
+# 	if Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto).exists():
+# 		estado 	= True
+# 		mensaje = 0
+# 		servicios_basicos = Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto)
+# 		for servicio_basico in servicios_basicos:
+# 			for local in servicio_basico.locales.all():
+# 				medidores_luz  	= Medidor_Electricidad.objects.filter(local=local)
+# 				medidores_agua  = Medidor_Agua.objects.filter(local=local)
+# 				medidores_gas  	= Medidor_Gas.objects.filter(local=local)
+# 				for medidor_luz in medidores_luz:
+# 					if Lectura_Electricidad.objects.filter(medidor_electricidad=medidor_luz, mes=(periodo.month-1), anio=periodo.year).exists():
+# 						if Lectura_Electricidad.objects.filter(medidor_electricidad=medidor_luz, mes=(periodo.month), anio=periodo.year).exists() is False:
+# 							return {
+# 								'estado'	: False,
+# 								'mensaje'	: 'falta lectura electricidad de este periodo',
+# 							}
+# 						else:
+# 							lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month-1), anio=periodo.year).valor
+# 							lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month), anio=periodo.year).valor
+# 							if lectura_anterior > lectura_actual:
+# 								return {
+# 									'estado'	: False,
+# 									'mensaje'	: 'lectura electricidad mes actual mayor que el mes anterior',
+# 								}								
+# 					else:
+# 						return {
+# 							'estado'	: False,
+# 							'mensaje'	: 'falta lectura electricidad mes anterior',
+# 						}
+# 				for medidor_agua in medidores_agua:
+# 					if Lectura_Agua.objects.filter(medidor_agua=medidor_agua, mes=(periodo.month-1), anio=periodo.year).exists():
+# 						if Lectura_Agua.objects.filter(medidor_agua=medidor_agua, mes=(periodo.month), anio=periodo.year).exists() is False:
+# 							return {
+# 								'estado'	: False,
+# 								'mensaje'	: 'falta lectura agua de este periodo',
+# 							}
+# 						else:
+# 							lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month-1), anio=periodo.year).valor
+# 							lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month), anio=periodo.year).valor
+# 							if lectura_anterior > lectura_actual:
+# 								return {
+# 									'estado'	: False,
+# 									'mensaje'	: 'lectura agua mes actual mayor que el mes anterior',
+# 								}
+# 					else:
+# 						return {
+# 							'estado'	: False,
+# 							'mensaje'	: 'falta lectura agua mes anterior',
+# 						}
+# 				for medidor_gas in medidores_gas:
+# 					if Lectura_Gas.objects.filter(medidor_gas=medidor_gas, mes=(periodo.month-1), anio=periodo.year).exists():
+# 						if Lectura_Gas.objects.filter(medidor_gas=medidor_gas, mes=(periodo.month), anio=periodo.year).exists() is False:
+# 							return {
+# 								'estado'	: False,
+# 								'mensaje'	: 'falta lectura gas de este periodo',
+# 							}
+# 						else:
+# 							lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month-1), anio=periodo.year).valor
+# 							lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month), anio=periodo.year).valor
+# 							if lectura_anterior > lectura_actual:
+# 								return {
+# 									'estado'	: False,
+# 									'mensaje'	: 'lectura gas mes actual mayor que el mes anterior',
+# 								}
+# 					else:
+# 						return {
+# 							'estado'	: False,
+# 							'mensaje'	: 'falta lectura gas mes anterior',
+# 						}
+# 	if Gasto_Servicio_Basico.objects.filter(mes=periodo.month, anio=periodo.year, visible=True).exists() is False:
+# 		estado 	= False
+# 		mensaje = 1
+# 	return {
+# 		'estado'	: estado,
+# 		'mensaje'	: mensajes[mensaje],
+# 	}
 
 def validar_cuota_de_incorporacion(contrato, concepto, periodo):
 
@@ -947,7 +1043,7 @@ def validar_gasto_asociado(contrato, concepto, periodo):
 			# validar vinculo del concepto
 			if estado is True and gasto_asociado.valor_fijo is False:
 
-				if Factura_Detalle.objects.filter(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).exists():
+				if Factura_Detalle.objects.filter(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year, factura__visible=True).exists():
 					estado 	= True
 					mensaje = 0
 				else:
@@ -1264,115 +1360,199 @@ def calcular_gasto_comun(contrato, concepto, periodo, configuracion):
 def calcular_servicios_basicos(contrato, concepto, periodo, configuracion):
 
 	total = 0
-
-	total_total_luz 	= 0
-	total_total_agua 	= 0
-	total_total_gas 	= 0
-
-	for local in Local.objects.filter(activo__empresa=contrato.empresa):
-
-		medidores_luz  	= Medidor_Electricidad.objects.filter(local=local)
-		medidores_agua  = Medidor_Agua.objects.filter(local=local)
-		medidores_gas  	= Medidor_Gas.objects.filter(local=local)
-
-		for medidor_luz in medidores_luz:
-			try:
-				lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month-1), anio=periodo.year).valor
-				lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month), anio=periodo.year).valor
-			except Exception:
-				lectura_anterior 	= 0
-				lectura_actual 		= 0
-
-			total_total_luz += (lectura_actual - lectura_anterior)
-
-		for medidor_agua in medidores_agua:
-
-			try:
-				lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month-1), anio=periodo.year).valor
-				lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month), anio=periodo.year).valor
-			except Exception:
-				lectura_anterior 	= 0
-				lectura_actual 		= 0
-
-			total_total_agua += (lectura_actual - lectura_anterior)
-
-		for medidor_gas in medidores_gas:
-
-			try:
-				lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month-1), anio=periodo.year).valor
-				lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month), anio=periodo.year).valor
-			except Exception:
-				lectura_anterior 	= 0
-				lectura_actual 		= 0
-
-			total_total_gas += (lectura_actual - lectura_anterior)
-
-
-	total_luz 	= 0
-	total_agua 	= 0
-	total_gas 	= 0
-
-	servicios_basicos = Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto)
-
-	for servicio_basico in servicios_basicos:
-
-		for local in servicio_basico.locales.all():
-
-			medidores_luz  	= Medidor_Electricidad.objects.filter(local=local)
-			medidores_agua  = Medidor_Agua.objects.filter(local=local)
-			medidores_gas  	= Medidor_Gas.objects.filter(local=local)
-
-			for medidor_luz in medidores_luz:
-
-				lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month-1), anio=periodo.year).valor
-				lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month), anio=periodo.year).valor
-
-				total_luz += (lectura_actual - lectura_anterior)
-
-			for medidor_agua in medidores_agua:
-
-				lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month-1), anio=periodo.year).valor
-				lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month), anio=periodo.year).valor
-
-				total_agua += (lectura_actual - lectura_anterior)
-
-			for medidor_gas in medidores_gas:
-
-				lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month-1), anio=periodo.year).valor
-				lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month), anio=periodo.year).valor
-
-				total_gas += (lectura_actual - lectura_anterior)
-
-	try:
-		gasto_luz = Gasto_Servicio_Basico.objects.get(mes=periodo.month, anio=periodo.year, visible=True, tipo=1)
-		total_luz = (total_luz * gasto_luz.valor) / total_total_luz
-	except Exception as asd:
-		# print (asd)
-		total_luz = 0
-
-	print(total_luz)
 	
-	try:
-		gasto_agua = Gasto_Servicio_Basico.objects.get(mes=periodo.month, anio=periodo.year, visible=True, tipo=2)
-		total_agua = (total_agua * gasto_agua.valor) / total_total_agua
-	except Exception as asd:
-		# print (asd)
-		total_agua = 0
+	servicio 	= Servicio_Basico.objects.get(contrato=contrato, concepto=concepto)
+	activo 		= Activo.objects.get(id__in=contrato.locales.all().values_list('activo', flat=True).distinct())
 
-	print(total_agua)
+	
+	if servicio.tipo_cobro == 1:
 
-	try:
-		gasto_gas = Gasto_Servicio_Basico.objects.get(mes=periodo.month, anio=periodo.year, visible=True, tipo=3)
-		total_gas = (total_gas * gasto_gas.valor) / total_total_gas
-	except Exception as asd:
-		# print (asd)
-		total_gas = 0
+		print ('valor fijo')
 
-	# print(total_gas)
+	else:
 
-	total = total_luz + total_agua + total_gas
+		if Gasto_Servicio_Basico.objects.filter(activo=activo, tipo=servicio.tipo_servicio, mes=periodo.month, anio=periodo.year, visible=True).exists():
+
+			gasto = Gasto_Servicio_Basico.objects.get(activo=activo, tipo=servicio.tipo_servicio, mes=periodo.month, anio=periodo.year, visible=True)
+
+			locales 	= activo.local_set.all()
+			medidores 	= list()
+
+			total_lecturas = 0
+			total_lectura 	= 0
+
+			for local in locales:
+
+				if servicio.tipo_servicio == 1:
+
+					for medidor in local.medidor_electricidad_set.all():
+
+						if Lectura_Electricidad.objects.filter(medidor_electricidad=medidor, mes=(periodo.month-1), anio=periodo.year).exists():
+
+							if Lectura_Electricidad.objects.filter(medidor_electricidad=medidor, mes=(periodo.month), anio=periodo.year).exists():
+							
+								lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=(periodo.month-1), anio=periodo.year).valor
+								lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=(periodo.month), anio=periodo.year).valor
+
+								total_lecturas += (lectura_actual - lectura_anterior)
+								
+								for x in contrato.locales.all().values_list('id', flat=True):
+									if x == medidor.local_id:
+										total_lectura += (lectura_actual - lectura_anterior)
+
+				elif servicio.tipo_servicio == 2:
+
+					for medidor in local.medidor_agua_set.all():
+
+						if Lectura_Agua.objects.filter(medidor_agua=medidor, mes=(periodo.month-1), anio=periodo.year).exists():
+
+							if Lectura_Agua.objects.filter(medidor_agua=medidor, mes=(periodo.month), anio=periodo.year).exists():
+							
+								lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor, mes=(periodo.month-1), anio=periodo.year).valor
+								lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor, mes=(periodo.month), anio=periodo.year).valor
+
+								total_lecturas += (lectura_actual - lectura_anterior)
+								
+								for x in contrato.locales.all().values_list('id', flat=True):
+									if x == medidor.local_id:
+										total_lectura += (lectura_actual - lectura_anterior)
+
+				elif servicio.tipo_servicio == 3:
+
+					for medidor in local.medidor_gas_set.all():
+
+						if Lectura_Gas.objects.filter(medidor_gas=medidor, mes=(periodo.month-1), anio=periodo.year).exists():
+
+							if Lectura_Gas.objects.filter(medidor_gas=medidor, mes=(periodo.month), anio=periodo.year).exists():
+							
+								lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor, mes=(periodo.month-1), anio=periodo.year).valor
+								lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor, mes=(periodo.month), anio=periodo.year).valor
+
+								total_lecturas += (lectura_actual - lectura_anterior)
+								
+								for x in contrato.locales.all().values_list('id', flat=True):
+									if x == medidor.local_id:
+										total_lectura += (lectura_actual - lectura_anterior)
+
+				else:
+					pass
+
+
+	total = (total_lectura * gasto.valor) / total_lecturas
 
 	return total
+
+
+	# total = 0
+
+	# total_total_luz 	= 0
+	# total_total_agua 	= 0
+	# total_total_gas 	= 0
+
+	# for local in Local.objects.filter(activo__empresa=contrato.empresa):
+
+	# 	medidores_luz  	= Medidor_Electricidad.objects.filter(local=local)
+	# 	medidores_agua  = Medidor_Agua.objects.filter(local=local)
+	# 	medidores_gas  	= Medidor_Gas.objects.filter(local=local)
+
+	# 	for medidor_luz in medidores_luz:
+	# 		try:
+	# 			lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month-1), anio=periodo.year).valor
+	# 			lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month), anio=periodo.year).valor
+	# 		except Exception:
+	# 			lectura_anterior 	= 0
+	# 			lectura_actual 		= 0
+
+	# 		total_total_luz += (lectura_actual - lectura_anterior)
+
+	# 	for medidor_agua in medidores_agua:
+
+	# 		try:
+	# 			lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month-1), anio=periodo.year).valor
+	# 			lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month), anio=periodo.year).valor
+	# 		except Exception:
+	# 			lectura_anterior 	= 0
+	# 			lectura_actual 		= 0
+
+	# 		total_total_agua += (lectura_actual - lectura_anterior)
+
+	# 	for medidor_gas in medidores_gas:
+
+	# 		try:
+	# 			lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month-1), anio=periodo.year).valor
+	# 			lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month), anio=periodo.year).valor
+	# 		except Exception:
+	# 			lectura_anterior 	= 0
+	# 			lectura_actual 		= 0
+
+	# 		total_total_gas += (lectura_actual - lectura_anterior)
+
+
+	# total_luz 	= 0
+	# total_agua 	= 0
+	# total_gas 	= 0
+
+	# servicios_basicos = Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto)
+
+	# for servicio_basico in servicios_basicos:
+
+	# 	for local in servicio_basico.locales.all():
+
+	# 		medidores_luz  	= Medidor_Electricidad.objects.filter(local=local)
+	# 		medidores_agua  = Medidor_Agua.objects.filter(local=local)
+	# 		medidores_gas  	= Medidor_Gas.objects.filter(local=local)
+
+	# 		for medidor_luz in medidores_luz:
+
+	# 			lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month-1), anio=periodo.year).valor
+	# 			lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month), anio=periodo.year).valor
+
+	# 			total_luz += (lectura_actual - lectura_anterior)
+
+	# 		for medidor_agua in medidores_agua:
+
+	# 			lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month-1), anio=periodo.year).valor
+	# 			lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month), anio=periodo.year).valor
+
+	# 			total_agua += (lectura_actual - lectura_anterior)
+
+	# 		for medidor_gas in medidores_gas:
+
+	# 			lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month-1), anio=periodo.year).valor
+	# 			lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month), anio=periodo.year).valor
+
+	# 			total_gas += (lectura_actual - lectura_anterior)
+
+	# try:
+	# 	gasto_luz = Gasto_Servicio_Basico.objects.get(mes=periodo.month, anio=periodo.year, visible=True, tipo=1)
+	# 	total_luz = (total_luz * gasto_luz.valor) / total_total_luz
+	# except Exception as asd:
+	# 	# print (asd)
+	# 	total_luz = 0
+
+	# print(total_luz)
+	
+	# try:
+	# 	gasto_agua = Gasto_Servicio_Basico.objects.get(mes=periodo.month, anio=periodo.year, visible=True, tipo=2)
+	# 	total_agua = (total_agua * gasto_agua.valor) / total_total_agua
+	# except Exception as asd:
+	# 	# print (asd)
+	# 	total_agua = 0
+
+	# print(total_agua)
+
+	# try:
+	# 	gasto_gas = Gasto_Servicio_Basico.objects.get(mes=periodo.month, anio=periodo.year, visible=True, tipo=3)
+	# 	total_gas = (total_gas * gasto_gas.valor) / total_total_gas
+	# except Exception as asd:
+	# 	# print (asd)
+	# 	total_gas = 0
+
+	# # print(total_gas)
+
+	# total = total_luz + total_agua + total_gas
+
+	# return total
 
 # def calcular_servicios_basicos(contrato, concepto, periodo, configuracion):
 

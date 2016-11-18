@@ -107,38 +107,59 @@ class LecturaGasForm(forms.ModelForm):
 			'imagen_file'	: 'Imagen Asociada a Lectura',
 		}
 
-
 class GastoServicioBasicoForm(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), error_messages={'required': 'campo requerido'}, help_text='valor asociado al gasto')
-	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'false', 'onchange': 'cambio_format_moneda(this, 1)'}), help_text='moneda asociada al gasto')
+	valor = NumberField(
+		widget = forms.TextInput(attrs={'class': 'form-control format-number'}),
+		error_messages = {'required': 'campo requerido'},
+		help_text = 'valor asociado al gasto',
+		)
+
+	moneda = forms.ModelChoiceField(
+		queryset = Moneda.objects.filter(id__in=[3,5]),
+		widget = forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'false', 'onchange': 'cambio_format_moneda(this, 1)'}),
+		error_messages = {'required': 'campo requerido'},
+		help_text = 'moneda asociada al gasto',
+		)
+
+	def __init__(self, *args, **kwargs):
+
+		self.request = kwargs.pop('request')
+
+		super(GastoServicioBasicoForm, self).__init__(*args, **kwargs)
+
+		self.fields['activo'].queryset = Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 
 	class Meta:
 
 		model 	= Gasto_Servicio_Basico
 		fields 	= '__all__'
-		exclude = [ 'visible', 'creado_en', 'empresa']
+		exclude = [ 'visible', 'creado_en']
 
 		widgets = {
-			'tipo'	: forms.Select(attrs={'class': 'form-control'}),
-			'mes'	: forms.Select(attrs={'class': 'form-control'}),
-			'anio'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'activo'	: forms.Select(attrs={'class': 'form-control'}),
+			'tipo'		: forms.Select(attrs={'class': 'form-control'}),
+			'mes'		: forms.Select(attrs={'class': 'form-control'}),
+			'anio'		: forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
 		error_messages = {
-			'tipo' 	: {'required': 'campo requerido'},
-			'mes' 	: {'required': 'campo requerido'},
-			'anio' 	: {'required': 'campo requerido'},
+			'activo' 	: {'required': 'campo requerido'},
+			'tipo' 		: {'required': 'campo requerido'},
+			'mes' 		: {'required': 'campo requerido'},
+			'anio' 		: {'required': 'campo requerido'},
 		}
 
 		labels = {
-			'tipo'	: 'Tipo de gasto',
-			'mes'	: 'Mes',
-			'anio'	: 'Año',
+			'activo'	: 'Activo',
+			'tipo'		: 'Tipo de gasto',
+			'mes'		: 'Mes',
+			'anio'		: 'Año',
 		}
 
 		help_texts = {
-			'tipo'	: 'tipo de gasto',
-			'mes'	: 'mes del gasto',
-			'anio'	: 'año del gasto',
+			'activo'	: 'activo asociado el gasto',
+			'tipo'		: 'tipo de gasto',
+			'mes'		: 'mes del gasto',
+			'anio'		: 'año del gasto',
 		}

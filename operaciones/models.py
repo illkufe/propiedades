@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from administrador.models import Empresa
 from utilidades.models import Moneda
 from locales.models import *
+from activos.models import *
 
 
 
@@ -150,9 +151,9 @@ class Gasto_Servicio_Basico(models.Model):
 	)
 
 	TIPO = (
-		(1, 'ELECTRICIDAD'),
-		(2, 'AGUA Y ALCANTARILLADO'),
-		(3, 'GAS'),
+		(1, 'Electricidad'),
+		(2, 'Agua'),
+		(3, 'Gas'),
 	)
 
 	# atributos (generales)
@@ -167,11 +168,11 @@ class Gasto_Servicio_Basico(models.Model):
 	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	empresa = models.ForeignKey(Empresa)
-	moneda 	= models.ForeignKey(Moneda)
+	activo = models.ForeignKey(Activo)
+	moneda = models.ForeignKey(Moneda)
 
 	def __str__(self):
-		return str(self.mes)+'/'+str(self.anio)
+		return str(self.activo.nombre)+' - '+str(self.mes)+'/'+str(self.anio)
 
 	class Meta:
 		verbose_name 		= 'Gasto de Servicio'
