@@ -131,8 +131,30 @@ class ContratoForm(forms.ModelForm):
 
 class GarantiaForm(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de la Garantia')
-	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Asociada al Valor de la Garantia')
+	valor = NumberField(
+		widget = forms.TextInput(attrs={'class': 'form-control format-number'}),
+		help_text = 'Valor de la Garantía',
+		error_messages = {'required': 'campo requerido'},
+		)
+
+	moneda = forms.ModelChoiceField(
+		queryset = Moneda.objects.filter(id__in = [3,5]), 
+		widget = forms.Select(attrs = {'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}),
+		help_text = 'Moneda Asociada al Valor de la Garantía',
+		error_messages = {'required': 'campo requerido'},
+		)
+
+
+	def __init__(self, *args, **kwargs):
+
+		super(GarantiaForm, self).__init__(*args, **kwargs)	
+
+		if self.instance.pk is not None:
+			print ('1')
+			# locales_id = Contrato.objects.values_list('locales', flat=True).filter(visible=True).exclude(id=self.instance.pk)
+		else:
+			print ('2')
+			# locales_id = Contrato.objects.values_list('locales', flat=True).filter(visible=True)
 
 	class Meta:
 		model 	= Garantia
@@ -140,11 +162,21 @@ class GarantiaForm(forms.ModelForm):
 		exclude = ['visible', 'creado_en']
 
 		widgets = {
+			'codigo'	: forms.TextInput(attrs={'class': 'form-control'}),
 			'nombre' 	: forms.TextInput(attrs={'class': 'form-control'}),
+			'local'		: forms.Select(attrs={'class': 'form-control'}),
 		}
 
 		help_texts = {
-			'nombre' : 'Nombre de la Garantia'
+			'codigo' 	: 'Código de la Garantía',
+			'nombre' 	: 'Nombre de la Garantía',
+			'local' 	: 'Local Asociado a la Garantía',
+		}
+
+		error_messages = {
+			'codigo' 	: {'unique': 'este código ya existe'},
+			'nombre' 	: {'required': 'campo requerido'},
+			'local' 	: {'required': 'campo requerido'},
 		}
 
 class MultaTipoForm(forms.ModelForm):

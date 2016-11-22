@@ -192,6 +192,9 @@ class ContratoMixin(object):
 			self.object = form.save(commit=False)
 			form_garantia.instance = self.object
 			form_garantia.save()
+		else:
+			return self.render_to_response(self.get_context_data(form=form))
+
 
 		response = super(ContratoMixin, self).form_valid(form)
 

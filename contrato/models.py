@@ -97,6 +97,7 @@ class Contrato(models.Model):
 class Garantia(models.Model):
 
 	# atributos (generales)
+	codigo 			= models.CharField(max_length=10, blank=True, unique=True)
 	nombre 			= models.CharField(max_length=250)
 	valor			= models.DecimalField(max_digits=24, decimal_places=4, default=0)
 
@@ -107,6 +108,7 @@ class Garantia(models.Model):
 
 	# relaciones
 	contrato 		= models.ForeignKey(Contrato)
+	local 			= models.ForeignKey(Local)
 	moneda 			= models.ForeignKey(Moneda)
 
 	def __str__(self):

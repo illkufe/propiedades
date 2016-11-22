@@ -65,6 +65,118 @@
 		</div>
 	</div>
 
+
+	<div class="row">
+		<div class="col-lg-12 s-garantias">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5 class="title">Garantia por Activos</h5>
+					<div class="ibox-tools">
+						<a class="collapse-link">
+							<i class="fa fa-chevron-up"></i>
+						</a>
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							<i class="fa fa-gear"></i>
+						</a>
+						<ul class="dropdown-menu dropdown-user">
+							<li><a onclick="cargar_seccion_vacancia(this, 0)">Actual</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 1)">Próximo mes</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 3)">Próximos 3 meses</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 6)">Próximos 6 meses</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 9)">Próximos 9 meses</a></li>
+							<li><a onclick="cargar_seccion_vacancia(this, 12)">Próximo año</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+
+						<div class="col-xs-6 no-data hide">
+							<div class="text-center">
+								<p>No existen activos, pulse <a href='{% url "activo_new" %}'>aquí</a> para crear un activo.</p>
+							</div>
+						</div>
+
+						<div class="col-lg-5 container-chart hide">
+							<div class="text-left">
+								<small class="block text-muted">
+									<i class="fa fa-clock-o"></i> vacancia hasta la fecha: <span class="fecha"></span>
+								</small>
+							</div>
+
+							<br>
+
+							<div id="pie"></div>
+						</div>
+
+
+						<div class="col-sm-3">
+							<h2>Activos</h2>
+							<small>You have 42 messages and 6 notifications.</small>
+							<ul class="list-group clear-list m-t">
+								<li class="list-group-item fist-item">
+									<span class="pull-right">
+										09:00 pm
+									</span>
+									<span class="label label-success">1</span> Please contact me
+								</li>
+								<li class="list-group-item">
+									<span class="pull-right">
+										10:16 am
+									</span>
+									<span class="label label-info">2</span> Sign a contract
+								</li>
+								<li class="list-group-item">
+									<span class="pull-right">
+										08:22 pm
+									</span>
+									<span class="label label-primary">3</span> Open new shop
+								</li>
+								<li class="list-group-item">
+									<span class="pull-right">
+										11:06 pm
+									</span>
+									<span class="label label-default">4</span> Call back to Sylvia
+								</li>
+								<li class="list-group-item">
+									<span class="pull-right">
+										12:00 am
+									</span>
+									<span class="label label-primary">5</span> Write a letter to Sandra
+								</li>
+							</ul>
+						</div>
+
+						<!-- <div class="col-lg-7 container-table hide">
+
+							<table id="tabla-vacancia" class="table" style="width:100%">
+								<thead>
+									<tr>
+										<th></th>
+										<th>Activo</th>
+										<th class="text-right">m² Totales</th>
+										<th class="text-right">m² Vacantes</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+
+
 	<div class="row">
 		<div class="col-lg-12 s-vacancia">
 			<div class="ibox float-e-margins">

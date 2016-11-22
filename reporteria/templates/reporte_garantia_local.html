@@ -1,0 +1,100 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Ingresos por Activos</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered table-hover" id="tabla-garantias">
+									<thead>
+										<tr>
+											<th rowspan="2">Contrato</th>
+											<th rowspan="2">Local(es)</th>
+											<th colspan="2">Garantia(s)</th>
+											<th rowspan="2">Total</th>
+										</tr>
+										<tr>
+											<th>Nombre</th>
+											<th>Valor</th>
+										</tr>
+									</thead>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+
+{% block scripts %}
+<script>
+
+var tabla_garantias;
+
+$(document).ready(function(){
+
+	initialize()
+	data_table()
+})
+
+function initialize(){
+
+	var configuracion = {
+		'rowsGroup': [0, 4, 1],
+	}
+
+	tabla_garantias = load_table('#tabla-garantias', null, configuracion)
+}
+
+function data_table(){
+
+	$.ajax({
+		url: '{% url "reporte_garantia_local" %}',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			tabla_garantias.clear().draw();
+
+			for (var i = 0; i < data.length; i++) {
+
+				if (data[i].locales.length == 0) {
+
+					tabla_garantias.row.add([data[i].nombre, '-', '-', '-', 0]).draw()
+				}
+				else{
+
+					for (var j = 0; j < data[i].locales.length; j++) {
+
+						if (data[i].locales[j].garantias.length == 0) {
+							tabla_garantias.row.add([data[i].nombre, data[i].locales[j].nombre, '-', '-', 0]).draw()
+						}
+						else{
+
+							for (var k = 0; k < data[i].locales[j].garantias.length; k++) {
+								tabla_garantias.row.add([data[i].nombre, data[i].locales[j].nombre, data[i].locales[j].garantias[k].nombre, data[i].locales[j].garantias[k].total, data[i].total]).draw()
+							};
+						}
+					};
+				}
+			};
+		}
+	})
+}
+
+</script>
+{% endblock scripts %}

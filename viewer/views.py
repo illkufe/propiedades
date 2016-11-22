@@ -69,6 +69,7 @@ def flag_commercial(request):
 
 	return JsonResponse(data, safe=False)
 
+
 def chart_vacancia(request):
 
 	response 	= list()
@@ -96,6 +97,33 @@ def chart_vacancia(request):
 
 	return JsonResponse(response, safe=False)
 
+
+def chart_vacancia(request):
+
+	response 	= list()
+	var_post 	= request.POST.copy()
+	fecha 		= datetime.strptime(str(var_post['fecha']), "%d/%m/%Y")
+	activos 	= Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+
+	for activo in activos:
+
+		m_totales 	= activo.local_set.all().filter(visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+		locales 	= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gt=fecha, visible=True)
+		m_ocupados 	= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+
+		m_totales 	= m_totales if m_totales is not None else 0
+		m_ocupados 	= m_ocupados if m_ocupados is not None else 0
+
+		response.append({
+			'id'			: activo.id,
+			'codigo'		: activo.codigo,
+			'nombre'		: activo.nombre,
+			'm_totales'		: m_totales,
+			'm_ocupados'	: m_ocupados,
+			'm_disponibles'	: m_totales - m_ocupados,
+			})
+
+	return JsonResponse(response, safe=False)
 
 def chart_vacancia_tipo(request):
 
@@ -169,6 +197,7 @@ def chart_vacancia_tipo(request):
 
 	return JsonResponse(response, safe=False)
 
+
 def chart_ingreso_centro(request):
 
 	data_table	= {}
@@ -228,7 +257,6 @@ def chart_ingreso_centro(request):
 		data_table['table']['data'].append({'activo_id': item.id, 'activo': item.nombre, 'totales': formato_moneda_local(request, total_activo) })
 
 	return JsonResponse(data_table, safe=False)
-
 
 def get_conceptos_activo(request, id):
 

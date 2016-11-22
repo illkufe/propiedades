@@ -12,4 +12,8 @@ urlpatterns = [
 	url(r'^reportes/ingreso-activo/$', csrf_exempt(views.REPORTE_INGRESO_ACTIVO.as_view()),name='reporte_ingreso_activo'),
 	url(r'^reportes/ingreso-activo/excel/$', views.ingreso_activo_xls,name='reporte_ingreso_activo_excel'),
 	url(r'^reportes/ingreso-activo/pdf/$', views.ingreso_activo_pdf, name='reporte_ingreso_activo_pdf'),
+
+	url(r'^reportes/garantia-local/$', csrf_exempt(views.REPORTE_GARANTIA_LOCAL.as_view()),name='reporte_garantia_local'),
+	url(r'^reportes/garantia-local/excel/$', views.ingreso_activo_xls,name='reporte_ingreso_activo_excel'),
+	url(r'^reportes/garantia-local/pdf/$', views.ingreso_activo_pdf, name='reporte_ingreso_activo_pdf'),
 ]
