@@ -13,8 +13,13 @@ urlpatterns = [
 	url(r'^flag_commercial/$', views.flag_commercial, name='flag_commercial'),
 
 	url(r'^dashboard/vacancia/$', views.chart_vacancia, name='chart_vacancia'),
+
 	url(r'^dashboard/vacancia/tipo$', views.chart_vacancia_tipo, name='chart_vacancia_tipo'),
 	url(r'^dashboard/ingreso-centro/$', views.chart_ingreso_centro, name='chart_ingreso_centro'),
+
+	# data - garantias
+	url(r'^data/garantias/activos/$', views.data_garantia, name='data_garantia'),
+	url(r'^data/garantias/activos/(?P<id>\d+)/$', views.data_garantia, name='data_garantia'),
 
 	# get - conceptos
 	url(r'^get/conceptos-activo/(?P<id>\d+)$', views.get_conceptos_activo, name='get_conceptos_activo'),

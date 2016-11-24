@@ -327,6 +327,12 @@
 
 								{{ form_garantia.management_form }}
 
+								{% for form in form_garantia %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
 								<table id="tabla-garantias" class="table table-bordered">
 									<thead>
 										<tr>

@@ -7,7 +7,7 @@
 		<div class="col-lg-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<span class="label label-info pull-right">Hoy</span>
+					<span class="label label-primary pull-right">Hoy</span>
 					<h5>Indicadores</h5>
 				</div>
 
@@ -20,7 +20,7 @@
 		<div class="col-lg-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<span class="label label-info pull-right">Hoy</span>
+					<span class="label label-primary pull-right">Hoy</span>
 					<h5>Locales Disponibles</h5>
 				</div>
 				<div class="ibox-content">
@@ -65,12 +65,73 @@
 		</div>
 	</div>
 
-
 	<div class="row">
-		<div class="col-lg-12 s-garantias">
+
+		<!-- sección: garantías -->
+		<div class="col-lg-6 s-garantias">
 			<div class="ibox float-e-margins">
+
+				<!-- título -->
 				<div class="ibox-title">
-					<h5 class="title">Garantia por Activos</h5>
+					<h5 class="title">Garantias por Activo</h5>
+					<div class="ibox-tools">
+						<a class="collapse-link">
+							<i class="fa fa-chevron-up"></i>
+						</a>
+					</div>
+				</div>
+
+				<!-- contenido -->
+				<div class="ibox-content">
+					<div class="row">
+						
+						<!-- mensaje no data -->
+						<div class="col-sm-12">
+							<div class="hide container-text">
+								<div class="text-center">
+									<p>No existen activos, pulse <a href='{% url "activo_new" %}'>aquí</a> para crear un activo.</p>
+								</div>
+							</div>
+						</div>
+						
+						<!-- gráfico -->
+						<div class="col-sm-12">
+							<div class="hide container-chart text-center">
+								<div class="chart"></div>
+							</div>
+						</div>
+						
+						<!-- tabla -->
+						<div class="col-sm-12">
+							<div class="hide container-table">
+
+								<h2>Activos</h2>
+								<small>listado de activos con mayores garantias.</small>
+
+								<table id="table-garantias" class="table" style="width:100%">
+									<thead>
+										<tr>
+											<th></th>
+											<th></th>
+											<th class="text-right">Total Garantias</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- sección: vacancia -->
+		<div class="col-lg-6 s-vacancia">
+			<div class="ibox float-e-margins">
+
+				<!-- título -->
+				<div class="ibox-title">
+					<h5 class="title">Vacancia por Activo</h5>
 					<div class="ibox-tools">
 						<a class="collapse-link">
 							<i class="fa fa-chevron-up"></i>
@@ -79,166 +140,66 @@
 							<i class="fa fa-gear"></i>
 						</a>
 						<ul class="dropdown-menu dropdown-user">
-							<li><a onclick="cargar_seccion_vacancia(this, 0)">Actual</a></li>
-							<li><a onclick="cargar_seccion_vacancia(this, 1)">Próximo mes</a></li>
-							<li><a onclick="cargar_seccion_vacancia(this, 3)">Próximos 3 meses</a></li>
-							<li><a onclick="cargar_seccion_vacancia(this, 6)">Próximos 6 meses</a></li>
-							<li><a onclick="cargar_seccion_vacancia(this, 9)">Próximos 9 meses</a></li>
-							<li><a onclick="cargar_seccion_vacancia(this, 12)">Próximo año</a></li>
+							<li><a onclick="load_section_vacancia(this, 0)">Actual</a></li>
+							<li><a onclick="load_section_vacancia(this, 1)">Próximo mes</a></li>
+							<li><a onclick="load_section_vacancia(this, 3)">Próximos 3 meses</a></li>
+							<li><a onclick="load_section_vacancia(this, 6)">Próximos 6 meses</a></li>
+							<li><a onclick="load_section_vacancia(this, 9)">Próximos 9 meses</a></li>
+							<li><a onclick="load_section_vacancia(this, 12)">Próximo año</a></li>
 						</ul>
 					</div>
 				</div>
+
+				<!-- contenido -->
 				<div class="ibox-content">
 					<div class="row">
-
-						<div class="col-xs-6 no-data hide">
-							<div class="text-center">
-								<p>No existen activos, pulse <a href='{% url "activo_new" %}'>aquí</a> para crear un activo.</p>
+						
+						<!-- mensaje no data -->
+						<div class="col-sm-12">
+							<div class="hide container-text">
+								<div class="text-center">
+									<p>No existen activos, pulse <a href='{% url "activo_new" %}'>aquí</a> para crear un activo.</p>
+								</div>
 							</div>
 						</div>
+						
+						<!-- gráfico -->
+						<div class="col-sm-12">
+							<div class="hide container-chart text-center">
+								<div class="chart"></div>
+							</div>
+						</div>
+						
+						<!-- tabla -->
+						<div class="col-sm-12">
+							<div class="hide container-table">
 
-						<div class="col-lg-5 container-chart hide">
-							<div class="text-left">
-								<small class="block text-muted">
-									<i class="fa fa-clock-o"></i> vacancia hasta la fecha: <span class="fecha"></span>
+								<h2>Activos</h2>
+								<small>listado de activos con mayor m².</small>
+
+								<table id="table-vacancia" class="table" style="width:100%">
+									<thead>
+										<tr>
+											<th></th>
+											<th></th>
+											<th class="text-right">m² Totales</th>
+											<th class="text-right">m² Vacantes</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+
+								<small>
+									<i class="fa fa-clock-o"></i> vacancia hasta la fecha: <span id="fecha"></span>
 								</small>
 							</div>
-
-							<br>
-
-							<div id="pie"></div>
-						</div>
-
-
-						<div class="col-sm-3">
-							<h2>Activos</h2>
-							<small>You have 42 messages and 6 notifications.</small>
-							<ul class="list-group clear-list m-t">
-								<li class="list-group-item fist-item">
-									<span class="pull-right">
-										09:00 pm
-									</span>
-									<span class="label label-success">1</span> Please contact me
-								</li>
-								<li class="list-group-item">
-									<span class="pull-right">
-										10:16 am
-									</span>
-									<span class="label label-info">2</span> Sign a contract
-								</li>
-								<li class="list-group-item">
-									<span class="pull-right">
-										08:22 pm
-									</span>
-									<span class="label label-primary">3</span> Open new shop
-								</li>
-								<li class="list-group-item">
-									<span class="pull-right">
-										11:06 pm
-									</span>
-									<span class="label label-default">4</span> Call back to Sylvia
-								</li>
-								<li class="list-group-item">
-									<span class="pull-right">
-										12:00 am
-									</span>
-									<span class="label label-primary">5</span> Write a letter to Sandra
-								</li>
-							</ul>
-						</div>
-
-						<!-- <div class="col-lg-7 container-table hide">
-
-							<table id="tabla-vacancia" class="table" style="width:100%">
-								<thead>
-									<tr>
-										<th></th>
-										<th>Activo</th>
-										<th class="text-right">m² Totales</th>
-										<th class="text-right">m² Vacantes</th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody></tbody>
-							</table>
-						</div> -->
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-
-
-
-
-
-
-
-
-	<div class="row">
-		<div class="col-lg-12 s-vacancia">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5 class="title">Vacancia por Activos</h5>
-					<div class="ibox-tools">
-						<a class="collapse-link">
-							<i class="fa fa-chevron-up"></i>
-						</a>
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<i class="fa fa-gear"></i>
-						</a>
-						<ul class="dropdown-menu dropdown-user">
-							<li><a onclick="cargar_seccion_vacancia(this, 0)">Actual</a></li>
-							<li><a onclick="cargar_seccion_vacancia(this, 1)">Próximo mes</a></li>
-							<li><a onclick="cargar_seccion_vacancia(this, 3)">Próximos 3 meses</a></li>
-							<li><a onclick="cargar_seccion_vacancia(this, 6)">Próximos 6 meses</a></li>
-							<li><a onclick="cargar_seccion_vacancia(this, 9)">Próximos 9 meses</a></li>
-							<li><a onclick="cargar_seccion_vacancia(this, 12)">Próximo año</a></li>
-						</ul>
-					</div>
-				</div>
-				<div class="ibox-content">
-					<div class="row">
-
-						<div class="col-xs-12 no-data hide">
-							<div class="text-center">
-								<p>No existen activos, pulse <a href='{% url "activo_new" %}'>aquí</a> para crear un activo.</p>
-							</div>
-						</div>
-
-						<div class="col-lg-5 container-chart hide">
-							<div class="text-left">
-								<small class="block text-muted">
-									<i class="fa fa-clock-o"></i> vacancia hasta la fecha: <span class="fecha"></span>
-								</small>
-							</div>
-
-							<br>
-
-							<div id="pie"></div>
-						</div>
-
-						<div class="col-lg-7 container-table hide">
-
-							<table id="tabla-vacancia" class="table" style="width:100%">
-								<thead>
-									<tr>
-										<th></th>
-										<th>Activo</th>
-										<th class="text-right">m² Totales</th>
-										<th class="text-right">m² Vacantes</th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody></tbody>
-							</table>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
 	</div>
 
 	<div class="row">
@@ -439,12 +400,14 @@ fecha_actual = moment(fecha_actual).format("DD/MM/YYYY")
 
 $(document).ready(function(){
 
-	cargar_seccion_vacancia(fecha_actual)
+	load_section_garantias()
+	load_section_vacancia(fecha_actual)
 
 	load_section_ingreso_centro_comercial(null, 0, '')
 	load_flag_currencies()
 	load_flag_commercial()
 	inicial()
+
 });
 
 function inicial(){
@@ -469,6 +432,162 @@ function inicial(){
 		cargar_modal_vacancia(1, tipo, fecha)
 	})
 }
+
+
+
+
+
+
+
+
+
+function load_section_garantias(){
+	$.ajax({
+		url: '{% url "data_garantia" %}',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			// variables
+			var template 	= '';
+			var chart 		= []
+
+			if (data.length == 0) {
+				$('.s-garantias .container-text').removeClass('hide')
+			}else{
+				$('.s-garantias .container-chart').removeClass('hide')
+				$('.s-garantias .container-table').removeClass('hide')
+			}
+
+			for (var i = 0; i < data.length; i++) {
+
+				template += '<tr>'
+				template += '<td><button data-id="@id" class="btn btn-info btn-circle" type="button"><i class="fa fa-info"></i></button></td>'
+				template += '<td>@nombre</td>'
+				template += '<td class="text-right">@total</td>'
+				template += '</tr>'
+				
+				template = template.replace(/@id/g, data[i].id);
+				template = template.replace(/@nombre/g, data[i].nombre);
+				template = template.replace(/@total/g, data[i].total_f);
+
+				if (data[i].total != 0){
+					chart.push([data[i].nombre, data[i].total])	
+				}
+			};
+
+			$('.s-garantias .container-table #table-garantias tbody').append(template)
+
+			c3.generate({
+				bindto: '.s-garantias .chart',
+				color: {
+					pattern: ['#6A1B9A', '#7B1FA2', '#8E24AA', '#9C27B0', '#AB47BC', '#BA68C8', '#CE93D8', '#E1BEE7', '#F3E5F5']
+				},
+				legend: {
+					show: false
+				},
+				size: {
+					width: 220,
+					height: 220,
+				},
+				data: {
+					empty: {
+						label: {
+							text: "activos sin garantías"
+						}
+					},
+					type : 'donut',
+					columns: chart,
+				},
+			});
+		}
+	})
+}
+
+function load_section_vacancia(fecha){
+
+	$.ajax({
+		url: '/dashboard/vacancia/',
+		type: 'post',
+		dataType: 'json',
+		data:{
+			fecha 	: fecha,
+			csrfmiddlewaretoken: getCookie('csrftoken'),
+		},
+		success: function(data){
+
+			// variables
+			var chart = [];
+
+			if (data.length == 0) {
+				$('.s-vacancia .no-data').removeClass('hide')
+			}else{
+				$('.s-vacancia .container-chart').removeClass('hide')
+				$('.s-vacancia .container-table').removeClass('hide')
+			}
+
+			$('.s-vacancia .container-table #table-vacancia tbody').html('')
+			$('.s-vacancia .container-table #fecha').html(fecha)
+
+			for (var i = 0; i < data.length; i++) {
+
+				temp_body = ''
+				temp_body += '<tr>'
+				temp_body += '<td><button data-id="@id" class="btn btn-info btn-circle btn-activo-detalle" type="button"><i class="fa fa-info"></i></button></td>'
+				temp_body += '<td>@nombre</td>'
+				temp_body += '<td class="text-right">@m_totales</td>'
+				temp_body += '<td class="text-right">@m_disponibles</td>'
+				temp_body += '<td class="text-right"><span class="sparkline-@index"></span></td>'
+				temp_body += '</tr>'
+
+				temp_body = temp_body.replace(/@index/g, i);
+				temp_body = temp_body.replace(/@id/g, data[i].id);
+				temp_body = temp_body.replace(/@nombre/g, data[i].nombre);
+				temp_body = temp_body.replace(/@m_totales/g, data[i].m_totales == null ? '-' : data[i].m_totales);
+				temp_body = temp_body.replace(/@m_disponibles/g, data[i].m_disponibles  == null ? '-' : data[i].m_disponibles);
+
+				$('.s-vacancia .container-table #table-vacancia tbody').append(temp_body)
+
+				m_ocupados 		= data[i].m_ocupados  == null ? 0 : data[i].m_ocupados
+				m_disponibles 	= data[i].m_disponibles  == null ? 0 : data[i].m_disponibles
+
+				$('.sparkline-'+i).sparkline([m_ocupados, m_disponibles], {
+					type: 'pie',
+					sliceColors: ['#E1BEE7','#6A1B9A'],
+				});
+
+				chart.push([data[i].nombre, data[i].m_disponibles])
+			};
+
+			c3.generate({
+				bindto: '.s-vacancia .chart',
+				color: {
+					pattern: ['#6A1B9A', '#7B1FA2', '#8E24AA', '#9C27B0', '#AB47BC', '#BA68C8', '#CE93D8', '#E1BEE7', '#F3E5F5']
+				},
+				legend: {
+					show: false
+				},
+				size: {
+					width: 220,
+					height: 220,
+				},
+				data:{
+					type : 'donut',
+					columns: chart,
+				}
+			});
+
+			$('.btn-activo-detalle').click(abrir_modal_vacancia)
+		}
+	})
+}
+
+
+
+
+
+
+
 
 function load_flag_currencies(){
 
@@ -541,78 +660,7 @@ function load_flag_commercial(){
 	})
 }
 
-function cargar_seccion_vacancia(fecha){
 
-	$.ajax({
-		url: '/dashboard/vacancia/',
-		type: 'post',
-		dataType: 'json',
-		data:{
-			fecha 	: fecha,
-			csrfmiddlewaretoken: getCookie('csrftoken'),
-		},
-		success: function(data){
-
-			var chart = [];
-
-			if (data.length == 0) {
-				$('.s-vacancia .no-data').removeClass('hide')
-			}else{
-				$('.s-vacancia .container-chart').removeClass('hide')
-				$('.s-vacancia .container-table').removeClass('hide')
-			}
-
-			$('#tabla-vacancia tbody').html('')
-			$('.container-chart .fecha').html(fecha)
-
-			for (var i = 0; i < data.length; i++) {
-
-				temp_body = ''
-				temp_body += '<tr>'
-				temp_body += '<td><button data-id="@id" class="btn btn-success btn-circle btn-activo-detalle" type="button"><i class="fa fa-info"></i></button></td>'
-				temp_body += '<td>@nombre</td>'
-				temp_body += '<td class="text-right">@m_totales</td>'
-				temp_body += '<td class="text-right">@m_disponibles</td>'
-				temp_body += '<td class="text-right"><span class="sparkline-@index"></span></td>'
-				temp_body += '</tr>'
-
-				temp_body = temp_body.replace(/@index/g, i);
-				temp_body = temp_body.replace(/@id/g, data[i].id);
-				temp_body = temp_body.replace(/@nombre/g, data[i].nombre);
-				temp_body = temp_body.replace(/@m_totales/g, data[i].m_totales == null ? '-' : data[i].m_totales);
-				temp_body = temp_body.replace(/@m_disponibles/g, data[i].m_disponibles  == null ? '-' : data[i].m_disponibles);
-
-				$('#tabla-vacancia tbody').append(temp_body)
-
-				m_ocupados 		= data[i].m_ocupados  == null ? 0 : data[i].m_ocupados
-				m_disponibles 	= data[i].m_disponibles  == null ? 0 : data[i].m_disponibles
-
-				$('.sparkline-'+i).sparkline([m_ocupados, m_disponibles], {
-					type: 'pie',
-					sliceColors: ['#1a7bb9','#d7d7d7'],
-				});
-
-				chart.push([data[i].nombre, data[i].m_disponibles])
-			};
-
-			c3.generate({
-				size: {
-					height: 220,
-				},
-				color: {
-					pattern: ['#009688', '#00BCD4', '#4CAF50', '#FF9800', '#98df8a', '#2196F3', '#F44336', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
-				},
-				bindto: '#pie',
-				data:{
-					columns: chart,
-					type : 'donut'
-				}
-			});
-
-			$('.btn-activo-detalle').click(abrir_modal_vacancia)
-		}
-	})
-}
 
 function abrir_modal_vacancia(){
 

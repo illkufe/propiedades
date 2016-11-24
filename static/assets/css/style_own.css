@@ -183,9 +183,9 @@ table th {
 	font-weight: 600;
 }
 
-.table > thead > tr > th{
+/*.table > thead > tr > th{
 	border-bottom: 2px solid #286CA0;
-}
+}*/
 
 
 table.dataTable thead .sorting:after,
@@ -325,4 +325,20 @@ form#form-conceptos-new .select2.select2-container.select2-container--default{
 }
 
 
-	
+
+
+/* cambios plugin bootstrap-select */
+
+.bootstrap-select .dropdown-menu > li > a{
+	margin: 0px;
+    padding: 0px 20px;
+}
+
+.bootstrap-select .btn-default{
+    margin: 0px 0px;
+}
+
+.bootstrap-select .bs-actionsbox{
+    min-width: 255px;
+}
+

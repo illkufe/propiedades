@@ -345,6 +345,74 @@ def get_conceptos_activo(request, id):
 	return JsonResponse({'meses': data_encabezado, 'conceptos': data_concepto, 'total_mes': data_valor_total}, safe=False)
 
 
+
+
+
+
+
+def data_garantia(request, id=None):
+
+	response 	= list()
+	activos 	= Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+
+	for activo in activos:
+
+		total_activo 	= 0
+		contratos 		= list()
+
+		for contrato in Contrato.objects.filter(locales__in=activo.local_set.all().filter(visible=True), visible=True):
+
+			locales 		= list()
+			total_contrato 	= 0
+
+			for local in contrato.locales.all():
+
+				garantias 	= list()
+				total_local = 0
+
+				for garantia in local.garantia_set.all():
+
+					valor = garantia.valor * garantia.moneda.moneda_historial_set.all().order_by('-id').first().valor
+
+					garantias.append({
+						'id' 		: garantia.id,
+						'nombre' 	: garantia.nombre,
+						'total' 	: valor,
+						'total_f' 	: formato_moneda_local(request, valor),
+					})
+
+					total_activo 	+= valor
+					total_contrato 	+= valor
+
+				locales.append({
+					'id'  		: local.id,
+					'nombre' 	: local.nombre,
+					'garantias' : garantias,
+					'total' 	: total_local,
+					'total_f' 	: formato_moneda_local(request, total_local),
+					})
+
+			contratos.append({
+				'id'  		: contrato.id,
+				'nombre' 	: contrato.nombre_local,
+				'locales' 	: locales,
+				'total' 	: total_contrato,
+				'total_f' 	: formato_moneda_local(request, total_contrato),
+				})
+
+		response.append({
+			'id'		: activo.id,
+			'codigo'	: activo.codigo,
+			'nombre'	: activo.nombre,
+			'total'		: total_activo,
+			'total_f'	: formato_moneda_local(request, total_activo),
+			'contratos'	: contratos,
+			})
+
+	return JsonResponse(response, safe=False)
+
+
+
 class CONCEPTOS_ACTIVOS(View):
 
 	http_method_names = ['get', 'post']

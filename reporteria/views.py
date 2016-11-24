@@ -18,6 +18,9 @@ import time
 import xlsxwriter
 
 
+# variables 
+nombre_meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
 class REPORTES(View):
 
 	http_method_names =  ['get', 'post']
@@ -289,7 +292,6 @@ class REPORTE_GARANTIA_LOCAL(View):
 
 		return JsonResponse(data, safe=False)
 
-
 class REPORTE_INGRESO_ACTIVO(View):
 
 	http_method_names = ['get', 'post']
@@ -397,7 +399,6 @@ class REPORTE_INGRESO_ACTIVO(View):
 			count += 1
 
 		return JsonResponse({'cabecera': data_cabecera, 'data':data_concepto} , safe=False)
-
 
 def ingreso_activo_xls(request):
 
@@ -642,3 +643,89 @@ def ingreso_activo_pdf(request):
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	pdf.close()
 	return response  # returns the response.
+
+
+
+
+
+
+
+
+
+
+
+
+class REPORTE_INGRESO_ACTIVO_METROS(View):
+
+	http_method_names = ['get', 'post']
+
+	def get(self, request, id=None):
+
+		return render(request, 'reporte_ingreso_metros.html', {
+			'title' 	: 'Reporteria',
+			'href' 		: '/reportes/ingreso-activo/metros/',
+			'subtitle' 	: 'Reportes',
+			'name' 		: 'Ingreso por m²',
+			'form' 		: FormIngresoMetrosCuadrados(request=self.request)
+		})
+
+	def post(self, request):
+
+		var_post 	= request.POST.copy()
+		periodos  	= calcular_periodos(1, int(var_post['cantidad']))
+		activos 	= Activo.objects.filter(id__in=var_post.getlist('activos')) # self.request.user.userprofile.empresa.activo_set.all()
+		conceptos 	= Concepto.objects.filter(id__in=var_post.getlist('conceptos')) # self.request.user.userprofile.empresa.concepto_set.all()
+		data 		= data_report_ingreso_activo_metros(request, periodos, activos, conceptos)
+
+		return JsonResponse(data, safe=False)
+
+def data_report_ingreso_activo_metros(request, periodos, activos, conceptos):
+
+	data = list()
+
+	for activo in activos:
+
+		locales 	= Local.objects.filter(activo=activo, visible=True)
+		contratos_f = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, visible=True)
+
+		data_conceptos = list()
+
+		for concepto in conceptos:
+
+			data_ingresos = list()
+
+			for periodo in periodos:
+
+				total 			= Factura.objects.filter(contrato__in=contratos_f, visible=True, factura_detalle__concepto=concepto,fecha_inicio__gte=periodo['fecha_inicio'],fecha_inicio__lte=periodo['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+				contratos_id 	= Factura.objects.filter(visible=True, factura_detalle__concepto=concepto,fecha_inicio__gte=periodo['fecha_inicio'],fecha_inicio__lte=periodo['fecha_termino']).values_list('contrato', flat=True)
+				contratos 		= Contrato.objects.filter(id__in=contratos_id)
+				metros 			= 0
+
+				for contrato in contratos:
+
+					metros = contrato.locales.all().aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+
+				ingreso 		= 0 if total is None else total
+				ingreso_metros 	= 0 if metros is 0 else ingreso / metros
+
+				data_ingresos.append({
+					'fecha_inicio'		: periodo['fecha_inicio'],
+					'fecha_termino'		: periodo['fecha_termino'],
+					'metros' 			: metros,
+					'ingreso' 			: ingreso,
+					'ingreso_metros' 	: ingreso_metros,
+					})
+
+			data_conceptos.append({
+				'id'		: concepto.id,
+				'nombre'	: concepto.nombre,
+				'ingresos'	: data_ingresos,
+				})
+
+		data.append({
+			'id'		: activo.id,
+			'nombre'	: activo.nombre,
+			'conceptos'	: data_conceptos,
+			})
+
+	return data
