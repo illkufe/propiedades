@@ -101,10 +101,9 @@ class LocalForm(forms.ModelForm):
 
 		activo = Activo.objects.get(id=activo_id)
 
-		self.fields['local_tipo'].queryset 	= Local_Tipo.objects.filter(empresa=profile.empresa, visible=True)
-		self.fields['sector'].queryset 		= Sector.objects.filter(activo=activo)
-		self.fields['nivel'].queryset 		= Nivel.objects.filter(activo=activo)
-
+		self.fields['local_tipo'].queryset 		= Local_Tipo.objects.filter(empresa=profile.empresa, visible=True)
+		self.fields['sector'].queryset 			= Sector.objects.filter(activo=activo)
+		self.fields['nivel'].queryset 			= Nivel.objects.filter(activo=activo)
 		self.fields['clasificaciones'].required = False
 
 	class Meta:
@@ -119,7 +118,7 @@ class LocalForm(forms.ModelForm):
 			'sector'					: forms.Select(attrs={'class': 'form-control'}),
 			'nivel'						: forms.Select(attrs={'class': 'form-control'}),
 			'local_tipo'				: forms.Select(attrs={'class': 'form-control'}),
-			'clasificaciones'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple': 'multiple'}),
+			'clasificaciones'			: forms.SelectMultiple(),
 		}
 
 		error_messages = {

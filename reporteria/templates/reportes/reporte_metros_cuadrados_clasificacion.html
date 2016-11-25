@@ -1,0 +1,250 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+
+                <div class="ibox-title">
+					<h5>Filtrar</h5>
+				</div>
+
+                <div class="ibox-content">
+                    <div class="row">
+                        <form id="form-m-cudrado-clasificacion" role="form" action="" method="post">
+					        {% csrf_token %}
+
+                            <div class="form-group col-sm-4">
+                                <span>
+                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.activo.help_text }}" ></i>
+                                    {{ form.activo.label_tag }}
+                                </span>
+                                {{ form.activo }}
+                                <div class="container-error">
+                                    {{ form.activo.errors|striptags }}
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <span>
+                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.clasificacion.help_text }}" ></i>
+                                    {{ form.clasificacion.label_tag }}
+                                </span>
+                                {{ form.clasificacion }}
+                                <div class="container-error">
+                                    {{ form.clasificacion.errors|striptags }}
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-3" style="padding-top:22px">
+                                <button type="submit" id="update-period-button" class="btn btn-primary btn-sm btn-block">
+                                    <i class="fa fa-filter"></i>&nbsp;&nbsp;&nbsp;&nbsp;Filtrar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+				<div class="ibox-title">
+					<h5>Resultado Búsqueda</h5>
+				</div>
+
+				<div class="ibox-content">
+					<div class="container-text">
+						<div class="text-center">
+							<p class="no-data">Aplicar Filtro</p>
+						</div>
+					</div>
+
+					<div class="container-table">
+						<div class="table-responsive">
+							<table class="table table-striped table-bordered table-hover" id="tabla-m-cudrado-clasificacion" style="width: 99%; !important"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<style>
+
+    p.no-data{
+        padding: 10px;
+        margin: 10px 0;
+        background: #e7eaec;
+    }
+
+    th, td { white-space: nowrap; }
+    div.dataTables_wrapper {
+        width: 99%;
+        margin: 0 auto;
+    }
+   div.DTFC_RightBodyWrapper div.DTFC_RightBodyLiner{
+        position: relative;
+        top: 0px;
+        left: 0px;
+    }
+</style>
+{% endblock section %}
+
+
+{% block scripts %}
+<script>
+var tabla_m_cuadrado_clasificacion ;
+
+$(document).ready(function(){
+
+    load_data_ingreso_activo()
+})
+
+function load_table_m_cudrado_clasificacion() {
+
+    var configuracion = {
+        'order': [[0, 'asc'],[1, 'asc']],
+        'buttons': [
+            {
+                text: '<i class="fa fa-file-excel-o"></i><span style="vertical-align:middle;"> Excel</span>',
+                action: function ( e, dt, node, config ) {
+                    generacion_reporte_ingreso_activos('excel')
+                }
+            },
+            {
+                text: '<i class="fa fa-file-pdf-o pdf"></i><span style="vertical-align:middle;"> PDF</span>',
+                action: function ( e, dt, node, config ) {
+                    generacion_reporte_ingreso_activos('pdf')
+                }
+            },
+        ],
+        'rowsGroup': [0, 1, 4]
+    };
+
+    if ($.fn.DataTable.isDataTable( '#tabla-m-cudrado-clasificacion')){
+		tabla_m_cuadrado_clasificacion.destroy();
+	}
+
+	$('.container-text').addClass('hide')
+	$('.container-table #tabla-m-cudrado-clasificacion').html('')
+
+	var columns = [
+    {
+        'width': '20%',
+        'data': 'activo',
+        'title': 'Activo',
+    },
+    {
+        'width': '15%',
+        'data': 'clasificacion',
+        'title': 'Clasificación',
+    },
+    {
+        'width': '10%',
+        'data': 'detalle',
+        'title': 'Detalle Clasificación',
+    },
+    {
+        'width': '10%',
+        'data': 'm_cuadrados_detalle',
+        'title': 'M² Detalle',
+    },
+    {
+        'width': '10%',
+        'data': 'm_cuadrado_total',
+        'title': 'M² Total',
+    }];
+
+	tabla_m_cuadrado_clasificacion = load_table('#tabla-m-cudrado-clasificacion', columns, configuracion)
+}
+
+function load_data_ingreso_activo() {
+    $("#form-m-cudrado-clasificacion").validate({
+        ignore: 'input[type=hidden]',
+		rules: {
+			activo: {
+				required: true,
+			},
+			clasificacion: {
+				required: true,
+			}
+		},
+		messages: {
+			activo: {
+				required: "campo requerido",
+			},
+			clasificacion: {
+				required: "campo requerido",
+			}
+		},
+        errorPlacement: function(error, element) {
+            error.appendTo(element.closest(".form-group").find('.container-error'));
+        },
+        submitHandler: function(form) {
+            $('#form-m-cudrado-clasificacion').ajaxSubmit({
+                dataType: 'json',
+                beforeSend:function () {
+                    loading(true)
+                },
+                success: function(response){
+
+                    loading(false)
+                    load_table_m_cudrado_clasificacion()
+
+                    var rows        = [];
+
+                    for (var i in response.data){
+
+                        for(var a in response.data[i].detalles) {
+                            var row = {};
+                            row.activo              = response.data[i].activo;
+                            row.clasificacion       = response.data[i].clasificacion;
+                            row.detalle             = response.data[i].detalles[a].detalle;
+                            row.m_cuadrados_detalle = response.data[i].detalles[a].m_cuadrados_detalle;
+                            row.m_cuadrado_total    = response.data[i].m_cuadrado_total;
+                            rows.push(row);
+                        }
+                    }
+
+
+                    tabla_m_cuadrado_clasificacion.rows.add(rows).draw();
+
+                },
+                error: function(data, textStatus, jqXHR) {
+                    clear_errors_form('#form-m-cudrado-clasificacion');
+                    var errors = $.parseJSON(data.responseText);
+                    apply_errors_form(errors)
+                }
+            });
+        }
+    });
+}
+
+function generacion_reporte_ingreso_activos(tipo_archivo) {
+
+    var activo              = $("#form-m-cudrado-clasificacion").find('#id_activo').val();
+    var clasificacion       = $("#form-m-cudrado-clasificacion").find('#id_clasificacion').val();
+
+
+    var token = '{{ csrf_token }}';
+    if(tipo_archivo == 'excel'){
+        var $form1  =$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",'/reportes/metros-cuadrados-clasificacion/excel/');
+    }else if(tipo_archivo == 'pdf'){
+        var $form1  =$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",'/reportes/metros-cuadrados-clasificacion/pdf/');
+    }else {
+        var configuracion = {
+            'toast_type'	: 'error',
+            'toast_text' 	: 'No se pudo generar archivo',
+            'toast_title' 	: 'Error',
+        }
+        notification_toast(configuracion)
+    }
+    var $input  =$(document.createElement('input')).attr('name','csrfmiddlewaretoken').val(token);
+    var $input0 =$(document.createElement('input')).attr('name','activo').val(activo);
+    var $input1 =$(document.createElement('input')).attr('name','clasificacion').val(clasificacion);
+
+
+    $form1.append($input).append($input0).append($input1);
+    $("body").append($form1);
+    $form1.submit();
+}
+
+</script>
+{% endblock scripts %}

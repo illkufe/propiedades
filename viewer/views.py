@@ -215,7 +215,7 @@ def chart_ingreso_centro(request):
 	data_table['fechas'] 		= list()
 
 	## Data Grafico
-	response = calcular_periodos(1, 6)
+	response = calcular_periodos(1, 6, 'restar')
 
 	fecha_inicial 	= datetime.strftime(response[0]['fecha_inicio'], "%d-%m-%Y")
 	fecha_final 	= datetime.strftime(response[response.__len__() -1]['fecha_termino'], "%d-%m-%Y")
@@ -274,7 +274,7 @@ def get_conceptos_activo(request, id):
 	count				= 0
 
 	data_conceptos 		= Concepto.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
-	response 			= calcular_periodos(tipo_periodo, 12)
+	response 			= calcular_periodos(tipo_periodo, 12, 'restar')
 
 	## Se obtiene Cabecera de las tablas
 	for data in response:

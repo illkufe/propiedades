@@ -98,9 +98,13 @@
             <li>
 				<a><i class="fa fa-folder-open-o"></i> <span class="nav-label">Reporteria</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level collapse">
-					<li><a href='{% url "reporte_ingreso_activo" %}'>Ingreso Activos</a></li>
+					<li><a href='{% url "reporte_ingreso_activo" %}'>Ingreso por Activos</a></li>
 					<li><a href='{% url "reporte_ingreso_activo_metros" %}'>Ingreso por m²</a></li>
 					<li><a href='{% url "reporte_garantia_local" %}'>Garantia por Local</a></li>
+                    <li><a href='{% url "reporte_ingreso_clasificacion" %}'>Ingreso por Clasificación</a></li>
+                    <li><a href='{% url "reporte_vacancia_activo" %}'>Vacancia por Activos</a></li>
+                    <li><a href='{% url "reporte_vencimiento_contrato" %}'>Vencimiento de Contratos</a></li>
+                    <li><a href='{% url "reporte_m_cuadrados_clasificacion_activo" %}'>M² por Clasificación</a></li>
 				</ul>
 			</li>
 

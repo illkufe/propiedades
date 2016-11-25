@@ -746,6 +746,7 @@ function cargar_modal_vacancia(id, tipo, fecha){
 
 function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
 
+{% comment %}
 	var fecha_actual = new Date();
 
 	fecha_actual.setMonth(fecha_actual.getMonth() + add_month);
@@ -765,6 +766,7 @@ function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
 	else {
 		$(".s-ingreso-centro h5.title span").text($(obj).text())
 	}
+{% endcomment %}
 
 
 	$.ajax({

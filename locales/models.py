@@ -50,7 +50,7 @@ class Local(models.Model):
 	sector 				= models.ForeignKey(Sector)
 	nivel 				= models.ForeignKey(Nivel)
 	local_tipo 			= models.ForeignKey(Local_Tipo)
-	clasificaciones  	= models.ManyToManyField(Clasificacion_Detalle)
+	clasificaciones  	= models.ManyToManyField(Clasificacion_Detalle, blank=True)
 
 	def __str__(self):
 		return self.nombre

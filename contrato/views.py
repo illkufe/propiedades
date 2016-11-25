@@ -269,6 +269,7 @@ class ContratoDelete(DeleteView):
 		self.object 		= self.get_object()
 		self.object.visible = False
 		self.object.save()
+		self.object.locales.clear()
 
 		payload = {'delete': 'ok'}
 

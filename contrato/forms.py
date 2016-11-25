@@ -55,7 +55,7 @@ class ContratoForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 
 		self.request 	= kwargs.pop('request')
-		activos 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa).values_list('id', flat=True)
+		activos 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
 
 		super(ContratoForm, self).__init__(*args, **kwargs)	
 
