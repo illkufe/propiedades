@@ -183,9 +183,7 @@ class REPORTE_INGRESO_ACTIVO(View):
 
 		for activo in activos:
 
-			locales 	= Local.objects.filter(activo_id=activo.id, visible=True)
-			contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
-													cliente__in=cliente, visible=True).order_by('cliente', 'numero')
+			contratos = Contrato.objects.filter(locales__activo_id=activo.id, locales__visible=True, empresa=request.user.userprofile.empresa, cliente__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 			for contrato in contratos:
 				meses = {}
@@ -294,14 +292,12 @@ def ingreso_activo_xls(request):
 
 	## Se obtiene el detalle de la tabla
 
-	activos = Activo.objects.filter(id__in=activo, empresa=request.user.userprofile.empresa,
-										visible=True).order_by('nombre')
+	activos = Activo.objects.filter(id__in=activo, empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
 	for activo in activos:
 
-		locales 	= Local.objects.filter(activo_id=activo.id, visible=True)
-		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
-												cliente__in=cliente, visible=True).order_by('cliente', 'numero')
+		contratos 	= Contrato.objects.filter(locales__activo_id=activo.id, locales__visible=True, empresa=request.user.userprofile.empresa,
+												cliente__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 		for contrato in contratos:
 			x = []
@@ -376,9 +372,8 @@ def ingreso_activo_pdf(request):
 
 	for activo in activos:
 
-		locales 	= Local.objects.filter(activo_id=activo.id, visible=True)
-		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
-												cliente__in=cliente, visible=True).order_by('cliente', 'numero')
+		contratos 	= Contrato.objects.filter(locales__activo_id=activo.id, locales__visible=True, empresa=request.user.userprofile.empresa,
+												cliente__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 		for contrato in contratos:
 			x = []
@@ -677,6 +672,7 @@ class REPORTE_VACANCIA(View):
 
 			##Todos los Activos (Sin Agrupador)
 			if agrupador == 1:
+
 				m_totales = activo.local_set.all().filter(visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 				aux 		= 0
@@ -713,7 +709,7 @@ class REPORTE_VACANCIA(View):
 			##Agrupador por Tipo de Local
 			elif agrupador == 2:
 
-				tipos 	= Local_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+				tipos 	= Local_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
 				for tipo in tipos:
 
@@ -756,7 +752,7 @@ class REPORTE_VACANCIA(View):
 			## Agrupador por Niveles
 			elif agrupador == 3:
 
-				niveles = activo.nivel_set.all()
+				niveles = activo.nivel_set.all().order_by('nombre')
 
 				for nivel in niveles:
 
@@ -798,7 +794,7 @@ class REPORTE_VACANCIA(View):
 			##Agrupador por Sector
 			elif agrupador == 4:
 
-				sectores 	= activo.sector_set.all()
+				sectores 	= activo.sector_set.all().order_by('nombre')
 
 				for sector in sectores:
 					m_totales 	= Local.objects.filter(activo=activo, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
@@ -888,7 +884,7 @@ def vacancia_xls(request):
 
 	format       		= workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
 	format_cell  		= workbook.add_format({'font_size': 10})
-	format_cell_number 	= workbook.add_format({'font_size': 10,'num_format': '#,##0,0000'})
+	format_cell_number 	= workbook.add_format({'font_size': 10,'num_format': '#,##0.0000'})
 	format_merge 		= workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
 
 	worksheet.merge_range('D2:E2', 'VACANCIA POR ACTIVOS', format_merge)
@@ -1138,7 +1134,7 @@ def vacancia_pdf(request):
 					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
 					m_disponibles 	= m_totales - m_ocupados
 
-					x.append(m_disponibles)
+					x.append(formato_numero(m_disponibles))
 
 				data_pdf.append(x)
 
@@ -1162,7 +1158,7 @@ def vacancia_pdf(request):
 					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
 					m_disponibles	= m_totales - m_ocupados
 
-					x.append(m_disponibles)
+					x.append(formato_numero(m_disponibles))
 
 				data_pdf.append(x)
 
@@ -1187,7 +1183,7 @@ def vacancia_pdf(request):
 					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
 					m_disponibles	= m_totales - m_ocupados
 
-					x.append(m_disponibles)
+					x.append(formato_numero(m_disponibles))
 
 				data_pdf.append(x)
 
@@ -1270,12 +1266,12 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 		response        = calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
 
 		## Se obtiene el detalle de la tabla
-		activos = Activo.objects.filter(id__in=activo , empresa=request.user.userprofile.empresa, visible=True)
+		activos = Activo.objects.filter(id__in=activo , empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
 		for activo in activos:
 
 			locales 	= Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
-			contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True)
+			contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 			for contrato in contratos:
 
@@ -1410,7 +1406,7 @@ def vencimiento_contrato_xls(request):
 	for activo in activos:
 
 		locales 	= Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
-		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('cliente', 'numero')
+		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 		for contrato in contratos:
 
@@ -1490,7 +1486,7 @@ def vencimiento_contrato_pdf(request):
 	for activo in activos:
 
 		locales 	= Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
-		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('cliente', 'numero')
+		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 		for contrato in contratos:
 
@@ -1590,22 +1586,22 @@ class REPORTE_METROS_CUADRADOS_CLASIFICACION(View):
 		activo          = var_post.getlist('activo[]')
 		clasificacion   = var_post.getlist('clasificacion[]')
 
-		activos = Activo.objects.filter(id__in=activo ,empresa=request.user.userprofile.empresa, visible=True)
+		activos = Activo.objects.filter(id__in=activo ,empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
 		for activo in activos:
 
 			clasificaciones = Clasificacion.objects.filter(id__in=clasificacion, empresa=request.user.userprofile.empresa, visible=True,
-															   tipo_clasificacion_id=1)
+															   tipo_clasificacion_id=1).order_by('nombre')
 
-			m_clasificacion = 0
 			for items in clasificaciones:
 
-				det_clasificaciones = Clasificacion_Detalle.objects.filter(clasificacion=items)
+				det_clasificaciones = Clasificacion_Detalle.objects.filter(clasificacion=items).order_by('nombre')
 				items_detalle 		= list()
 
-				m2_detalle_sin_clas	= Local.objects.filter(visible=True, activo=activo).exclude(clasificaciones__isnull=False).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+				m2_detalle_sin_clas	= Local.objects.filter(visible=True, activo=activo).exclude(clasificaciones__in=det_clasificaciones).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 				m2_detalle_sin_clas = m2_detalle_sin_clas if m2_detalle_sin_clas is not None else 0
 
+				m_clasificacion 	= 0
 				m_clasificacion 	+= m2_detalle_sin_clas
 
 				for obj in det_clasificaciones:
@@ -1616,19 +1612,19 @@ class REPORTE_METROS_CUADRADOS_CLASIFICACION(View):
 
 					items_detalle.append({
 						'detalle'       		: obj.nombre,
-						'm_cuadrados_detalle'	: m2_detalle,
+						'm_cuadrados_detalle'	: formato_numero(m2_detalle),
 					})
 
 				items_detalle.append({
 					'detalle'       	    : 'Sin Clasificación',
-					'm_cuadrados_detalle'	: m2_detalle_sin_clas,
+					'm_cuadrados_detalle'	: formato_numero(m2_detalle_sin_clas),
 				})
-			data.append({
-				'activo'				: activo.nombre,
-				'clasificacion' 		: items.nombre,
-				'm_cuadrado_total' 		: m_clasificacion,
-				'detalles'				: items_detalle
-			})
+				data.append({
+					'activo'				: activo.nombre,
+					'clasificacion' 		: items.nombre,
+					'm_cuadrado_total' 		: formato_numero(m_clasificacion),
+					'detalles'				: items_detalle
+				})
 
 
 		return JsonResponse({'data': data}, safe=False)
@@ -1655,7 +1651,7 @@ def metros_cuadrados_clasificacion_xls(request):
 	format_cell  		= workbook.add_format({'font_size': 10})
 	format_cell_text 	= workbook.add_format({'font_size': 10, 'align': 'center'})
 	format_merge 		= workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
-	format_cell_number  = workbook.add_format({'font_size': 10, 'num_format': '#,##0.000'})
+	format_cell_number  = workbook.add_format({'font_size': 10, 'num_format': '#,##0.0000'})
 
 	worksheet.merge_range('B2:C2', 'M² por Clasificación', format_merge)
 
@@ -1769,17 +1765,17 @@ def metros_cuadrados_clasificacion_pdf(request):
 				data.append(activo.nombre)
 				data.append(items.nombre)
 				data.append(obj.nombre)
-				data.append(m2_detalle)
+				data.append(formato_numero(m2_detalle))
 				data_pdf_detalle.append(data)
 
 			data = []
 			data.append(activo.nombre)
 			data.append(items.nombre)
 			data.append('Sin Clasificación')
-			data.append(m2_detalle_sin_clas)
+			data.append(formato_numero(m2_detalle_sin_clas))
 			data_pdf_detalle.append(data)
 
-			data_pdf_totales.append(['M² Total','','',m_clasificacion])
+			data_pdf_totales.append(['M² Total','','',formato_numero(m_clasificacion)])
 
 		pdf_data.append({
 			'detalles'	: data_pdf_detalle,
@@ -2025,8 +2021,8 @@ def data_report_ingreso_activo_metros(request, periodos, activos, conceptos):
 
 			for periodo in periodos:
 
-				total 			= Factura.objects.filter(contrato__in=contratos_f, visible=True, factura_detalle__concepto=concepto,fecha_inicio__gte=periodo['fecha_inicio'],fecha_inicio__lte=periodo['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-				contratos_id 	= Factura.objects.filter(visible=True, factura_detalle__concepto=concepto,fecha_inicio__gte=periodo['fecha_inicio'],fecha_inicio__lte=periodo['fecha_termino']).values_list('contrato', flat=True)
+				total 			= Factura.objects.filter(contrato__in=contratos_f, visible=True, factura_detalle__concepto=concepto,fecha_inicio__gte=periodo['fecha_inicio'],fecha_termino__lte=periodo['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+				contratos_id 	= Factura.objects.filter(visible=True, factura_detalle__concepto=concepto,fecha_inicio__gte=periodo['fecha_inicio'],fecha_termino__lte=periodo['fecha_termino']).values_list('contrato', flat=True)
 				contratos 		= Contrato.objects.filter(id__in=contratos_id)
 				metros 			= 0
 
@@ -2139,7 +2135,7 @@ def reporte_pdf(request, configuration, data):
 def data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasificacion_id, conceptos):
 
 	#variables
-	data_detalle 		= list()
+
 	count 				= 0
 	data_clasificacion 	= list()
 	data_cabecera 		= {}
@@ -2172,11 +2168,12 @@ def data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasi
 	for clasificacion in clasificaciones:
 
 		det_clasificaciones = Clasificacion_Detalle.objects.filter(clasificacion=clasificacion)
-		locales_sin_clas 	= Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales).exclude(clasificaciones__isnull=False).values_list('id', flat=True)
+		locales_sin_clas 	= Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales).exclude(clasificaciones__in=det_clasificaciones).values_list('id', flat=True)
+		data_detalle 		= list()
 		#Locales con clasificacion
 		for items in det_clasificaciones:
 
-			locales 	= Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales, clasificaciones=items).exclude(clasificaciones__isnull=True).values_list('id', flat=True)
+			locales 	= Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales, clasificaciones=items).values_list('id', flat=True)
 			contratos 	= Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True, locales__in=locales)
 			meses 		= {}
 			meses_format= {}
