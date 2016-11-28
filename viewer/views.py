@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from accounts.models import UserProfile
+from administrador.models import Clasificacion, Clasificacion_Detalle
 from conceptos.models import Concepto
 from procesos.models import Factura
 from utilidades.models import Moneda, Moneda_Historial
@@ -18,6 +19,10 @@ from django.db.models import Sum, Q
 from utilidades.views import *
 
 import json
+
+nombre_meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
+				'Noviembre', 'Diciembre']
+
 
 @login_required
 def dashboard(request):
@@ -247,7 +252,7 @@ def chart_ingreso_centro(request):
 
 		locales 		= Local.objects.filter(activo_id=item.id, visible=True)
 		contratos 		= Contrato.objects.filter(locales__in=locales)
-		total_activo	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto__in=conceptos).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+		total_activo	= Factura.objects.filter(contrato_id__in=contratos,fecha_inicio__gte=response[0]['fecha_inicio'], fecha_inicio__lte=response[response.__len__() -1]['fecha_termino'], visible=True, factura_detalle__concepto__in=conceptos).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
 		total_activo 	= total_activo if total_activo is not None else 0
 
@@ -260,8 +265,6 @@ def get_conceptos_activo(request, id):
 	var_post 			= request.POST.copy()
 	tipo_periodo    	= json.loads(var_post['tipo_filtro'])
 
-	nombre_meses 		= ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
-			 				'Noviembre', 'Diciembre']
 
 	locales 			= Local.objects.filter(activo_id=id, visible=True)
 	contratos 			= Contrato.objects.filter(locales__in=locales)
@@ -271,7 +274,7 @@ def get_conceptos_activo(request, id):
 	count				= 0
 
 	data_conceptos 		= Concepto.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
-	response 			= calcular_periodos(tipo_periodo, 12, 'restar')
+	response 			= calcular_periodos(tipo_periodo, 6, 'restar')
 
 	## Se obtiene Cabecera de las tablas
 	for data in response:
@@ -342,8 +345,113 @@ def get_conceptos_activo(request, id):
 	return JsonResponse({'meses': data_encabezado, 'conceptos': data_concepto, 'total_mes': data_valor_total}, safe=False)
 
 
+def chart_ingreso_clasificacion(request):
+
+	#variables
+	data_table 					= {}
+	data_table['table'] 		= {}
+	data_table['table']['data'] = list()
+	data_table['chart']			= list()
+	data_table['fechas'] 		= list()
+
+	data_locales 				= []
+
+	activos 			= request.user.userprofile.empresa.activo_set.all().values_list('id', flat=True)
+	periodos 			= calcular_periodos(1, 6, 'restar')
+	contratos 			= Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+
+	data_table['fechas'].append(periodos[0]['fecha_inicio'])
+	data_table['fechas'].append(periodos[periodos.__len__() -1]['fecha_termino'])
+
+	cabecera = []
+	cabecera.append('x')
+	## Se obtiene Cabecera de las tablas
+	for periodo in periodos:
+		cabecera.append(periodo['fecha_inicio'])
+
+	data_table['chart'].append(cabecera)
+
+	##Obtengo todos lo locales y el primero si es que existen mas de 2 en el contrato
+	for item_contrato in contratos:
+		if item_contrato.locales.all().first().id not in data_locales:
+			data_locales.append(item_contrato.locales.all().first().id)
+
+	## Se total de clasificaciones
+	clasificaciones = Clasificacion.objects.filter(empresa=request.user.userprofile.empresa, visible=True, tipo_clasificacion_id=1).order_by('nombre')
+
+	for clasificacion in clasificaciones:
+
+		det_clasificaciones = Clasificacion_Detalle.objects.filter(clasificacion=clasificacion)
+		locales 			= Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales, clasificaciones__in=det_clasificaciones).values_list('id', flat=True)
+		contratos 			= Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True, locales__in=locales)
+
+		cabecera 			= []
+		cabecera.append(clasificacion.nombre)
+		for periodo in periodos:
+
+			total_clasificacion = Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__gte=periodo['fecha_inicio'], fecha_inicio__lte=periodo['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+
+			cabecera.append(format_number(request, 0, True) if total_clasificacion is None else format_number(request, total_clasificacion, True))
+		data_table['chart'].append(cabecera)
+
+	for clasificacion in clasificaciones:
+
+		det_clasificaciones = Clasificacion_Detalle.objects.filter(clasificacion=clasificacion)
+		locales 			= Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales, clasificaciones__in=det_clasificaciones).values_list('id', flat=True)
+		contratos 			= Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True, locales__in=locales)
+		total_clasificacion = Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__gte=periodos[0]['fecha_inicio'], fecha_inicio__lte=periodos[periodos.__len__() -1]['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+
+		data_table['table']['data'].append({'id': clasificacion.id, 'clasificacion': clasificacion.nombre, 'totales': format_number(request, 0, True) if total_clasificacion is None else format_number(request, total_clasificacion, True)})
+
+	return JsonResponse(data_table, safe=False)
+
+def get_detalle_clasificacion(request, id):
+	#variables
+
+	count 				= 0
+	data_clasificacion 	= list()
+	data_cabecera 		= {}
+	data_locales 		= []
+
+	activos 			= request.user.userprofile.empresa.activo_set.all().values_list('id', flat=True)
+	periodos 			= calcular_periodos(1, 6, 'restar')
+	contratos 			= Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
 
 
+	## Se obtiene Cabecera de las tablas
+	for periodo in periodos:
+		data_cabecera[count] = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+		count += 1
+
+	##Obtengo todos lo locales y el primero si es que existen mas de 2 en el contrato
+	for item_contrato in contratos:
+		if item_contrato.locales.all().first().id not in data_locales:
+			data_locales.append(item_contrato.locales.all().first().id)
+
+	## Se total de clasificaciones
+	clasificaciones 	= Clasificacion.objects.filter(id=id, empresa=request.user.userprofile.empresa, visible=True, tipo_clasificacion_id=1).order_by('nombre')
+	det_clasificaciones = Clasificacion_Detalle.objects.filter(clasificacion__in=clasificaciones)
+	for detalle in det_clasificaciones:
+
+		locales 	= Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales, clasificaciones=detalle).values_list('id', flat=True)
+		contratos 	= Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True, locales__in=locales)
+		meses 		= {}
+		aux 		= 0
+
+		for periodo in periodos:
+
+			total_clasificacion = Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__gte=periodo['fecha_inicio'], fecha_inicio__lte=periodo['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+			nom_cabecera 		= str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+
+			meses[aux] 			= [nom_cabecera, format_number(request, 0, True) if total_clasificacion is None else format_number(request, total_clasificacion, True)]
+			aux += 1
+
+		data_clasificacion.append({
+			'detalles'	: detalle.nombre,
+			'valores'	: meses,
+		})
+
+	return JsonResponse({'meses': data_cabecera, 'conceptos': data_clasificacion}, safe=False)
 
 
 

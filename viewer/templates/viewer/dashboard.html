@@ -362,7 +362,7 @@
 						<div class="col-sm-5">
 							<div class="container-table">
 
-								<h2>Activos</h2>
+								<h2>Clasificaciones</h2>
 								<small>
 									<i class="fa fa-clock-o"></i> ingresos del período: <span class="fecha"></span>
 								</small>
@@ -371,10 +371,8 @@
 									<thead>
 										<tr>
 											<th></th>
-											<th></th>
-											<th class="text-right">m² Totales</th>
-											<th class="text-right">m² Vacantes</th>
-											<th></th>
+											<th>Clasificaciones</th>
+											<th class="text-center">Total</th>
 										</tr>
 									</thead>
 									<tbody></tbody>
@@ -542,6 +540,7 @@ $(document).ready(function(){
 	load_section_garantias()
 	load_section_vacancia(fecha_actual)
 	load_section_ingreso_metros()
+    load_section_ingreso_clasificacion()
 
 	load_section_ingreso_centro_comercial(null, 0, '')
 	load_flag_currencies()
@@ -828,7 +827,76 @@ function load_section_ingreso_metros(){
 }
 
 
+function load_section_ingreso_clasificacion() {
+    	$.ajax({
+		url: '/data/ingresos-clasificacion',
+		type: 'get',
+		dataType: 'json',
+		success: function (data) {
 
+			$('#table-ingreso-clasificacion tbody').html('')
+
+			for (var i = 0; i < data.table.data.length; i++) {
+
+				temp_body = ''
+				temp_body += '<tr>'
+				temp_body += '<td class="text-center"><button data-id="' + data.table.data[i].id + '" data-nombre="' + data.table.data[i].clasificacion + '" class="btn btn-info btn-circle btn-clasificacion-detalle" type="button"><i class="fa fa-info"></i></button></td>'
+				//temp_body += '<td class="text-center"><a href="/static/assets/img/alexis.gif" class="btn btn-info btn-circle" role="button"><i class="fa fa-eye"></i></a></td>'
+				temp_body += '<td>' + data.table.data[i].clasificacion + '</td>'
+				temp_body += '<td class="text-right">' +  d3.format("$,.")(data.table.data[i].totales) + '</td>'
+				temp_body += '</tr>'
+
+				$('#table-ingreso-clasificacion tbody').append(temp_body)
+			};
+
+
+			$('.s-ingreso-clasificacion .container-table .fecha').html(moment(data.fechas[0]).format("DD/MM/YYYY")+' - '+moment(data.fechas[1]).format("DD/MM/YYYY"))
+
+			c3.generate({
+				bindto: '.s-ingreso-clasificacion .chart',
+				color: {
+					pattern: ['#03A9F4', '#4CAF50', '#FFEB3B', '#673AB7']
+				},
+				padding: {
+					right: 20
+				},
+				size: {
+					height: 250,
+				},
+				legend: {
+					show: false
+				},
+				data: {
+					x: 'x',
+					dateFormat: '%Y%m%d',
+					columns: data.chart,
+				},
+				axis: {
+					x: {
+						type: 'timeseries',
+						tick: {
+							format: '%b-%Y'
+						}
+					},
+					y: {
+						tick: {
+							format: d3.format("$,.")
+						}
+					},
+				},
+				tooltip: {
+					format: {
+						value: function(value) {
+							return d3.format("$,.")(value)
+						}
+					}
+				}
+			});
+
+            $('.btn-clasificacion-detalle').click(abrir_modal_clasificacion)
+		}
+	})
+}
 
 
 
@@ -911,6 +979,14 @@ function abrir_modal_vacancia(){
 	})
 }
 
+function abrir_modal_clasificacion(){
+
+    var clasificacion   =$(this).attr('data-id')
+    var nombre          =$(this).attr('data-nombre')
+
+    cargar_modal_clasificacion(clasificacion, nombre)
+}
+
 function cargar_modal_vacancia(id, tipo, fecha){
 	
 	$.ajax({
@@ -984,6 +1060,74 @@ function cargar_modal_vacancia(id, tipo, fecha){
 	})
 }
 
+function cargar_modal_clasificacion(clasificacion, nombre) {
+
+	$.ajax({
+		url: '/data/ingresos-clasificacion-detalle/'+ clasificacion,
+		type: 'get',
+		dataType: 'json',
+		beforeSend: function () {
+			loading(true)
+		},
+		success: function (data) {
+
+			$('#modal-dashbord-lg .modal-title').html('')
+			$('#modal-dashbord-lg .modal-body #tabla-conceptos-activos').html('')
+
+			if (table_conceptos_activos != undefined) {
+				table_conceptos_activos.destroy();
+				$('#tabla-conceptos-activos').empty();
+			}
+
+			var configuracion = {
+				'buttons': [
+				],
+			};
+
+			var columns = [];
+
+			columns.push({
+				'width': '20%',
+				'data': 'detalles',
+				'title': 'Detalles',
+			})
+
+			for (var i in data.meses) {
+				val             = {};
+				val.width       = '6%';
+				val.data        = data.meses[i].replace(/\s/g,"_").toLowerCase();
+				val.title       = data.meses[i];
+				val.orderable   = false
+				columns.push(val)
+			}
+
+			table_conceptos_activos = load_table('#tabla-conceptos-activos', columns, configuracion)
+
+			var rows        = [];
+
+			for (var i in data.conceptos){
+				var row = {};
+				row.detalles   = data.conceptos[i].detalles;
+
+				for(var v in data.conceptos[i].valores){
+					row[data.conceptos[i].valores[v][0].replace(/\s/g,"_").toLowerCase()] = d3.format("$,.")(data.conceptos[i].valores[v][1])
+				}
+				rows.push(row);
+			}
+
+			table_conceptos_activos.rows.add(rows).draw();
+
+			var texto = 'Detalle de Clasificación ' + nombre
+			$('#modal-dashbord-lg .modal-title').html(texto)
+
+		},
+        complete:function () {
+			loading(false)
+			$('#modal-dashbord-lg').modal('show')
+        }
+	})
+}
+
 function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
 
 	$.ajax({
@@ -1011,12 +1155,6 @@ function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
 
 				$('#tabla-ingreso-centro tbody').append(temp_body)
 			};
-
-			console.log(data)
-			console.log(data.fechas[0])
-			console.log(data.fechas[1])
-
-			
 
 			$('.s-ingreso-activos .container-table .fecha').html(moment(data.fechas[0]).format("DD/MM/YYYY")+' - '+moment(data.fechas[1]).format("DD/MM/YYYY"))
 
