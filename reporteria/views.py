@@ -2059,6 +2059,83 @@ def data_report_ingreso_activo_metros(request, periodos, activos, conceptos):
 
 	return data
 
+
+def ingreso_activo_metros_excel():
+	pass
+
+
+def ingreso_activo_metros_pdf(request):
+
+	data 			= list()
+
+	configuration 	= {
+		'head': {
+			'status' 	: True,
+			'title'		: 'Ingreso de Activos por m²',
+		},
+		'archive':{
+			'name'		: '',
+			'directory' : 'public/media/reportes/ingresos-activos-metros.pdf'
+		},
+		'options' : {
+			'page-size'     : 'A4',
+			'orientation'   : 'Landscape',
+			'margin-top'    : '1.25in',
+			'margin-right'  : '0.55in',
+			'margin-bottom' : '0.55in',
+			'margin-left'   : '0.55in',
+			'header-html'   : 'public/media/reportes/cabecera.html',
+		},
+		'css' 		: 'static/assets/css/bootstrap.min.css',
+		'template'	: 'pdf/reportes/ingreso_activo_detalle.html'
+	}
+
+	reporte_pdf(request, configuration, data)
+
+
+
+
+
+
+
+
+def reporte_pdf(request, configuration, data):
+
+
+	# crear cabecera
+	if configuration['head']['status'] is True:
+		context_head = {
+			'modulo'	: configuration['head']['title'],
+			'empresa'	: request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
+			'rut'		: request.user.userprofile.empresa.rut,
+			'direccion'	: request.user.userprofile.empresa.direccion,
+			'hora'		: str(time.strftime("%X")),
+			}
+
+		content = render_to_string('pdf/cabeceras/cabecera_default.html', context_head)
+
+		with open('public/media/reportes/cabecera.html', 'w', encoding='UTF-8') as static_file:
+			static_file.write(content)
+
+	# crear archivo pdf
+	template 	= get_template(configuracion['template'])
+	html 		= template.render(data)
+	pdfkit.from_string(html, configuracion['archive']['directory']+'.pdf', options=configuracion['options'], css=configuracion['css'])
+	pdf 		= open(configuracion['archive']['directory']+'.pdf', 'rb')
+
+
+
+
+	dt          = datetime.now()
+	filename    = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-ingreso-activo-' + dt.strftime('%Y%m%d') + '.pdf'
+	response                        = HttpResponse(pdf.read(), content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
+	pdf.close()
+
+	return response
+
+
+
 def data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasificacion_id, conceptos):
 
 	#variables
@@ -2183,3 +2260,4 @@ def data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasi
 	})
 
 	return data
+

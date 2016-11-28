@@ -296,6 +296,20 @@ def formato_moneda_local(request, valor):#{cambiar por formato_moneda_final}
 	return moneda
 
 
+def format_number(request, value, local):
+
+	configuracion 	= request.user.userprofile.empresa.configuracion	
+	moneda_local 	= request.user.userprofile.empresa.configuracion_monedas_set.get(moneda_local=True)
+
+	if local is True:
+		decimales = configuracion.cantidad_decimales if moneda_local.cantidad_decimales is None else moneda_local.cantidad_decimales
+	else:
+		decimales = configuracion.cantidad_decimales
+
+	return round(value, decimales)
+
+
+
 # funciones avatar
 def avatar_usuario(user):
 

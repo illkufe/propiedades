@@ -200,39 +200,187 @@
 			</div>
 		</div>
 
-	</div>
+		<!-- sección: ingreso por activos -->
+		<div class="col-lg-12 s-ingreso-activos">
 
-	<div class="row">
-		<div class="col-lg-12 s-ingreso-centro">
 			<div class="ibox float-e-margins">
+				<!-- título -->
 				<div class="ibox-title">
-					<h5 class="title">Ingresos por Activos   <span></span></h5>
+					<h5 class="title">Ingresos por Activos <span></span></h5>
 					<div class="ibox-tools">
+						<a class="collapse-link">
+							<i class="fa fa-chevron-up"></i>
+						</a>
 						<a class="" data-toggle="modal" onclick="load_conceptos()">
 							<i class="fa fa-gear"></i>
 						</a>
 					</div>
 				</div>
+
+				<!-- contenido -->
 				<div class="ibox-content">
 					<div class="row">
-						<div class="col-lg-7">
-							<div class="flot-chart">
-								<div class="flot-chart-pie-content" id="flot-pie-chart" style="position: absolute !important;"></div>
+
+						<!-- mensaje no data -->
+						<div class="col-sm-12">
+							<div class="hide container-text">
+								<div class="text-center">
+									<p>No existen activos, pulse <a href='{% url "activo_new" %}'>aquí</a> para crear un activo.</p>
+								</div>
 							</div>
 						</div>
+						
+						<!-- gráfico -->
+						<div class="col-sm-7">
+							<div class="container-chart text-center">
+								<div class="chart"></div>
+							</div>
+						</div>
+
 						<div class="col-lg-5">
-							<br>
-							<br>
-							<table id="tabla-ingreso-centro" class="table table-hover">
-								<thead>
-									<tr>
-										<th class="text-center"></th>
-										<th>Activos</th>
-										<th class="text-center">Total</th>
-									</tr>
-								</thead>
-								<tbody></tbody>
-							</table>
+
+							<div class="container-table">
+								<h2>Activos</h2>
+								<small>
+									<i class="fa fa-clock-o"></i> ingresos del período: <span class="fecha"></span>
+								</small>
+
+								<table id="tabla-ingreso-centro" class="table table-hover">
+									<thead>
+										<tr>
+											<th class="text-center"></th>
+											<th>Activos</th>
+											<th class="text-center">Total</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- sección: ingreso por m² -->
+		<div class="col-lg-12 s-ingreso-metros">
+			<div class="ibox float-e-margins">
+
+				<!-- título -->
+				<div class="ibox-title">
+					<h5 class="title">Ingresos por m²</h5>
+					<div class="ibox-tools">
+						<a class="collapse-link">
+							<i class="fa fa-chevron-up"></i>
+						</a>
+					</div>
+				</div>
+
+				<!-- contenido -->
+				<div class="ibox-content">
+					<div class="row">
+						
+						<!-- mensaje no data -->
+						<div class="col-sm-12">
+							<div class="hide container-text">
+								<div class="text-center">
+									<p>No existen activos, pulse <a href='{% url "activo_new" %}'>aquí</a> para crear un activo.</p>
+								</div>
+							</div>
+						</div>
+						
+						<!-- gráfico -->
+						<div class="col-sm-6">
+							<div class="hide container-chart text-center">
+								<div class="chart"></div>
+							</div>
+						</div>
+						
+						<!-- tabla -->
+						<div class="col-sm-6">
+							<div class="hide container-table">
+
+								<h2>Activos</h2>
+								<small>
+									<i class="fa fa-clock-o"></i> ingresos del período: <span class="fecha"></span>
+								</small>
+
+								<table id="table-ingreso" class="table" style="width:100%">
+									<thead>
+										<tr>
+											<th></th>
+											<th></th>
+											<th class="text-right">m² Totales</th>
+											<th class="text-right">Ingreso</th>
+											<th class="text-right">Ingreso/m²</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- sección: ingreso por clasificación -->
+		<div class="col-lg-12 s-ingreso-clasificacion">
+			<div class="ibox float-e-margins">
+
+				<!-- título -->
+				<div class="ibox-title">
+					<h5 class="title">Ingreso por Clasificación</h5>
+					<div class="ibox-tools">
+						<a class="collapse-link">
+							<i class="fa fa-chevron-up"></i>
+						</a>
+					</div>
+				</div>
+
+				<!-- contenido -->
+				<div class="ibox-content">
+					<div class="row">
+						
+						<!-- mensaje no data -->
+						<div class="col-sm-12">
+							<div class="hide container-text">
+								<div class="text-center">
+									<p>No existen activos, pulse <a href='{% url "activo_new" %}'>aquí</a> para crear un activo.</p>
+								</div>
+							</div>
+						</div>
+						
+						<!-- gráfico -->
+						<div class="col-sm-7">
+							<div class="container-chart text-center">
+								<div class="chart"></div>
+							</div>
+						</div>
+						
+						<!-- tabla -->
+						<div class="col-sm-5">
+							<div class="container-table">
+
+								<h2>Activos</h2>
+								<small>
+									<i class="fa fa-clock-o"></i> ingresos del período: <span class="fecha"></span>
+								</small>
+
+								<table id="table-ingreso-clasificacion" class="table" style="width:100%">
+									<thead>
+										<tr>
+											<th></th>
+											<th></th>
+											<th class="text-right">m² Totales</th>
+											<th class="text-right">m² Vacantes</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+								
+							</div>
 						</div>
 					</div>
 				</div>
@@ -248,12 +396,10 @@
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 				<h4 class="modal-title">Vacancia</h4>
 			</div>
+
 			<div class="modal-body">
-
 				<div class="row">
-
 					<div class="col-lg-5 container-chart">
-
 						<div class="row">
 							<div class="form-group col-sm-6">
 								<span>
@@ -363,13 +509,6 @@
 	</div>
 </div>
 
-<style>
-.flot-chart-pie-content {
-	height: 200px;
-	margin: unset;
-	width: 200px;
-}
-</style>
 
 <style>
 .no-data p{
@@ -402,15 +541,16 @@ $(document).ready(function(){
 
 	load_section_garantias()
 	load_section_vacancia(fecha_actual)
+	load_section_ingreso_metros()
 
 	load_section_ingreso_centro_comercial(null, 0, '')
 	load_flag_currencies()
 	load_flag_commercial()
-	inicial()
+	initialize()
 
 });
 
-function inicial(){
+function initialize(){
 
 	$('#m-vacancia #id_tipo').change(function(){
 
@@ -432,14 +572,6 @@ function inicial(){
 		cargar_modal_vacancia(1, tipo, fecha)
 	})
 }
-
-
-
-
-
-
-
-
 
 function load_section_garantias(){
 	$.ajax({
@@ -582,7 +714,118 @@ function load_section_vacancia(fecha){
 	})
 }
 
+function load_section_ingreso_metros(){
 
+	$.ajax({
+		url: '{% url "data_ingreso_metros" %}',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			// variables
+			var template 	= '';
+			var chart 		= []
+
+			if (data.length == 0) {
+
+				$('.s-ingreso-metros .container-text').removeClass('hide')
+
+			}else{
+
+				$('.s-ingreso-metros .container-chart').removeClass('hide')
+				$('.s-ingreso-metros .container-table').removeClass('hide')
+
+				for (var i = 0; i < data.length; i++) {
+
+					var activo = []
+
+					template += '<tr>'
+					template += '<td><button data-id="@id" class="btn btn-info btn-circle" type="button"><i class="fa fa-info"></i></button></td>'
+					template += '<td>@nombre</td>'
+					template += '<td class="text-right">@metros</td>'
+					template += '<td class="text-right">@ingreso</td>'
+					template += '<td class="text-right">@ingreso_metros</td>'
+					template += '</tr>'
+
+					template = template.replace(/@id/g, data[i].id);
+					template = template.replace(/@nombre/g, data[i].nombre);
+					template = template.replace(/@ingreso_metros/g, d3.format("$,.")(data[i].periodos[data[i].periodos.length-1].ingreso_metros));
+					template = template.replace(/@metros/g, d3.format(",.")(data[i].metros));
+					template = template.replace(/@ingreso/g, d3.format("$,.")(data[i].periodos[data[i].periodos.length-1].ingreso));
+
+					if (i == 0){
+
+						var date 			= []
+						var fecha_inicio 	= moment(data[i].periodos[data[i].periodos.length-1].fecha_inicio).format("DD/MM/YYYY")
+						var fecha_termino 	= moment(data[i].periodos[data[i].periodos.length-1].fecha_termino).format("DD/MM/YYYY")
+
+						$('.s-ingreso-metros .container-table .fecha').html(fecha_inicio+' - '+fecha_termino)
+
+						date.push('date')
+
+						for (var j = 0; j < data[i].periodos.length; j++) {
+							date.push(data[i].periodos[j].fecha_inicio)
+						};
+
+						chart.push(date)
+
+					}
+
+					activo.push(data[i].nombre)
+
+					for (var j = 0; j < data[i].periodos.length; j++) {
+						activo.push(data[i].periodos[j].ingreso_metros)
+					};
+
+					chart.push(activo)
+				};
+
+				$('.s-ingreso-metros .container-table #table-ingreso tbody').append(template)
+			}
+
+			var chart = c3.generate({
+				bindto: '.s-ingreso-metros .chart',
+				color: {
+					pattern: ['#03A9F4', '#4CAF50', '#FFEB3B', '#673AB7']
+				},
+				padding: {
+					right: 20
+				},
+				size: {
+					height: 250,
+				},
+				legend: {
+					show: false
+				},
+				data: {
+					x: 'date',
+					dateFormat: '%Y%m%d',
+					columns: chart,
+				},
+				axis: {
+					x: {
+						type: 'timeseries',
+						tick: {
+							format: '%b-%Y'
+						}
+					},
+					y: {
+						tick: {
+							format: d3.format("$,.")
+						}
+					},
+				},
+				tooltip: {
+					format: {
+						value: function(value) {
+							return d3.format("$,.")(value)
+						}
+					}
+				}
+			});
+		}
+	})
+}
 
 
 
@@ -660,15 +903,12 @@ function load_flag_commercial(){
 	})
 }
 
-
-
 function abrir_modal_vacancia(){
 
 	$('#m-vacancia').modal('show')
 	$('#m-vacancia').on('shown.bs.modal', function (e) {
 		cargar_modal_vacancia(1, 1, fecha_actual)
 	})
-
 }
 
 function cargar_modal_vacancia(id, tipo, fecha){
@@ -746,29 +986,6 @@ function cargar_modal_vacancia(id, tipo, fecha){
 
 function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
 
-{% comment %}
-	var fecha_actual = new Date();
-
-	fecha_actual.setMonth(fecha_actual.getMonth() + add_month);
-
-	var dia = fecha_actual.getDate()
-	var mes = fecha_actual.getMonth() + 1
-	var anio = fecha_actual.getFullYear()
-
-	var fecha_inicio = '01-01-'+ anio
-
-	var text    = 'Desde: '+fecha_inicio  +'   Hasta: '+ moment(fecha_actual).format("DD-MM-YYYY");
-
-
-	if (obj == null) {
-		$(".s-ingreso-centro h5.title span").text(text)
-	}
-	else {
-		$(".s-ingreso-centro h5.title span").text($(obj).text())
-	}
-{% endcomment %}
-
-
 	$.ajax({
 		url: '/dashboard/ingreso-centro/',
 		type: 'post',
@@ -786,33 +1003,59 @@ function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
 				temp_body = ''
 				temp_body += '<tr>'
 
-				temp_body += '<td class="text-center"><button class="btn btn-success btn-circle btn-activo-detalle" type="button" onclick="detalle_conceptos_activo(this)" data-activo-nombre="'+data.table.data[i].activo+'" data-activo-id="'+data.table.data[i].activo_id+'" data-placement="top" data-toggle="tooltip"><i class="fa fa-info"></i></button></td>'
-				/*temp_body += '<td class="text-center"><a href="/static/assets/img/alexis.gif" class="btn btn-default btn-bitbucket" role="button"><i class="fa fa-eye"></i></a></td>'*/
+				temp_body += '<td class="text-center"><button class="btn btn-info btn-circle btn-activo-detalle" type="button" onclick="detalle_conceptos_activo(this)" data-activo-nombre="'+data.table.data[i].activo+'" data-activo-id="'+data.table.data[i].activo_id+'" data-placement="top" data-toggle="tooltip"><i class="fa fa-info"></i></button></td>'
+				// temp_body += '<td class="text-center"><a href="/static/assets/img/alexis.gif" class="btn btn-default btn-bitbucket" role="button"><i class="fa fa-eye"></i></a></td>'
 				temp_body += '<td>' + data.table.data[i].activo + '</td>'
-				temp_body += '<td class="text-center">' + data.table.data[i].totales + '</td>'
+				temp_body += '<td class="text-right">' + data.table.data[i].totales + '</td>'
 				temp_body += '</tr>'
 
 				$('#tabla-ingreso-centro tbody').append(temp_body)
 			};
 
-			var text    = 'Desde: '+data.fechas[0]  +'   Hasta: '+ data.fechas[1];
-			$(".s-ingreso-centro h5.title span").text(text)
+			console.log(data)
+			console.log(data.fechas[0])
+			console.log(data.fechas[1])
+
+			
+
+			$('.s-ingreso-activos .container-table .fecha').html(moment(data.fechas[0]).format("DD/MM/YYYY")+' - '+moment(data.fechas[1]).format("DD/MM/YYYY"))
 
 			c3.generate({
-				size: {
-					height: 220,
-					width: 570,
+				bindto: '.s-ingreso-activos .chart',
+				color: {
+					pattern: ['#03A9F4', '#4CAF50', '#FFEB3B', '#673AB7']
 				},
-				bindto: '#flot-pie-chart',
+				padding: {
+					right: 20
+				},
+				size: {
+					height: 250,
+				},
+				legend: {
+					show: false
+				},
 				data: {
 					x: 'x',
+					dateFormat: '%Y%m%d',
 					columns: data.chart,
 				},
 				axis: {
 					x: {
 						type: 'timeseries',
 						tick: {
-							format: '%Y-%b',
+							format: '%b-%Y'
+						}
+					},
+					y: {
+						tick: {
+							format: d3.format("$,.")
+						}
+					},
+				},
+				tooltip: {
+					format: {
+						value: function(value) {
+							return d3.format("$,.")(value)
 						}
 					}
 				}
@@ -866,7 +1109,6 @@ function detalle_conceptos_activo(obj) {
 	activo          = $(obj).attr('data-activo-id')
 	nombre_activo   = $(obj).attr('data-activo-nombre')
 	load_filtro_concepto_activo(obj, 1)
-
 }
 
 function load_filtro_concepto_activo(obj, type_filter) {
