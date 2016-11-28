@@ -68,7 +68,7 @@
                             </div>
 
                             <div class="form-group col-lg-2" style="padding-top:22px">
-                                <button type="button" id="update-period-button" onclick="enviar_formulario()" class="btn btn-primary btn-sm btn-block">
+                                <button type="button" id="update-period-button" onclick="enviar_formulario_ingreso_activo()" class="btn btn-primary btn-sm btn-block">
                                     <i class="fa fa-filter"></i>&nbsp;&nbsp;&nbsp;&nbsp;Filtrar
                                 </button>
                             </div>
@@ -88,7 +88,7 @@
 
 					<div class="container-table">
 						<div class="table-responsive">
-							<table class="table table-striped table-bordered table-hover" id="tabla-ingreso-activo" style="width: 99%; !important"></table>
+							<table class="table table-striped table-bordered table-hover" id="tabla-ingreso-activo" style="width: 100%; !important"></table>
 						</div>
 					</div>
 				</div>
@@ -107,7 +107,7 @@
 
     th, td { white-space: nowrap; }
     div.dataTables_wrapper {
-        width: 98%;
+        width: 100%;
         margin: 0 auto;
     }
    div.DTFC_RightBodyWrapper div.DTFC_RightBodyLiner{
@@ -128,8 +128,9 @@ $(document).ready(function(){
 })
 
 
-function enviar_formulario() {
+function enviar_formulario_ingreso_activo() {
     if($("#form-ingreso-activo").valid()){
+
         $.ajax({
             url: '{% url 'reporte_ingreso_activo' %}',
             type: 'post',
@@ -179,7 +180,6 @@ function enviar_formulario() {
 
 }
 
-
 function load_tabla_ingreso_activo(response) {
 
     var configuracion = {
@@ -202,6 +202,7 @@ function load_tabla_ingreso_activo(response) {
                 }
             },
         ],
+        'rowsGroup': [0, 1],
         'scrollX': true,
         'fixedColumns': {
             leftColumns: 3,
@@ -236,17 +237,15 @@ function load_tabla_ingreso_activo(response) {
         columns.push(val)
     }
 
-
-    if ($.fn.DataTable.isDataTable('#tabla-ingreso-activo')) {
-        tabla_ingreso_activo.destroy();
-    }
+    if ($.fn.DataTable.isDataTable('#tabla-ingreso-activo')){
+		tabla_ingreso_activo.destroy();
+	}
 
     $('.container-text').addClass('hide')
     $('.container-table #tabla-ingreso-activo').html('')
 
     tabla_ingreso_activo = load_table('#tabla-ingreso-activo', columns, configuracion)
 }
-
 
 function validar_formulario_ingreso_activos() {
 

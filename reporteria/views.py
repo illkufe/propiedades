@@ -662,24 +662,56 @@ class REPORTE_VACANCIA(View):
 		data_response   = list()
 		count 			= 0
 
-		activo          = var_post['activo']
-		agrupador       = var_post['agrupador'] if var_post['agrupador'] == '' else int(var_post['agrupador'])
+		activo          = var_post.getlist('activo[]')
+		agrupador       = int(var_post['agrupador'])
 		tipo_periodos   = int(var_post['periodos'])
 		cant_periodos 	= int(var_post['cantidad_periodos'])
 
 		#Calculo de periodos
-		response        = calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
+		periodos        = calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
 
 		## Se obtiene el detalle de la tabla
-		if activo  != '':
-			activos = Activo.objects.filter(id=activo , empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-		else:
-			activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
+		activos = Activo.objects.filter(id__in=activo , empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
 		for activo in activos:
 
-			##Agrupador por Tipo de Local
+			##Todos los Activos (Sin Agrupador)
 			if agrupador == 1:
+				m_totales = activo.local_set.all().filter(visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+
+				aux 		= 0
+				meses 		= {}
+				cabecera 	= ''
+
+				for periodo in periodos:
+					locales 	= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'], visible=True)
+					m_ocupados 	= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+
+					m_totales 		= m_totales if m_totales is not None else 0
+					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
+					m_disponibles 	= m_totales - m_ocupados
+
+					# Mensual
+					if tipo_periodos == 1:
+						cabecera	= str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+					# Trimestral o Semestral
+					elif tipo_periodos == 2 or tipo_periodos == 3:
+						cabecera	= str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
+					# Anual
+					elif tipo_periodos == 4:
+						cabecera	= 'Año ' + str(periodo['fecha_inicio'].year)
+
+					meses[aux] = [cabecera, formato_numero( m_disponibles)]
+
+					aux += 1
+
+				data_response.append({
+					'activo'	: activo.nombre,
+					'valores'	: meses,
+				})
+
+			##Agrupador por Tipo de Local
+			elif agrupador == 2:
 
 				tipos 	= Local_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
 
@@ -690,9 +722,10 @@ class REPORTE_VACANCIA(View):
 					meses 		= {}
 					meses[aux] 	= ['Tipos de Locales',tipo.nombre]
 					aux 		+= 1
+					cabecera    = ''
 
-					for data in response:
-						locales    		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+					for periodo in periodos:
+						locales    		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
 						m_ocupados 		= Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 						m_totales  		= m_totales if m_totales is not None else 0
@@ -702,13 +735,15 @@ class REPORTE_VACANCIA(View):
 
 						# Mensual
 						if tipo_periodos == 1:
-							meses[aux] = [str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year), m_disponibles]
+							cabecera 	= str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 						# Trimestral o Semestral
 						elif tipo_periodos == 2 or tipo_periodos == 3:
-							meses[aux] = [str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year)), m_disponibles]
+							cabecera 	= str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 						# Anual
 						elif tipo_periodos == 4:
-							meses[aux] = ['Año ' + str(data['fecha_inicio'].year), m_disponibles]
+							cabecera 	= 'Año ' + str(periodo['fecha_inicio'].year)
+
+						meses[aux] = [cabecera, formato_numero(m_disponibles)]
 
 						aux += 1
 
@@ -719,7 +754,7 @@ class REPORTE_VACANCIA(View):
 					})
 
 			## Agrupador por Niveles
-			elif agrupador == 2:
+			elif agrupador == 3:
 
 				niveles = activo.nivel_set.all()
 
@@ -730,9 +765,10 @@ class REPORTE_VACANCIA(View):
 					meses 		= {}
 					meses[aux] 	= ['Niveles', nivel.nombre]
 					aux 		+= 1
+					cabecera    = ''
 
-					for data in response:
-						locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+					for periodo in periodos:
+						locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
 						m_ocupados 		= Local.objects.filter(id__in=locales, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 						m_totales 		= m_totales if m_totales is not None else 0
@@ -742,13 +778,15 @@ class REPORTE_VACANCIA(View):
 
 						# Mensual
 						if tipo_periodos == 1:
-							meses[aux] = [str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year), m_disponibles]
+							cabecera	= str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 						# Trimestral o Semestral
 						elif tipo_periodos == 2 or tipo_periodos == 3:
-							meses[aux] = [str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year)), m_disponibles]
+							cabecera 	= str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 						# Anual
 						elif tipo_periodos == 4:
-							meses[aux] = ['Año ' + str(data['fecha_inicio'].year), m_disponibles]
+							cabecera 	= 'Año ' + str(periodo['fecha_inicio'].year)
+
+						meses[aux] = [cabecera, formato_numero(m_disponibles)]
 
 						aux += 1
 
@@ -758,7 +796,7 @@ class REPORTE_VACANCIA(View):
 					})
 
 			##Agrupador por Sector
-			elif agrupador == 3:
+			elif agrupador == 4:
 
 				sectores 	= activo.sector_set.all()
 
@@ -770,9 +808,9 @@ class REPORTE_VACANCIA(View):
 					meses[aux] 	= ['Sectores', sector.nombre]
 					aux 		+= 1
 
-					for data in response:
+					for periodo in periodos:
 
-						locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+						locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
 						m_ocupados 		= Local.objects.filter(id__in=locales, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 						m_totales 		= m_totales if m_totales is not None else 0
@@ -781,13 +819,15 @@ class REPORTE_VACANCIA(View):
 
 						#Mensual
 						if tipo_periodos == 1:
-							meses[aux] = [str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year), m_disponibles]
+							cabecera	= str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 						# Trimestral o Semestral
 						elif tipo_periodos == 2 or tipo_periodos == 3:
-							meses[aux] = [str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year)), m_disponibles]
+							cabecera 	= str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 						#Anual
 						elif tipo_periodos == 4:
-							meses[aux] = ['Año ' + str(data['fecha_inicio'].year), m_disponibles]
+							cabecera 	= 'Año ' + str(periodo['fecha_inicio'].year)
+
+						meses[aux] = [cabecera, formato_numero(m_disponibles)]
 
 						aux += 1
 
@@ -796,57 +836,26 @@ class REPORTE_VACANCIA(View):
 						'valores'	: meses,
 					})
 
-			##Todos los Activos (Sin Agrupador)
-			else:
-				m_totales 	= activo.local_set.all().filter(visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-				aux 		= 0
-				meses 		= {}
-
-				for data in response:
-					locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'] , visible=True)
-					m_ocupados 		= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-
-					m_totales 		= m_totales if m_totales is not None else 0
-					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-					m_disponibles 	= m_totales - m_ocupados
-
-					# Mensual
-					if tipo_periodos == 1:
-						meses[aux] = [str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year), m_disponibles]
-					# Trimestral o Semestral
-					elif tipo_periodos == 2 or tipo_periodos == 3:
-						meses[aux] = [str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year)), m_disponibles]
-					# Anual
-					elif tipo_periodos == 4:
-						meses[aux] = ['Año ' + str(data['fecha_inicio'].year), m_disponibles]
-
-					aux += 1
-
-				data_response.append({
-					'activo'		: activo.nombre,
-					'valores'	    : meses,
-				})
-
-		if agrupador == 1:
+		if agrupador == 2:
 			data_cabecera[count] = 'Tipos de Locales'
 			count +=1
-		elif agrupador ==2:
+		elif agrupador ==3:
 			data_cabecera[count] = 'Niveles'
 			count += 1
-		elif agrupador == 3:
+		elif agrupador == 4:
 			data_cabecera[count] = 'Sectores'
 			count += 1
 
 		## Se obtiene Cabecera de las tablas
-		for data in response:
+		for periodo in periodos:
 
 			if tipo_periodos == 1:
-				data_cabecera[count] = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
+				data_cabecera[count] = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 			elif tipo_periodos == 2 or tipo_periodos == 3:
-				data_cabecera[count] = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
+				data_cabecera[count] = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 			elif tipo_periodos == 4:
-				data_cabecera[count] = 'Año ' + str(data['fecha_inicio'].year)
+				data_cabecera[count] = 'Año ' + str(periodo['fecha_inicio'].year)
 
 			count += 1
 
@@ -860,8 +869,8 @@ def vacancia_xls(request):
 	hora           	= str(time.strftime("%X"))
 	count 			= 0
 
-	activo 			= var_post['activo']
-	agrupador 		= var_post['agrupador'] if var_post['agrupador'] == '' else int(var_post['agrupador'])
+	activo 			= var_post.getlist('activo')
+	agrupador 		= int(var_post['agrupador'])
 	tipo_periodos 	= int(var_post['periodos'])
 	cant_periodos 	= int(var_post['cantidad_periodos'])
 
@@ -879,7 +888,7 @@ def vacancia_xls(request):
 
 	format       		= workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
 	format_cell  		= workbook.add_format({'font_size': 10})
-	format_cell_number 	= workbook.add_format({'font_size': 10,'num_format': '#,##0'})
+	format_cell_number 	= workbook.add_format({'font_size': 10,'num_format': '#,##0,0000'})
 	format_merge 		= workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
 
 	worksheet.merge_range('D2:E2', 'VACANCIA POR ACTIVOS', format_merge)
@@ -896,15 +905,16 @@ def vacancia_xls(request):
 
 	#Agrega cabecera de Agrupador al excel
 	cabecera_agrupador = None
-	if agrupador == 1:
+
+	if agrupador == 2:
 		cabecera_agrupador = 'Tipos de Locales'
 		colums.append({'header': cabecera_agrupador, 'header_format': format, 'format': format_cell})
 		count += 1
-	elif agrupador == 2:
+	elif agrupador == 3:
 		cabecera_agrupador = 'Niveles'
 		colums.append({'header': cabecera_agrupador, 'header_format': format, 'format': format_cell})
 		count += 1
-	elif agrupador == 3:
+	elif agrupador == 4:
 		cabecera_agrupador = 'Sectores'
 		colums.append({'header': cabecera_agrupador, 'header_format': format, 'format': format_cell})
 		count += 1
@@ -920,22 +930,37 @@ def vacancia_xls(request):
 		elif tipo_periodos == 4:
 			cabecera = 'Año ' + str(data['fecha_inicio'].year)
 
-		colums.append({'header': cabecera,'header_format': format, 'format': format_cell})
+		colums.append({'header': cabecera,'header_format': format, 'format': format_cell_number})
 
 		count += 1
 
 
 	## Se obtiene el detalle de la tabla
-	if activo != '':
-		activos = Activo.objects.filter(id=activo, empresa=request.user.userprofile.empresa,
-										visible=True).order_by('nombre')
-	else:
-		activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
+	activos = Activo.objects.filter(id__in=activo, empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
 	for activo in activos:
 
-		##Agrupador por Tipo de Locales
+		##Todos los Activos (Sin Agrupador)
 		if agrupador == 1:
+			m_totales = activo.local_set.all().filter(visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+
+			x = []
+			x.append(activo.nombre)
+
+			for data in response:
+				locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'], visible=True)
+				m_ocupados 		= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+
+				m_totales 		= m_totales if m_totales is not None else 0
+				m_ocupados 		= m_ocupados if m_ocupados is not None else 0
+				m_disponibles 	= m_totales - m_ocupados
+
+				x.append(m_disponibles)
+
+			data_excel.append(x)
+
+		##Agrupador por Tipo de Locales
+		elif agrupador == 2:
 
 			tipos = Local_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
@@ -959,7 +984,7 @@ def vacancia_xls(request):
 				data_excel.append(x)
 
 		##Agrupador por Niveles
-		elif agrupador == 2:
+		elif agrupador == 3:
 
 			niveles = activo.nivel_set.all().order_by('nombre')
 
@@ -983,7 +1008,7 @@ def vacancia_xls(request):
 				data_excel.append(x)
 
 		##Agrupador por Sectores
-		elif agrupador == 3:
+		elif agrupador == 4:
 
 			sectores = activo.sector_set.all().order_by('nombre')
 
@@ -1007,26 +1032,6 @@ def vacancia_xls(request):
 
 				data_excel.append(x)
 
-		##Todos los Activos (Sin Agrupador)
-		else:
-			m_totales = activo.local_set.all().filter(visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-
-			x = []
-			x.append(activo.nombre)
-
-			for data in response:
-				locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'], visible=True)
-				m_ocupados 		= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-
-				m_totales 		= m_totales if m_totales is not None else 0
-				m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-				m_disponibles 	= m_totales - m_ocupados
-
-				x.append(m_disponibles)
-
-			data_excel.append(x)
-
-
 	worksheet.add_table(6, 0, data_excel.__len__()+6, count, {'data': data_excel, 'columns': colums, 'autofilter': False,})
 	worksheet.set_column(0,count, 25)
 	workbook.close()
@@ -1048,8 +1053,8 @@ def vacancia_pdf(request):
 	data_pdf 		= []
 	data_cabecera 	= []
 
-	activo 			= var_post['activo']
-	agrupador 		= var_post['agrupador'] if var_post['agrupador'] == '' else int(var_post['agrupador'])
+	activo 			= var_post.getlist('activo')
+	agrupador 		= int(var_post['agrupador'])
 	tipo_periodos 	= int(var_post['periodos'])
 	cant_periodos 	= int(var_post['cantidad_periodos'])
 
@@ -1058,15 +1063,15 @@ def vacancia_pdf(request):
 
 	# Agrega cabecera de Agrupador al pdf
 	cabecera_agrupador = ''
-	if agrupador == 1:
+	if agrupador == 2:
 		cabecera_agrupador = 'Tipos de Locales'
 		data_cabecera.append(cabecera_agrupador)
 
-	elif agrupador == 2:
+	elif agrupador == 3:
 		cabecera_agrupador = 'Niveles'
 		data_cabecera.append(cabecera_agrupador)
 
-	elif agrupador == 3:
+	elif agrupador == 4:
 		cabecera_agrupador = 'Sectores'
 		data_cabecera.append(cabecera_agrupador)
 
@@ -1086,16 +1091,35 @@ def vacancia_pdf(request):
 
 
 	## Se obtiene el detalle de la tabla
-	if activo != '':
-		activos = Activo.objects.filter(id=activo, empresa=request.user.userprofile.empresa,
+
+	activos = Activo.objects.filter(id__in=activo, empresa=request.user.userprofile.empresa,
 										visible=True).order_by('nombre')
-	else:
-		activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
 	for activo in activos:
 
-		##Agrupador por Tipo de Locales
+		##Todos los Activos (Sin Agrupador)
 		if agrupador == 1:
+
+			m_totales = activo.local_set.all().filter(visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+
+			x = []
+			x.append(activo.nombre)
+
+			for data in response:
+				locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'], visible=True)
+				m_ocupados 		= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+
+				m_totales 		= m_totales if m_totales is not None else 0
+				m_ocupados 		= m_ocupados if m_ocupados is not None else 0
+				m_disponibles 	= m_totales - m_ocupados
+
+				x.append(formato_numero(m_disponibles))
+
+			data_pdf.append(x)
+
+
+		##Agrupador por Tipo de Locales
+		elif agrupador == 2:
 
 			tipos = Local_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
@@ -1119,7 +1143,7 @@ def vacancia_pdf(request):
 				data_pdf.append(x)
 
 		##Agrupador por Niveles
-		elif agrupador == 2:
+		elif agrupador == 3:
 
 			niveles = activo.nivel_set.all().order_by('nombre')
 
@@ -1143,7 +1167,7 @@ def vacancia_pdf(request):
 				data_pdf.append(x)
 
 		##Agrupador por Sectores
-		elif agrupador == 3:
+		elif agrupador == 4:
 
 			sectores = activo.sector_set.all().order_by('nombre')
 
@@ -1166,25 +1190,6 @@ def vacancia_pdf(request):
 					x.append(m_disponibles)
 
 				data_pdf.append(x)
-
-		##Todos los Activos (Sin Agrupador)
-		else:
-			m_totales = activo.local_set.all().filter(visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-
-			x = []
-			x.append(activo.nombre)
-
-			for data in response:
-				locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'], visible=True)
-				m_ocupados 		= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-
-				m_totales 		= m_totales if m_totales is not None else 0
-				m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-				m_disponibles 	= m_totales - m_ocupados
-
-				x.append(m_disponibles)
-
-			data_pdf.append(x)
 
 	hora 	= str(time.strftime("%X"))
 	context = {'empresa': request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
@@ -1255,9 +1260,9 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 		data_concepto 	= list()
 		count 			= 0
 
-		activo          = var_post['activo'] if var_post['activo'] == '' else int(var_post['activo'])
-		cliente         = var_post['cliente'] if var_post['cliente'] == '' else int(var_post['cliente'])
-		tipo_local      = var_post['tipo_local'] if var_post['tipo_local'] == '' else int(var_post['tipo_local'])
+		activo          = var_post.getlist('activo[]')
+		cliente         = var_post.getlist('cliente[]')
+		tipo_local      = var_post.getlist('tipo_local[]')
 		tipo_periodo    = int(var_post['periodos'])
 		cant_periodos   = int(var_post['cantidad_periodos'])
 
@@ -1265,24 +1270,12 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 		response        = calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
 
 		## Se obtiene el detalle de la tabla
-		if activo  != '':
-			activos = Activo.objects.filter(id=activo , empresa=request.user.userprofile.empresa, visible=True)
-		else:
-			activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+		activos = Activo.objects.filter(id__in=activo , empresa=request.user.userprofile.empresa, visible=True)
 
 		for activo in activos:
 
-			if tipo_local != '':
-				locales = Local.objects.filter(activo_id=activo.id, visible=True, local_tipo=tipo_local)
-			else:
-				locales = Local.objects.filter(activo_id=activo.id, visible=True)
-
-			if cliente  != '':
-				contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
-													cliente_id=cliente, visible=True)
-			else:
-				contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa,
-													visible=True)
+			locales 	= Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
+			contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True)
 
 			for contrato in contratos:
 
@@ -1305,7 +1298,6 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 						fecha_contrato 	= contrato.fecha_termino.year
 						fecha_desde    	= data['fecha_inicio'].year
 						fecha_hasta    	= data['fecha_termino'].year
-
 
 					if fecha_contrato >= fecha_desde and fecha_contrato <= fecha_hasta:
 						valor = 'si'
@@ -1360,9 +1352,9 @@ def vencimiento_contrato_xls(request):
 	hora           	= str(time.strftime("%X"))
 	count 			= 2
 
-	activo 			= var_post['activo'] if var_post['activo'] == '' else int(var_post['activo'])
-	cliente 		= var_post['cliente'] if var_post['cliente'] == '' else int(var_post['cliente'])
-	tipo_local 		= var_post['tipo_local'] if var_post['tipo_local'] == '' else int(var_post['tipo_local'])
+	activo 			= var_post.getlist('activo')
+	cliente 		= var_post.getlist('cliente')
+	tipo_local 		= var_post.getlist('tipo_local')
 	tipo_periodo 	= int(var_post['periodos'])
 	cant_periodos 	= int(var_post['cantidad_periodos'])
 
@@ -1412,24 +1404,13 @@ def vencimiento_contrato_xls(request):
 
 		count += 1
 
-
 	## Se obtiene el detalle de la tabla
-	if activo != '':
-		activos = Activo.objects.filter(id=activo, empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-	else:
-		activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
+	activos = Activo.objects.filter(id__in=activo, empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
 	for activo in activos:
 
-		if tipo_local != '':
-			locales = Local.objects.filter(activo_id=activo.id, visible=True, local_tipo=tipo_local)
-		else:
-			locales = Local.objects.filter(activo_id=activo.id, visible=True)
-
-		if cliente != '':
-			contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id=cliente, visible=True).order_by('-cliente', '-numero')
-		else:
-			contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, visible=True).order_by('-cliente', '-numero')
+		locales 	= Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
+		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('cliente', 'numero')
 
 		for contrato in contratos:
 
@@ -1457,6 +1438,7 @@ def vencimiento_contrato_xls(request):
 
 			data_excel.append(x)
 
+
 	worksheet.add_table(6, 0, data_excel.__len__()+6, count, {'data': data_excel, 'columns': colums, 'autofilter': False,})
 	worksheet.set_column(0,count, 25)
 	workbook.close()
@@ -1478,9 +1460,9 @@ def vencimiento_contrato_pdf(request):
 	data_pdf 		= []
 	data_cabecera 	= []
 
-	activo 			= var_post['activo'] if var_post['activo'] == '' else int(var_post['activo'])
-	cliente 		= var_post['cliente'] if var_post['cliente'] == '' else int(var_post['cliente'])
-	tipo_local 		= var_post['tipo_local'] if var_post['tipo_local'] == '' else int(var_post['tipo_local'])
+	activo 			= var_post.getlist('activo')
+	cliente 		= var_post.getlist('cliente')
+	tipo_local 		= var_post.getlist('tipo_local')
 	tipo_periodo 	= int(var_post['periodos'])
 	cant_periodos 	= int(var_post['cantidad_periodos'])
 
@@ -1502,22 +1484,13 @@ def vencimiento_contrato_pdf(request):
 
 
 	## Se obtiene el detalle de la tabla
-	if activo != '':
-		activos = Activo.objects.filter(id=activo, empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
-	else:
-		activos = Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
+
+	activos = Activo.objects.filter(id__in=activo, empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
 	for activo in activos:
 
-		if tipo_local != '':
-			locales = Local.objects.filter(activo_id=activo.id, visible=True, local_tipo=tipo_local)
-		else:
-			locales = Local.objects.filter(activo_id=activo.id, visible=True)
-
-		if cliente != '':
-			contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id=cliente, visible=True).order_by('-cliente', '-numero')
-		else:
-			contratos = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, visible=True).order_by('-cliente', '-numero')
+		locales 	= Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
+		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('cliente', 'numero')
 
 		for contrato in contratos:
 
@@ -1614,8 +1587,8 @@ class REPORTE_METROS_CUADRADOS_CLASIFICACION(View):
 
 		data 			= list()
 
-		activo          = var_post.getlist('activo')
-		clasificacion   = var_post.getlist('clasificacion')
+		activo          = var_post.getlist('activo[]')
+		clasificacion   = var_post.getlist('clasificacion[]')
 
 		activos = Activo.objects.filter(id__in=activo ,empresa=request.user.userprofile.empresa, visible=True)
 
@@ -1682,6 +1655,7 @@ def metros_cuadrados_clasificacion_xls(request):
 	format_cell  		= workbook.add_format({'font_size': 10})
 	format_cell_text 	= workbook.add_format({'font_size': 10, 'align': 'center'})
 	format_merge 		= workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
+	format_cell_number  = workbook.add_format({'font_size': 10, 'num_format': '#,##0.000'})
 
 	worksheet.merge_range('B2:C2', 'M² por Clasificación', format_merge)
 
@@ -1696,7 +1670,7 @@ def metros_cuadrados_clasificacion_xls(request):
 	colums.append({'header': 'Activo', 'header_format': format, 'format': format_cell})
 	colums.append({'header': 'Clasificación', 'header_format': format, 'format': format_cell})
 	colums.append({'header': 'Detalle Clasificación', 'header_format': format, 'format': format_cell})
-	colums.append({'header': 'M² Detalle', 'header_format': format, 'format': format_cell})
+	colums.append({'header': 'M² Detalle', 'header_format': format, 'format': format_cell_number})
 
 	## Se obtiene el detalle de la tabla
 

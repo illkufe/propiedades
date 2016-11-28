@@ -38,7 +38,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-lg-3" style="padding-top:22px">
-                                <button type="submit" id="update-period-button" class="btn btn-primary btn-sm btn-block">
+                                <button type="button" id="update-period-button" onclick="enviar_formulario_m2_clasificacion()" class="btn btn-primary btn-sm btn-block">
                                     <i class="fa fa-filter"></i>&nbsp;&nbsp;&nbsp;&nbsp;Filtrar
                                 </button>
                             </div>
@@ -58,7 +58,7 @@
 
 					<div class="container-table">
 						<div class="table-responsive">
-							<table class="table table-striped table-bordered table-hover" id="tabla-m-cudrado-clasificacion" style="width: 99%; !important"></table>
+							<table class="table table-striped table-bordered table-hover" id="tabla-m-cudrado-clasificacion" style="width: 100%; !important"></table>
 						</div>
 					</div>
 				</div>
@@ -76,7 +76,7 @@
 
     th, td { white-space: nowrap; }
     div.dataTables_wrapper {
-        width: 99%;
+        width: 100%;
         margin: 0 auto;
     }
    div.DTFC_RightBodyWrapper div.DTFC_RightBodyLiner{
@@ -94,8 +94,57 @@ var tabla_m_cuadrado_clasificacion ;
 
 $(document).ready(function(){
 
-    load_data_ingreso_activo()
+    validar_formulario_m2_clasificacion()
+
 })
+
+
+function enviar_formulario_m2_clasificacion() {
+    if($("#form-m-cudrado-clasificacion").valid()){
+        $.ajax({
+            url: '{% url 'reporte_m_cuadrados_clasificacion_activo' %}',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                csrfmiddlewaretoken     : getCookie('csrftoken'),
+                activo                  : $("#form-m-cudrado-clasificacion").find('#id_activo').val(),
+                clasificacion           : $("#form-m-cudrado-clasificacion").find('#id_clasificacion').val(),
+            },
+            beforeSend: function () {
+                loading(true)
+            },
+            success: function (response) {
+
+                load_table_m_cudrado_clasificacion()
+
+                var rows        = [];
+
+                for (var i in response.data){
+
+                    for(var a in response.data[i].detalles) {
+                        var row = {};
+                        row.activo              = response.data[i].activo;
+                        row.clasificacion       = response.data[i].clasificacion;
+                        row.detalle             = response.data[i].detalles[a].detalle;
+                        row.m_cuadrados_detalle = response.data[i].detalles[a].m_cuadrados_detalle;
+                        row.m_cuadrado_total    = response.data[i].m_cuadrado_total;
+                        rows.push(row);
+                    }
+                }
+
+                tabla_m_cuadrado_clasificacion.rows.add(rows).draw();
+            },
+            error: function (data, textStatus, jqXHR) {
+                clear_errors_form('#form-m-cudrado-clasificacion');
+                var errors = $.parseJSON(data.responseText);
+                apply_errors_form(errors)
+            },
+            complete: function() {
+                loading(false)
+            }
+        });
+    }
+}
 
 function load_table_m_cudrado_clasificacion() {
 
@@ -105,25 +154,22 @@ function load_table_m_cudrado_clasificacion() {
             {
                 text: '<i class="fa fa-file-excel-o"></i><span style="vertical-align:middle;"> Excel</span>',
                 action: function ( e, dt, node, config ) {
-                    generacion_reporte_ingreso_activos('excel')
+                    $('#form-m-cudrado-clasificacion').attr('action', '/reportes/metros-cuadrados-clasificacion/excel/')
+                    $('#form-m-cudrado-clasificacion').submit();
+                    $('#form-m-cudrado-clasificacion').attr('action', '')
                 }
             },
             {
                 text: '<i class="fa fa-file-pdf-o pdf"></i><span style="vertical-align:middle;"> PDF</span>',
                 action: function ( e, dt, node, config ) {
-                    generacion_reporte_ingreso_activos('pdf')
+                    $('#form-m-cudrado-clasificacion').attr('action', '/reportes/metros-cuadrados-clasificacion/pdf/')
+                    $('#form-m-cudrado-clasificacion').submit();
+                    $('#form-m-cudrado-clasificacion').attr('action', '')
                 }
             },
         ],
         'rowsGroup': [0, 1, 4]
     };
-
-    if ($.fn.DataTable.isDataTable( '#tabla-m-cudrado-clasificacion')){
-		tabla_m_cuadrado_clasificacion.destroy();
-	}
-
-	$('.container-text').addClass('hide')
-	$('.container-table #tabla-m-cudrado-clasificacion').html('')
 
 	var columns = [
     {
@@ -152,10 +198,17 @@ function load_table_m_cudrado_clasificacion() {
         'title': 'M² Total',
     }];
 
+    if ($.fn.DataTable.isDataTable( '#tabla-m-cudrado-clasificacion')){
+		tabla_m_cuadrado_clasificacion.destroy();
+	}
+
+	$('.container-text').addClass('hide')
+	$('.container-table #tabla-m-cudrado-clasificacion').html('')
+
 	tabla_m_cuadrado_clasificacion = load_table('#tabla-m-cudrado-clasificacion', columns, configuracion)
 }
 
-function load_data_ingreso_activo() {
+function validar_formulario_m2_clasificacion() {
     $("#form-m-cudrado-clasificacion").validate({
         ignore: 'input[type=hidden]',
 		rules: {
@@ -178,72 +231,9 @@ function load_data_ingreso_activo() {
             error.appendTo(element.closest(".form-group").find('.container-error'));
         },
         submitHandler: function(form) {
-            $('#form-m-cudrado-clasificacion').ajaxSubmit({
-                dataType: 'json',
-                beforeSend:function () {
-                    loading(true)
-                },
-                success: function(response){
-
-                    loading(false)
-                    load_table_m_cudrado_clasificacion()
-
-                    var rows        = [];
-
-                    for (var i in response.data){
-
-                        for(var a in response.data[i].detalles) {
-                            var row = {};
-                            row.activo              = response.data[i].activo;
-                            row.clasificacion       = response.data[i].clasificacion;
-                            row.detalle             = response.data[i].detalles[a].detalle;
-                            row.m_cuadrados_detalle = response.data[i].detalles[a].m_cuadrados_detalle;
-                            row.m_cuadrado_total    = response.data[i].m_cuadrado_total;
-                            rows.push(row);
-                        }
-                    }
-
-
-                    tabla_m_cuadrado_clasificacion.rows.add(rows).draw();
-
-                },
-                error: function(data, textStatus, jqXHR) {
-                    clear_errors_form('#form-m-cudrado-clasificacion');
-                    var errors = $.parseJSON(data.responseText);
-                    apply_errors_form(errors)
-                }
-            });
+            form.submit()
         }
     });
-}
-
-function generacion_reporte_ingreso_activos(tipo_archivo) {
-
-    var activo              = $("#form-m-cudrado-clasificacion").find('#id_activo').val();
-    var clasificacion       = $("#form-m-cudrado-clasificacion").find('#id_clasificacion').val();
-
-
-    var token = '{{ csrf_token }}';
-    if(tipo_archivo == 'excel'){
-        var $form1  =$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",'/reportes/metros-cuadrados-clasificacion/excel/');
-    }else if(tipo_archivo == 'pdf'){
-        var $form1  =$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",'/reportes/metros-cuadrados-clasificacion/pdf/');
-    }else {
-        var configuracion = {
-            'toast_type'	: 'error',
-            'toast_text' 	: 'No se pudo generar archivo',
-            'toast_title' 	: 'Error',
-        }
-        notification_toast(configuracion)
-    }
-    var $input  =$(document.createElement('input')).attr('name','csrfmiddlewaretoken').val(token);
-    var $input0 =$(document.createElement('input')).attr('name','activo').val(activo);
-    var $input1 =$(document.createElement('input')).attr('name','clasificacion').val(clasificacion);
-
-
-    $form1.append($input).append($input0).append($input1);
-    $("body").append($form1);
-    $form1.submit();
 }
 
 </script>

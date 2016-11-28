@@ -58,7 +58,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-lg-2" style="padding-top:22px">
-                                <button type="button" onclick="enviar_filtro()" id="update-period-button" class="btn btn-primary btn-sm btn-block">
+                                <button type="button" onclick="enviar_formulario_ingreso_activo()" id="update-period-button" class="btn btn-primary btn-sm btn-block">
                                     <i class="fa fa-filter"></i>&nbsp;&nbsp;&nbsp;&nbsp;Filtrar
                                 </button>
                             </div>
@@ -79,7 +79,7 @@
 
 					<div class="container-table">
 						<div class="table-responsive">
-							<table class="table table-striped table-bordered table-hover" id="tabla-ingreso-clasificacion" style="width: 99%; !important"></table>
+							<table class="table table-striped table-bordered table-hover" id="tabla-ingreso-clasificacion" style="width: 100%; !important"></table>
 						</div>
 					</div>
 				</div>
@@ -97,7 +97,7 @@
 
     th, td { white-space: nowrap; }
     div.dataTables_wrapper {
-        width: 98%;
+        width: 100%;
         margin: 0 auto;
     }
    div.DTFC_RightBodyWrapper div.DTFC_RightBodyLiner{
@@ -118,7 +118,7 @@ $(document).ready(function(){
 })
 
 
-function enviar_filtro() {
+function enviar_formulario_ingreso_activo() {
     if($("#form-ingreso-clasificacion").valid()){
         $.ajax({
             url: '{% url 'reporte_ingreso_clasificacion' %}',
@@ -191,7 +191,7 @@ function load_tabla_ingreso_clasificacion(response) {
                 }
             },
         ],
-{#        'rowsGroup': [0],#}
+    <!--    'rowsGroup': [0],-->
         'scrollX':        true,
         'fixedColumns':{
             leftColumns: 2,
@@ -230,7 +230,7 @@ function load_tabla_ingreso_clasificacion(response) {
 }
 
 function validar_formulario_ingreso_clasificacion() {
-    console.log('valida ')
+
     $("#form-ingreso-clasificacion").validate({
         ignore: 'input[type=hidden]',
 		rules: {
@@ -265,7 +265,6 @@ function validar_formulario_ingreso_clasificacion() {
             error.appendTo(element.closest(".form-group").find('.container-error'));
         },
         submitHandler: function(form) {
-            console.log('laoslaoas')
             form.submit()
         }
     });

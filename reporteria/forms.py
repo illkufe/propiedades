@@ -64,10 +64,6 @@ class FormIngresoMetrosCuadrados(forms.Form):
 		self.fields['activos'].queryset 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		self.fields['conceptos'].queryset 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 
-
-
-
-
 class FiltroIngresoActivo(forms.Form):
 
 
@@ -178,13 +174,13 @@ class FiltroIngresoClasificacion(forms.Form):
         help_text   = 'Clasificaciones de la Empresa')
 
     periodos        = forms.ChoiceField(
-        choices     =PERIODICIDAD,
-        required    =False,
-        widget      =forms.Select(
+        choices     = PERIODICIDAD,
+        required    = False,
+        widget      = forms.Select(
                             attrs={'class': 'form-control selectpicker', 'title':'seleccionar'}
                         ),
-        label       ='Periodos',
-        help_text   ='Periodos de Tiempo')
+        label       = 'Periodos',
+        help_text   = 'Periodos de Tiempo')
 
     cantidad_periodos   = forms.ChoiceField(
         choices     = CANTIDAD_PERIODO,
@@ -215,10 +211,10 @@ class FiltroVacancia(forms.Form):
 
 
     AGRUPADOR = (
-        ('', 'Todos'),
-        (1,'Tipo de Local'),
-        (2, 'Nivel'),
-        (3, 'Sector'),
+        (1, 'Todos'),
+        (2,'Tipo de Local'),
+        (3, 'Nivel'),
+        (4, 'Sector'),
     )
     def __init__(self, *args, **kwargs):
         self.request    = kwargs.pop('request')
@@ -226,19 +222,56 @@ class FiltroVacancia(forms.Form):
         profile         = UserProfile.objects.get(user=user)
 
         super(FiltroVacancia, self).__init__(*args, **kwargs)
+
         self.fields['activo'].queryset = Activo.objects.filter(empresa=profile.empresa, visible=True)
 
-    activo              = forms.ModelChoiceField(queryset=None, empty_label='Todos', required=False, widget=forms.Select(attrs={'class': 'form-control'}), label='Activos', help_text='Activos de la Empresa')
+    activo              = forms.ModelChoiceField(
+        queryset        =None,
+        empty_label     =None,
+        required        =False,
+        widget          =forms.Select(
+                                attrs={'class'              : 'form-control selectpicker',
+                                       'multiple'           : 'multiple',
+                                       'data-actions-box'   : 'true',
+                                       'title'              : 'seleccionar'
+                                }
+                            ),
+        label           ='Activos',
+        help_text       ='Activos de la Empresa')
 
 
-    agrupador           = forms.ChoiceField(choices=AGRUPADOR, required=False, widget=forms.Select(attrs={'class': 'form-control'}),
-                                      label='Agrupador', help_text='')
+    agrupador           = forms.ChoiceField(
+        choices         = AGRUPADOR,
+        required        = False,
+        widget          = forms.Select(
+                                attrs={'class'  : 'form-control selectpicker',
+                                       'title'  : 'seleccionar'
+                                }
+                            ),
+        label           = 'Agrupador',
+        help_text       = 'Agrupado de Vacancia de Activos')
 
-    periodos            = forms.ChoiceField(choices=PERIODICIDAD,required=False, widget=forms.Select(attrs={'class': 'form-control'}),
-                                    label='Periodos', help_text='Periodos de Tiempo')
+    periodos            = forms.ChoiceField(
+        choices         = PERIODICIDAD,
+        required        = False,
+        widget          = forms.Select(
+                                attrs={'class'  : 'form-control selectpicker',
+                                       'title'  : 'seleccionar'
+                                }
+                            ),
+        label           = 'Periodos',
+        help_text       = 'Periodos de Tiempo')
 
-    cantidad_periodos   = forms.ChoiceField(choices=CANTIDAD_PERIODO, required=False, widget=forms.Select(attrs={'class': 'form-control'}),
-                                      label='Cantidad Periodos', help_text='Cantidad de periodos antecesores al periodo actual')
+    cantidad_periodos   = forms.ChoiceField(
+        choices         = CANTIDAD_PERIODO,
+        required        = False,
+        widget          = forms.Select(
+                                    attrs={ 'class'  : 'form-control selectpicker',
+                                            'title'  : 'seleccionar'
+                                    }
+                                ),
+        label           = 'Cantidad Periodos',
+        help_text       = 'Cantidad de periodos antecesores al periodo actual')
 
 class FiltroVencimientoContrato(forms.Form):
 
@@ -253,22 +286,74 @@ class FiltroVencimientoContrato(forms.Form):
         self.fields['cliente'].queryset     = Cliente.objects.filter(empresa=profile.empresa, visible=True)
         self.fields['tipo_local'].queryset  = Local_Tipo.objects.filter(empresa=profile.empresa, visible=True)
 
-    activo          = forms.ModelChoiceField(queryset=None, empty_label='Todos', required=False, widget=forms.Select(attrs={'class': 'form-control'}), label='Activos', help_text='Activos de la Empresa')
+    activo              = forms.ModelChoiceField(
+        queryset        = None,
+        empty_label     = None,
+        required        = False,
+        widget          = forms.Select(
+                                attrs={ 'class'                 : 'form-control selectpicker',
+                                        'multiple'              : 'multiple',
+                                        'data-actions-box'      : 'true',
+                                        'title'                 : 'seleccionar'
+                                }
+                             ),
+        label           = 'Activos',
+        help_text       = 'Activos de la Empresa'
+    )
 
-    tipo_local      = forms.ModelChoiceField(queryset=None, empty_label='Todos', required=False, widget=forms.Select(attrs={'class': 'form-control'}),
-                                    label='Tipos de Locales', help_text='Tipos de Locales manejados por la empresa')
+    tipo_local      = forms.ModelChoiceField(
+        queryset        = None,
+        empty_label     = None,
+        required        = False,
+        widget          = forms.Select(
+                                attrs={'class'              : 'form-control selectpicker',
+                                       'multiple'           : 'multiple',
+                                       'data-actions-box'   : 'true',
+                                       'title'              : 'seleccionar'
+                                }
+                            ),
+        label           = 'Tipos de Locales',
+        help_text       = 'Tipos de Locales manejados por la empresa'
+    )
 
-    cliente         = forms.ModelChoiceField(queryset=None, empty_label='Todos', required=False, widget=forms.Select(attrs={'class': 'form-control'}),
-                                     label='Clientes', help_text='Clientes de la Empresa')
+    cliente         = forms.ModelChoiceField(
+        queryset        = None,
+        empty_label     = None,
+        required        = False,
+        widget          = forms.Select(
+                                attrs={'class'              : 'form-control selectpicker',
+                                       'multiple'           : 'multiple',
+                                       'data-actions-box'   : 'true',
+                                       'title'              : 'seleccionar'
+                                }
+                            ),
+        label           = 'Clientes',
+        help_text       = 'Clientes de la Empresa'
+    )
 
-    periodos = forms.ChoiceField(choices=PERIODICIDAD, required=False,
-                                 widget=forms.Select(attrs={'class': 'form-control'}),
-                                 label='Periodos', help_text='Periodos de Tiempo')
+    periodos = forms.ChoiceField(
+        choices         = PERIODICIDAD,
+        required        = False,
+        widget          = forms.Select(
+                                attrs={ 'class'  : 'form-control selectpicker',
+                                        'title'  : 'seleccionar'
+                                }
+                            ),
+        label           = 'Periodos',
+        help_text       = 'Periodos de Tiempo'
+    )
 
-    cantidad_periodos = forms.ChoiceField(choices=CANTIDAD_PERIODO, required=False,
-                                      widget=forms.Select(attrs={'class': 'form-control'}),
-                                      label='Cantidad Periodos',
-                                      help_text='Cantidad de periodos antecesores al periodo actual')
+    cantidad_periodos = forms.ChoiceField(
+        choices         = CANTIDAD_PERIODO,
+        required        = False,
+        widget          = forms.Select(
+                                attrs={ 'class'  : 'form-control selectpicker',
+                                        'title'  : 'seleccionar'
+                                }
+                            ),
+        label           = 'Cantidad Periodos',
+        help_text       = 'Cantidad de periodos antecesores al periodo actual'
+    )
 
 class FiltroMCuadradosClasificacion(forms.Form):
 
