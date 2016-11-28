@@ -215,13 +215,10 @@ def chart_ingreso_centro(request):
 	data_table['fechas'] 		= list()
 
 	## Data Grafico
-	response = calcular_periodos(1, 6)
+	response = calcular_periodos(1, 6, 'restar')
 
-	fecha_inicial 	= datetime.strftime(response[0]['fecha_inicio'], "%d-%m-%Y")
-	fecha_final 	= datetime.strftime(response[response.__len__() -1]['fecha_termino'], "%d-%m-%Y")
-
-	data_table['fechas'].append(fecha_inicial)
-	data_table['fechas'].append(fecha_final)
+	data_table['fechas'].append(response[0]['fecha_inicio'])
+	data_table['fechas'].append(response[response.__len__() -1]['fecha_termino'])
 
 	cabecera = []
 	cabecera.append('x')
@@ -274,7 +271,7 @@ def get_conceptos_activo(request, id):
 	count				= 0
 
 	data_conceptos 		= Concepto.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
-	response 			= calcular_periodos(tipo_periodo, 12)
+	response 			= calcular_periodos(tipo_periodo, 12, 'restar')
 
 	## Se obtiene Cabecera de las tablas
 	for data in response:
@@ -410,6 +407,44 @@ def data_garantia(request, id=None):
 			})
 
 	return JsonResponse(response, safe=False)
+
+
+def data_ingreso_metros(request, id=None):
+
+	data 		= list()
+	activos 	= Activo.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+	periodos 	= calcular_periodos(1, 6, 'restar')
+
+	for activo in activos:
+
+		locales 	= Local.objects.filter(activo=activo, visible=True)
+		metros 		= locales.all().aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, visible=True)
+
+		data_periodos = list()
+
+		for periodo in periodos:
+
+			total = Factura.objects.filter(contrato__in=contratos, visible=True,fecha_inicio__gte=periodo['fecha_inicio'],fecha_inicio__lte=periodo['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+
+			data_periodos.append({
+				'fecha_inicio'		: periodo['fecha_inicio'],
+				'fecha_termino'		: periodo['fecha_termino'],
+				# 'ingreso' 			: formato_moneda_local(request, 0) if total is None else formato_moneda_local(request, total),
+				# 'ingreso_metros' 	: formato_moneda_local(request, 0) if total is None else formato_moneda_local(request, (total / metros)),
+
+				'ingreso' 			: format_number(request, 0, True) if total is None else format_number(request, total, True),
+				'ingreso_metros' 	: format_number(request, 0, True) if total is None else format_number(request, (total / metros), True),
+				})
+
+		data.append({
+			'id'		: activo.id,
+			'nombre'	: activo.nombre,
+			'metros'	: metros,
+			'periodos'	: data_periodos,
+			})
+
+	return JsonResponse(data, safe=False)
 
 
 

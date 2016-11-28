@@ -1,0 +1,230 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+
+				<form id="form-vacancia" role="form" action="" method="post">
+					{% csrf_token %}
+
+					<div class="ibox-title">
+						<h5>Vacancias</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+                                <div class="row">
+									<div class="form-group col-sm-3">
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.activo.help_text }}" ></i>
+                                            {{ form.activo.label_tag }}
+                                        </span>
+										{{ form.activo }}
+										<div class="container-error">
+											{{ form.activo.errors|striptags }}
+										</div>
+									</div>
+                                    <div class="form-group col-sm-3">
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.agrupador.help_text }}" ></i>
+                                            {{ form.agrupador.label_tag }}
+                                        </span>
+										{{ form.agrupador }}
+										<div class="container-error">
+											{{ form.agrupador.errors|striptags }}
+										</div>
+									</div>
+                                    <div class="form-group col-sm-2">
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.periodos.help_text }}" ></i>
+                                            {{ form.periodos.label_tag }}
+                                        </span>
+										{{ form.periodos }}
+										<div class="container-error">
+											{{ form.periodos.errors|striptags }}
+										</div>
+									</div>
+                                    <div class="form-group col-sm-2">
+                                        <span>
+                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cantidad_periodos.help_text }}" ></i>
+                                            {{ form.cantidad_periodos.label_tag }}
+                                        </span>
+										{{ form.cantidad_periodos }}
+										<div class="container-error">
+											{{ form.cantidad_periodos.errors|striptags }}
+										</div>
+									</div>
+                                    <div class="col-sm-2">
+                                        <div class="ibox-tools">
+                                            <button type="submit" id="update-period-button" class="btn btn-primary btn-xs"><i class="fa fa-search"></i>Consultar</button>
+                                        </div>
+                                    </div>
+                                </div>
+							</div>
+						</div>
+					</div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="tabla-vacancia" style="width: 99%!important;">
+                                <thead></thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+
+			</div>
+		</div>
+	</div>
+</div>
+<style>
+    th, td { white-space: nowrap; }
+    div.dataTables_wrapper {
+        width: 98%;
+        margin: 0 auto;
+    }
+   div.DTFC_RightBodyWrapper div.DTFC_RightBodyLiner{
+        position: relative;
+        top: 0px;
+        left: 0px;
+    }
+</style>
+{% endblock section %}
+
+
+{% block scripts %}
+<script>
+var tabla_vacancia ;
+$(document).ready(function(){
+    load_data_ingreso_activo()
+})
+
+function load_data_ingreso_activo() {
+    $("#form-vacancia").validate({
+        ignore: 'input[type=hidden]',
+        rules: {
+        },
+        messages: {
+        },
+        errorPlacement: function(error, element) {
+            error.appendTo(element.closest(".form-group").find('.container-error'));
+        },
+        submitHandler: function(form) {
+            $('#form-vacancia').ajaxSubmit({
+                dataType: 'json',
+                beforeSend:function () {
+                    loading(true)
+                },
+                success: function(response){
+
+                    if (tabla_vacancia != undefined) {
+                        tabla_vacancia.destroy();
+                        $('#tabla-vacancia').empty();
+                    }
+
+                    var configuracion = {
+                        'order': [[0, 'asc'],[1, 'asc'],[2, 'asc']],
+                        'buttons': [
+                            {
+                                text: '<i class="fa fa-file-excel-o"></i><span style="vertical-align:middle;"> Excel</span>',
+                                action: function ( e, dt, node, config ) {
+                                    generacion_reporte_ingreso_activos('excel')
+                                }
+                            },
+                            {
+                                text: '<i class="fa fa-file-pdf-o"></i><span style="vertical-align:middle;"> PDF</span>',
+                                action: function ( e, dt, node, config ) {
+                                    generacion_reporte_ingreso_activos('pdf')
+                                }
+                            },
+                        ]
+                    };
+                    var columns = [];
+
+                    columns.push({
+                        'width': '20%',
+                        'data': 'activo',
+                        'title': 'Activo',
+                    })
+
+                    for (var i in response.cabecera) {
+                        val             = {};
+                        val.width       = '6%';
+                        val.data        = response.cabecera[i].replace(/\s/g,"_").toLowerCase();
+                        val.title       = response.cabecera[i];
+                        val.orderable   = false
+                        columns.push(val)
+                    }
+
+	                tabla_vacancia = load_table('#tabla-vacancia', columns, configuracion)
+
+                    var rows        = [];
+
+                    for (var i in response.data){
+                        var row = {};
+
+                        row.activo              = response.data[i].activo;
+
+                        for(var v in response.data[i].valores){
+                            row[response.data[i].valores[v][0].replace(/\s/g,"_").toLowerCase()] = response.data[i].valores[v][1]
+                        }
+                        rows.push(row);
+                    }
+
+                    loading(false)
+
+                    tabla_vacancia.rows.add(rows).draw();
+
+                },
+                error: function(data, textStatus, jqXHR) {
+                    clear_errors_form('#form-vacancia');
+                    var errors = $.parseJSON(data.responseText);
+                    apply_errors_form(errors)
+                }
+            });
+        }
+    });
+}
+
+function generacion_reporte_ingreso_activos(tipo_archivo) {
+
+    var activo              = $("#form-vacancia").find('#id_activo').val();
+    var agrupador           = $("#form-vacancia").find('#id_agrupador').val();
+    var periodo             = $("#form-vacancia").find('#id_periodos').val();
+    var cantidad_periodo    = $("#form-vacancia").find('#id_cantidad_periodos').val();
+
+
+
+    var token = '{{ csrf_token }}';
+    if(tipo_archivo == 'excel'){
+        var $form1  =$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",'/reportes/vacancia-activo/excel/');
+    }else if(tipo_archivo == 'pdf'){
+        var $form1  =$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",'/reportes/vacancia-activo/pdf/');
+    }else {
+        var configuracion = {
+            'toast_type'	: 'error',
+            'toast_text' 	: 'No se pudo generar archivo',
+            'toast_title' 	: 'Error',
+        }
+        notification_toast(configuracion)
+    }
+    var $input  =$(document.createElement('input')).attr('name','csrfmiddlewaretoken').val(token);
+    var $input0 =$(document.createElement('input')).attr('name','activo').val(activo);
+    var $input1 =$(document.createElement('input')).attr('name','agrupador').val(agrupador);
+    var $input2 =$(document.createElement('input')).attr('name','periodos').val(periodo);
+    var $input3 =$(document.createElement('input')).attr('name','cantidad_periodos').val(cantidad_periodo);
+
+
+    $form1.append($input).append($input0).append($input1).append($input2).append($input3)
+    $("body").append($form1);
+    $form1.submit();
+}
+
+</script>
+{% endblock scripts %}

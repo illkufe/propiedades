@@ -179,7 +179,7 @@
                                         <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ clasificacion.nombre }}" ></i>
                                         {{ clasificacion.nombre }}
                                     </span>
-                                    <select class="select2" multiple="multiple" name="clasificaciones" id="id_clasificaciones">
+                                    <select class="select2" data-maximum-selection-length="1" multiple="multiple" name="clasificaciones" id="id_clasificaciones">
                                         {% for detalles in clasificacion.detalle %}
                                             <option value="{{ detalles.id }}" {% if detalles.select %} selected="selected" {% endif %}>{{ detalles.nombre}}</option>
                                         {% endfor %}
