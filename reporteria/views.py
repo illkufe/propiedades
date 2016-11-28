@@ -55,8 +55,8 @@ class REPORTES(View):
 	
 	def post(self, request):
 
-		var_post 	= request.POST.copy()
-		estado 		= datos_reporte(request, var_post)
+		var_post    = request.POST.copy()
+		estado      = datos_reporte(request, var_post)
 
 		return JsonResponse({'estado': estado}, safe=False)
 
@@ -152,23 +152,23 @@ class REPORTE_INGRESO_ACTIVO(View):
 	def get(self, request, id=None):
 
 		return render(request, 'reportes/reporte_ingreso_activo.html', {
-			'title' 	: 'Reporteria',
-			'href' 		: 'reportes',
-			'subtitle'	: 'Reportes',
-			'name' 		: 'Ingreso Activos',
-			'form'		: FiltroIngresoActivo(request=self.request)
+			'title'     : 'Reporteria',
+			'href'      : 'reportes',
+			'subtitle'  : 'Reportes',
+			'name'      : 'Ingreso Activos',
+			'form'      : FiltroIngresoActivo(request=self.request)
 		})
 
 	def post(self, request):
 
-		var_post 		= request.POST.copy()
+		var_post        = request.POST.copy()
 
-		data_cabecera 	= {}
-		data_concepto 	= list()
-		count 			= 0
+		data_cabecera   = {}
+		data_concepto   = list()
+		count           = 0
 
-		tipo 		    = int(var_post['periodos'])
-		periodos 	    = int(var_post['cantidad_periodos'])
+		tipo            = int(var_post['periodos'])
+		periodos        = int(var_post['cantidad_periodos'])
 		activo          = var_post.getlist('activo[]')
 		cliente         = var_post.getlist('cliente[]')
 		conceptos       = var_post.getlist('conceptos[]')
@@ -203,7 +203,7 @@ class REPORTE_INGRESO_ACTIVO(View):
 					if tipo == 1:
 						meses[aux]  = [str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year),formato_moneda_local(request, total_activo)]
 					elif tipo ==2 or tipo == 3:
-						meses[aux] 	= [str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year)), formato_moneda_local(request, total_activo)]
+						meses[aux]  = [str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year)), formato_moneda_local(request, total_activo)]
 					elif tipo == 4:
 						meses[aux]  = ['Año ' + str(data['fecha_inicio'].year), formato_moneda_local(request, total_activo)]
 
@@ -211,9 +211,9 @@ class REPORTE_INGRESO_ACTIVO(View):
 
 				data_concepto.append({
 					'activo'    : activo.nombre,
-					'cliente'	: contrato.cliente.nombre,
+					'cliente'   : contrato.cliente.nombre,
 					'contrato'  : contrato.numero,
-					'valores'	: meses
+					'valores'   : meses
 				})
 
 		## Se obtiene Cabecera de las tablas
@@ -232,32 +232,32 @@ class REPORTE_INGRESO_ACTIVO(View):
 
 def ingreso_activo_xls(request):
 
-	var_post 		= request.POST.copy()
-	fecha          	= str(time.strftime('%d-%m-%Y'))
-	hora           	= str(time.strftime("%X"))
-	count 			= 2
+	var_post        = request.POST.copy()
+	fecha           = str(time.strftime('%d-%m-%Y'))
+	hora            = str(time.strftime("%X"))
+	count           = 2
 
-	tipo 			= int(var_post['periodos'])
-	periodos 		= int(var_post['cantidad_periodos'])
-	activo 			= var_post.getlist('activo')
-	cliente 		= var_post.getlist('cliente')
-	conceptos 		= var_post.getlist('conceptos')
+	tipo            = int(var_post['periodos'])
+	periodos        = int(var_post['cantidad_periodos'])
+	activo          = var_post.getlist('activo')
+	cliente         = var_post.getlist('cliente')
+	conceptos       = var_post.getlist('conceptos')
 
-	response 		= calcular_periodos(tipo, periodos, 'restar')
+	response        = calcular_periodos(tipo, periodos, 'restar')
 
-	data_excel		= []
-	output  		= io.BytesIO()
+	data_excel      = []
+	output          = io.BytesIO()
 
-	workbook 		= xlsxwriter.Workbook(output, {'in_memory': True})
-	worksheet 		= workbook.add_worksheet()
+	workbook        = xlsxwriter.Workbook(output, {'in_memory': True})
+	worksheet       = workbook.add_worksheet()
 
 	footer = '&CPage &P of &N'
 	worksheet.set_footer(footer)
 
-	format       		= workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
-	format_cell  		= workbook.add_format({'font_size': 10})
-	format_cell_number 	= workbook.add_format({'font_size': 10,'num_format': '#,##0'})
-	format_merge 		= workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
+	format              = workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
+	format_cell         = workbook.add_format({'font_size': 10})
+	format_cell_number  = workbook.add_format({'font_size': 10,'num_format': '#,##0'})
+	format_merge        = workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
 
 	worksheet.merge_range('D2:E2', 'INGRESOS POR ACTIVOS', format_merge)
 
@@ -296,7 +296,7 @@ def ingreso_activo_xls(request):
 
 	for activo in activos:
 
-		contratos 	= Contrato.objects.filter(locales__activo_id=activo.id, locales__visible=True, empresa=request.user.userprofile.empresa,
+		contratos   = Contrato.objects.filter(locales__activo_id=activo.id, locales__visible=True, empresa=request.user.userprofile.empresa,
 												cliente__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 		for contrato in contratos:
@@ -327,28 +327,28 @@ def ingreso_activo_xls(request):
 	output.seek(0)
 
 	fecha_documento = datetime.now()
-	fecha 			= fecha_documento.strftime('%d/%m/%Y')
-	filename 		= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_')) + '-' + 'ingresos-activos' + '-' + fecha + '.xls'
+	fecha           = fecha_documento.strftime('%d/%m/%Y')
+	filename        = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_')) + '-' + 'ingresos-activos' + '-' + fecha + '.xls'
 
-	response 						= HttpResponse(content_type='application/vnd.ms-excel')
+	response                        = HttpResponse(content_type='application/vnd.ms-excel')
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	response.write(output.read())
 	return response
 
 def ingreso_activo_pdf(request):
 
-	var_post 		= request.POST.copy()
-	data_pdf 		= []
-	data_cabecera 	= []
+	var_post        = request.POST.copy()
+	data_pdf        = []
+	data_cabecera   = []
 
 
-	tipo 			= int(var_post['periodos'])
-	periodos 		= int(var_post['cantidad_periodos'])
-	activo 			= var_post.getlist('activo')
-	cliente 		= var_post.getlist('cliente')
-	conceptos 		= var_post.getlist('conceptos')
+	tipo            = int(var_post['periodos'])
+	periodos        = int(var_post['cantidad_periodos'])
+	activo          = var_post.getlist('activo')
+	cliente         = var_post.getlist('cliente')
+	conceptos       = var_post.getlist('conceptos')
 
-	response 		= calcular_periodos(tipo, periodos, 'restar')
+	response        = calcular_periodos(tipo, periodos, 'restar')
 
 
 	## Se obtiene Cabecera de las tablas
@@ -372,7 +372,7 @@ def ingreso_activo_pdf(request):
 
 	for activo in activos:
 
-		contratos 	= Contrato.objects.filter(locales__activo_id=activo.id, locales__visible=True, empresa=request.user.userprofile.empresa,
+		contratos   = Contrato.objects.filter(locales__activo_id=activo.id, locales__visible=True, empresa=request.user.userprofile.empresa,
 												cliente__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 		for contrato in contratos:
@@ -398,7 +398,7 @@ def ingreso_activo_pdf(request):
 
 
 
-	hora 	= str(time.strftime("%X"))
+	hora    = str(time.strftime("%X"))
 	context = {'empresa': request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
 			   'modulo': 'INGRESOS POR ACTIVOS', 'rut': request.user.userprofile.empresa.rut,
 			   'direccion': request.user.userprofile.empresa.direccion, 'hora': hora}
@@ -409,26 +409,26 @@ def ingreso_activo_pdf(request):
 		static_file.write(content)
 
 	options = {
-		'page-size'		: 'A4',
-		'orientation'	: 'Landscape',
-		'margin-top'	: '1.25in',
-		'margin-right'	: '0.55in',
-		'margin-bottom'	: '0.55in',
-		'margin-left'	: '0.55in',
-		'header-html'	: 'public/media/reportes/cabecera.html',
+		'page-size'     : 'A4',
+		'orientation'   : 'Landscape',
+		'margin-top'    : '1.25in',
+		'margin-right'  : '0.55in',
+		'margin-bottom' : '0.55in',
+		'margin-left'   : '0.55in',
+		'header-html'   : 'public/media/reportes/cabecera.html',
 	}
 
-	css 		= 'static/assets/css/bootstrap.min.css'
-	template 	= get_template('pdf/reportes/ingreso_activo_detalle.html')
-	fecha 		= str(time.strftime('%d-%m-%Y'))
-	hora 		= str(time.strftime("%X"))
+	css         = 'static/assets/css/bootstrap.min.css'
+	template    = get_template('pdf/reportes/ingreso_activo_detalle.html')
+	fecha       = str(time.strftime('%d-%m-%Y'))
+	hora        = str(time.strftime("%X"))
 
 	context = {
-		'data'			: data_pdf,
-		'data_cabecera'	: data_cabecera,
-		'user'			: request.user.userprofile,
-		'fecha'			: fecha,
-		'hora'			: hora,
+		'data'          : data_pdf,
+		'data_cabecera' : data_cabecera,
+		'user'          : request.user.userprofile,
+		'fecha'         : fecha,
+		'hora'          : hora,
 	}
 
 	html = template.render(context)  # Renders the template with the context data.
@@ -436,10 +436,10 @@ def ingreso_activo_pdf(request):
 	pdfkit.from_string(html, 'public/media/reportes/ingresos-activos.pdf', options=options, css=css)
 	pdf = open('public/media/reportes/ingresos-activos.pdf', 'rb')
 
-	dt 			= datetime.now()
-	filename 	= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-ingreso-activo-' + dt.strftime('%Y%m%d') + '.pdf'
+	dt          = datetime.now()
+	filename    = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-ingreso-activo-' + dt.strftime('%Y%m%d') + '.pdf'
 
-	response 						= HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
+	response                        = HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	pdf.close()
 	return response  # returns the response.
@@ -453,52 +453,52 @@ class REPORTE_INGRESO_CLASIFICACION(View):
 	def get(self, request, id=None):
 
 		return render(request, 'reportes/reporte_ingreso_clasificacion.html', {
-			'title' 	: 'Reporteria',
-			'href' 		: 'reportes',
-			'subtitle'	: 'Reportes',
-			'name' 		: 'Ingreso Clasificación',
-			'form'		: FiltroIngresoClasificacion(request=self.request)
+			'title'     : 'Reporteria',
+			'href'      : 'reportes',
+			'subtitle'  : 'Reportes',
+			'name'      : 'Ingreso Clasificación',
+			'form'      : FiltroIngresoClasificacion(request=self.request)
 		})
 
 	def post(self, request):
 
-		var_post 			= request.POST.copy()
+		var_post            = request.POST.copy()
 
-		tipo_periodo 		= int(var_post['periodos'])
-		cant_periodo 	    = int(var_post['cantidad_periodos'])
-		clasificacion_id	= var_post.getlist('clasificacion[]')
-		conceptos       	= var_post.getlist('conceptos[]')
+		tipo_periodo        = int(var_post['periodos'])
+		cant_periodo        = int(var_post['cantidad_periodos'])
+		clasificacion_id    = var_post.getlist('clasificacion[]')
+		conceptos           = var_post.getlist('conceptos[]')
 
-		data 				= data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasificacion_id, conceptos)
+		data                = data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasificacion_id, conceptos)
 
 		return JsonResponse(data, safe=False)
 
 def ingreso_clasificacion_xls(request):
 
-	var_post 		= request.POST.copy()
-	fecha          	= str(time.strftime('%d-%m-%Y'))
-	hora           	= str(time.strftime("%X"))
-	count 			= 1
-	data_excel 		= []
-	tipo_periodo 		= int(var_post['periodos'])
-	cant_periodo 		= int(var_post['cantidad_periodos'])
-	clasificacion_id 	= var_post.getlist('clasificacion')
-	conceptos 			= var_post.getlist('conceptos')
+	var_post        = request.POST.copy()
+	fecha           = str(time.strftime('%d-%m-%Y'))
+	hora            = str(time.strftime("%X"))
+	count           = 1
+	data_excel      = []
+	tipo_periodo        = int(var_post['periodos'])
+	cant_periodo        = int(var_post['cantidad_periodos'])
+	clasificacion_id    = var_post.getlist('clasificacion')
+	conceptos           = var_post.getlist('conceptos')
 
-	data 				= data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasificacion_id, conceptos)
+	data                = data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasificacion_id, conceptos)
 
-	output  		= io.BytesIO()
+	output          = io.BytesIO()
 
-	workbook 		= xlsxwriter.Workbook(output, {'in_memory': True})
-	worksheet 		= workbook.add_worksheet()
+	workbook        = xlsxwriter.Workbook(output, {'in_memory': True})
+	worksheet       = workbook.add_worksheet()
 
 	footer = '&CPage &P of &N'
 	worksheet.set_footer(footer)
 
-	format       		= workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
-	format_cell  		= workbook.add_format({'font_size': 10})
-	format_cell_number 	= workbook.add_format({'font_size': 10,'num_format': '#,##0'})
-	format_merge 		= workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
+	format              = workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
+	format_cell         = workbook.add_format({'font_size': 10})
+	format_cell_number  = workbook.add_format({'font_size': 10,'num_format': '#,##0'})
+	format_merge        = workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
 
 	worksheet.merge_range('D2:E2', 'INGRESOS POR CLASIFICACIÓN', format_merge)
 
@@ -544,25 +544,25 @@ def ingreso_clasificacion_xls(request):
 	output.seek(0)
 
 	fecha_documento = datetime.now()
-	fecha 			= fecha_documento.strftime('%d/%m/%Y')
-	filename 		= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_')) + '-' + 'ingresos-clasificacion' + '-' + fecha + '.xls'
+	fecha           = fecha_documento.strftime('%d/%m/%Y')
+	filename        = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_')) + '-' + 'ingresos-clasificacion' + '-' + fecha + '.xls'
 
-	response 						= HttpResponse(content_type='application/vnd.ms-excel')
+	response                        = HttpResponse(content_type='application/vnd.ms-excel')
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	response.write(output.read())
 	return response
 
 def ingreso_clasificacion_pdf(request):
 
-	var_post 			= request.POST.copy()
-	data_pdf 			= []
-	data_cabecera 		= []
-	tipo_periodo 		= int(var_post['periodos'])
-	cant_periodo 		= int(var_post['cantidad_periodos'])
-	clasificacion_id 	= var_post.getlist('clasificacion')
-	conceptos 			= var_post.getlist('conceptos')
+	var_post            = request.POST.copy()
+	data_pdf            = []
+	data_cabecera       = []
+	tipo_periodo        = int(var_post['periodos'])
+	cant_periodo        = int(var_post['cantidad_periodos'])
+	clasificacion_id    = var_post.getlist('clasificacion')
+	conceptos           = var_post.getlist('conceptos')
 
-	data 				= data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasificacion_id, conceptos)
+	data                = data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasificacion_id, conceptos)
 
 
 	len_cabecera = data[0]['cabecera'].__len__()
@@ -588,7 +588,7 @@ def ingreso_clasificacion_pdf(request):
 
 			data_pdf.append(data_detalle)
 
-	hora 	= str(time.strftime("%X"))
+	hora    = str(time.strftime("%X"))
 	context = {'empresa': request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
 			   'modulo': 'INGRESOS POR CLASIFICACIÓN', 'rut': request.user.userprofile.empresa.rut,
 			   'direccion': request.user.userprofile.empresa.direccion, 'hora': hora}
@@ -599,26 +599,26 @@ def ingreso_clasificacion_pdf(request):
 		static_file.write(content)
 
 	options = {
-		'page-size'		: 'A4',
-		'orientation'	: 'Landscape',
-		'margin-top'	: '1.25in',
-		'margin-right'	: '0.55in',
-		'margin-bottom'	: '0.55in',
-		'margin-left'	: '0.55in',
-		'header-html'	: 'public/media/reportes/cabecera.html',
+		'page-size'     : 'A4',
+		'orientation'   : 'Landscape',
+		'margin-top'    : '1.25in',
+		'margin-right'  : '0.55in',
+		'margin-bottom' : '0.55in',
+		'margin-left'   : '0.55in',
+		'header-html'   : 'public/media/reportes/cabecera.html',
 	}
 
-	css 		= 'static/assets/css/bootstrap.min.css'
-	template 	= get_template('pdf/reportes/ingreso_clasificacion_detalle.html')
-	fecha 		= str(time.strftime('%d-%m-%Y'))
-	hora 		= str(time.strftime("%X"))
+	css         = 'static/assets/css/bootstrap.min.css'
+	template    = get_template('pdf/reportes/ingreso_clasificacion_detalle.html')
+	fecha       = str(time.strftime('%d-%m-%Y'))
+	hora        = str(time.strftime("%X"))
 
 	context = {
-		'data'			: data_pdf,
-		'data_cabecera'	: data_cabecera,
-		'user'			: request.user.userprofile,
-		'fecha'			: fecha,
-		'hora'			: hora,
+		'data'          : data_pdf,
+		'data_cabecera' : data_cabecera,
+		'user'          : request.user.userprofile,
+		'fecha'         : fecha,
+		'hora'          : hora,
 	}
 
 	html = template.render(context)  # Renders the template with the context data.
@@ -626,10 +626,10 @@ def ingreso_clasificacion_pdf(request):
 	pdfkit.from_string(html, 'public/media/reportes/ingresos-clasificacion.pdf', options=options, css=css)
 	pdf = open('public/media/reportes/ingresos-clasificacion.pdf', 'rb')
 
-	dt 			= datetime.now()
-	filename 	= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-ingresos-clasificacion-' + dt.strftime('%Y%m%d') + '.pdf'
+	dt          = datetime.now()
+	filename    = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-ingresos-clasificacion-' + dt.strftime('%Y%m%d') + '.pdf'
 
-	response 						= HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
+	response                        = HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	pdf.close()
 	return response  # returns the response.
@@ -642,25 +642,25 @@ class REPORTE_VACANCIA(View):
 	def get(self, request, id=None):
 
 		return render(request, 'reportes/reporte_vacancia_activo.html', {
-			'title' 	: 'Reporteria',
-			'href' 		: 'reportes',
-			'subtitle'	: 'Reportes',
-			'name' 		: 'Vacancias',
-			'form'		: FiltroVacancia(request=self.request)
+			'title'     : 'Reporteria',
+			'href'      : 'reportes',
+			'subtitle'  : 'Reportes',
+			'name'      : 'Vacancias',
+			'form'      : FiltroVacancia(request=self.request)
 		})
 
 	def post(self, request):
 
-		var_post 		= request.POST.copy()
+		var_post        = request.POST.copy()
 
-		data_cabecera 	= {}
+		data_cabecera   = {}
 		data_response   = list()
-		count 			= 0
+		count           = 0
 
 		activo          = var_post.getlist('activo[]')
 		agrupador       = int(var_post['agrupador'])
 		tipo_periodos   = int(var_post['periodos'])
-		cant_periodos 	= int(var_post['cantidad_periodos'])
+		cant_periodos   = int(var_post['cantidad_periodos'])
 
 		#Calculo de periodos
 		periodos        = calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
@@ -675,78 +675,78 @@ class REPORTE_VACANCIA(View):
 
 				m_totales = activo.local_set.all().filter(visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-				aux 		= 0
-				meses 		= {}
-				cabecera 	= ''
+				aux         = 0
+				meses       = {}
+				cabecera    = ''
 
 				for periodo in periodos:
-					locales 	= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'], visible=True)
-					m_ocupados 	= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+					locales     = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'], visible=True)
+					m_ocupados  = Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-					m_totales 		= m_totales if m_totales is not None else 0
-					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-					m_disponibles 	= m_totales - m_ocupados
+					m_totales       = m_totales if m_totales is not None else 0
+					m_ocupados      = m_ocupados if m_ocupados is not None else 0
+					m_disponibles   = m_totales - m_ocupados
 
 					# Mensual
 					if tipo_periodos == 1:
-						cabecera	= str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+						cabecera    = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 					# Trimestral o Semestral
 					elif tipo_periodos == 2 or tipo_periodos == 3:
-						cabecera	= str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
+						cabecera    = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 					# Anual
 					elif tipo_periodos == 4:
-						cabecera	= 'Año ' + str(periodo['fecha_inicio'].year)
+						cabecera    = 'Año ' + str(periodo['fecha_inicio'].year)
 
 					meses[aux] = [cabecera, formato_numero( m_disponibles)]
 
 					aux += 1
 
 				data_response.append({
-					'activo'	: activo.nombre,
-					'valores'	: meses,
+					'activo'    : activo.nombre,
+					'valores'   : meses,
 				})
 
 			##Agrupador por Tipo de Local
 			elif agrupador == 2:
 
-				tipos 	= Local_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
+				tipos   = Local_Tipo.objects.filter(empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
 
 				for tipo in tipos:
 
-					m_totales  	= Local.objects.filter(activo=activo, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-					aux 		= 0
-					meses 		= {}
-					meses[aux] 	= ['Tipos de Locales',tipo.nombre]
-					aux 		+= 1
+					m_totales   = Local.objects.filter(activo=activo, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+					aux         = 0
+					meses       = {}
+					meses[aux]  = ['Tipos de Locales',tipo.nombre]
+					aux         += 1
 					cabecera    = ''
 
 					for periodo in periodos:
-						locales    		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
-						m_ocupados 		= Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+						locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
+						m_ocupados      = Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-						m_totales  		= m_totales if m_totales is not None else 0
-						m_ocupados 		= m_ocupados if m_ocupados is not None else 0
+						m_totales       = m_totales if m_totales is not None else 0
+						m_ocupados      = m_ocupados if m_ocupados is not None else 0
 
-						m_disponibles 	= m_totales - m_ocupados
+						m_disponibles   = m_totales - m_ocupados
 
 						# Mensual
 						if tipo_periodos == 1:
-							cabecera 	= str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+							cabecera    = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 						# Trimestral o Semestral
 						elif tipo_periodos == 2 or tipo_periodos == 3:
-							cabecera 	= str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
+							cabecera    = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 						# Anual
 						elif tipo_periodos == 4:
-							cabecera 	= 'Año ' + str(periodo['fecha_inicio'].year)
+							cabecera    = 'Año ' + str(periodo['fecha_inicio'].year)
 
 						meses[aux] = [cabecera, formato_numero(m_disponibles)]
 
 						aux += 1
 
 					data_response.append({
-						'activo'	: activo.nombre,
+						'activo'    : activo.nombre,
 						'tipo'      : tipo.nombre,
-						'valores'	: meses,
+						'valores'   : meses,
 					})
 
 			## Agrupador por Niveles
@@ -757,79 +757,79 @@ class REPORTE_VACANCIA(View):
 				for nivel in niveles:
 
 					m_totales = Local.objects.filter(activo=activo, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-					aux 		= 0
-					meses 		= {}
-					meses[aux] 	= ['Niveles', nivel.nombre]
-					aux 		+= 1
+					aux         = 0
+					meses       = {}
+					meses[aux]  = ['Niveles', nivel.nombre]
+					aux         += 1
 					cabecera    = ''
 
 					for periodo in periodos:
-						locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
-						m_ocupados 		= Local.objects.filter(id__in=locales, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+						locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
+						m_ocupados      = Local.objects.filter(id__in=locales, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-						m_totales 		= m_totales if m_totales is not None else 0
-						m_ocupados 		= m_ocupados if m_ocupados is not None else 0
+						m_totales       = m_totales if m_totales is not None else 0
+						m_ocupados      = m_ocupados if m_ocupados is not None else 0
 
-						m_disponibles 	= m_totales - m_ocupados
+						m_disponibles   = m_totales - m_ocupados
 
 						# Mensual
 						if tipo_periodos == 1:
-							cabecera	= str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+							cabecera    = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 						# Trimestral o Semestral
 						elif tipo_periodos == 2 or tipo_periodos == 3:
-							cabecera 	= str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
+							cabecera    = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 						# Anual
 						elif tipo_periodos == 4:
-							cabecera 	= 'Año ' + str(periodo['fecha_inicio'].year)
+							cabecera    = 'Año ' + str(periodo['fecha_inicio'].year)
 
 						meses[aux] = [cabecera, formato_numero(m_disponibles)]
 
 						aux += 1
 
 					data_response.append({
-						'activo'	: activo.nombre,
-						'valores'	: meses,
+						'activo'    : activo.nombre,
+						'valores'   : meses,
 					})
 
 			##Agrupador por Sector
 			elif agrupador == 4:
 
-				sectores 	= activo.sector_set.all().order_by('nombre')
+				sectores    = activo.sector_set.all().order_by('nombre')
 
 				for sector in sectores:
-					m_totales 	= Local.objects.filter(activo=activo, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-					aux 		= 0
-					meses 		= {}
+					m_totales   = Local.objects.filter(activo=activo, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+					aux         = 0
+					meses       = {}
 
-					meses[aux] 	= ['Sectores', sector.nombre]
-					aux 		+= 1
+					meses[aux]  = ['Sectores', sector.nombre]
+					aux         += 1
 
 					for periodo in periodos:
 
-						locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
-						m_ocupados 		= Local.objects.filter(id__in=locales, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+						locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
+						m_ocupados      = Local.objects.filter(id__in=locales, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-						m_totales 		= m_totales if m_totales is not None else 0
-						m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-						m_disponibles 	= m_totales - m_ocupados
+						m_totales       = m_totales if m_totales is not None else 0
+						m_ocupados      = m_ocupados if m_ocupados is not None else 0
+						m_disponibles   = m_totales - m_ocupados
 
 						#Mensual
 						if tipo_periodos == 1:
-							cabecera	= str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+							cabecera    = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 						# Trimestral o Semestral
 						elif tipo_periodos == 2 or tipo_periodos == 3:
-							cabecera 	= str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
+							cabecera    = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 						#Anual
 						elif tipo_periodos == 4:
-							cabecera 	= 'Año ' + str(periodo['fecha_inicio'].year)
+							cabecera    = 'Año ' + str(periodo['fecha_inicio'].year)
 
 						meses[aux] = [cabecera, formato_numero(m_disponibles)]
 
 						aux += 1
 
 					data_response.append({
-						'activo'	: activo.nombre,
-						'valores'	: meses,
+						'activo'    : activo.nombre,
+						'valores'   : meses,
 					})
 
 
@@ -860,32 +860,32 @@ class REPORTE_VACANCIA(View):
 
 def vacancia_xls(request):
 
-	var_post 		= request.POST.copy()
-	fecha          	= str(time.strftime('%d-%m-%Y'))
-	hora           	= str(time.strftime("%X"))
-	count 			= 0
+	var_post        = request.POST.copy()
+	fecha           = str(time.strftime('%d-%m-%Y'))
+	hora            = str(time.strftime("%X"))
+	count           = 0
 
-	activo 			= var_post.getlist('activo')
-	agrupador 		= int(var_post['agrupador'])
-	tipo_periodos 	= int(var_post['periodos'])
-	cant_periodos 	= int(var_post['cantidad_periodos'])
+	activo          = var_post.getlist('activo')
+	agrupador       = int(var_post['agrupador'])
+	tipo_periodos   = int(var_post['periodos'])
+	cant_periodos   = int(var_post['cantidad_periodos'])
 
 	# Calculo de periodos
-	response 		= calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
+	response        = calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
 
-	data_excel		= []
-	output  		= io.BytesIO()
+	data_excel      = []
+	output          = io.BytesIO()
 
-	workbook 		= xlsxwriter.Workbook(output, {'in_memory': True})
-	worksheet 		= workbook.add_worksheet()
+	workbook        = xlsxwriter.Workbook(output, {'in_memory': True})
+	worksheet       = workbook.add_worksheet()
 
 	footer = '&CPage &P of &N'
 	worksheet.set_footer(footer)
 
-	format       		= workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
-	format_cell  		= workbook.add_format({'font_size': 10})
-	format_cell_number 	= workbook.add_format({'font_size': 10,'num_format': '#,##0.0000'})
-	format_merge 		= workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
+	format              = workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
+	format_cell         = workbook.add_format({'font_size': 10})
+	format_cell_number  = workbook.add_format({'font_size': 10,'num_format': '#,##0.0000'})
+	format_merge        = workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
 
 	worksheet.merge_range('D2:E2', 'VACANCIA POR ACTIVOS', format_merge)
 
@@ -944,12 +944,12 @@ def vacancia_xls(request):
 			x.append(activo.nombre)
 
 			for data in response:
-				locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'], visible=True)
-				m_ocupados 		= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+				locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'], visible=True)
+				m_ocupados      = Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-				m_totales 		= m_totales if m_totales is not None else 0
-				m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-				m_disponibles 	= m_totales - m_ocupados
+				m_totales       = m_totales if m_totales is not None else 0
+				m_ocupados      = m_ocupados if m_ocupados is not None else 0
+				m_disponibles   = m_totales - m_ocupados
 
 				x.append(m_disponibles)
 
@@ -968,12 +968,12 @@ def vacancia_xls(request):
 				x.append(tipo.nombre)
 
 				for data in response:
-					locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
-					m_ocupados 		= Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+					m_ocupados      = Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-					m_totales 		= m_totales if m_totales is not None else 0
-					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-					m_disponibles 	= m_totales - m_ocupados
+					m_totales       = m_totales if m_totales is not None else 0
+					m_ocupados      = m_ocupados if m_ocupados is not None else 0
+					m_disponibles   = m_totales - m_ocupados
 
 					x.append(m_disponibles)
 
@@ -992,12 +992,12 @@ def vacancia_xls(request):
 				x.append(nivel.nombre)
 
 				for data in response:
-					locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
-					m_ocupados 		= Local.objects.filter(id__in=locales, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+					m_ocupados      = Local.objects.filter(id__in=locales, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-					m_totales 		= m_totales if m_totales is not None else 0
-					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-					m_disponibles	= m_totales - m_ocupados
+					m_totales       = m_totales if m_totales is not None else 0
+					m_ocupados      = m_ocupados if m_ocupados is not None else 0
+					m_disponibles   = m_totales - m_ocupados
 
 					x.append(m_disponibles)
 
@@ -1017,12 +1017,12 @@ def vacancia_xls(request):
 
 				for data in response:
 
-					locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
-					m_ocupados 		= Local.objects.filter(id__in=locales, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+					m_ocupados      = Local.objects.filter(id__in=locales, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-					m_totales 		= m_totales if m_totales is not None else 0
-					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-					m_disponibles 	= m_totales - m_ocupados
+					m_totales       = m_totales if m_totales is not None else 0
+					m_ocupados      = m_ocupados if m_ocupados is not None else 0
+					m_disponibles   = m_totales - m_ocupados
 
 					x.append(m_disponibles)
 
@@ -1035,27 +1035,27 @@ def vacancia_xls(request):
 	output.seek(0)
 
 	fecha_documento = datetime.now()
-	fecha 			= fecha_documento.strftime('%d/%m/%Y')
-	filename 		= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_')) + '-' + 'vacancias-activos' + '-' + fecha + '.xls'
+	fecha           = fecha_documento.strftime('%d/%m/%Y')
+	filename        = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_')) + '-' + 'vacancias-activos' + '-' + fecha + '.xls'
 
-	response 						= HttpResponse(content_type='application/vnd.ms-excel')
+	response                        = HttpResponse(content_type='application/vnd.ms-excel')
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	response.write(output.read())
 	return response
 
 def vacancia_pdf(request):
 
-	var_post 		= request.POST.copy()
-	data_pdf 		= []
-	data_cabecera 	= []
+	var_post        = request.POST.copy()
+	data_pdf        = []
+	data_cabecera   = []
 
-	activo 			= var_post.getlist('activo')
-	agrupador 		= int(var_post['agrupador'])
-	tipo_periodos 	= int(var_post['periodos'])
-	cant_periodos 	= int(var_post['cantidad_periodos'])
+	activo          = var_post.getlist('activo')
+	agrupador       = int(var_post['agrupador'])
+	tipo_periodos   = int(var_post['periodos'])
+	cant_periodos   = int(var_post['cantidad_periodos'])
 
 	# Calculo de periodos
-	response 		= calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
+	response        = calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
 
 	# Agrega cabecera de Agrupador al pdf
 	cabecera_agrupador = ''
@@ -1102,12 +1102,12 @@ def vacancia_pdf(request):
 			x.append(activo.nombre)
 
 			for data in response:
-				locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'], visible=True)
-				m_ocupados 		= Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+				locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'], visible=True)
+				m_ocupados      = Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-				m_totales 		= m_totales if m_totales is not None else 0
-				m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-				m_disponibles 	= m_totales - m_ocupados
+				m_totales       = m_totales if m_totales is not None else 0
+				m_ocupados      = m_ocupados if m_ocupados is not None else 0
+				m_disponibles   = m_totales - m_ocupados
 
 				x.append(formato_numero(m_disponibles))
 
@@ -1127,12 +1127,12 @@ def vacancia_pdf(request):
 				x.append(tipo.nombre)
 
 				for data in response:
-					locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
-					m_ocupados		= Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+					m_ocupados      = Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-					m_totales 		= m_totales if m_totales is not None else 0
-					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-					m_disponibles 	= m_totales - m_ocupados
+					m_totales       = m_totales if m_totales is not None else 0
+					m_ocupados      = m_ocupados if m_ocupados is not None else 0
+					m_disponibles   = m_totales - m_ocupados
 
 					x.append(formato_numero(m_disponibles))
 
@@ -1151,12 +1151,12 @@ def vacancia_pdf(request):
 				x.append(nivel.nombre)
 
 				for data in response:
-					locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
-					m_ocupados 		= Local.objects.filter(id__in=locales, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+					m_ocupados      = Local.objects.filter(id__in=locales, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-					m_totales 		= m_totales if m_totales is not None else 0
-					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-					m_disponibles	= m_totales - m_ocupados
+					m_totales       = m_totales if m_totales is not None else 0
+					m_ocupados      = m_ocupados if m_ocupados is not None else 0
+					m_disponibles   = m_totales - m_ocupados
 
 					x.append(formato_numero(m_disponibles))
 
@@ -1176,18 +1176,18 @@ def vacancia_pdf(request):
 
 				for data in response:
 
-					locales 		= Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
-					m_ocupados 		= Local.objects.filter(id__in=locales, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+					m_ocupados      = Local.objects.filter(id__in=locales, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-					m_totales 		= m_totales if m_totales is not None else 0
-					m_ocupados 		= m_ocupados if m_ocupados is not None else 0
-					m_disponibles	= m_totales - m_ocupados
+					m_totales       = m_totales if m_totales is not None else 0
+					m_ocupados      = m_ocupados if m_ocupados is not None else 0
+					m_disponibles   = m_totales - m_ocupados
 
 					x.append(formato_numero(m_disponibles))
 
 				data_pdf.append(x)
 
-	hora 	= str(time.strftime("%X"))
+	hora    = str(time.strftime("%X"))
 	context = {'empresa': request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
 			   'modulo': 'VACANCIA POR ACTIVOS', 'rut': request.user.userprofile.empresa.rut,
 			   'direccion': request.user.userprofile.empresa.direccion, 'hora': hora}
@@ -1198,26 +1198,26 @@ def vacancia_pdf(request):
 		static_file.write(content)
 
 	options = {
-		'page-size'		: 'A4',
-		'orientation'	: 'Landscape',
-		'margin-top'	: '1.25in',
-		'margin-right'	: '0.55in',
-		'margin-bottom'	: '0.55in',
-		'margin-left'	: '0.55in',
-		'header-html'	: 'public/media/reportes/cabecera.html',
+		'page-size'     : 'A4',
+		'orientation'   : 'Landscape',
+		'margin-top'    : '1.25in',
+		'margin-right'  : '0.55in',
+		'margin-bottom' : '0.55in',
+		'margin-left'   : '0.55in',
+		'header-html'   : 'public/media/reportes/cabecera.html',
 	}
 
-	css 		= 'static/assets/css/bootstrap.min.css'
-	template 	= get_template('pdf/reportes/vacancia_detalle.html')
-	fecha 		= str(time.strftime('%d-%m-%Y'))
-	hora 		= str(time.strftime("%X"))
+	css         = 'static/assets/css/bootstrap.min.css'
+	template    = get_template('pdf/reportes/vacancia_detalle.html')
+	fecha       = str(time.strftime('%d-%m-%Y'))
+	hora        = str(time.strftime("%X"))
 
 	context = {
-		'data'			: data_pdf,
-		'data_cabecera'	: data_cabecera,
-		'user'			: request.user.userprofile,
-		'fecha'			: fecha,
-		'hora'			: hora,
+		'data'          : data_pdf,
+		'data_cabecera' : data_cabecera,
+		'user'          : request.user.userprofile,
+		'fecha'         : fecha,
+		'hora'          : hora,
 	}
 
 	html = template.render(context)  # Renders the template with the context data.
@@ -1225,10 +1225,10 @@ def vacancia_pdf(request):
 	pdfkit.from_string(html, 'public/media/reportes/vacancia.pdf', options=options, css=css)
 	pdf = open('public/media/reportes/vacancia.pdf', 'rb')
 
-	dt 			= datetime.now()
-	filename 	= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-vacancias-activos-' + dt.strftime('%Y%m%d') + '.pdf'
+	dt          = datetime.now()
+	filename    = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-vacancias-activos-' + dt.strftime('%Y%m%d') + '.pdf'
 
-	response 						= HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
+	response                        = HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	pdf.close()
 	return response  # returns the response.
@@ -1241,20 +1241,20 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 	def get(self, request, id=None):
 
 		return render(request, 'reportes/reporte_vencimiento_contrato.html', {
-			'title' 	: 'Reporteria',
-			'href' 		: 'reportes',
-			'subtitle'	: 'Reportes',
-			'name' 		: 'Vencimiento Contratos',
-			'form'		: FiltroVencimientoContrato(request=self.request)
+			'title'     : 'Reporteria',
+			'href'      : 'reportes',
+			'subtitle'  : 'Reportes',
+			'name'      : 'Vencimiento Contratos',
+			'form'      : FiltroVencimientoContrato(request=self.request)
 		})
 
 	def post(self, request):
 
-		var_post 		= request.POST.copy()
+		var_post        = request.POST.copy()
 
-		data_cabecera 	= {}
-		data_concepto 	= list()
-		count 			= 0
+		data_cabecera   = {}
+		data_concepto   = list()
+		count           = 0
 
 		activo          = var_post.getlist('activo[]')
 		cliente         = var_post.getlist('cliente[]')
@@ -1270,30 +1270,30 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 
 		for activo in activos:
 
-			locales 	= Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
-			contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
+			locales     = Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
+			contratos   = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 			for contrato in contratos:
 
-				meses 	= {}
-				aux 	= 0
+				meses   = {}
+				aux     = 0
 
 				for data in response:
 
-					fecha_contrato 	= contrato.fecha_termino
-					fecha_desde 	= data['fecha_inicio']
-					fecha_hasta 	= data['fecha_termino']
+					fecha_contrato  = contrato.fecha_termino
+					fecha_desde     = data['fecha_inicio']
+					fecha_hasta     = data['fecha_termino']
 
 					if tipo_periodo == 1:
 						cabecera = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
 					elif tipo_periodo == 2 or tipo_periodo == 3:
 						cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
 					elif tipo_periodo == 4:
-						cabecera 		= 'Año ' + str(data['fecha_inicio'].year)
+						cabecera        = 'Año ' + str(data['fecha_inicio'].year)
 
-						fecha_contrato 	= contrato.fecha_termino.year
-						fecha_desde    	= data['fecha_inicio'].year
-						fecha_hasta    	= data['fecha_termino'].year
+						fecha_contrato  = contrato.fecha_termino.year
+						fecha_desde     = data['fecha_inicio'].year
+						fecha_hasta     = data['fecha_termino'].year
 
 					if fecha_contrato >= fecha_desde and fecha_contrato <= fecha_hasta:
 						valor = 'si'
@@ -1304,10 +1304,10 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 					aux +=1
 
 				data_concepto.append({
-					'activo'	: activo.nombre,
-					'cliente'	: contrato.cliente.nombre,
-					'contrato'	: contrato.numero,
-					'valores'	: meses
+					'activo'    : activo.nombre,
+					'cliente'   : contrato.cliente.nombre,
+					'contrato'  : contrato.numero,
+					'valores'   : meses
 				})
 
 		## Se obtiene Cabecera de las tablas
@@ -1326,15 +1326,15 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 		return JsonResponse({'cabecera': data_cabecera, 'data': data_concepto}, safe=False)
 
 	def calcular_rango(self, rango_periodos):
-		response 		= list()
-		fecha_actual 	= datetime.now().date()
+		response        = list()
+		fecha_actual    = datetime.now().date()
 
 		for periodo in rango_periodos:
 
-			fecha_termino 	= sumar_meses(fecha_actual, periodo)
+			fecha_termino   = sumar_meses(fecha_actual, periodo)
 			response.insert(len(response), {
-				'fecha_inicio'	: fecha_actual,
-				'fecha_termino'	: fecha_termino,
+				'fecha_inicio'  : fecha_actual,
+				'fecha_termino' : fecha_termino,
 			})
 
 			fecha_actual    = fecha_termino
@@ -1343,32 +1343,32 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 
 def vencimiento_contrato_xls(request):
 
-	var_post 		= request.POST.copy()
-	fecha          	= str(time.strftime('%d-%m-%Y'))
-	hora           	= str(time.strftime("%X"))
-	count 			= 2
+	var_post        = request.POST.copy()
+	fecha           = str(time.strftime('%d-%m-%Y'))
+	hora            = str(time.strftime("%X"))
+	count           = 2
 
-	activo 			= var_post.getlist('activo')
-	cliente 		= var_post.getlist('cliente')
-	tipo_local 		= var_post.getlist('tipo_local')
-	tipo_periodo 	= int(var_post['periodos'])
-	cant_periodos 	= int(var_post['cantidad_periodos'])
+	activo          = var_post.getlist('activo')
+	cliente         = var_post.getlist('cliente')
+	tipo_local      = var_post.getlist('tipo_local')
+	tipo_periodo    = int(var_post['periodos'])
+	cant_periodos   = int(var_post['cantidad_periodos'])
 
-	response 		= calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
+	response        = calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
 
-	data_excel		= []
-	output  		= io.BytesIO()
+	data_excel      = []
+	output          = io.BytesIO()
 
-	workbook 		= xlsxwriter.Workbook(output, {'in_memory': True})
-	worksheet 		= workbook.add_worksheet()
+	workbook        = xlsxwriter.Workbook(output, {'in_memory': True})
+	worksheet       = workbook.add_worksheet()
 
 	footer = '&CPage &P of &N'
 	worksheet.set_footer(footer)
 
-	format       		= workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
-	format_cell  		= workbook.add_format({'font_size': 10})
-	format_cell_text 	= workbook.add_format({'font_size': 10, 'align': 'center'})
-	format_merge 		= workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
+	format              = workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
+	format_cell         = workbook.add_format({'font_size': 10})
+	format_cell_text    = workbook.add_format({'font_size': 10, 'align': 'center'})
+	format_merge        = workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
 
 	worksheet.merge_range('D2:E2', 'VENCIMIENTO DE CONTRATOS', format_merge)
 
@@ -1405,8 +1405,8 @@ def vencimiento_contrato_xls(request):
 
 	for activo in activos:
 
-		locales 	= Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
-		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
+		locales     = Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
+		contratos   = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 		for contrato in contratos:
 
@@ -1416,14 +1416,14 @@ def vencimiento_contrato_xls(request):
 			x.append(contrato.numero)
 			for data in response:
 
-				fecha_contrato 	= contrato.fecha_termino
-				fecha_desde 	= data['fecha_inicio']
-				fecha_hasta 	= data['fecha_termino']
+				fecha_contrato  = contrato.fecha_termino
+				fecha_desde     = data['fecha_inicio']
+				fecha_hasta     = data['fecha_termino']
 
 				if tipo_periodo == 4:
-					fecha_contrato 	= contrato.fecha_termino.year
-					fecha_desde 	= data['fecha_inicio'].year
-					fecha_hasta 	= data['fecha_termino'].year
+					fecha_contrato  = contrato.fecha_termino.year
+					fecha_desde     = data['fecha_inicio'].year
+					fecha_hasta     = data['fecha_termino'].year
 
 				if fecha_contrato >= fecha_desde and fecha_contrato <= fecha_hasta:
 					valor = 'Caducidad Contrato'
@@ -1442,27 +1442,27 @@ def vencimiento_contrato_xls(request):
 	output.seek(0)
 
 	fecha_documento = datetime.now()
-	fecha 			= fecha_documento.strftime('%d/%m/%Y')
-	filename 		= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_')) + '-' + 'vencimientos-contratos' + '-' + fecha + '.xls'
+	fecha           = fecha_documento.strftime('%d/%m/%Y')
+	filename        = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_')) + '-' + 'vencimientos-contratos' + '-' + fecha + '.xls'
 
-	response 						= HttpResponse(content_type='application/vnd.ms-excel')
+	response                        = HttpResponse(content_type='application/vnd.ms-excel')
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	response.write(output.read())
 	return response
 
 def vencimiento_contrato_pdf(request):
 
-	var_post 		= request.POST.copy()
-	data_pdf 		= []
-	data_cabecera 	= []
+	var_post        = request.POST.copy()
+	data_pdf        = []
+	data_cabecera   = []
 
-	activo 			= var_post.getlist('activo')
-	cliente 		= var_post.getlist('cliente')
-	tipo_local 		= var_post.getlist('tipo_local')
-	tipo_periodo 	= int(var_post['periodos'])
-	cant_periodos 	= int(var_post['cantidad_periodos'])
+	activo          = var_post.getlist('activo')
+	cliente         = var_post.getlist('cliente')
+	tipo_local      = var_post.getlist('tipo_local')
+	tipo_periodo    = int(var_post['periodos'])
+	cant_periodos   = int(var_post['cantidad_periodos'])
 
-	response 		= calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
+	response        = calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
 
 
 	## Se obtiene Cabecera de las tablas
@@ -1485,8 +1485,8 @@ def vencimiento_contrato_pdf(request):
 
 	for activo in activos:
 
-		locales 	= Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
-		contratos 	= Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
+		locales     = Local.objects.filter(activo_id=activo.id, visible=True, local_tipo_id__in=tipo_local)
+		contratos   = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, cliente_id__in=cliente, visible=True).order_by('locales__activo__nombre', 'cliente__nombre', 'numero')
 
 		for contrato in contratos:
 
@@ -1496,14 +1496,14 @@ def vencimiento_contrato_pdf(request):
 			x.append(contrato.numero)
 			for data in response:
 
-				fecha_contrato 	= contrato.fecha_termino
-				fecha_desde 	= data['fecha_inicio']
-				fecha_hasta 	= data['fecha_termino']
+				fecha_contrato  = contrato.fecha_termino
+				fecha_desde     = data['fecha_inicio']
+				fecha_hasta     = data['fecha_termino']
 
 				if tipo_periodo == 4:
-					fecha_contrato 	= contrato.fecha_termino.year
-					fecha_desde 	= data['fecha_inicio'].year
-					fecha_hasta 	= data['fecha_termino'].year
+					fecha_contrato  = contrato.fecha_termino.year
+					fecha_desde     = data['fecha_inicio'].year
+					fecha_hasta     = data['fecha_termino'].year
 
 				if fecha_contrato >= fecha_desde and fecha_contrato <= fecha_hasta:
 					valor = 'Caducidad Contrato'
@@ -1516,7 +1516,7 @@ def vencimiento_contrato_pdf(request):
 
 
 
-	hora 	= str(time.strftime("%X"))
+	hora    = str(time.strftime("%X"))
 	context = {'empresa': request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
 			   'modulo': 'VENCIMIENTOS DE CONTRATOS', 'rut': request.user.userprofile.empresa.rut,
 			   'direccion': request.user.userprofile.empresa.direccion, 'hora': hora}
@@ -1527,26 +1527,26 @@ def vencimiento_contrato_pdf(request):
 		static_file.write(content)
 
 	options = {
-		'page-size'		: 'A4',
-		'orientation'	: 'Landscape',
-		'margin-top'	: '1.25in',
-		'margin-right'	: '0.55in',
-		'margin-bottom'	: '0.55in',
-		'margin-left'	: '0.55in',
-		'header-html'	: 'public/media/reportes/cabecera.html',
+		'page-size'     : 'A4',
+		'orientation'   : 'Landscape',
+		'margin-top'    : '1.25in',
+		'margin-right'  : '0.55in',
+		'margin-bottom' : '0.55in',
+		'margin-left'   : '0.55in',
+		'header-html'   : 'public/media/reportes/cabecera.html',
 	}
 
-	css 		= 'static/assets/css/bootstrap.min.css'
-	template 	= get_template('pdf/reportes/ingreso_activo_detalle.html')
-	fecha 		= str(time.strftime('%d-%m-%Y'))
-	hora 		= str(time.strftime("%X"))
+	css         = 'static/assets/css/bootstrap.min.css'
+	template    = get_template('pdf/reportes/ingreso_activo_detalle.html')
+	fecha       = str(time.strftime('%d-%m-%Y'))
+	hora        = str(time.strftime("%X"))
 
 	context = {
-		'data'			: data_pdf,
-		'data_cabecera'	: data_cabecera,
-		'user'			: request.user.userprofile,
-		'fecha'			: fecha,
-		'hora'			: hora,
+		'data'          : data_pdf,
+		'data_cabecera' : data_cabecera,
+		'user'          : request.user.userprofile,
+		'fecha'         : fecha,
+		'hora'          : hora,
 	}
 
 	html = template.render(context)  # Renders the template with the context data.
@@ -1554,10 +1554,10 @@ def vencimiento_contrato_pdf(request):
 	pdfkit.from_string(html, 'public/media/reportes/vencimientos-contratos.pdf', options=options, css=css)
 	pdf = open('public/media/reportes/vencimientos-contratos.pdf', 'rb')
 
-	dt 			= datetime.now()
-	filename 	= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-vencimientos-contratos-' + dt.strftime('%Y%m%d') + '.pdf'
+	dt          = datetime.now()
+	filename    = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-vencimientos-contratos-' + dt.strftime('%Y%m%d') + '.pdf'
 
-	response 						= HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
+	response                        = HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	pdf.close()
 	return response  # returns the response.
@@ -1570,18 +1570,18 @@ class REPORTE_METROS_CUADRADOS_CLASIFICACION(View):
 	def get(self, request, id=None):
 
 		return render(request, 'reportes/reporte_metros_cuadrados_clasificacion.html', {
-			'title' 	: 'Reporteria',
-			'href' 		: 'reportes',
-			'subtitle'	: 'Reportes',
-			'name' 		: 'M² Clasificación',
-			'form'		: FiltroMCuadradosClasificacion(request=self.request)
+			'title'     : 'Reporteria',
+			'href'      : 'reportes',
+			'subtitle'  : 'Reportes',
+			'name'      : 'M² Clasificación',
+			'form'      : FiltroMCuadradosClasificacion(request=self.request)
 		})
 
 	def post(self, request):
 
-		var_post 		= request.POST.copy()
+		var_post        = request.POST.copy()
 
-		data 			= list()
+		data            = list()
 
 		activo          = var_post.getlist('activo[]')
 		clasificacion   = var_post.getlist('clasificacion[]')
@@ -1596,34 +1596,34 @@ class REPORTE_METROS_CUADRADOS_CLASIFICACION(View):
 			for items in clasificaciones:
 
 				det_clasificaciones = Clasificacion_Detalle.objects.filter(clasificacion=items).order_by('nombre')
-				items_detalle 		= list()
+				items_detalle       = list()
 
-				m2_detalle_sin_clas	= Local.objects.filter(visible=True, activo=activo).exclude(clasificaciones__in=det_clasificaciones).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+				m2_detalle_sin_clas = Local.objects.filter(visible=True, activo=activo).exclude(clasificaciones__in=det_clasificaciones).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 				m2_detalle_sin_clas = m2_detalle_sin_clas if m2_detalle_sin_clas is not None else 0
 
-				m_clasificacion 	= 0
-				m_clasificacion 	+= m2_detalle_sin_clas
+				m_clasificacion     = 0
+				m_clasificacion     += m2_detalle_sin_clas
 
 				for obj in det_clasificaciones:
-					m2_detalle		= Local.objects.filter(visible=True, activo=activo, clasificaciones__id=obj.id).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
-					m2_detalle 		= m2_detalle if m2_detalle is not None else 0
+					m2_detalle      = Local.objects.filter(visible=True, activo=activo, clasificaciones__id=obj.id).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
+					m2_detalle      = m2_detalle if m2_detalle is not None else 0
 
 					m_clasificacion += m2_detalle
 
 					items_detalle.append({
-						'detalle'       		: obj.nombre,
-						'm_cuadrados_detalle'	: formato_numero(m2_detalle),
+						'detalle'               : obj.nombre,
+						'm_cuadrados_detalle'   : formato_numero(m2_detalle),
 					})
 
 				items_detalle.append({
-					'detalle'       	    : 'Sin Clasificación',
-					'm_cuadrados_detalle'	: formato_numero(m2_detalle_sin_clas),
+					'detalle'               : 'Sin Clasificación',
+					'm_cuadrados_detalle'   : formato_numero(m2_detalle_sin_clas),
 				})
 				data.append({
-					'activo'				: activo.nombre,
-					'clasificacion' 		: items.nombre,
-					'm_cuadrado_total' 		: formato_numero(m_clasificacion),
-					'detalles'				: items_detalle
+					'activo'                : activo.nombre,
+					'clasificacion'         : items.nombre,
+					'm_cuadrado_total'      : formato_numero(m_clasificacion),
+					'detalles'              : items_detalle
 				})
 
 
@@ -1631,26 +1631,26 @@ class REPORTE_METROS_CUADRADOS_CLASIFICACION(View):
 
 def metros_cuadrados_clasificacion_xls(request):
 
-	var_post 		= request.POST.copy()
-	fecha          	= str(time.strftime('%d-%m-%Y'))
-	hora           	= str(time.strftime("%X"))
+	var_post        = request.POST.copy()
+	fecha           = str(time.strftime('%d-%m-%Y'))
+	hora            = str(time.strftime("%X"))
 
-	activo 			= var_post.getlist('activo')
-	clasificacion 	= var_post.getlist('clasificacion')
+	activo          = var_post.getlist('activo')
+	clasificacion   = var_post.getlist('clasificacion')
 
-	data_excel		= []
-	output  		= io.BytesIO()
+	data_excel      = []
+	output          = io.BytesIO()
 
-	workbook 		= xlsxwriter.Workbook(output, {'in_memory': True})
-	worksheet 		= workbook.add_worksheet()
+	workbook        = xlsxwriter.Workbook(output, {'in_memory': True})
+	worksheet       = workbook.add_worksheet()
 
 	footer = '&CPage &P of &N'
 	worksheet.set_footer(footer)
 
-	format       		= workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
-	format_cell  		= workbook.add_format({'font_size': 10})
-	format_cell_text 	= workbook.add_format({'font_size': 10, 'align': 'center'})
-	format_merge 		= workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
+	format              = workbook.add_format({'bold': True, 'align': 'center', 'font_size':10, 'border': True, 'bottom_color': '#286ca0'})
+	format_cell         = workbook.add_format({'font_size': 10})
+	format_cell_text    = workbook.add_format({'font_size': 10, 'align': 'center'})
+	format_merge        = workbook.add_format({'font_size': 10, 'align': 'center', 'bold': True})
 	format_cell_number  = workbook.add_format({'font_size': 10, 'num_format': '#,##0.0000'})
 
 	worksheet.merge_range('B2:C2', 'M² por Clasificación', format_merge)
@@ -1718,20 +1718,20 @@ def metros_cuadrados_clasificacion_xls(request):
 	output.seek(0)
 
 	fecha_documento = datetime.now()
-	fecha 			= fecha_documento.strftime('%d/%m/%Y')
-	filename 		= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_')) + '-' + 'metros-cuadrados-clasificacion' + '-' + fecha + '.xls'
+	fecha           = fecha_documento.strftime('%d/%m/%Y')
+	filename        = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_')) + '-' + 'metros-cuadrados-clasificacion' + '-' + fecha + '.xls'
 
-	response 						= HttpResponse(content_type='application/vnd.ms-excel')
+	response                        = HttpResponse(content_type='application/vnd.ms-excel')
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	response.write(output.read())
 	return response
 
 def metros_cuadrados_clasificacion_pdf(request):
 
-	var_post 		= request.POST.copy()
-	pdf_data 	    = list()
-	activo 			= var_post.getlist('activo')
-	clasificacion 	= var_post.getlist('clasificacion')
+	var_post        = request.POST.copy()
+	pdf_data        = list()
+	activo          = var_post.getlist('activo')
+	clasificacion   = var_post.getlist('clasificacion')
 
 	## Se obtiene el detalle de la tabla
 
@@ -1739,8 +1739,8 @@ def metros_cuadrados_clasificacion_pdf(request):
 
 	for activo in activos:
 
-		data_pdf_detalle 	= []
-		data_pdf_totales	= []
+		data_pdf_detalle    = []
+		data_pdf_totales    = []
 
 		clasificaciones = Clasificacion.objects.filter(id__in=clasificacion, empresa=request.user.userprofile.empresa,
 														   visible=True,
@@ -1752,7 +1752,7 @@ def metros_cuadrados_clasificacion_pdf(request):
 			m2_detalle_sin_clas = Local.objects.filter(visible=True, activo=activo).exclude(clasificaciones__isnull=False).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 			m2_detalle_sin_clas = m2_detalle_sin_clas if m2_detalle_sin_clas is not None else 0
 
-			m_clasificacion 	= 0
+			m_clasificacion     = 0
 			m_clasificacion    += m2_detalle_sin_clas
 
 			for obj in det_clasificaciones:
@@ -1778,11 +1778,11 @@ def metros_cuadrados_clasificacion_pdf(request):
 			data_pdf_totales.append(['M² Total','','',formato_numero(m_clasificacion)])
 
 		pdf_data.append({
-			'detalles'	: data_pdf_detalle,
+			'detalles'  : data_pdf_detalle,
 			'totales'   : data_pdf_totales
 		})
 
-	hora 	= str(time.strftime("%X"))
+	hora    = str(time.strftime("%X"))
 	context = {'empresa': request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
 			   'modulo': 'M² por Clasificación', 'rut': request.user.userprofile.empresa.rut,
 			   'direccion': request.user.userprofile.empresa.direccion, 'hora': hora}
@@ -1793,25 +1793,25 @@ def metros_cuadrados_clasificacion_pdf(request):
 		static_file.write(content)
 
 	options = {
-		'page-size'		: 'A4',
-		'orientation'	: 'Landscape',
-		'margin-top'	: '1.25in',
-		'margin-right'	: '0.55in',
-		'margin-bottom'	: '0.55in',
-		'margin-left'	: '0.55in',
-		'header-html'	: 'public/media/reportes/cabecera.html',
+		'page-size'     : 'A4',
+		'orientation'   : 'Landscape',
+		'margin-top'    : '1.25in',
+		'margin-right'  : '0.55in',
+		'margin-bottom' : '0.55in',
+		'margin-left'   : '0.55in',
+		'header-html'   : 'public/media/reportes/cabecera.html',
 	}
 
-	css 		= 'static/assets/css/bootstrap.min.css'
-	template 	= get_template('pdf/reportes/m_cuadrado_clasificacion.html')
-	fecha 		= str(time.strftime('%d-%m-%Y'))
-	hora 		= str(time.strftime("%X"))
+	css         = 'static/assets/css/bootstrap.min.css'
+	template    = get_template('pdf/reportes/m_cuadrado_clasificacion.html')
+	fecha       = str(time.strftime('%d-%m-%Y'))
+	hora        = str(time.strftime("%X"))
 
 	context = {
-		'data'			: pdf_data,
-		'user'			: request.user.userprofile,
-		'fecha'			: fecha,
-		'hora'			: hora,
+		'data'          : pdf_data,
+		'user'          : request.user.userprofile,
+		'fecha'         : fecha,
+		'hora'          : hora,
 	}
 
 	html = template.render(context)  # Renders the template with the context data.
@@ -1819,14 +1819,140 @@ def metros_cuadrados_clasificacion_pdf(request):
 	pdfkit.from_string(html, 'public/media/reportes/metros-cuadrados-clasificacion.pdf', options=options, css=css)
 	pdf = open('public/media/reportes/metros-cuadrados-clasificacion.pdf', 'rb')
 
-	dt 			= datetime.now()
-	filename 	= "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-metros-cuadrados-clasificacion-' + dt.strftime('%Y%m%d') + '.pdf'
+	dt          = datetime.now()
+	filename    = "".join(str(request.user.userprofile.empresa.nombre).strip().replace(' ','_'))+'-metros-cuadrados-clasificacion-' + dt.strftime('%Y%m%d') + '.pdf'
 
-	response 						= HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
+	response                        = HttpResponse(pdf.read(), content_type='application/pdf')  # Generates the response as pdf response.
 	response['Content-Disposition'] = 'attachment; filename=' + filename + ''
 	pdf.close()
 	return response  # returns the response.
 
+
+def data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasificacion_id, conceptos):
+
+	#variables
+
+	count               = 0
+	data_clasificacion  = list()
+	data_cabecera       = {}
+	data                = list()
+	data_locales        = []
+
+	activos             = request.user.userprofile.empresa.activo_set.all().values_list('id', flat=True)
+	periodos            = calcular_periodos(tipo_periodo, cant_periodo, 'restar')
+	contratos           = Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
+
+	## Se obtiene Cabecera de las tablas
+	for cab_periodo in periodos:
+
+		if tipo_periodo == 1:
+			data_cabecera[count] = str(nombre_meses[cab_periodo['fecha_inicio'].month - 1]) + ' ' + str(cab_periodo['fecha_inicio'].year)
+		elif tipo_periodo == 2 or tipo_periodo == 3:
+			data_cabecera[count] = str(str(nombre_meses[cab_periodo['fecha_inicio'].month - 1]) + '-' + str(cab_periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[cab_periodo['fecha_termino'].month - 1]) + '-' + str(cab_periodo['fecha_termino'].year))
+		elif tipo_periodo == 4:
+			data_cabecera[count] = 'Año ' + str(cab_periodo['fecha_inicio'].year)
+		count += 1
+
+	##Obtengo todos lo locales y el primero si es que existen mas de 2 en el contrato
+	for item_contrato in contratos:
+		if item_contrato.locales.all().first().id not in data_locales:
+			data_locales.append(item_contrato.locales.all().first().id)
+
+	## Se total de clasificaciones
+	clasificaciones = Clasificacion.objects.filter(id__in=clasificacion_id, empresa=request.user.userprofile.empresa, visible=True, tipo_clasificacion_id=1).order_by('nombre')
+
+	for clasificacion in clasificaciones:
+
+		det_clasificaciones = Clasificacion_Detalle.objects.filter(clasificacion=clasificacion)
+		locales_sin_clas    = Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales).exclude(clasificaciones__in=det_clasificaciones).values_list('id', flat=True)
+		data_detalle        = list()
+		#Locales con clasificacion
+		for items in det_clasificaciones:
+
+			locales     = Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales, clasificaciones=items).values_list('id', flat=True)
+			contratos   = Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True, locales__in=locales)
+			meses       = {}
+			meses_format= {}
+			aux         = 0
+
+			for periodo in periodos:
+
+				total_clasificacion = Factura.objects.filter(contrato_id__in=contratos, visible=True,
+															 factura_detalle__concepto__in=conceptos,
+															 fecha_inicio__gte=periodo['fecha_inicio'],
+															 fecha_inicio__lte=periodo['fecha_termino']) \
+					.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+
+				total_clasificacion = total_clasificacion if total_clasificacion is not None else 0
+				if tipo_periodo == 1:
+
+					nom_cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+
+				elif tipo_periodo == 2 or tipo_periodo == 3:
+
+					nom_cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
+
+				elif tipo_periodo == 4:
+					nom_cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
+
+				meses[aux]          = [nom_cabecera, total_clasificacion]
+				meses_format[aux]   = [nom_cabecera, formato_moneda_local(request, total_clasificacion)]
+				aux += 1
+
+			data_detalle.append({
+				'detalle_clasificacion' : items.nombre,
+				'valores'               : meses,
+				'valores_formateado'    : meses_format
+			})
+
+		## Se total de locales sin clasificacion
+		contratos   = Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True, locales__in=locales_sin_clas)
+		meses       = {}
+		meses_format= {}
+		aux         = 0
+		for periodo in periodos:
+
+			total_clasificacion = Factura.objects.filter(contrato_id__in=contratos, visible=True,
+														 factura_detalle__concepto__in=conceptos,
+														 fecha_inicio__gte=periodo['fecha_inicio'],
+														 fecha_inicio__lte=periodo['fecha_termino']) \
+				.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+
+			total_clasificacion = total_clasificacion if total_clasificacion is not None else 0
+
+			if tipo_periodo == 1:
+
+				nom_cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+
+			elif tipo_periodo == 2 or tipo_periodo == 3:
+
+				nom_cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
+
+			elif tipo_periodo == 4:
+
+				nom_cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
+
+			meses[aux]          = [nom_cabecera, total_clasificacion]
+			meses_format[aux]   = [nom_cabecera, formato_moneda_local(request, total_clasificacion)]
+
+			aux += 1
+
+		data_detalle.append({
+			'detalle_clasificacion' : 'Sin Clasificación',
+			'valores'               : meses,
+			'valores_formateado'    : meses_format
+		})
+		data_clasificacion.append({
+			'clasificacion' : clasificacion.nombre,
+			'detalles'      : data_detalle
+		})
+
+	data.append({
+		'cabecera'  : data_cabecera,
+		'data'      : data_clasificacion
+	})
+
+	return data
 
 
 class REPORTE_GARANTIA_LOCAL(View):
@@ -1946,7 +2072,7 @@ class REPORTE_GARANTIA_LOCAL(View):
 		for contrato in contratos:
 
 			locales = list()
-			total  	= 0
+			total   = 0
 
 			for local in contrato.locales.all():
 
@@ -1957,24 +2083,24 @@ class REPORTE_GARANTIA_LOCAL(View):
 					valor = garantia.valor * garantia.moneda.moneda_historial_set.all().order_by('-id').first().valor
 
 					garantias.append({
-						'id' 		: garantia.id,
-						'nombre' 	: garantia.nombre,
-						'total' 	: valor,
+						'id'        : garantia.id,
+						'nombre'    : garantia.nombre,
+						'total'     : valor,
 					})
 
 					total += valor
 
 				locales.append({
-					'id'  		: local.id,
-					'nombre' 	: local.nombre,
+					'id'        : local.id,
+					'nombre'    : local.nombre,
 					'garantias' : garantias,
 					})
 
 			data.append({
-				'id'  		: contrato.id,
-				'nombre' 	: contrato.nombre_local,
-				'locales' 	: locales,
-				'total' 	: total,
+				'id'        : contrato.id,
+				'nombre'    : contrato.nombre_local,
+				'locales'   : locales,
+				'total'     : total,
 				})
 
 		return JsonResponse(data, safe=False)
@@ -1987,20 +2113,20 @@ class REPORTE_INGRESO_ACTIVO_METROS(View):
 	def get(self, request, id=None):
 
 		return render(request, 'reporte_ingreso_metros.html', {
-			'title' 	: 'Reporteria',
-			'href' 		: '/reportes/ingreso-activo/metros/',
-			'subtitle' 	: 'Reportes',
-			'name' 		: 'Ingreso por m²',
-			'form' 		: FormIngresoMetrosCuadrados(request=self.request)
+			'title'     : 'Reporteria',
+			'href'      : '/reportes/ingreso-activo/metros/',
+			'subtitle'  : 'Reportes',
+			'name'      : 'Ingreso por m²',
+			'form'      : FormIngresoMetrosCuadrados(request=self.request)
 		})
 
 	def post(self, request):
 
-		var_post 	= request.POST.copy()
-		periodos  	= calcular_periodos(1, int(var_post['cantidad']), 'restar')
-		activos 	= Activo.objects.filter(id__in=var_post.getlist('activos')) # self.request.user.userprofile.empresa.activo_set.all()
-		conceptos 	= Concepto.objects.filter(id__in=var_post.getlist('conceptos')) # self.request.user.userprofile.empresa.concepto_set.all()
-		data 		= data_report_ingreso_activo_metros(request, periodos, activos, conceptos)
+		var_post    = request.POST.copy()
+		periodos    = calcular_periodos(1, int(var_post['cantidad']), 'restar')
+		activos     = Activo.objects.filter(id__in=var_post.getlist('activos')) # self.request.user.userprofile.empresa.activo_set.all()
+		conceptos   = Concepto.objects.filter(id__in=var_post.getlist('conceptos')) # self.request.user.userprofile.empresa.concepto_set.all()
+		data        = data_report_ingreso_activo_metros(request, periodos, activos, conceptos)
 
 		return JsonResponse(data, safe=False)
 
@@ -2010,7 +2136,7 @@ def data_report_ingreso_activo_metros(request, periodos, activos, conceptos):
 
 	for activo in activos:
 
-		locales 	= Local.objects.filter(activo=activo, visible=True)
+		locales     = Local.objects.filter(activo=activo, visible=True)
 		contratos_f = Contrato.objects.filter(locales__in=locales, empresa=request.user.userprofile.empresa, visible=True)
 
 		data_conceptos = list()
@@ -2021,78 +2147,133 @@ def data_report_ingreso_activo_metros(request, periodos, activos, conceptos):
 
 			for periodo in periodos:
 
-				total 			= Factura.objects.filter(contrato__in=contratos_f, visible=True, factura_detalle__concepto=concepto,fecha_inicio__gte=periodo['fecha_inicio'],fecha_termino__lte=periodo['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-				contratos_id 	= Factura.objects.filter(visible=True, factura_detalle__concepto=concepto,fecha_inicio__gte=periodo['fecha_inicio'],fecha_termino__lte=periodo['fecha_termino']).values_list('contrato', flat=True)
-				contratos 		= Contrato.objects.filter(id__in=contratos_id)
-				metros 			= 0
+				total           = Factura.objects.filter(contrato__in=contratos_f, visible=True, factura_detalle__concepto=concepto, fecha_inicio__gte=periodo['fecha_inicio'], fecha_termino__lte=periodo['fecha_termino']).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
+				contratos_id    = Factura.objects.filter(visible=True, factura_detalle__concepto=concepto, fecha_inicio__gte=periodo['fecha_inicio'], fecha_termino__lte=periodo['fecha_termino']).values_list('contrato', flat=True)
+				contratos       = Contrato.objects.filter(id__in=contratos_id)
+				metros          = 0
 
 				for contrato in contratos:
 
 					metros = contrato.locales.all().aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
-				ingreso 		= 0 if total is None else total
-				ingreso_metros 	= 0 if metros is 0 else ingreso / metros
+				ingreso         = 0 if total is None else total
+				ingreso_metros  = 0 if metros is 0 else ingreso / metros
 
 				data_ingresos.append({
-					'fecha_inicio'		: periodo['fecha_inicio'],
-					'fecha_termino'		: periodo['fecha_termino'],
-					'metros' 			: metros,
-					'ingreso' 			: ingreso,
-					'ingreso_metros' 	: ingreso_metros,
+					'fecha_inicio'      : periodo['fecha_inicio'],
+					'fecha_termino'     : periodo['fecha_termino'],
+					'metros'            : metros,
+					'ingreso'           : ingreso,
+					'ingreso_metros'    : ingreso_metros,
 					})
 
 			data_conceptos.append({
-				'id'		: concepto.id,
-				'nombre'	: concepto.nombre,
-				'ingresos'	: data_ingresos,
+				'id'        : concepto.id,
+				'nombre'    : concepto.nombre,
+				'ingresos'  : data_ingresos,
 				})
 
 		data.append({
-			'id'		: activo.id,
-			'nombre'	: activo.nombre,
-			'conceptos'	: data_conceptos,
+			'id'        : activo.id,
+			'nombre'    : activo.nombre,
+			'conceptos' : data_conceptos,
 			})
 
 	return data
 
+def ingreso_activo_metros_reporte(request):
 
-def ingreso_activo_metros_excel():
-	pass
+	var_post    = request.POST.copy()
+	periodos    = calcular_periodos(1, int(var_post['cantidad']), 'restar')
+	activos     = Activo.objects.filter(id__in=var_post.getlist('activos'))
+	conceptos   = Concepto.objects.filter(id__in=var_post.getlist('conceptos'))
+	data        = data_report_ingreso_activo_metros(request, periodos, activos, conceptos)
+
+	if var_post['tipo'] == 'pdf':
+		
+		configuration   = {
+			'head': {
+				'status'    : True,
+				'title'     : 'Ingreso de Activos por m²',
+			},
+			'archive':{
+				'name'      : '',
+				'directory' : 'public/media/reportes/ingresos-activos-metros.pdf'
+			},
+			'options' : {
+				'page-size'     : 'A4',
+				'orientation'   : 'Landscape',
+				'margin-top'    : '1.25in',
+				'margin-right'  : '0.55in',
+				'margin-bottom' : '0.55in',
+				'margin-left'   : '0.55in',
+				'header-html'   : 'public/media/reportes/cabecera.html',
+			},
+			'css'       : 'static/assets/css/bootstrap.min.css',
+			'template'  : 'pdf/reportes/ingreso_activo_detalle.html'
+		}
+
+		return reporte_pdf(request, configuration, data)
+	else:
+
+		output          = io.BytesIO()
+		workbook        = xlsxwriter.Workbook(output, {'in_memory': True})
+		worksheet       = workbook.add_worksheet()
+
+		# print (data)
+
+		data_excel = list()
+
+		columns = list()
+		columns.append({'header': 'Activo'})
+		columns.append({'header': 'Conceptos'})
+
+		for activo in data:
+			for concepto in activo['conceptos']:
+				data_conceptos = list()
+				data_conceptos.append(activo['nombre'])
+				data_conceptos.append(concepto['nombre'])
+				
+				for ingreso in concepto['ingresos']:
+					columns.append({'header': 'Activo'})
+					columns.append({'header': 'Activo'})
+					columns.append({'header': 'Activo'})
+
+					data_conceptos.append(ingreso['ingreso'])
+					data_conceptos.append(ingreso['metros'])
+					data_conceptos.append(ingreso['ingreso_metros'])
+
+			data_excel.append(data_conceptos)
 
 
-def ingreso_activo_metros_pdf(request):
 
-	data 			= list()
-
-	configuration 	= {
-		'head': {
-			'status' 	: True,
-			'title'		: 'Ingreso de Activos por m²',
-		},
-		'archive':{
-			'name'		: '',
-			'directory' : 'public/media/reportes/ingresos-activos-metros.pdf'
-		},
-		'options' : {
-			'page-size'     : 'A4',
-			'orientation'   : 'Landscape',
-			'margin-top'    : '1.25in',
-			'margin-right'  : '0.55in',
-			'margin-bottom' : '0.55in',
-			'margin-left'   : '0.55in',
-			'header-html'   : 'public/media/reportes/cabecera.html',
-		},
-		'css' 		: 'static/assets/css/bootstrap.min.css',
-		'template'	: 'pdf/reportes/ingreso_activo_detalle.html'
-	}
-
-	reporte_pdf(request, configuration, data)
+		# for (var i = 0; i < data.length; i++) {
+		# 	for (var j = 0; j < data[i].conceptos.length; j++) {
+		# 		var ingreso = []
+		# 		ingreso.push(data[i].nombre, data[i].conceptos[j].nombre)
+		# 		for (var k = 0; k < data[i].conceptos[j].ingresos.length; k++) {
+		# 			ingreso.push(data[i].conceptos[j].ingresos[k].ingreso, data[i].conceptos[j].ingresos[k].metros, data[i].conceptos[j].ingresos[k].ingreso_metros)
+		# 		};
+		# 		table_ingreso.row.add(ingreso).draw()
+		# 	};
+		# };
+		# print (data_excel)
 
 
 
+		# data = [['asd', 1, 2, 3, 4]]
 
+		worksheet.add_table('B3:F7', {'data': data_excel,'columns': columns})
 
+		workbook.close()
+		output.seek(0)
 
+		response                        = HttpResponse(content_type='application/vnd.ms-excel')
+		response['Content-Disposition'] = 'attachment; filename=Report.xlsx'
+		response.write(output.read())
+		return response
+		
+		
 
 
 def reporte_pdf(request, configuration, data):
@@ -2101,11 +2282,11 @@ def reporte_pdf(request, configuration, data):
 	# crear cabecera
 	if configuration['head']['status'] is True:
 		context_head = {
-			'modulo'	: configuration['head']['title'],
-			'empresa'	: request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
-			'rut'		: request.user.userprofile.empresa.rut,
-			'direccion'	: request.user.userprofile.empresa.direccion,
-			'hora'		: str(time.strftime("%X")),
+			'modulo'    : configuration['head']['title'],
+			'empresa'   : request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
+			'rut'       : request.user.userprofile.empresa.rut,
+			'direccion' : request.user.userprofile.empresa.direccion,
+			'hora'      : str(time.strftime("%X")),
 			}
 
 		content = render_to_string('pdf/cabeceras/cabecera_default.html', context_head)
@@ -2114,10 +2295,10 @@ def reporte_pdf(request, configuration, data):
 			static_file.write(content)
 
 	# crear archivo pdf
-	template 	= get_template(configuracion['template'])
-	html 		= template.render(data)
-	pdfkit.from_string(html, configuracion['archive']['directory']+'.pdf', options=configuracion['options'], css=configuracion['css'])
-	pdf 		= open(configuracion['archive']['directory']+'.pdf', 'rb')
+	template    = get_template(configuration['template'])
+	html        = template.render(data)
+	pdfkit.from_string(html, configuration['archive']['directory']+'.pdf', options=configuration['options'], css=configuration['css'])
+	pdf         = open(configuration['archive']['directory']+'.pdf', 'rb')
 
 
 
@@ -2132,129 +2313,6 @@ def reporte_pdf(request, configuration, data):
 
 
 
-def data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasificacion_id, conceptos):
 
-	#variables
 
-	count 				= 0
-	data_clasificacion 	= list()
-	data_cabecera 		= {}
-	data 				= list()
-	data_locales 		= []
-
-	activos 			= request.user.userprofile.empresa.activo_set.all().values_list('id', flat=True)
-	periodos 			= calcular_periodos(tipo_periodo, cant_periodo, 'restar')
-	contratos 			= Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True)
-
-	## Se obtiene Cabecera de las tablas
-	for cab_periodo in periodos:
-
-		if tipo_periodo == 1:
-			data_cabecera[count] = str(nombre_meses[cab_periodo['fecha_inicio'].month - 1]) + ' ' + str(cab_periodo['fecha_inicio'].year)
-		elif tipo_periodo == 2 or tipo_periodo == 3:
-			data_cabecera[count] = str(str(nombre_meses[cab_periodo['fecha_inicio'].month - 1]) + '-' + str(cab_periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[cab_periodo['fecha_termino'].month - 1]) + '-' + str(cab_periodo['fecha_termino'].year))
-		elif tipo_periodo == 4:
-			data_cabecera[count] = 'Año ' + str(cab_periodo['fecha_inicio'].year)
-		count += 1
-
-	##Obtengo todos lo locales y el primero si es que existen mas de 2 en el contrato
-	for item_contrato in contratos:
-		if item_contrato.locales.all().first().id not in data_locales:
-			data_locales.append(item_contrato.locales.all().first().id)
-
-	## Se total de clasificaciones
-	clasificaciones = Clasificacion.objects.filter(id__in=clasificacion_id, empresa=request.user.userprofile.empresa, visible=True, tipo_clasificacion_id=1).order_by('nombre')
-
-	for clasificacion in clasificaciones:
-
-		det_clasificaciones = Clasificacion_Detalle.objects.filter(clasificacion=clasificacion)
-		locales_sin_clas 	= Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales).exclude(clasificaciones__in=det_clasificaciones).values_list('id', flat=True)
-		data_detalle 		= list()
-		#Locales con clasificacion
-		for items in det_clasificaciones:
-
-			locales 	= Local.objects.filter(visible=True, activo__in=activos, id__in=data_locales, clasificaciones=items).values_list('id', flat=True)
-			contratos 	= Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True, locales__in=locales)
-			meses 		= {}
-			meses_format= {}
-			aux 		= 0
-
-			for periodo in periodos:
-
-				total_clasificacion = Factura.objects.filter(contrato_id__in=contratos, visible=True,
-															 factura_detalle__concepto__in=conceptos,
-															 fecha_inicio__gte=periodo['fecha_inicio'],
-															 fecha_inicio__lte=periodo['fecha_termino']) \
-					.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-				total_clasificacion = total_clasificacion if total_clasificacion is not None else 0
-				if tipo_periodo == 1:
-
-					nom_cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
-
-				elif tipo_periodo == 2 or tipo_periodo == 3:
-
-					nom_cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
-
-				elif tipo_periodo == 4:
-					nom_cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
-
-				meses[aux] 			= [nom_cabecera, total_clasificacion]
-				meses_format[aux] 	= [nom_cabecera, formato_moneda_local(request, total_clasificacion)]
-				aux += 1
-
-			data_detalle.append({
-				'detalle_clasificacion'	: items.nombre,
-				'valores'				: meses,
-				'valores_formateado'    : meses_format
-			})
-
-		## Se total de locales sin clasificacion
-		contratos 	= Contrato.objects.filter(empresa=request.user.userprofile.empresa, visible=True, locales__in=locales_sin_clas)
-		meses 		= {}
-		meses_format= {}
-		aux 		= 0
-		for periodo in periodos:
-
-			total_clasificacion = Factura.objects.filter(contrato_id__in=contratos, visible=True,
-														 factura_detalle__concepto__in=conceptos,
-														 fecha_inicio__gte=periodo['fecha_inicio'],
-														 fecha_inicio__lte=periodo['fecha_termino']) \
-				.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
-
-			total_clasificacion = total_clasificacion if total_clasificacion is not None else 0
-
-			if tipo_periodo == 1:
-
-				nom_cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
-
-			elif tipo_periodo == 2 or tipo_periodo == 3:
-
-				nom_cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
-
-			elif tipo_periodo == 4:
-
-				nom_cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
-
-			meses[aux] 			= [nom_cabecera, total_clasificacion]
-			meses_format[aux] 	= [nom_cabecera, formato_moneda_local(request, total_clasificacion)]
-
-			aux += 1
-
-		data_detalle.append({
-			'detalle_clasificacion'	: 'Sin Clasificación',
-			'valores'				: meses,
-			'valores_formateado'	: meses_format
-		})
-		data_clasificacion.append({
-			'clasificacion' : clasificacion.nombre,
-			'detalles'      : data_detalle
-		})
-
-	data.append({
-		'cabecera'	: data_cabecera,
-		'data'		: data_clasificacion
-	})
-
-	return data
 

@@ -15,6 +15,16 @@
 				<div class="ibox-content">
 					<div class="row">
 
+						<form id="form-ingreso-reporte" role="form" action="{% url 'ingreso_activo_metros_reporte' %}" method="post">
+							<div class="hide">
+								{% csrf_token %}
+								{{ form.activos }}
+								{{ form.conceptos }}
+								{{ form.cantidad }}
+								<input type="hidden" name="tipo">
+							</div>
+						</form>
+
 						<form id="form-ingreso" role="form" action="{% url 'ingreso_activo_metros' %}" method="post">
 							{% csrf_token %}
 
@@ -134,6 +144,10 @@ function submit_form_ingreso(){
 		},
 		submitHandler: function(form){
 
+			$('#form-ingreso-reporte select[name="activos"]').val($('#form-ingreso select[name="activos"]').val());
+			$('#form-ingreso-reporte select[name="conceptos"]').val($('#form-ingreso select[name="conceptos"]').val());
+			$('#form-ingreso-reporte select[name="cantidad"]').val($('#form-ingreso select[name="cantidad"]').val());
+
 			$('#form-ingreso').ajaxSubmit({
 				dataType: 'json',
 				beforeSend:function(){
@@ -155,11 +169,11 @@ function initialize_table(periods){
 		'buttons': [
 		{
 			text: '<i class="fa fa-file-excel-o"></i><span style="vertical-align:middle;"> Excel</span>',
-			action: function ( e, dt, node, config ) {download_archive(1)}
+			action: function ( e, dt, node, config ) {download_archive('excel')}
 		},
 		{
 			text: '<i class="fa fa-file-pdf-o"></i><span style="vertical-align:middle;"> PDF</span>',
-			action: function ( e, dt, node, config ) {download_archive(2)}
+			action: function ( e, dt, node, config ) {download_archive('pdf')}
 		},
 		],
 		'scrollX': true,
@@ -224,35 +238,9 @@ function template_table(periods){
 
 function download_archive(type){
 
-	// var activo              = $("#form-ingreso-activo").find('#id_activo').val();
-	// var periodo             = $("#form-ingreso-activo").find('#id_periodos').val();
-	// var cantidad_periodo    = $("#form-ingreso-activo").find('#id_cantidad_periodos').val();
-	// var cliente             = $("#form-ingreso-activo").find('#id_cliente').val();
-	// var concepto            = $("#form-ingreso-activo").find('#id_conceptos').val();
+	$('#form-ingreso-reporte input[name="tipo"]').val(type);
+	$('#form-ingreso-reporte').submit()
 
-	// var token = '{{ csrf_token }}';
-	// if(tipo_archivo == 'excel'){
-	// 	var $form1  =$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",'/reportes/ingreso-activo/excel/');
-	// }else if(tipo_archivo == 'pdf'){
-	// 	var $form1  =$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",'/reportes/ingreso-activo/pdf/');
-	// }else {
-	// 	var configuracion = {
-	// 		'toast_type'	: 'error',
-	// 		'toast_text' 	: 'No se pudo generar archivo',
-	// 		'toast_title' 	: 'Error',
-	// 	}
-	// 	notification_toast(configuracion)
-	// }
-	// var $input  =$(document.createElement('input')).attr('name','csrfmiddlewaretoken').val(token);
-	// var $input0 =$(document.createElement('input')).attr('name','activo').val(activo);
-	// var $input1 =$(document.createElement('input')).attr('name','periodos').val(periodo);
-	// var $input2 =$(document.createElement('input')).attr('name','cantidad_periodos').val(cantidad_periodo);
-	// var $input3 =$(document.createElement('input')).attr('name','cliente').val(cliente);
-	// var $input4 =$(document.createElement('input')).attr('name','conceptos').val(concepto);
-
-	// $form1.append($input).append($input0).append($input1).append($input2).append($input3).append($input4);
-	// $("body").append($form1);
-	// $form1.submit();
 }
 
 
