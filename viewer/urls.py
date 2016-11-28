@@ -27,4 +27,8 @@ urlpatterns = [
 
 	# get - conceptos
 	url(r'^get/conceptos-activo/(?P<id>\d+)$', views.get_conceptos_activo, name='get_conceptos_activo'),
+
+	# data - ingreso por clasificacion
+	url(r'^data/ingresos-clasificacion/$', views.chart_ingreso_clasificacion, name='chart_ingreso_clasificacion'),
+	url(r'^data/ingresos-clasificacion-detalle/(?P<id>\d+)/$', views.get_detalle_clasificacion, name='get_data_detalle_clasificacion'),
 ]

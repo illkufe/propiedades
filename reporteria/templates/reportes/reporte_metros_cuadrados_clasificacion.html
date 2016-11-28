@@ -127,7 +127,7 @@ function enviar_formulario_m2_clasificacion() {
                         row.clasificacion       = response.data[i].clasificacion;
                         row.detalle             = response.data[i].detalles[a].detalle;
                         row.m_cuadrados_detalle = response.data[i].detalles[a].m_cuadrados_detalle;
-                        row.m_cuadrado_total    = response.data[i].m_cuadrado_total;
+                        /*row.m_cuadrado_total    = response.data[i].m_cuadrado_total;*/
                         rows.push(row);
                     }
                 }
@@ -168,7 +168,7 @@ function load_table_m_cudrado_clasificacion() {
                 }
             },
         ],
-        'rowsGroup': [0, 1, 4]
+        <!--'rowsGroup': [0, 1, 4]-->
     };
 
 	var columns = [
@@ -191,12 +191,14 @@ function load_table_m_cudrado_clasificacion() {
         'width': '10%',
         'data': 'm_cuadrados_detalle',
         'title': 'M² Detalle',
-    },
+    }];
+
+    /*,
     {
         'width': '10%',
         'data': 'm_cuadrado_total',
         'title': 'M² Total',
-    }];
+    }*/
 
     if ($.fn.DataTable.isDataTable( '#tabla-m-cudrado-clasificacion')){
 		tabla_m_cuadrado_clasificacion.destroy();
