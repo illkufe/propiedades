@@ -651,7 +651,7 @@ function modal_garantias(){
 	var id = $(this).attr('data-id')
 
 	$.ajax({
-		url: '{% url "activos_garantias" '+id+'%}',
+		url: '{% url "activos_garantias" %}',
 		type: 'get',
 		dataType: 'json',
 		success: function(data){
