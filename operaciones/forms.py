@@ -163,3 +163,53 @@ class GastoServicioBasicoForm(forms.ModelForm):
 			'mes'		: 'mes del gasto',
 			'anio'		: 'año del gasto',
 		}
+
+class TarifaServicioBasicoForm(forms.ModelForm):
+
+	valor = NumberField(
+		widget = forms.TextInput(attrs={'class': 'form-control format-number'}),
+		error_messages = {'required': 'campo requerido'},
+		help_text = 'valor de la tarifa',
+		)
+
+	def __init__(self, *args, **kwargs):
+
+		self.request = kwargs.pop('request')
+
+		super(TarifaServicioBasicoForm, self).__init__(*args, **kwargs)
+
+		self.fields['activo'].queryset = Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+	class Meta:
+
+		model 	= Tarifa_Servicio_Basico
+		fields 	= '__all__'
+		exclude = [ 'visible', 'creado_en']
+
+		widgets = {
+			'activo'	: forms.Select(attrs={'class': 'form-control'}),
+			'tipo'		: forms.Select(attrs={'class': 'form-control'}),
+			'mes'		: forms.Select(attrs={'class': 'form-control'}),
+			'anio'		: forms.NumberInput(attrs={'class': 'form-control'}),
+		}
+
+		error_messages = {
+			'activo' 	: {'required': 'campo requerido'},
+			'tipo' 		: {'required': 'campo requerido'},
+			'mes' 		: {'required': 'campo requerido'},
+			'anio' 		: {'required': 'campo requerido'},
+		}
+
+		labels = {
+			'activo'	: 'Activo',
+			'tipo'		: 'Tipo de Tarifa',
+			'mes'		: 'Mes',
+			'anio'		: 'Año',
+		}
+
+		help_texts = {
+			'activo'	: 'activo asociado a la tarifa',
+			'tipo'		: 'tipo de tarifa',
+			'mes'		: 'mes de la tarifa',
+			'anio'		: 'año de la tarifa',
+		}

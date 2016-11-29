@@ -2220,30 +2220,28 @@ def ingreso_activo_metros_reporte(request):
 		workbook        = xlsxwriter.Workbook(output, {'in_memory': True})
 		worksheet       = workbook.add_worksheet()
 
-		# print (data)
+		# data_excel = list()
 
-		data_excel = list()
+		# columns = list()
+		# columns.append({'header': 'Activo'})
+		# columns.append({'header': 'Conceptos'})
 
-		columns = list()
-		columns.append({'header': 'Activo'})
-		columns.append({'header': 'Conceptos'})
-
-		for activo in data:
-			for concepto in activo['conceptos']:
-				data_conceptos = list()
-				data_conceptos.append(activo['nombre'])
-				data_conceptos.append(concepto['nombre'])
+		# for activo in data:
+		# 	for concepto in activo['conceptos']:
+		# 		data_conceptos = list()
+		# 		data_conceptos.append(activo['nombre'])
+		# 		data_conceptos.append(concepto['nombre'])
 				
-				for ingreso in concepto['ingresos']:
-					columns.append({'header': 'Activo'})
-					columns.append({'header': 'Activo'})
-					columns.append({'header': 'Activo'})
+		# 		for ingreso in concepto['ingresos']:
+		# 			columns.append({'header': 'Activo'})
+		# 			columns.append({'header': 'Activo'})
+		# 			columns.append({'header': 'Activo'})
 
-					data_conceptos.append(ingreso['ingreso'])
-					data_conceptos.append(ingreso['metros'])
-					data_conceptos.append(ingreso['ingreso_metros'])
+		# 			data_conceptos.append(ingreso['ingreso'])
+		# 			data_conceptos.append(ingreso['metros'])
+		# 			data_conceptos.append(ingreso['ingreso_metros'])
 
-			data_excel.append(data_conceptos)
+		# 	data_excel.append(data_conceptos)
 
 
 
@@ -2261,9 +2259,25 @@ def ingreso_activo_metros_reporte(request):
 
 
 
-		# data = [['asd', 1, 2, 3, 4]]
+		data = [['asd', 1, 2, 3, 4]]
 
-		worksheet.add_table('B3:F7', {'data': data_excel,'columns': columns})
+
+
+		worksheet.add_table('B3:F7', {'data': data,'columns': [{'header': 'Product'},{'header': 'Quarter 1'},{'header': 'Quarter 2'},{'header': 'Quarter 3'},{'header': 'Quarter 4'},]})
+
+
+		merge_format = workbook.add_format({
+			'bold': 1,
+			'border': 1,
+			'align': 'center',
+			'valign': 'vcenter',
+			'fg_color': 'yellow'
+			})
+
+
+		# Merge 3 cells.
+		worksheet.merge_range('B3:D3', 'Merged Range', merge_format)
+
 
 		workbook.close()
 		output.seek(0)

@@ -23,7 +23,7 @@
 						{{ hidden }}
 						{% endfor %}
 						{% endfor %}
-						<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila_concepto('tabla-servicios-basico', 'servicio_basico', {{forloop.counter}})"><i class="fa fa-plus"></i> Nuevo Periodo</button>
+						<!-- <button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila_concepto('tabla-servicios-basico', 'servicio_basico', {{forloop.counter}})"><i class="fa fa-plus"></i> Nuevo Periodo</button> -->
 						<table id="tabla-servicios-basico" class="table table-bordered">
 							<thead>
 								{% for form in formulario.fomulario %}
@@ -40,7 +40,7 @@
 									<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
 									{{ form.valor.label_tag }}
 								</th>
-								<th></th>
+								<!-- <th></th> -->
 								{% endif %}
 								{% endfor %}
 							</thead>
@@ -71,12 +71,12 @@
 											</div>
 										</div>
 									</td>
-									<td class="text-center delete">
+<!-- 									<td class="text-center delete">
 										<div class="form-group text-center">
 											{{ form.DELETE }}
 											<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child(this, 'Servicio')"><i class="fa fa-trash"></i></a>
 										</div>
-									</td>
+									</td> -->
 								</tr>
 								{% endfor %}
 							</tbody>

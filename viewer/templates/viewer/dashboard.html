@@ -113,7 +113,7 @@
 										<tr>
 											<th></th>
 											<th></th>
-											<th class="text-right">Total Garantias</th>
+											<th class="text-right">Total de Garantias</th>
 										</tr>
 									</thead>
 									<tbody></tbody>
@@ -434,6 +434,8 @@
 
 					<div class="col-lg-7 container-table">
 
+						<h2 style="margin-top: 0px; margin-bottom: 25px;">Activos</h2>
+						
 						<table id="tabla-vacancia-tipo" class="table" style="width:100%">
 							<thead>
 								<tr>								
@@ -451,13 +453,13 @@
 
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>			
+				<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">Salir</button>			
 			</div>
 		</div>
 	</div>
 </div>
 
-<div class="modal inmodal fade" id="modal-dashbord" tabindex="-1" role="dialog"  aria-hidden="true">
+<div class="modal fade" id="modal-dashbord" tabindex="-1" role="dialog"  aria-hidden="true">
 	<div class="modal-dialog" id="tamano-modal">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -474,7 +476,7 @@
 	</div>
 </div>
 
-<div class="modal inmodal fade" id="modal-dashbord-lg" tabindex="-1" role="dialog"  aria-hidden="true">
+<div class="modal fade" id="modal-dashbord-lg" tabindex="-1" role="dialog"  aria-hidden="true">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -537,10 +539,11 @@ fecha_actual = moment(fecha_actual).format("DD/MM/YYYY")
 
 $(document).ready(function(){
 
+
 	load_section_garantias()
 	load_section_vacancia(fecha_actual)
 	load_section_ingreso_metros()
-    load_section_ingreso_clasificacion()
+	load_section_ingreso_clasificacion()
 
 	load_section_ingreso_centro_comercial(null, 0, '')
 	load_flag_currencies()
@@ -570,11 +573,13 @@ function initialize(){
 
 		cargar_modal_vacancia(1, tipo, fecha)
 	})
+
 }
 
 function load_section_garantias(){
+
 	$.ajax({
-		url: '{% url "data_garantia" %}',
+		url: '{% url "activos_garantias" %}',
 		type: 'get',
 		dataType: 'json',
 		success: function(data){
@@ -593,14 +598,14 @@ function load_section_garantias(){
 			for (var i = 0; i < data.length; i++) {
 
 				template += '<tr>'
-				template += '<td><button data-id="@id" class="btn btn-info btn-circle" type="button"><i class="fa fa-info"></i></button></td>'
+				template += '<td><button data-id="@id" class="btn btn-info btn-circle activo" type="button"><i class="fa fa-info"></i></button></td>'
 				template += '<td>@nombre</td>'
 				template += '<td class="text-right">@total</td>'
 				template += '</tr>'
 				
 				template = template.replace(/@id/g, data[i].id);
 				template = template.replace(/@nombre/g, data[i].nombre);
-				template = template.replace(/@total/g, data[i].total_f);
+				template = template.replace(/@total/g, d3.format("$,.")(data[i].total));
 
 				if (data[i].total != 0){
 					chart.push([data[i].nombre, data[i].total])	
@@ -631,9 +636,37 @@ function load_section_garantias(){
 					columns: chart,
 				},
 			});
+
+			$('#table-garantias button.activo').click(modal_garantias)
 		}
 	})
 }
+
+
+
+
+
+function modal_garantias(){
+
+	var id = $(this).attr('data-id')
+
+	$.ajax({
+		url: '{% url "activos_garantias" '+id+'%}',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+			console.log(data)
+		}
+	})
+}
+
+
+
+
+
+
+
+
 
 function load_section_vacancia(fecha){
 
@@ -826,9 +859,8 @@ function load_section_ingreso_metros(){
 	})
 }
 
-
 function load_section_ingreso_clasificacion() {
-    	$.ajax({
+	$.ajax({
 		url: '/data/ingresos-clasificacion',
 		type: 'get',
 		dataType: 'json',
@@ -893,12 +925,10 @@ function load_section_ingreso_clasificacion() {
 				}
 			});
 
-            $('.btn-clasificacion-detalle').click(abrir_modal_clasificacion)
+			$('.btn-clasificacion-detalle').click(abrir_modal_clasificacion)
 		}
 	})
 }
-
-
 
 function load_flag_currencies(){
 
@@ -981,10 +1011,10 @@ function abrir_modal_vacancia(){
 
 function abrir_modal_clasificacion(){
 
-    var clasificacion   =$(this).attr('data-id')
-    var nombre          =$(this).attr('data-nombre')
+	var clasificacion   =$(this).attr('data-id')
+	var nombre          =$(this).attr('data-nombre')
 
-    cargar_modal_clasificacion(clasificacion, nombre)
+	cargar_modal_clasificacion(clasificacion, nombre)
 }
 
 function cargar_modal_vacancia(id, tipo, fecha){
@@ -1121,10 +1151,10 @@ function cargar_modal_clasificacion(clasificacion, nombre) {
 			$('#modal-dashbord-lg .modal-title').html(texto)
 
 		},
-        complete:function () {
+		complete:function () {
 			loading(false)
 			$('#modal-dashbord-lg').modal('show')
-        }
+		}
 	})
 }
 

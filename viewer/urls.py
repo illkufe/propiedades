@@ -21,14 +21,21 @@ urlpatterns = [
 	url(r'^data/ingresos-metros/$', views.data_ingreso_metros, name='data_ingreso_metros'),
 	url(r'^data/ingresos-metros/(?P<id>\d+)/$', views.data_ingreso_metros, name='data_ingreso_metros'),
 
-	# data - garantias
-	url(r'^data/garantias/activos/$', views.data_garantia, name='data_garantia'),
-	url(r'^data/garantias/activos/(?P<id>\d+)/$', views.data_garantia, name='data_garantia'),
-
 	# get - conceptos
 	url(r'^get/conceptos-activo/(?P<id>\d+)$', views.get_conceptos_activo, name='get_conceptos_activo'),
 
 	# data - ingreso por clasificacion
 	url(r'^data/ingresos-clasificacion/$', views.chart_ingreso_clasificacion, name='chart_ingreso_clasificacion'),
 	url(r'^data/ingresos-clasificacion-detalle/(?P<id>\d+)/$', views.get_detalle_clasificacion, name='get_data_detalle_clasificacion'),
+
+
+
+
+
+
+
+
+	# data - activos garantias
+	url(r'^data/activos-garantias/$', views.activos_garantias, name='activos_garantias'),
+	url(r'^data/activos-garantias/(?P<id>\d+)/$', views.activos_garantias, name='activos_garantias'),
 ]

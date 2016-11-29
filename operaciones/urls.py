@@ -32,4 +32,10 @@ urlpatterns = [
 	url(r'^gasto-servicios-basicos/delete/(?P<pk>\d+)$', views.GastoServicioBasicoDelete.as_view(), name='gasto_servicio_basico_delete'),
 	url(r'^gasto-servicios-basicos/update/(?P<pk>\d+)$', views.GastoServicioBasicoUpdate.as_view(), name='gasto_servicio_basico_update'),
 
+	# tarifa servicios basicos
+	url(r'^tarifa-servicios-basicos/list$', views.TarifaServicioBasicoList.as_view(), name='tarifa_servicio_basico_list'),
+	url(r'^tarifa-servicios-basicos/new$', views.TarifaServicioBasicoNew.as_view(), name='tarifa_servicio_basico_new'),
+	url(r'^tarifa-servicios-basicos/delete/(?P<pk>\d+)$', views.TarifaServicioBasicoDelete.as_view(), name='tarifa_servicio_basico_delete'),
+	url(r'^tarifa-servicios-basicos/update/(?P<pk>\d+)$', views.TarifaServicioBasicoUpdate.as_view(), name='tarifa_servicio_basico_update'),
+
 ]

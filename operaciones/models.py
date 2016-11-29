@@ -177,3 +177,47 @@ class Gasto_Servicio_Basico(models.Model):
 	class Meta:
 		verbose_name 		= 'Gasto de Servicio'
 		verbose_name_plural = 'Gastos de Servicios'
+
+class Tarifa_Servicio_Basico(models.Model):
+
+	MESES = (
+		(1, 'ENERO'),
+		(2, 'FEBRERO'),
+		(3, 'MARZO'),
+		(4, 'ABRIL'),
+		(5, 'MAYO'),
+		(6, 'JUNIO'),
+		(7, 'JULIO'),
+		(8, 'AGOSTO'),
+		(9, 'SEPTIEMBRE'),
+		(10, 'OCTUBRE'),
+		(11, 'NOVIEMBRE'),
+		(12, 'DICIEMBRE'),
+	)
+
+	TIPO = (
+		(1, 'Electricidad'),
+		(2, 'Agua'),
+		(3, 'Gas'),
+	)
+
+	# atributos (generales)
+	mes 			= models.IntegerField(choices=MESES)
+	tipo 			= models.IntegerField(choices=TIPO)
+	anio			= models.IntegerField()
+	valor 			= models.FloatField()
+
+	# atributos (por defecto)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	activo = models.ForeignKey(Activo)
+
+	def __str__(self):
+		return str(self.activo.nombre)+' - '+str(self.mes)+'/'+str(self.anio)
+
+	class Meta:
+		verbose_name 		= 'Tarifa de Servicio'
+		verbose_name_plural = 'Tarifas de Servicios'

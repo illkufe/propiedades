@@ -1,0 +1,117 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Nueva Tarifa</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+						<div class="col-sm-12">
+
+							<form id="form-gasto" role="form" action="" method="post" enctype="multipart/form-data">
+								{% csrf_token %}
+
+								<div class="row">
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.activo.help_text }}" ></i>
+											{{ form.activo.label_tag }}
+										</span>
+										{{ form.activo }}
+										<div class="container-error">
+											{{ form.activo.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+											{{ form.tipo.label_tag }}
+										</span>
+										{{ form.tipo }}
+										<div class="container-error">
+											{{ form.tipo.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.mes.help_text }}" ></i>
+											{{ form.mes.label_tag }}
+										</span>
+										{{ form.mes }}
+										<div class="container-error">
+											{{ form.mes.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.anio.help_text }}" ></i>
+										{{ form.anio.label_tag }}
+										{{ form.anio }}
+										<div class="container-error">
+											{{ form.anio.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-2">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.valor.help_text }}" ></i>
+											{{ form.valor.label_tag }}
+										</span>
+										{{ form.valor }}
+										<div class="container-error">
+											{{ form.valor.errors|striptags }}
+										</div>
+									</div>
+								</div>
+
+								<div class="row buttons-form">
+									<div class="col-xs-12">
+										<a href='{% url "operaciones:tarifa_servicio_basico_list" %}'><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
+										<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+										<button class="btn btn-w-m btn-sm btn-primary pull-right margin" type="button" onclick="guardar_formulario_file('{{accion}}', 'form-gasto')">GUARDAR Y SEGUIR</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+var accion = "{{accion}}"
+
+$(document).ready(function(){
+
+	intialize()
+
+});
+
+function intialize(){
+
+	var fecha = new Date();
+
+	if (accion == 'create') {
+		$('#form-gasto select[name="mes"]').val(fecha.getMonth() + 1)
+		$('#form-gasto input[name="anio"]').val(fecha.getFullYear())	
+	};
+
+}
+
+</script>
+{% endblock scripts %}

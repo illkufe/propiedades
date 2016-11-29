@@ -15,9 +15,11 @@ from .models import *
 
 
 # variables
-modulo 	= 'Operaciones'
-meses 	= ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
-tipos 	= ['Electicidad','Agua y Alcantarillado','Gas']
+modulo 		= 'Operaciones'
+meses 		= ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+tipos 		= ['Electicidad','Agua y Alcantarillado','Gas']
+unidades 	= ['kWh', 'm3', 'kg']
+
 
 # lecturas
 class LecturaMedidorList(ListView):
@@ -692,10 +694,6 @@ class LecturaGasUpdate(LecturaGasMixin, UpdateView):
 		return context
 
 
-
-
-
-
 # gasto servicios basicos
 class GastoServicioBasicoList(ListView):
 
@@ -803,5 +801,116 @@ class GastoServicioBasicoUpdate(GastoServicioBasicoMixin, UpdateView):
 		context['name'] 	= 'editar'
 		context['href'] 	= 'list'
 		context['accion'] 	= 'update'
+		return context
+
+# gasto servicios basicos
+class TarifaServicioBasicoList(ListView):
+
+	model 			= Tarifa_Servicio_Basico
+	template_name 	= 'tarifa_servicio_basico_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(TarifaServicioBasicoList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Tarifa Servicios Básicos'
+		context['name'] 	= 'Lista'
+		context['href'] 	= 'list'
+
+		return context
+
+	def get_queryset(self):
+
+		queryset = Tarifa_Servicio_Basico.objects.filter(activo__empresa=self.request.user.userprofile.empresa, visible=True)
+
+		for item in queryset:
+
+			item.unidad = unidades[int(item.tipo)-1]
+			item.mes 	= meses[int(item.mes)-1]
+			item.tipo 	= tipos[int(item.tipo)-1]
+
+		return queryset
+
+class TarifaServicioBasicoMixin(object):
+
+	template_name 	= 'tarifa_servicio_basico_new.html'
+	form_class 		= TarifaServicioBasicoForm
+	success_url 	= '/tarifa-servicios-basicos/list'
+
+	def get_form_kwargs(self):
+
+		kwargs 				= super(TarifaServicioBasicoMixin, self).get_form_kwargs()
+		kwargs['request'] 	= self.request
+
+		return kwargs
+
+	def form_invalid(self, form):
+
+		response = super(TarifaServicioBasicoMixin, self).form_invalid(form)
+		if self.request.is_ajax():
+			return JsonResponse(form.errors, status=400)
+		else:
+			return response
+
+	def form_valid(self, form):
+
+		obj 		= form.save(commit=False)
+		obj.empresa = self.request.user.userprofile.empresa
+
+		if Tarifa_Servicio_Basico.objects.filter(tipo= obj.tipo, mes=obj.mes, anio=obj.anio).exists():
+
+			Tarifa_Servicio_Basico.objects.get(tipo= obj.tipo, mes=obj.mes, anio=obj.anio).delete()
+
+		obj.save()
+
+		response = super(TarifaServicioBasicoMixin, self).form_valid(form)
+		if self.request.is_ajax():
+			data = {'estado': True,}
+			return JsonResponse(data)
+		else:
+			return response
+
+class TarifaServicioBasicoNew(TarifaServicioBasicoMixin, FormView):
+
+	def get_context_data(self, **kwargs):
+		
+		context 			= super(TarifaServicioBasicoNew, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Tarifa Servicios Básicos'
+		context['name'] 	= 'nueva'
+		context['href'] 	= 'list'
+		context['accion'] 	= 'create'
+		return context
+
+class TarifaServicioBasicoDelete(DeleteView):
+
+	model 		= Tarifa_Servicio_Basico
+	success_url = reverse_lazy('/tarifa-servicios-basicos/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object 		= self.get_object()
+		self.object.visible = False
+		self.object.save()
+		data = {'estado': True}
+
+		return JsonResponse(data, safe=False)
+
+class TarifaServicioBasicoUpdate(TarifaServicioBasicoMixin, UpdateView):
+
+	model 			= Tarifa_Servicio_Basico
+	form_class 		= TarifaServicioBasicoForm
+	template_name 	= 'tarifa_servicio_basico_new.html'
+	success_url 	= '/tarifa-servicios-basicos/list'
+
+	def get_context_data(self, **kwargs):
+		
+		context 			= super(TarifaServicioBasicoUpdate, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'Tarifa Servicios Básicos'
+		context['name'] 	= 'editar'
+		context['href'] 	= 'list'
+		context['accion'] 	= 'update'
+
 		return context
 

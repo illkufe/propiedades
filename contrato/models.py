@@ -625,8 +625,9 @@ class Servicio_Basico(models.Model):
 	)
 
 	TIPO_COBRO = (
-		(1, 'Fijo'),
-		(2, 'Prorrateo'),
+		(1, 'Valor Fijo'),
+		(2, 'Valor Tarifa'),
+		# (3, 'Valor Prorrateo'),
 	)
 
 	# atributos (generales)
