@@ -9,7 +9,7 @@ from utilidades.views import formato_moneda_local
 from .forms import *
 from .models import *
 
-import owncloud
+# import owncloud
 
 # variables
 modulo 	= 'Activos'
@@ -436,17 +436,17 @@ class ACTIVO_DOCUMENTOS(View):
 	def get(self, request, id=None):
 
 
-		oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
-		oc.login('enunez', 'asgard2016')
+		# oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
+		# oc.login('enunez', 'asgard2016')
 
 		
 
-		for x in oc.list('testdir'):
-			# print (x.get_link())
-			# print (x.name)
-			# print (x.path)
-			link_info = oc.share_file_with_link(x.path)
-			print (link_info.get_link())
+		# for x in oc.list('testdir'):
+		# 	# print (x.get_link())
+		# 	# print (x.name)
+		# 	# print (x.path)
+		# 	link_info = oc.share_file_with_link(x.path)
+		# 	print (link_info.get_link())
 
 
 
@@ -470,11 +470,11 @@ class ACTIVO_DOCUMENTOS(View):
 
 	def json_to_response(self):
 
-		oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
-		oc.login('enunez', 'asgard2016')
-		# oc.put_file('testdir/remotefile.txt', 'localfile.txt')
-		link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
-		print (link_info.get_link())
+		# oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
+		# oc.login('enunez', 'asgard2016')
+		# # oc.put_file('testdir/remotefile.txt', 'localfile.txt')
+		# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
+		# print (link_info.get_link())
 
 		data = list()
 
