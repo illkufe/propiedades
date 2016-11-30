@@ -107,6 +107,7 @@ class UsuarioNewMixin(object):
 			return response
 
 	def form_valid(self, form):
+
 		user 	= User.objects.get(pk=self.request.user.pk)
 		profile = UserProfile.objects.get(user=user)
 

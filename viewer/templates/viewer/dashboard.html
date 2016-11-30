@@ -140,12 +140,12 @@
 							<i class="fa fa-gear"></i>
 						</a>
 						<ul class="dropdown-menu dropdown-user">
-							<li><a onclick="load_section_vacancia(this, 0)">Actual</a></li>
-							<li><a onclick="load_section_vacancia(this, 1)">Próximo mes</a></li>
-							<li><a onclick="load_section_vacancia(this, 3)">Próximos 3 meses</a></li>
-							<li><a onclick="load_section_vacancia(this, 6)">Próximos 6 meses</a></li>
-							<li><a onclick="load_section_vacancia(this, 9)">Próximos 9 meses</a></li>
-							<li><a onclick="load_section_vacancia(this, 12)">Próximo año</a></li>
+							<li><a onclick="asd(this, 0)">Actual</a></li>
+							<li><a onclick="asd(this, 1)">Próximo mes</a></li>
+							<li><a onclick="asd(this, 3)">Próximos 3 meses</a></li>
+							<li><a onclick="asd(this, 6)">Próximos 6 meses</a></li>
+							<li><a onclick="asd(this, 9)">Próximos 9 meses</a></li>
+							<li><a onclick="asd(this, 12)">Próximo año</a></li>
 						</ul>
 					</div>
 				</div>
@@ -550,11 +550,14 @@ $(document).ready(function(){
 	load_flag_commercial()
 	initialize()
 
+
 });
 
 function initialize(){
 
 	$('#m-vacancia #id_tipo').change(function(){
+
+		console.log('asd')
 
 		var tipo 	= $(this).val()
 		var fecha 	= new Date();
@@ -575,6 +578,17 @@ function initialize(){
 	})
 
 }
+
+
+function asd (obj, val) {
+
+		var fecha 	= new Date();
+		fecha.setMonth(fecha.getMonth() + parseInt(val));
+		fecha = moment(fecha).format("DD/MM/YYYY")
+
+		load_section_vacancia(fecha)
+	
+	}
 
 function load_section_garantias(){
 
@@ -598,7 +612,8 @@ function load_section_garantias(){
 			for (var i = 0; i < data.length; i++) {
 
 				template += '<tr>'
-				template += '<td><button data-id="@id" class="btn btn-info btn-circle activo" type="button"><i class="fa fa-info"></i></button></td>'
+				// template += '<td><button data-id="@id" class="btn btn-info btn-circle activo" type="button"><i class="fa fa-info"></i></button></td>'
+				template += '<td></td>'
 				template += '<td>@nombre</td>'
 				template += '<td class="text-right">@total</td>'
 				template += '</tr>'
@@ -772,7 +787,8 @@ function load_section_ingreso_metros(){
 					var activo = []
 
 					template += '<tr>'
-					template += '<td><button data-id="@id" class="btn btn-info btn-circle" type="button"><i class="fa fa-info"></i></button></td>'
+					// template += '<td><button data-id="@id" class="btn btn-info btn-circle" type="button"><i class="fa fa-info"></i></button></td>'
+					template += '<td></td>'
 					template += '<td>@nombre</td>'
 					template += '<td class="text-right">@metros</td>'
 					template += '<td class="text-right">@ingreso</td>'

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, UpdateView, DeleteView
 from locales.models import *
@@ -7,6 +8,8 @@ from utilidades.views import formato_moneda_local
 
 from .forms import *
 from .models import *
+
+import owncloud
 
 # variables
 modulo 	= 'Activos'
@@ -418,3 +421,91 @@ class ACTIVOS(View):
 				})
 
 		return JsonResponse(data, safe=False)
+
+
+
+
+
+
+
+
+class ACTIVO_DOCUMENTOS(View):
+
+	http_method_names = ['get', 'post']
+
+	def get(self, request, id=None):
+
+
+		oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
+		oc.login('enunez', 'asgard2016')
+
+		
+
+		for x in oc.list('testdir'):
+			# print (x.get_link())
+			# print (x.name)
+			# print (x.path)
+			link_info = oc.share_file_with_link(x.path)
+			print (link_info.get_link())
+
+
+
+		# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
+		# print (link_info.get_link())
+
+		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
+
+			self.object_list = Reporte_Tipo.objects.filter(pk=id)
+
+			return self.json_to_response()
+
+		else:
+
+			return render(request, 'activo_documento_list.html', {
+				'title'     : 'Activos',
+				'href'      : '/activos/list',
+				'subtitle'  : 'activo',
+				'name'      : 'documentos',
+				})
+
+	def json_to_response(self):
+
+		oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
+		oc.login('enunez', 'asgard2016')
+		# oc.put_file('testdir/remotefile.txt', 'localfile.txt')
+		link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
+		print (link_info.get_link())
+
+		data = list()
+
+		# for reporte in self.object_list:
+
+		# 	empresa = {
+		# 		'id' : reporte.user.userprofile.empresa.id,
+		# 	}
+
+		# 	tipo = {
+		# 		'nombre'    : reporte.reporte_tipo.nombre,
+		# 		'icono'     : reporte.reporte_tipo.icono,
+		# 		'color'     : reporte.reporte_tipo.color,
+		# 		}
+
+		# 	usuario = {
+		# 		'id'            : reporte.user.id,
+		# 		'first_name'    : reporte.user.first_name,
+		# 		'last_name'     : reporte.user.last_name,
+		# 		}
+
+		# 	data.append({
+		# 		'id'            : reporte.id,
+		# 		'nombre'        : reporte.nombre,
+		# 		'nombre_pdf'    : reporte.nombre_pdf,
+		# 		'fecha'         : reporte.creado_en.strftime("%d/%m/%Y"),
+		# 		'tipo'          : tipo,
+		# 		'usuario'       : usuario,
+		# 		'empresa'       : empresa,
+		# 		})
+
+		return JsonResponse(data, safe=False)
+
+

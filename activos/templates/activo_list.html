@@ -32,6 +32,7 @@
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar activo" href='{% url "activo_update" item.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar activo" onclick="open_modal_delete(this, {{item.id}},'activos', 'tabla-activos', 'Activo')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar activo"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="archivos del activo" href='{% url "activo_documento_list" item.id %}'><i class="fa fa-cloud"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -71,7 +72,7 @@ function load_tabla_activos(){
 		'visible':false,
 	},
 	{
-		'width': '12.5%',
+		'width': '10%',
 		'data': 'codigo',
 		'title': 'Código',
 	},
@@ -96,7 +97,7 @@ function load_tabla_activos(){
 		'title': 'Tasación Fiscal',
 	},
 	{
-		'width': '12.5%',
+		'width': '15%',
 		'data': 'options',
 		'orderable': false,
 		'title': '<div class="text-center">Opciones</div>',

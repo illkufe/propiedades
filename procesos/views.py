@@ -40,7 +40,7 @@ class PropuestaGenerarList(ListView):
 	def get_context_data(self, **kwargs):
 
 		context 			= super(PropuestaGenerarList, self).get_context_data(**kwargs)
-		context['title'] 	= 'Gererar Propuestas'
+		context['title'] 	= 'Generar Propuestas'
 		context['subtitle'] = 'propuestas de facturación'
 		context['name'] 	= 'generar'
 		context['href'] 	= 'propuesta/generar'

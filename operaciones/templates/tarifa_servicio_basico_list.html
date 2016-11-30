@@ -9,9 +9,9 @@
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>Lista de Gastos</h5>
+					<h5>Lista de Tarifas</h5>
 					<div class="ibox-tools">
-						<a href='{% url "operaciones:tarifa_servicio_basico_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo gasto</button></a>
+						<a href='{% url "operaciones:tarifa_servicio_basico_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nueva tarifa</button></a>
 					</div>
 				</div>
 				<div class="ibox-content">
@@ -30,7 +30,7 @@
 									<td class="text-right">{{ item.valor }}</td>
 									<td class="text-right">{{ item.unidad }}</td>
 									<td class="text-center">
-										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar gasto" href='{% url "operaciones:gasto_servicio_basico_update" item.id %}'>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar gasto" href='{% url "operaciones:tarifa_servicio_basico_update" item.id %}'>
 											<i class="fa fa-edit"></i>
 										</a>
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar gasto" onclick="open_modal_delete(this, {{item.id}}, 'tarifa-servicios-basicos', 'tabla-tarifas', 'Tarifa de Servicio')">
