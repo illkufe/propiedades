@@ -29,6 +29,6 @@ urlpatterns = [
 	url(r'^empresa/(?P<empresa_id>\d+)/activos$', csrf_exempt(views.ACTIVOS.as_view()),name='api_activos'),
 	url(r'^empresa/(?P<empresa_id>\d+)/activos/(?P<id>\d+)$', csrf_exempt(views.ACTIVOS.as_view()),name='api_activos'),
 
-	url(r'^activos/documentos/(?P<id>\d+)$', csrf_exempt(views.ACTIVO_DOCUMENTOS.as_view()),name='activo_documento_list'),
+	url(r'^activos/documentos/(?P<id>\d+)/$', csrf_exempt(views.ACTIVO_DOCUMENTOS.as_view()),name='activo_documento_list'),
 
 ]

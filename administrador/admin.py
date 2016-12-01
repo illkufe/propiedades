@@ -5,6 +5,9 @@ from .models import *
 class ConfiguracionInline(admin.StackedInline):
 	model = Configuracion
 
+class ConfiguracionOwncloudInline(admin.StackedInline):
+	model = Configuracion_Owncloud
+
 class ConexionInline(admin.StackedInline):
 	model = Conexion
 
@@ -15,7 +18,7 @@ class RepresentanteInline(admin.StackedInline):
 	model = Representante
 
 class EmpresaInlineAdmin(admin.ModelAdmin):
-	inlines = [ ConfiguracionInline, ConexionInline, ConfiguracionMonedaInline]
+	inlines = [ ConfiguracionInline, ConexionInline, ConfiguracionMonedaInline, ConfiguracionOwncloudInline]
 
 class ClienteInlineAdmin(admin.ModelAdmin):
 	inlines = [ RepresentanteInline]

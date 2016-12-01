@@ -390,7 +390,6 @@ def concectar_web_service(url):
 
 
 
-
 # CLASES
 class NumberField(forms.Field):
 	def to_python(self, value):
@@ -449,3 +448,57 @@ class CURRENCIES_LAST(View):
 				})
 
 		return JsonResponse(data, safe=False)
+
+
+
+
+def file_type(content_type):
+
+	types = [
+	{
+		'name': 'pdf',
+		'icon': 'fa fa-file-pdf-o',
+
+	},
+	{
+		'name': 'excel',
+		'icon': 'fa fa-file-excel-o',
+
+	},
+	{
+		'name': 'word',
+		'icon': 'fa fa-file-word-o',
+
+	},
+	{
+		'name': 'power point',
+		'icon': 'fa fa-file-powerpoint-o',
+
+	},
+	{
+		'name': 'text',
+		'icon': 'fa fa-file-text-o',
+	},
+	{
+		'name': 'img',
+		'icon': 'fa fa-file-image-o',
+	},
+	{
+		'name': 'file',
+		'icon': 'fa fa-file-o',
+	},
+	]
+
+	if content_type == 'application/pdf':
+		content = 0
+	elif content_type == 'application/vnd.ms-excel':
+		content = 1
+	elif content_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+		content = 2
+	elif content_type == 'image/jpeg' or content_type == 'image/x-png':
+		content = 5
+	else:
+		pass
+		
+	
+	return types[content]

@@ -189,7 +189,7 @@ class LECTURASMEDIDOR(View):
 
 					medidores_luz = Medidor_Electricidad.objects.filter(numero_rotulo=rotulo, visible=True)
 
-					if Lectura_Electricidad.objects.filter(medidor_electricidad__in=medidores_luz, visible=True).exists():
+					if Lectura_Electricidad.objects.filter(medidor_electricidad__in=medidores_luz, visible=True, mes=mes, anio=ano).exists():
 
 						electricidad_update 		= Lectura_Electricidad.objects.get(mes=mes, anio=ano, medidor_electricidad__numero_rotulo=rotulo)
 						electricidad_update.valor 	= lectura
@@ -202,7 +202,7 @@ class LECTURASMEDIDOR(View):
 						electricidad_new.anio 					= ano
 						electricidad_new.valor 					= lectura
 						electricidad_new.user   				= self.request.user
-						electricidad_new.medidor_electricidad 	= medidores_luz
+						electricidad_new.medidor_electricidad 	= medidores_luz.first()
 						electricidad_new.save()
 
 
@@ -210,7 +210,7 @@ class LECTURASMEDIDOR(View):
 
 					medidores_agua = Medidor_Agua.objects.filter(numero_rotulo=rotulo, visible=True)
 
-					if Lectura_Agua.objects.filter(medidor_agua__in=medidores_agua, visible=True).exists():
+					if Lectura_Agua.objects.filter(medidor_agua__in=medidores_agua, visible=True, mes=mes, anio=ano).exists():
 
 						agua_update 		= Lectura_Agua.objects.get(mes=mes, anio=ano, medidor_agua__numero_rotulo=rotulo)
 						agua_update.valor 	= lectura
@@ -222,14 +222,14 @@ class LECTURASMEDIDOR(View):
 						agua_new.anio 			= ano
 						agua_new.valor 			= lectura
 						agua_new.user   		= self.request.user
-						agua_new.medidor_agua	= medidores_agua
+						agua_new.medidor_agua	= medidores_agua.first()
 						agua_new.save()
 
 				elif str(tipo_medidor).upper() == 'GAS':
 
 					medidores_gas = Medidor_Gas.objects.filter(numero_rotulo=rotulo, visible=True)
 
-					if Lectura_Gas.objects.filter(medidor_gas__in=medidores_gas, visible=True).exists():
+					if Lectura_Gas.objects.filter(medidor_gas__in=medidores_gas, visible=True, mes=mes, anio=ano).exists():
 
 						gas_update 			= Lectura_Gas.objects.get(mes=mes, anio=ano, medidor_gas__numero_rotulo=rotulo)
 						gas_update.valor 	= lectura
@@ -242,7 +242,7 @@ class LECTURASMEDIDOR(View):
 						gas_new.anio 		= ano
 						gas_new.valor 		= lectura
 						gas_new.user   		= self.request.user
-						gas_new.medidor_gas	= medidores_gas
+						gas_new.medidor_gas	= medidores_gas.first()
 						gas_new.save()
 
 

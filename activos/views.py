@@ -9,7 +9,7 @@ from utilidades.views import formato_moneda_local
 from .forms import *
 from .models import *
 
-# import owncloud
+import owncloud
 
 # variables
 modulo 	= 'Activos'
@@ -436,17 +436,13 @@ class ACTIVO_DOCUMENTOS(View):
 	def get(self, request, id=None):
 
 
-		# oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
-		# oc.login('enunez', 'asgard2016')
+
 
 		
-
-		# for x in oc.list('testdir'):
-		# 	# print (x.get_link())
-		# 	# print (x.name)
-		# 	# print (x.path)
-		# 	link_info = oc.share_file_with_link(x.path)
-		# 	print (link_info.get_link())
+			# print (x.name)
+			# print (x.path)
+			# link_info = oc.share_file_with_link(x.path)
+			# print (link_info.get_link())
 
 
 
@@ -454,8 +450,6 @@ class ACTIVO_DOCUMENTOS(View):
 		# print (link_info.get_link())
 
 		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
-
-			self.object_list = Reporte_Tipo.objects.filter(pk=id)
 
 			return self.json_to_response()
 
@@ -470,42 +464,96 @@ class ACTIVO_DOCUMENTOS(View):
 
 	def json_to_response(self):
 
-		# oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
-		# oc.login('enunez', 'asgard2016')
-		# # oc.put_file('testdir/remotefile.txt', 'localfile.txt')
-		# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
-		# print (link_info.get_link())
+		response 	= list()
+		oc 			= owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
+		oc.login('enunez', 'asgard2016')
+		
+		elements 	= oc.list('Iproperty/Activos/Mall Plaza Maule')
+		response 	= create_directory(elements, oc)
 
-		data = list()
 
-		# for reporte in self.object_list:
-
-		# 	empresa = {
-		# 		'id' : reporte.user.userprofile.empresa.id,
-		# 	}
-
-		# 	tipo = {
-		# 		'nombre'    : reporte.reporte_tipo.nombre,
-		# 		'icono'     : reporte.reporte_tipo.icono,
-		# 		'color'     : reporte.reporte_tipo.color,
-		# 		}
-
-		# 	usuario = {
-		# 		'id'            : reporte.user.id,
-		# 		'first_name'    : reporte.user.first_name,
-		# 		'last_name'     : reporte.user.last_name,
-		# 		}
-
-		# 	data.append({
-		# 		'id'            : reporte.id,
-		# 		'nombre'        : reporte.nombre,
-		# 		'nombre_pdf'    : reporte.nombre_pdf,
-		# 		'fecha'         : reporte.creado_en.strftime("%d/%m/%Y"),
-		# 		'tipo'          : tipo,
-		# 		'usuario'       : usuario,
-		# 		'empresa'       : empresa,
-		# 		})
+		data =	[{
+				'text'	: 'Mall Plaza Maule',
+				'data' 	: {
+					'id' 	: 1,
+					'path'	: 'path nuevo',
+					'tipo'	: 'folder',
+					'permisses': False,
+					},
+				'state': {
+					'opened': True
+				},
+				'children': response,
+				}
+				]
 
 		return JsonResponse(data, safe=False)
+
+
+def create_directory(element, oc):
+
+
+	# 	print(x)
+	
+	# 	asd = oc.file_info(x.path)
+	
+	# 	# print (asd.is_dir())
+	
+	# 	response.append({
+	# 		'text'	: x.name,
+	# 		'icon' 	: 'fa fa-file',
+	# 		'data' 	: {
+	# 			'id' 	: 1,
+	# 			'path'	: 'path nuevo',
+	# 		}
+	# 		})
+	
+	# oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
+	# oc.login('enunez', 'asgard2016')
+	# # oc.put_file('testdir/remotefile.txt', 'localfile.txt')
+	# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
+	# print (link_info.get_link())
+
+
+	response = list()
+
+	for item in element:
+
+		file_info = oc.file_info(item.path)
+		
+		if file_info.is_dir():
+
+			elements 	= oc.list(item.path)
+			directory 	= create_directory(elements, oc)
+
+			response.append({
+				'text'	: item.name,
+				'data' 	: {
+					'id' 	: 1,
+					'path'	: 'path nuevo',
+					'tipo'	: 'folder',
+					},
+				'state': {
+					'opened': True
+				},
+				'children': directory,
+				})
+		else:
+
+			print (file_info.get_content_type())
+
+			response.append({
+				'text'	: item.name,
+				'type' 	: 'html',
+				'data' 	: {
+					'id' 	: 1,
+					'path'	: 'path nuevo',
+					'tipo'	: 'file',
+					}
+				})
+
+	return response
+
+
 
 
