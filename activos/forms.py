@@ -110,6 +110,20 @@ class ActivoForm(forms.ModelForm):
 
 		}
 
+	def clean_nombre(self):
+
+		nombre 		= self.cleaned_data['nombre']
+		is_insert 	= self.instance.id is None
+
+		if is_insert:
+			if Activo.objects.filter(nombre=nombre, visible=True).exists():
+				raise forms.ValidationError('Ya existe un activo con este nombre.')
+		else:
+			if nombre != Activo.objects.get(id=self.instance.id).nombre and Activo.objects.filter(nombre=nombre, visible=True).exists():
+				raise forms.ValidationError('Ya existe un activo con este nombre.')
+
+		return nombre
+
 class SectorForm(forms.ModelForm):
 
 	class Meta:

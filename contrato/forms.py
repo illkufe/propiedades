@@ -70,6 +70,20 @@ class ContratoForm(forms.ModelForm):
 		self.fields['tipo'].queryset 		= Contrato_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		self.fields['estado'].required 		= False
 
+	def clean_numero(self):
+
+		numero 		= self.cleaned_data['numero']
+		is_insert 	= self.instance.id is None
+
+		if is_insert:
+			if Contrato.objects.filter(numero=numero, visible=True).exists():
+				raise forms.ValidationError('Ya existe un contrato con este número.')
+		else:
+			if numero != Contrato.objects.get(id=self.instance.id).nombre and Contrato.objects.filter(numero=numero, visible=True).exists():
+				raise forms.ValidationError('Ya existe un contrato con este número.')
+
+		return numero
+
 	class Meta:
 		model 	= Contrato
 		fields 	= '__all__'
