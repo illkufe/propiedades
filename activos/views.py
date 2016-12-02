@@ -10,6 +10,7 @@ from .forms import *
 from .models import *
 
 import owncloud
+# from utilidades.plugins.owncloud import conection as client_owncloud
 
 # variables
 modulo 	= 'Activos'
@@ -101,7 +102,7 @@ class ActivoList(ListView):
 		queryset 	= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		for item in queryset:
 
-			item.tasacion_fiscal 		= formato_moneda_local(self.request, item.tasacion_fiscal)
+			item.tasacion_fiscal = formato_moneda_local(self.request, item.tasacion_fiscal)
 
 		return queryset
 
@@ -492,6 +493,7 @@ def create_directory(element, oc):
 				'data' 	: {
 					'type'	: 'folder',
 					'id' 	: share.get_id(),
+					'name'	: item.get_name(),
 					'path'	: item.get_path(),
 					'link'	: share.get_link(),
 					'permissions' : {
@@ -512,6 +514,7 @@ def create_directory(element, oc):
 				'data' 	: {
 					'type'	: 'file',
 					'id' 	: share.get_id(),
+					'name'	: item.get_name(),
 					'path'	: item.get_path(),
 					'link'	: share.get_link(),
 					'permissions' : {
