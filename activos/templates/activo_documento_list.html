@@ -10,14 +10,30 @@
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
 					<h5>Documentos del Activos</h5>
-					<!-- <div class="ibox-tools">
-						<a href='{% url "activo_new" %}'><button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> nuevo activo</button></a>
-					</div> -->
 				</div>
 				<div class="ibox-content">
 					<div class="row">
-						<div class="col-lg-6">
-							<div id="using_json-2"></div>
+
+						<div class="col-sm-4">
+							<div class="input-group m-b">
+								<span class="input-group-addon">Buscar :</span>
+								<input type="text" placeholder="Archivo o Carpeta" class="form-control" style="height:27px;">
+							</div>
+						</div>
+
+						<div class="col-sm-8">
+							<p>
+								<button id="btn-add-folder" class="btn btn-default btn-xs" type="button" disabled="disabled"><i class="fa fa-plus"></i>&nbsp;Crear Carpeta</button>
+								<button id="btn-upload" class="btn btn-default btn-xs" type="button" disabled="disabled"><i class="fa fa-upload"></i>&nbsp;Subir Archivo</button>
+								<a id="btn-download" class="btn btn-default btn-xs" disabled="disabled" download><i class="fa fa-download"></i>&nbsp;Descargar Archivo</a>
+								<button id="btn-delete" class="btn btn-default btn-xs" type="button" disabled="disabled"><i class="fa fa-trash"></i>&nbsp;Eliminar</button>
+							</p>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<div id="directorio"></div>
 						</div>
 					</div>
 				</div>
@@ -45,142 +61,15 @@ function load_tree(id){
 		url: '/activos/documentos/'+id+'/',
 		type: 'get',
 		dataType: 'json',
+		beforeSend: function(){
+			loading(true)
+		},
 		success: function(data){
+			loading(false)
 
-			$('#using_json')
-			// listen for event
-			.on('changed.jstree', function (e, data) {
-				var i, j, r = [];
-				for(i = 0, j = data.selected.length; i < j; i++) {
-					r.push(data.instance.get_node(data.selected[i]).text);
-				}
-				console.log(r)
-			})
-			.jstree({
-				'core' : {
-					'data':
-					[
-					'Empty Folder',
-					{
-						'text': 'Resources',
-						'state': {
-							'opened': true
-						},
-						'children': [
-						{
-							'text': 'css',
-							// 'children': [
-							// {
-							// 	'text': 'animate.css', 'icon': 'none'
-							// },
-							// {
-							// 	'text': 'bootstrap.css', 'icon': 'none'
-							// },
-							// {
-							// 	'text': 'main.css', 'icon': 'none'
-							// },
-							// {
-							// 	'text': 'style.css', 'icon': 'none'
-							// }
-							// ],
-							// 'state': {
-							// 	'opened': true
-							// }
-						},
-						{
-							'text': 'js',
-							'children': [
-							{
-								'text': 'bootstrap.js', 'icon': 'none'
-							},
-							{
-								'text': 'inspinia.min.js', 'icon': 'none'
-							},
-							{
-								'text': 'jquery.min.js', 'icon': 'none'
-							},
-							{
-								'text': 'jsTree.min.js', 'icon': 'none'
-							},
-							{
-								'text': 'custom.min.js', 'icon': 'none'
-							}
-							],
-							'state': {
-								'opened': true
-							}
-						},
-						{
-							'text': 'html',
-							'children': [
-							{
-								'text': 'layout.html', 'icon': 'none'
-							},
-							{
-								'text': 'navigation.html', 'icon': 'none'
-							},
-							{
-								'text': 'navbar.html', 'icon': 'none'
-							},
-							{
-								'text': 'footer.html', 'icon': 'none'
-							},
-							{
-								'text': 'sidebar.html', 'icon': 'none'
-							}
-							],
-							'state': {
-								'opened': true
-							}
-						}
-						]
-					},
-					'Fonts',
-					'Images',
-					'Scripts',
-					'Templates',
-					]
-				},
-				'plugins' : [ 'types', 'dnd' ],
-				'types' : {
-					'default' : {
-						'icon' : 'fa fa-folder'
-					},
-					'html' : {
-						'icon' : 'fa fa-file-code-o'
-					},
-					'svg' : {
-						'icon' : 'fa fa-file-picture-o'
-					},
-					'css' : {
-						'icon' : 'fa fa-file-code-o'
-					},
-					'img' : {
-						'icon' : 'fa fa-file-image-o'
-					},
-					'js' : {
-						'icon' : 'fa fa-file-text-o'
-					}
-				}
-			});
-
-			$('#using_json-2')
-			// listen for event
+			$('#directorio')
 			.on('select_node.jstree', function (node,a) {
-
-				console.log(a.node.data)
-				// console.log(node)
-			
-				
-				// var i, j, r = [];
-				// for(i = 0, j = data.selected.length; i < j; i++) {
-
-				// 	// console.log(data.instance.get_node(data.selected[i]))
-
-
-				// 	r.push(data.instance.get_node(data.selected[i]).text);
-				// }
-				// console.log(r)
+				enable_buttons(a.node.data)
 			}).jstree({
 				'core' : {
 					'data': data,
@@ -209,6 +98,34 @@ function load_tree(id){
 			});
 		}
 	})
+}
+
+function enable_buttons(obj){
+
+	console.log(obj)
+
+	$('#btn-add-folder').attr('disabled', true)
+	$('#btn-upload').attr('disabled', true)
+	$('#btn-download').attr('disabled', true)
+	$('#btn-delete').attr('disabled', false)
+
+	if (obj.type == 'folder') {
+		$('#btn-add-folder').attr('disabled', false)
+		$('#btn-upload').attr('disabled', false)
+	}else{
+		$('#btn-download').attr('disabled', false)
+		$('#btn-download').attr('href', obj.link+'/download')
+	}
+}
+
+
+function owncloud_delete(){
+}
+
+function owncloud_add_folder(){
+}
+
+function owncloud_upload_file(){
 }
 
 </script>

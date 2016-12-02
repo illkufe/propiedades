@@ -435,20 +435,6 @@ class ACTIVO_DOCUMENTOS(View):
 
 	def get(self, request, id=None):
 
-
-
-
-		
-			# print (x.name)
-			# print (x.path)
-			# link_info = oc.share_file_with_link(x.path)
-			# print (link_info.get_link())
-
-
-
-		# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
-		# print (link_info.get_link())
-
 		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
 
 			return self.json_to_response()
@@ -466,62 +452,37 @@ class ACTIVO_DOCUMENTOS(View):
 
 		response 	= list()
 		oc 			= owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-		oc.login('enunez', 'asgard2016')
-		
+		asdasd 		= oc.login('enunez', 'asgard2016')
 		elements 	= oc.list('Iproperty/Activos/Mall Plaza Maule')
 		response 	= create_directory(elements, oc)
 
-
-		data =	[{
+		data = [{
 				'text'	: 'Mall Plaza Maule',
 				'data' 	: {
-					'id' 	: 1,
-					'path'	: 'path nuevo',
-					'tipo'	: 'folder',
-					'permisses': False,
+					'type' : 'folder',
+					'permissions' : {
+						'edit' 		: False,
+						'remove' 	: False,
+						},
 					},
 				'state': {
 					'opened': True
-				},
+					},
 				'children': response,
-				}
-				]
+				}]
 
 		return JsonResponse(data, safe=False)
 
-
 def create_directory(element, oc):
-
-
-	# 	print(x)
-	
-	# 	asd = oc.file_info(x.path)
-	
-	# 	# print (asd.is_dir())
-	
-	# 	response.append({
-	# 		'text'	: x.name,
-	# 		'icon' 	: 'fa fa-file',
-	# 		'data' 	: {
-	# 			'id' 	: 1,
-	# 			'path'	: 'path nuevo',
-	# 		}
-	# 		})
-	
-	# oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
-	# oc.login('enunez', 'asgard2016')
-	# # oc.put_file('testdir/remotefile.txt', 'localfile.txt')
-	# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
-	# print (link_info.get_link())
-
 
 	response = list()
 
 	for item in element:
 
-		file_info = oc.file_info(item.path)
+		info 	= oc.file_info(item.path)
+		share 	= oc.share_file_with_link(item.path)
 		
-		if file_info.is_dir():
+		if info.is_dir():
 
 			elements 	= oc.list(item.path)
 			directory 	= create_directory(elements, oc)
@@ -529,9 +490,14 @@ def create_directory(element, oc):
 			response.append({
 				'text'	: item.name,
 				'data' 	: {
-					'id' 	: 1,
-					'path'	: 'path nuevo',
-					'tipo'	: 'folder',
+					'type'	: 'folder',
+					'id' 	: share.get_id(),
+					'path'	: item.get_path(),
+					'link'	: share.get_link(),
+					'permissions' : {
+						'edit' 		: True,
+						'remove' 	: True,
+						},
 					},
 				'state': {
 					'opened': True
@@ -540,15 +506,18 @@ def create_directory(element, oc):
 				})
 		else:
 
-			print (file_info.get_content_type())
-
 			response.append({
 				'text'	: item.name,
 				'type' 	: 'html',
 				'data' 	: {
-					'id' 	: 1,
-					'path'	: 'path nuevo',
-					'tipo'	: 'file',
+					'type'	: 'file',
+					'id' 	: share.get_id(),
+					'path'	: item.get_path(),
+					'link'	: share.get_link(),
+					'permissions' : {
+						'edit' 		: True,
+						'remove' 	: True,
+						},
 					}
 				})
 
