@@ -2,11 +2,11 @@ from datetime import datetime
 import owncloud
 
 
-def create_directory(path, name_directory):
+def create_directory(path_owncloud_directory, name_directory):
 
     """
         función que permite realiza la creación de un directorio owncloud.
-    :param path: ruta del directorio base
+    :param path_owncloud_directory: ruta del directorio base
     :param name_directory: nombre de la carpeta a crear
     :return: objeto con un estado del proceso y una descripcion del error.
     """
@@ -18,16 +18,16 @@ def create_directory(path, name_directory):
 
     try:
 
-        if not path.endswith('/'):
-            path += '/'
+        if not path_owncloud_directory.endswith('/'):
+            path_owncloud_directory += '/'
 
-        path        = path + str(name_directory)
-        file_info   = oc.file_info(path)
+        path_owncloud_directory = path_owncloud_directory + str(name_directory)
+        file_info               = oc.file_info(path_owncloud_directory)
 
         #Existe directorio
         if not file_info:
             try:
-                status = oc.mkdir(path)
+                status = oc.mkdir(path_owncloud_directory)
                 if status:
                     data.append({
                         'estado': True,
@@ -62,10 +62,10 @@ def create_directory(path, name_directory):
 
     return data
 
-def delete_directory(path, name_directory):
+def delete_directory(path_owncloud_directory, name_directory):
     """
         función que permite realizar la eliminacion de un directorio o archivo
-    :param path: ruta base del directorio
+    :param path_owncloud_directory: ruta base del directorio
     :param name_directory: nombre de la carpeta o archivo a eliminar
     :return: objeto con un estado del proceso y una descripcion del error.
     """
@@ -76,12 +76,12 @@ def delete_directory(path, name_directory):
     oc.login('enunez', 'asgard2016')
 
     try:
-        path        = path + str(name_directory)
-        file_info   = oc.file_info(path)
+        path_owncloud_directory = path_owncloud_directory + str(name_directory)
+        file_info               = oc.file_info(path_owncloud_directory)
 
         if file_info:
             try:
-                status = oc.delete(path)
+                status = oc.delete(path_owncloud_directory)
 
                 if status:
                     data.append({
@@ -116,7 +116,7 @@ def delete_directory(path, name_directory):
 
     return data
 
-def backups_directory(path, name_directory, path_directory_backups):
+def backups_directory(path_owncloud_directory, name_directory, path_directory_backups):
     """
         función que permite realizar el backup de una carpeta en un directorio de respaldos.
     :param path: ruta del directorio base
@@ -130,13 +130,13 @@ def backups_directory(path, name_directory, path_directory_backups):
         oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
         oc.login('enunez', 'asgard2016')
 
-        path                = path + str(name_directory)
+        path_owncloud_directory                = path_owncloud_directory + str(name_directory)
 
         if not path_directory_backups.endswith('/'):
             path_directory_backups += '/'
 
-        if not path.endswith('/'):
-            path += '/'
+        if not path_owncloud_directory.endswith('/'):
+            path_owncloud_directory += '/'
 
 
         try:
@@ -151,8 +151,8 @@ def backups_directory(path, name_directory, path_directory_backups):
                     if status_dir:
                         try:
                             # Copia de archivos y posterior eliminacion de la carpeta original del directorio
-                            status_copy             = oc.copy(path, path_directory_backups)
-                            status_delete           = oc.delete(path[:-1])
+                            status_copy             = oc.copy(path_owncloud_directory, path_directory_backups)
+                            status_delete           = oc.delete(path_owncloud_directory[:-1])
                             if status_copy and status_delete:
                                 data.append({
                                     'estado': True,
@@ -196,8 +196,8 @@ def backups_directory(path, name_directory, path_directory_backups):
 
                             try:
                                 #Copia de archivos y posterior eliminacion de la carpeta original del directorio
-                                status_copy     = oc.copy(path, path_directory_backups)
-                                status_delete   = oc.delete(path[:-1])
+                                status_copy     = oc.copy(path_owncloud_directory, path_directory_backups)
+                                status_delete   = oc.delete(path_owncloud_directory[:-1])
 
                                 if status_copy and status_delete:
                                     data.append({
@@ -246,6 +246,190 @@ def backups_directory(path, name_directory, path_directory_backups):
         data.append({
             'estado' : False,
             'error'  : error
+        })
+
+    return data
+
+def upload_directory(path_owncloud_directory, path_local_directory, **kwargs):
+
+    data    = list()
+    error   = None
+    oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
+    oc.login('enunez', 'asgard2016')
+
+    try:
+
+        directory_info = oc.file_info(path_owncloud_directory)
+
+        if directory_info:
+            try:
+                status_upload   = oc.put_directory(path_owncloud_directory, path_local_directory, **kwargs)
+                if status_upload:
+                    data.append({
+                        'estado': True,
+                        'error': error
+                    })
+                else:
+                    error = 'No se pudo subir directorio a Owncloud'
+                    data.append({
+                        'estado': False,
+                        'error': error
+                    })
+            except Exception:
+                error = 'No se pudo subir directorio a Owncloud'
+                data.append({
+                    'estado': False,
+                    'error': error
+                })
+        else:
+            error = 'Directorio Owncloud no existe.'
+            data.append({
+                'estado': False,
+                'error': error
+            })
+    except Exception:
+        error = 'Directorio Owncloud no existe.'
+        data.append({
+            'estado': False,
+            'error': error
+        })
+
+    return data
+
+def upload_file(path_owncloud_directory, local_source_file,**kwargs):
+
+    data    = list()
+    error   = None
+    oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
+    oc.login('enunez', 'asgard2016')
+
+    try:
+
+        directory_info = oc.file_info(path_owncloud_directory)
+
+        if directory_info:
+            try:
+                status_upload   = oc.put_file(path_owncloud_directory, local_source_file, **kwargs)
+                if status_upload:
+                    data.append({
+                        'estado': True,
+                        'error': error
+                    })
+                else:
+                    error = 'No se pudo subir el archivo a Owncloud'
+                    data.append({
+                        'estado': False,
+                        'error': error
+                    })
+            except Exception:
+                error = 'No se pudo subir el archivo a Owncloud'
+                data.append({
+                    'estado': False,
+                    'error': error
+                })
+        else:
+            error = 'Directorio Owncloud no existe.'
+            data.append({
+                'estado': False,
+                'error': error
+            })
+    except Exception:
+        error = 'Directorio Owncloud no existe.'
+        data.append({
+            'estado': False,
+            'error': error
+        })
+
+    return data
+
+def download_directory_as_zip(path_owncloud_directory, path_local):
+
+    data    = list()
+    error   = None
+    oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
+    oc.login('enunez', 'asgard2016')
+
+    try:
+
+        directory_info = oc.file_info(path_owncloud_directory)
+
+        if directory_info:
+            try:
+                status_download   = oc.get_directory_as_zip(path_owncloud_directory, path_local)
+                if status_download:
+                    data.append({
+                        'estado': True,
+                        'error': error
+                    })
+                else:
+                    error = 'No se pudo descargar la carpeta desde Owncloud'
+                    data.append({
+                        'estado': False,
+                        'error': error
+                    })
+            except Exception:
+                error = 'No se pudo descargar la carpeta desde Owncloud'
+                data.append({
+                    'estado': False,
+                    'error': error
+                })
+        else:
+            error = 'Directorio Owncloud no existe.'
+            data.append({
+                'estado': False,
+                'error': error
+            })
+    except Exception:
+        error = 'Directorio Owncloud no existe.'
+        data.append({
+            'estado': False,
+            'error': error
+        })
+
+    return data
+
+def download_file(path_owncloud_directory, path_local=None):
+
+    data    = list()
+    error   = None
+    oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
+    oc.login('enunez', 'asgard2016')
+
+    try:
+
+        directory_info = oc.file_info(path_owncloud_directory)
+
+        if directory_info:
+            try:
+                status_download   = oc.get_file(path_owncloud_directory, path_local)
+                if status_download:
+                    data.append({
+                        'estado': True,
+                        'error': error
+                    })
+                else:
+                    error = 'No se pudo descargar el archivo desde Owncloud'
+                    data.append({
+                        'estado': False,
+                        'error': error
+                    })
+            except Exception:
+                error = 'No se pudo descargar el archivo desde Owncloud'
+                data.append({
+                    'estado': False,
+                    'error': error
+                })
+        else:
+            error = 'Directorio Owncloud no existe.'
+            data.append({
+                'estado': False,
+                'error': error
+            })
+    except Exception:
+        error = 'Directorio Owncloud no existe.'
+        data.append({
+            'estado': False,
+            'error': error
         })
 
     return data
