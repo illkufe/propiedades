@@ -330,8 +330,6 @@ def propuesta_guardar(request):
 
 def propuesta_pdf(request, pk=None):
 
-	print ('asd')
-
 	data 		= list()
 	total 		= 0
 	propuesta 	= Factura.objects.get(id=pk)

@@ -9,7 +9,7 @@ from utilidades.views import formato_moneda_local
 from .forms import *
 from .models import *
 
-import owncloud
+# import owncloud
 # from utilidades.plugins.owncloud import conection as client_owncloud
 
 # variables
@@ -452,10 +452,10 @@ class ACTIVO_DOCUMENTOS(View):
 	def json_to_response(self):
 
 		response 	= list()
-		oc 			= owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-		asdasd 		= oc.login('enunez', 'asgard2016')
-		elements 	= oc.list('Iproperty/Activos/Mall Plaza Maule')
-		response 	= create_directory(elements, oc)
+		# oc 			= owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
+		# asdasd 		= oc.login('enunez', 'asgard2016')
+		# elements 	= oc.list('Iproperty/Activos/Mall Plaza Maule')
+		# response 	= create_directory(elements, oc)
 
 		data = [{
 				'text'	: 'Mall Plaza Maule',
@@ -474,16 +474,48 @@ class ACTIVO_DOCUMENTOS(View):
 
 		return JsonResponse(data, safe=False)
 
+
+
+
+
+def owncloud_create_folder(request):
+
+	response 	= list()
+	var_post	= request.POST.copy()
+	nombre 		= var_post['nombre']
+
+
+
+
+	return JsonResponse(data, safe=False)
+
+
+def owncloud_delete(request):
+
+	response 	= list()
+	var_post	= request.POST.copy()
+
+	print (var_post)
+
+	# nombre 	= var_post['nombre']
+
+
+
+
+	return JsonResponse(response, safe=False)
+
+
+
 def create_directory(element, oc):
 
 	response = list()
 
 	for item in element:
 
-		info 	= oc.file_info(item.path)
+		# info 	= oc.file_info(item.path)
 		share 	= oc.share_file_with_link(item.path)
 		
-		if info.is_dir():
+		if item.is_dir():
 
 			elements 	= oc.list(item.path)
 			directory 	= create_directory(elements, oc)

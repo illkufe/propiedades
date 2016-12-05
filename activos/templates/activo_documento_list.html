@@ -23,7 +23,7 @@
 
 						<div class="col-sm-8">
 							<p>
-								<button id="btn-add-folder" class="btn btn-default btn-xs" type="button" disabled="disabled"><i class="fa fa-plus"></i>&nbsp;Crear Carpeta</button>
+								<button id="btn-create-folder" class="btn btn-default btn-xs" type="button" disabled="disabled"><i class="fa fa-plus"></i>&nbsp;Crear Carpeta</button>
 								<button id="btn-upload" class="btn btn-default btn-xs" type="button" disabled="disabled"><i class="fa fa-upload"></i>&nbsp;Subir Archivo</button>
 								<a id="btn-download" class="btn btn-default btn-xs" disabled="disabled" download><i class="fa fa-download"></i>&nbsp;Descargar Archivo</a>
 								<button id="btn-delete" class="btn btn-default btn-xs" type="button" disabled="disabled"><i class="fa fa-trash"></i>&nbsp;Eliminar</button>
@@ -42,6 +42,36 @@
 	</div>
 </div>
 
+<!-- modal crear carpeta -->
+<div class="modal fade" id="m-create-folder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Crear Carpeta</h4>
+			</div>
+
+			<div class="modal-body">
+				<form role="form">
+					<div class="form-group">
+						<label>Nombre</label>
+						<input type="text" placeholder="Ingresar nombre" class="form-control">
+					</div>
+				</form>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">Salir</button>
+				<button type="button" class="btn btn-w-m btn-sm btn-primary">Aceptar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
 {% endblock section %}
 
 {% block scripts %}
@@ -52,8 +82,17 @@ var tabla_activos;
 $(document).ready(function(){
 
 	load_tree(3)
+	initialize()
 
 });
+
+
+function initialize (argument) {
+
+	$('#btn-create-folder').click(owncloud_create_folder)
+	$('#btn-delete').click(owncloud_delete)
+
+}
 
 function load_tree(id){
 
@@ -102,15 +141,13 @@ function load_tree(id){
 
 function enable_buttons(obj){
 
-	console.log(obj)
-
-	$('#btn-add-folder').attr('disabled', true)
+	$('#btn-create-folder').attr('disabled', true)
 	$('#btn-upload').attr('disabled', true)
 	$('#btn-download').attr('disabled', true)
 	$('#btn-delete').attr('disabled', false)
 
 	if (obj.type == 'folder') {
-		$('#btn-add-folder').attr('disabled', false)
+		$('#btn-create-folder').attr('disabled', false)
 		$('#btn-upload').attr('disabled', false)
 	}else{
 		$('#btn-download').attr('disabled', false)
@@ -120,9 +157,47 @@ function enable_buttons(obj){
 
 
 function owncloud_delete(){
+
+	swal({
+		title: '¿ Eliminar Archivo y/o Carpeta?',
+		text: '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#F8BB86',
+		cancelButtonColor: '#D0D0D0',
+		confirmButtonText: 'Si, eliminar',
+		cancelButtonText: 'Cancelar',
+		closeOnConfirm: true,
+	}).then(function() {
+
+		$.ajax({
+			url: '{% url "owncloud_delete" %}',
+			type: 'POST',
+			data: {csrfmiddlewaretoken: getCookie('csrftoken')},
+			success: function(data){
+
+				var configuracion = {
+					'toast_type'	: 'success',
+					'toast_text' 	: 'eliminado correctamente',
+					'toast_title' 	: 'Éxito',
+				}
+				notification_toast(configuracion)
+			},
+			error:function(data){
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se puedo eliminar',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
+			}
+		})
+	})
+
 }
 
-function owncloud_add_folder(){
+function owncloud_create_folder(){
+	$('#m-create-folder').modal('show')
 }
 
 function owncloud_upload_file(){
