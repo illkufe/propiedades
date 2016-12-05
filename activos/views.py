@@ -5,9 +5,11 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, UpdateView, DeleteView
 from locales.models import *
 from utilidades.views import formato_moneda_local
-
+from utilidades.plugins.owncloud import *
 from .forms import *
 from .models import *
+
+
 
 import owncloud
 
@@ -54,6 +56,9 @@ class ActivoMixin(object):
 			form_nivel.save()
 
 		response = super(ActivoMixin, self).form_valid(form)
+
+		# path   = 'Iproperty/Activos/'
+		# estado = create_directory(path, obj.nombre)
 
 		if self.request.is_ajax():
 			data = {'estado': True,}
@@ -115,6 +120,11 @@ class ActivoDelete(DeleteView):
 		self.object 		= self.get_object()
 		self.object.visible = False
 		self.object.save()
+
+		# path   					= 'Iproperty/Activos/'
+		# path_directory_backups 	= 'Iproperty/Activos/Respaldos/'
+		# estado = backups_directory(path, self.object.nombre, path_directory_backups)
+
 		data 				= {'estado': True}
 
 		return JsonResponse(data, safe=False)
@@ -430,129 +440,130 @@ class ACTIVOS(View):
 
 
 class ACTIVO_DOCUMENTOS(View):
-
-	http_method_names = ['get', 'post']
-
-	def get(self, request, id=None):
-
-
-
-
-		
-			# print (x.name)
-			# print (x.path)
-			# link_info = oc.share_file_with_link(x.path)
-			# print (link_info.get_link())
-
-
-
-		# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
-		# print (link_info.get_link())
-
-		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
-
-			return self.json_to_response()
-
-		else:
-
-			return render(request, 'activo_documento_list.html', {
-				'title'     : 'Activos',
-				'href'      : '/activos/list',
-				'subtitle'  : 'activo',
-				'name'      : 'documentos',
-				})
-
-	def json_to_response(self):
-
-		response 	= list()
-		oc 			= owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-		oc.login('enunez', 'asgard2016')
-		
-		elements 	= oc.list('Iproperty/Activos/Mall Plaza Maule')
-		response 	= create_directory(elements, oc)
-
-
-		data =	[{
-				'text'	: 'Mall Plaza Maule',
-				'data' 	: {
-					'id' 	: 1,
-					'path'	: 'path nuevo',
-					'tipo'	: 'folder',
-					'permisses': False,
-					},
-				'state': {
-					'opened': True
-				},
-				'children': response,
-				}
-				]
-
-		return JsonResponse(data, safe=False)
-
-
-def create_directory(element, oc):
+	pass
+#
+# 	http_method_names = ['get', 'post']
+#
+# 	def get(self, request, id=None):
+#
+#
+#
+#
+#
+# 			# print (x.name)
+# 			# print (x.path)
+# 			# link_info = oc.share_file_with_link(x.path)
+# 			# print (link_info.get_link())
+#
+#
+#
+# 		# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
+# 		# print (link_info.get_link())
+#
+# 		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
+#
+# 			return self.json_to_response()
+#
+# 		else:
+#
+# 			return render(request, 'activo_documento_list.html', {
+# 				'title'     : 'Activos',
+# 				'href'      : '/activos/list',
+# 				'subtitle'  : 'activo',
+# 				'name'      : 'documentos',
+# 				})
+#
+# 	def json_to_response(self):
+#
+# 		response 	= list()
+# 		oc 			= owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
+# 		oc.login('enunez', 'asgard2016')
+#
+# 		elements 	= oc.list('Iproperty/Activos/Mall Plaza Maule')
+# 		response 	= create_directory(elements, oc)
+#
+#
+# 		data =	[{
+# 				'text'	: 'Mall Plaza Maule',
+# 				'data' 	: {
+# 					'id' 	: 1,
+# 					'path'	: 'path nuevo',
+# 					'tipo'	: 'folder',
+# 					'permisses': False,
+# 					},
+# 				'state': {
+# 					'opened': True
+# 				},
+# 				'children': response,
+# 				}
+# 				]
+#
+# 		return JsonResponse(data, safe=False)
 
 
-	# 	print(x)
-	
-	# 	asd = oc.file_info(x.path)
-	
-	# 	# print (asd.is_dir())
-	
-	# 	response.append({
-	# 		'text'	: x.name,
-	# 		'icon' 	: 'fa fa-file',
-	# 		'data' 	: {
-	# 			'id' 	: 1,
-	# 			'path'	: 'path nuevo',
-	# 		}
-	# 		})
-	
-	# oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
-	# oc.login('enunez', 'asgard2016')
-	# # oc.put_file('testdir/remotefile.txt', 'localfile.txt')
-	# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
-	# print (link_info.get_link())
-
-
-	response = list()
-
-	for item in element:
-
-		file_info = oc.file_info(item.path)
-		
-		if file_info.is_dir():
-
-			elements 	= oc.list(item.path)
-			directory 	= create_directory(elements, oc)
-
-			response.append({
-				'text'	: item.name,
-				'data' 	: {
-					'id' 	: 1,
-					'path'	: 'path nuevo',
-					'tipo'	: 'folder',
-					},
-				'state': {
-					'opened': True
-				},
-				'children': directory,
-				})
-		else:
-
-			print (file_info.get_content_type())
-
-			response.append({
-				'text'	: item.name,
-				'type' 	: 'html',
-				'data' 	: {
-					'id' 	: 1,
-					'path'	: 'path nuevo',
-					'tipo'	: 'file',
-					}
-				})
-
-	return response
+# def create_directory(element, oc):
+#
+#
+# 	# 	print(x)
+#
+# 	# 	asd = oc.file_info(x.path)
+#
+# 	# 	# print (asd.is_dir())
+#
+# 	# 	response.append({
+# 	# 		'text'	: x.name,
+# 	# 		'icon' 	: 'fa fa-file',
+# 	# 		'data' 	: {
+# 	# 			'id' 	: 1,
+# 	# 			'path'	: 'path nuevo',
+# 	# 		}
+# 	# 		})
+#
+# 	# oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
+# 	# oc.login('enunez', 'asgard2016')
+# 	# # oc.put_file('testdir/remotefile.txt', 'localfile.txt')
+# 	# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
+# 	# print (link_info.get_link())
+#
+#
+# 	response = list()
+#
+# 	for item in element:
+#
+# 		file_info = oc.file_info(item.path)
+#
+# 		if file_info.is_dir():
+#
+# 			elements 	= oc.list(item.path)
+# 			directory 	= create_directory(elements, oc)
+#
+# 			response.append({
+# 				'text'	: item.name,
+# 				'data' 	: {
+# 					'id' 	: 1,
+# 					'path'	: 'path nuevo',
+# 					'tipo'	: 'folder',
+# 					},
+# 				'state': {
+# 					'opened': True
+# 				},
+# 				'children': directory,
+# 				})
+# 		else:
+#
+# 			print (file_info.get_content_type())
+#
+# 			response.append({
+# 				'text'	: item.name,
+# 				'type' 	: 'html',
+# 				'data' 	: {
+# 					'id' 	: 1,
+# 					'path'	: 'path nuevo',
+# 					'tipo'	: 'file',
+# 					}
+# 				})
+#
+# 	return response
 
 
 
