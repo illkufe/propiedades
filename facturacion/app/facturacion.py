@@ -988,8 +988,11 @@ def url_web_service(**kwargs):
 
         contexto = codigo.split('_')
 
+        if puerto == None:
+            url_conexion = 'http://' + str(host).strip() +'/' + str(url).strip() + '/' + str(contexto[2]).strip() + '.svc?wsdl'
+        else:
+            url_conexion = 'http://'+str(host).strip()+':'+str(puerto).strip()+'/'+ str(url).strip()+'/'+str(contexto[2]).strip()+'.svc?wsdl'
 
-        url_conexion = 'http://'+str(host).strip()+':'+str(puerto).strip()+'/'+ str(url).strip()+'/'+str(contexto[2]).strip()+'.svc?wsdl'
                         # inf-srv-des01.infodesarrollo.cl/wsDTE/servDTE.svc?wsdl'
     except Exception as e:
         error ="Error al realizar el armado de la URL de conexión del Web Services, por favor verifique los datos de conexión."

@@ -1286,7 +1286,7 @@ def cargar_folios_idte(contenido_caf):
 
         ## Armar URL de conexión a Web Service--------------------------------------------------------------------------
 
-        error_url ,url_conexion = url_web_service(**datos_conexion)
+        error_url , url_conexion = url_web_service(**datos_conexion)
 
         if not error_url:
 
@@ -1351,7 +1351,7 @@ def autorizar_folios_electronicos(request):
 
     autorizar_folios = request.POST.get('folio_seleccionado')
     respuesta = {}
-    error     = ''
+    error     = 'asdasdasdasd'
 
     if int(autorizar_folios) == 0:
         data ={
