@@ -1,6 +1,27 @@
 from datetime import datetime
 import owncloud
 
+def conection_oc(request):
+
+    oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
+    oc.login('enunez', 'asgard2016')
+    
+    return oc
+
+def delete_oc(request, path):
+
+    oc = conection_oc(request)
+    oc.delete(path)
+
+    return True
+
+
+
+
+
+
+
+
 
 def create_directory(path_owncloud_directory, name_directory):
 

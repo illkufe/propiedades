@@ -9,8 +9,6 @@ from utilidades.plugins.owncloud import *
 from .forms import *
 from .models import *
 
-
-
 import owncloud
 
 # variables
@@ -106,7 +104,7 @@ class ActivoList(ListView):
 		queryset 	= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		for item in queryset:
 
-			item.tasacion_fiscal 		= formato_moneda_local(self.request, item.tasacion_fiscal)
+			item.tasacion_fiscal = formato_moneda_local(self.request, item.tasacion_fiscal)
 
 		return queryset
 
@@ -440,130 +438,100 @@ class ACTIVOS(View):
 
 
 class ACTIVO_DOCUMENTOS(View):
-	pass
-#
-# 	http_method_names = ['get', 'post']
-#
-# 	def get(self, request, id=None):
-#
-#
-#
-#
-#
-# 			# print (x.name)
-# 			# print (x.path)
-# 			# link_info = oc.share_file_with_link(x.path)
-# 			# print (link_info.get_link())
-#
-#
-#
-# 		# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
-# 		# print (link_info.get_link())
-#
-# 		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
-#
-# 			return self.json_to_response()
-#
-# 		else:
-#
-# 			return render(request, 'activo_documento_list.html', {
-# 				'title'     : 'Activos',
-# 				'href'      : '/activos/list',
-# 				'subtitle'  : 'activo',
-# 				'name'      : 'documentos',
-# 				})
-#
-# 	def json_to_response(self):
-#
-# 		response 	= list()
-# 		oc 			= owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-# 		oc.login('enunez', 'asgard2016')
-#
-# 		elements 	= oc.list('Iproperty/Activos/Mall Plaza Maule')
-# 		response 	= create_directory(elements, oc)
-#
-#
-# 		data =	[{
-# 				'text'	: 'Mall Plaza Maule',
-# 				'data' 	: {
-# 					'id' 	: 1,
-# 					'path'	: 'path nuevo',
-# 					'tipo'	: 'folder',
-# 					'permisses': False,
-# 					},
-# 				'state': {
-# 					'opened': True
-# 				},
-# 				'children': response,
-# 				}
-# 				]
-#
-# 		return JsonResponse(data, safe=False)
 
+	http_method_names = ['get', 'post']
 
-# def create_directory(element, oc):
-#
-#
-# 	# 	print(x)
-#
-# 	# 	asd = oc.file_info(x.path)
-#
-# 	# 	# print (asd.is_dir())
-#
-# 	# 	response.append({
-# 	# 		'text'	: x.name,
-# 	# 		'icon' 	: 'fa fa-file',
-# 	# 		'data' 	: {
-# 	# 			'id' 	: 1,
-# 	# 			'path'	: 'path nuevo',
-# 	# 		}
-# 	# 		})
-#
-# 	# oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud')
-# 	# oc.login('enunez', 'asgard2016')
-# 	# # oc.put_file('testdir/remotefile.txt', 'localfile.txt')
-# 	# link_info = oc.share_file_with_link('testdir/propuesta_facturacion.pdf')
-# 	# print (link_info.get_link())
-#
-#
-# 	response = list()
-#
-# 	for item in element:
-#
-# 		file_info = oc.file_info(item.path)
-#
-# 		if file_info.is_dir():
-#
-# 			elements 	= oc.list(item.path)
-# 			directory 	= create_directory(elements, oc)
-#
-# 			response.append({
-# 				'text'	: item.name,
-# 				'data' 	: {
-# 					'id' 	: 1,
-# 					'path'	: 'path nuevo',
-# 					'tipo'	: 'folder',
-# 					},
-# 				'state': {
-# 					'opened': True
-# 				},
-# 				'children': directory,
-# 				})
-# 		else:
-#
-# 			print (file_info.get_content_type())
-#
-# 			response.append({
-# 				'text'	: item.name,
-# 				'type' 	: 'html',
-# 				'data' 	: {
-# 					'id' 	: 1,
-# 					'path'	: 'path nuevo',
-# 					'tipo'	: 'file',
-# 					}
-# 				})
-#
-# 	return response
+	def get(self, request, id=None):
+
+		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
+
+			return self.json_to_response()
+
+		else:
+
+			return render(request, 'activo_documento_list.html', {
+				'title'     : 'Activos',
+				'href'      : '/activos/list',
+				'subtitle'  : 'activo',
+				'name'      : 'documentos',
+				})
+
+	def json_to_response(self):
+
+		response 	= list()
+		oc 			= owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
+		asdasd 		= oc.login('enunez', 'asgard2016')
+		elements 	= oc.list('Iproperty/Activos/Mall Plaza Maule')
+		response 	= create_directory(elements, oc)
+
+		data = [{
+				'text'	: 'Mall Plaza Maule',
+				'data' 	: {
+					'type' : 'folder',
+					'permissions' : {
+						'edit' 		: False,
+						'remove' 	: False,
+						},
+					},
+				'state': {
+					'opened': True
+					},
+				'children': response,
+				}]
+
+		return JsonResponse(data, safe=False)
+
+def create_directory(element, oc):
+
+	response = list()
+
+	for item in element:
+
+		info 	= oc.file_info(item.path)
+		share 	= oc.share_file_with_link(item.path)
+
+		if info.is_dir():
+
+			elements 	= oc.list(item.path)
+			directory 	= create_directory(elements, oc)
+
+			response.append({
+				'text'	: item.name,
+				'data' 	: {
+					'type'	: 'folder',
+					'id' 	: share.get_id(),
+					'name'	: item.get_name(),
+					'path'	: item.get_path(),
+					'link'	: share.get_link(),
+					'permissions' : {
+						'edit' 		: True,
+						'remove' 	: True,
+						},
+					},
+				'state': {
+					'opened': True
+				},
+				'children': directory,
+				})
+		else:
+
+			response.append({
+				'text'	: item.name,
+				'type' 	: 'html',
+				'data' 	: {
+					'type'	: 'file',
+					'id' 	: share.get_id(),
+					'name'	: item.get_name(),
+					'path'	: item.get_path(),
+					'link'	: share.get_link(),
+					'permissions' : {
+						'edit' 		: True,
+						'remove' 	: True,
+						},
+					}
+				})
+
+	return response
 
 
 
