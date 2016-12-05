@@ -11,6 +11,7 @@ import xml.etree.ElementTree as etree
 import sys
 import os
 import suds
+import logging
 
 
 from procesos.models import Factura
@@ -46,12 +47,31 @@ def call_service(url):
     error = ''
     client = ''
 
+    logging.basicConfig(level=logging.INFO)
+    logging.getLogger('suds.client').setLevel(logging.DEBUG)
+    logging.getLogger('suds.transport').setLevel(logging.DEBUG)
+    logging.getLogger('suds.xsd.schema').setLevel(logging.DEBUG)
+    logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
+
+    url     = str('http://www.ifacture.cl/wsMIXTO/servMixto.svc?wsdl').strip()
+
     try:
         client = Client(url, timeout=5)
+        print('----- client------')
+        print(client)
+        print('----- Fin client------')
     except suds.WebFault as detail:
-        error = str(detail.fault)
+        print('----- Error 1------')
+        print(detail)
+        print(error)
+        print('----- Fin error------')
     except Exception as e:
-        error = "No se pudo realizar la conexion con el servidor de IDTE, por favor verifique los datos."
+
+        error = str(e)
+        print('----- Error 2------')
+        print(error)
+        print('----- Fin error------')
+        #error = "No se pudo realizar la conexion con el servidor de IDTE, por favor verifique los datos."
 
     return error, client
 
