@@ -5,12 +5,14 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, UpdateView, DeleteView
 from locales.models import *
 from utilidades.views import formato_moneda_local
-
+from utilidades.plugins.owncloud import *
 from .forms import *
 from .models import *
 
+
 # import owncloud
 # from utilidades.plugins.owncloud import conection as client_owncloud
+
 
 # variables
 modulo 	= 'Activos'
@@ -55,6 +57,9 @@ class ActivoMixin(object):
 			form_nivel.save()
 
 		response = super(ActivoMixin, self).form_valid(form)
+
+		# path   = 'Iproperty/Activos/'
+		# estado = create_directory(path, obj.nombre)
 
 		if self.request.is_ajax():
 			data = {'estado': True,}
@@ -116,6 +121,11 @@ class ActivoDelete(DeleteView):
 		self.object 		= self.get_object()
 		self.object.visible = False
 		self.object.save()
+
+		# path   					= 'Iproperty/Activos/'
+		# path_directory_backups 	= 'Iproperty/Activos/Respaldos/'
+		# estado = backups_directory(path, self.object.nombre, path_directory_backups)
+
 		data 				= {'estado': True}
 
 		return JsonResponse(data, safe=False)
@@ -514,8 +524,9 @@ def create_directory(element, oc):
 
 		# info 	= oc.file_info(item.path)
 		share 	= oc.share_file_with_link(item.path)
-		
+
 		if item.is_dir():
+
 
 			elements 	= oc.list(item.path)
 			directory 	= create_directory(elements, oc)
