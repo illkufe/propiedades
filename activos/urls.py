@@ -31,7 +31,8 @@ urlpatterns = [
 
 	url(r'^activos/documentos/(?P<id>\d+)/$', csrf_exempt(views.ACTIVO_DOCUMENTOS.as_view()),name='activo_documento_list'),
 
-	url(r'^activos/documentos/create-folder/$', views.owncloud_create_folder, name='owncloud_create_folder'),
-	url(r'^activos/documentos/delete/$', views.owncloud_delete, name='owncloud_delete'),
+	url(r'^activos/documentos/create-folder/$', views.activo_owncloud_create_folder, name='activo_owncloud_create_folder'),
+	url(r'^activos/documentos/upload-file/$', views.activo_owncloud_upload_file, name='activo_owncloud_upload_file'),
+	url(r'^activos/documentos/delete/$', views.activo_owncloud_delete, name='activo_owncloud_delete'),
 
 ]

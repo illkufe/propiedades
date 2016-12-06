@@ -10,8 +10,21 @@ from .forms import *
 from .models import *
 
 
-# import owncloud
+import owncloud
 # from utilidades.plugins.owncloud import conection as client_owncloud
+
+
+import os
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
+
+
+
+
+
+
+
 
 
 # variables
@@ -448,7 +461,9 @@ class ACTIVO_DOCUMENTOS(View):
 
 		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
 
-			return self.json_to_response()
+			data = oc_list_directory('Mall Plaza Maule', 'Iproperty/Activos/Mall Plaza Maule')
+
+			return JsonResponse(data, safe=False)
 
 		else:
 
@@ -457,118 +472,69 @@ class ACTIVO_DOCUMENTOS(View):
 				'href'      : '/activos/list',
 				'subtitle'  : 'activo',
 				'name'      : 'documentos',
+				'activo_id' : id,
 				})
 
-	def json_to_response(self):
 
-		response 	= list()
-		# oc 			= owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-		# asdasd 		= oc.login('enunez', 'asgard2016')
-		# elements 	= oc.list('Iproperty/Activos/Mall Plaza Maule')
-		# response 	= create_directory(elements, oc)
+def activo_owncloud_create_folder(request):
 
-		data = [{
-				'text'	: 'Mall Plaza Maule',
-				'data' 	: {
-					'type' : 'folder',
-					'permissions' : {
-						'edit' 		: False,
-						'remove' 	: False,
-						},
-					},
-				'state': {
-					'opened': True
-					},
-				'children': response,
-				}]
-
-		return JsonResponse(data, safe=False)
-
-
-
-
-
-def owncloud_create_folder(request):
-
-	response 	= list()
 	var_post	= request.POST.copy()
-	nombre 		= var_post['nombre']
+	oc_path 	= var_post.get('path')
+	oc_name 	= var_post.get('name')
 
-
-
-
-	return JsonResponse(data, safe=False)
-
-
-def owncloud_delete(request):
-
-	response 	= list()
-	var_post	= request.POST.copy()
-
-	print (var_post)
-
-	# nombre 	= var_post['nombre']
-
-
-
+	response 	= oc_create_directory(oc_path, oc_name)
 
 	return JsonResponse(response, safe=False)
 
 
+def activo_owncloud_delete(request):
 
-def create_directory(element, oc):
+	var_post	= request.POST.copy()
+	oc_path 	= var_post.get('path')
+	oc_name 	= var_post.get('name')
+	oc_type 	= var_post.get('type')
 
-	response = list()
+	response 	= oc_delete(oc_path, oc_name, oc_type)
 
-	for item in element:
-
-		# info 	= oc.file_info(item.path)
-		share 	= oc.share_file_with_link(item.path)
-
-		if item.is_dir():
-
-
-			elements 	= oc.list(item.path)
-			directory 	= create_directory(elements, oc)
-
-			response.append({
-				'text'	: item.name,
-				'data' 	: {
-					'type'	: 'folder',
-					'id' 	: share.get_id(),
-					'name'	: item.get_name(),
-					'path'	: item.get_path(),
-					'link'	: share.get_link(),
-					'permissions' : {
-						'edit' 		: True,
-						'remove' 	: True,
-						},
-					},
-				'state': {
-					'opened': True
-				},
-				'children': directory,
-				})
-		else:
-
-			response.append({
-				'text'	: item.name,
-				'type' 	: 'html',
-				'data' 	: {
-					'type'	: 'file',
-					'id' 	: share.get_id(),
-					'name'	: item.get_name(),
-					'path'	: item.get_path(),
-					'link'	: share.get_link(),
-					'permissions' : {
-						'edit' 		: True,
-						'remove' 	: True,
-						},
-					}
-				})
-
-	return response
+	return JsonResponse(response, safe=False)
 
 
+def activo_owncloud_upload_file(request):
+
+	response 	= list()
+	# var_post	= request.POST.copy()
+	var_file 	= request.FILES.copy()
+	file_data 	= var_file['file']
+
+
+
+	data = request.FILES['file'] # or self.files['image'] in your form
+
+	path = default_storage.save('tmp/somename.txt', ContentFile(data.read()))
+	tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+
+	print (tmp_file)
+	# print(os.path.abspath(file_data))
+
+
+	# print (request.FILES.get('file').__dict__)
+
+	# print (file_data.__dict__)
+
+
+	oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
+	oc.login('enunez', 'asgard2016')
+
+	oc.put_file('Iproperty/Activos/Mall Plaza Maule/Docs/asd/', tmp_file)
+
+	# print (file_data)
+
+	# oc_file 	= var_post.get('file')
+
+	# print (oc_file)
+
+	# response 	= oc_delete(oc_path, oc_name, oc_type)
+
+	return JsonResponse(response, safe=False)
 
 
