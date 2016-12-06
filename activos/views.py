@@ -501,39 +501,20 @@ def activo_owncloud_delete(request):
 
 def activo_owncloud_upload_file(request):
 
-	response 	= list()
-	# var_post	= request.POST.copy()
+	response = list()
+
 	var_file 	= request.FILES.copy()
 	file_data 	= var_file['file']
-
-
-
-	data = request.FILES['file'] # or self.files['image'] in your form
-
-	path = default_storage.save('tmp/somename.txt', ContentFile(data.read()))
-	tmp_file = os.path.join(settings.MEDIA_ROOT, path)
-
-	print (tmp_file)
-	# print(os.path.abspath(file_data))
-
-
-	# print (request.FILES.get('file').__dict__)
-
-	# print (file_data.__dict__)
-
+	
+	path 		= default_storage.save('tmp/'+str(file_data), ContentFile(file_data.read()))
+	tmp_file 	= os.path.join(settings.MEDIA_ROOT, path)
+	
+	
 
 	oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
 	oc.login('enunez', 'asgard2016')
-
 	oc.put_file('Iproperty/Activos/Mall Plaza Maule/Docs/asd/', tmp_file)
-
-	# print (file_data)
-
-	# oc_file 	= var_post.get('file')
-
-	# print (oc_file)
-
-	# response 	= oc_delete(oc_path, oc_name, oc_type)
+	
 
 	return JsonResponse(response, safe=False)
 

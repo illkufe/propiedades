@@ -123,6 +123,7 @@ public/media/gastos-servicios/
 public/media/lectura-medidor/
 public/media/propuestas/
 public/media/reportes/
+public/media/tmp/
 
 
 #Ignora carpeta de virtualenv
