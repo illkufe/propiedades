@@ -11,6 +11,7 @@ import xml.etree.ElementTree as etree
 import sys
 import os
 import suds
+import logging
 
 
 from procesos.models import Factura
@@ -46,12 +47,31 @@ def call_service(url):
     error = ''
     client = ''
 
+    logging.basicConfig(level=logging.INFO)
+    logging.getLogger('suds.client').setLevel(logging.DEBUG)
+    logging.getLogger('suds.transport').setLevel(logging.DEBUG)
+    logging.getLogger('suds.xsd.schema').setLevel(logging.DEBUG)
+    logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
+
+    url     = str('http://www.ifacture.cl/wsMIXTO/servMixto.svc?wsdl').strip()
+
     try:
         client = Client(url, timeout=5)
+        print('----- client------')
+        print(client)
+        print('----- Fin client------')
     except suds.WebFault as detail:
-        error = str(detail.fault)
+        print('----- Error 1------')
+        print(detail)
+        print(error)
+        print('----- Fin error------')
     except Exception as e:
-        error = "No se pudo realizar la conexion con el servidor de IDTE, por favor verifique los datos."
+
+        error = str(e)
+        print('----- Error 2------')
+        print(error)
+        print('----- Fin error------')
+        #error = "No se pudo realizar la conexion con el servidor de IDTE, por favor verifique los datos."
 
     return error, client
 
@@ -968,8 +988,11 @@ def url_web_service(**kwargs):
 
         contexto = codigo.split('_')
 
+        if puerto == None:
+            url_conexion = 'http://' + str(host).strip() +'/' + str(url).strip() + '/' + str(contexto[2]).strip() + '.svc?wsdl'
+        else:
+            url_conexion = 'http://'+str(host).strip()+':'+str(puerto).strip()+'/'+ str(url).strip()+'/'+str(contexto[2]).strip()+'.svc?wsdl'
 
-        url_conexion = 'http://'+str(host).strip()+':'+str(puerto).strip()+'/'+ str(url).strip()+'/'+str(contexto[2]).strip()+'.svc?wsdl'
                         # inf-srv-des01.infodesarrollo.cl/wsDTE/servDTE.svc?wsdl'
     except Exception as e:
         error ="Error al realizar el armado de la URL de conexión del Web Services, por favor verifique los datos de conexión."
