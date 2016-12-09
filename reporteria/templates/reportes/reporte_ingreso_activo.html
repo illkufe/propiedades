@@ -225,6 +225,7 @@ function load_tabla_ingreso_activo(response) {
         'width': '10%',
         'data': 'contrato',
         'title': 'Contrato',
+        'class':'text-right',
     })
 
 
@@ -234,6 +235,7 @@ function load_tabla_ingreso_activo(response) {
         val.data = response.cabecera[i].replace(/\s/g, "_").toLowerCase();
         val.title = response.cabecera[i];
         val.orderable = false
+        val.class = 'text-right'
         columns.push(val)
     }
 

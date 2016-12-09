@@ -216,6 +216,7 @@ function load_tabla_ingreso_clasificacion(response) {
         val.data        = response[0].cabecera[i].replace(/\s/g,"_").toLowerCase();
         val.title       = response[0].cabecera[i];
         val.orderable   = false
+        val.class       = 'text-right'
         columns.push(val)
     }
 

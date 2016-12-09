@@ -1234,7 +1234,7 @@ class ContratosInactivosList(ListView):
 
 		context 			= super(ContratosInactivosList, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Contrato Incativos'
+		context['subtitle'] = 'Contrato Inactivos'
 		context['name'] 	= 'Lista'
 		context['href'] 	= '/contratos/inactivos/list'
 

@@ -92,7 +92,7 @@ def editar_parametros_facturacion(**kwargs):
                     nuevo_conexion.url              = a['url']
                     nuevo_conexion.puerto           = a['puerto']
                     nuevo_conexion.save()
-
+                    nuevo_conexion.save()
                 else:
                     if a['borrar']:
                         delete_conexion = ConexionFacturacion.objects.get(id=a['id_detalle'])

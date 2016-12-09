@@ -4,7 +4,7 @@ from .models import *
 
 class LecturaElectricidadForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control text-right'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
 
 	class Meta:
 
@@ -15,7 +15,7 @@ class LecturaElectricidadForm(forms.ModelForm):
 		widgets = {
 			'medidor_electricidad'	: forms.Select(attrs={'class': 'form-control'}),
 			'mes'					: forms.Select(attrs={'class': 'form-control'}),
-			'anio'					: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio'					: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'imagen_file'			: forms.FileInput(attrs={'class': 'file-format'}),
 		}
 
@@ -39,7 +39,7 @@ class LecturaElectricidadForm(forms.ModelForm):
 
 class LecturaAguaForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control text-right'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
 
 	class Meta:
 
@@ -50,7 +50,7 @@ class LecturaAguaForm(forms.ModelForm):
 		widgets = {
 			'medidor_agua'	: forms.Select(attrs={'class': 'form-control'}),
 			'mes'			: forms.Select(attrs={'class': 'form-control'}),
-			'anio'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio'			: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'imagen_file'	: forms.FileInput(attrs={'class': 'file-format'}),
 		}
 
@@ -74,7 +74,7 @@ class LecturaAguaForm(forms.ModelForm):
 
 class LecturaGasForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control text-right'}), error_messages={'required': 'campo requerido'}, help_text='Valor Asociado a la Lectura de Medidor')
 
 	class Meta:
 
@@ -85,7 +85,7 @@ class LecturaGasForm(forms.ModelForm):
 		widgets = {
 			'medidor_gas'	: forms.Select(attrs={'class': 'form-control'}),
 			'mes'			: forms.Select(attrs={'class': 'form-control'}),
-			'anio'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio'			: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'imagen_file'	: forms.FileInput(attrs={'class': 'file-format'}),
 		}
 
@@ -110,7 +110,7 @@ class LecturaGasForm(forms.ModelForm):
 class GastoServicioBasicoForm(forms.ModelForm):
 
 	valor = NumberField(
-		widget = forms.TextInput(attrs={'class': 'form-control format-number'}),
+		widget = forms.TextInput(attrs={'class': 'form-control format-number text-right'}),
 		error_messages = {'required': 'campo requerido'},
 		help_text = 'valor asociado al gasto',
 		)
@@ -140,7 +140,7 @@ class GastoServicioBasicoForm(forms.ModelForm):
 			'activo'	: forms.Select(attrs={'class': 'form-control'}),
 			'tipo'		: forms.Select(attrs={'class': 'form-control'}),
 			'mes'		: forms.Select(attrs={'class': 'form-control'}),
-			'anio'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 		}
 
 		error_messages = {
@@ -167,7 +167,7 @@ class GastoServicioBasicoForm(forms.ModelForm):
 class TarifaServicioBasicoForm(forms.ModelForm):
 
 	valor = NumberField(
-		widget = forms.TextInput(attrs={'class': 'form-control format-number'}),
+		widget = forms.TextInput(attrs={'class': 'form-control format-number text-right'}),
 		error_messages = {'required': 'campo requerido'},
 		help_text = 'valor de la tarifa',
 		)
@@ -190,7 +190,7 @@ class TarifaServicioBasicoForm(forms.ModelForm):
 			'activo'	: forms.Select(attrs={'class': 'form-control'}),
 			'tipo'		: forms.Select(attrs={'class': 'form-control'}),
 			'mes'		: forms.Select(attrs={'class': 'form-control'}),
-			'anio'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 		}
 
 		error_messages = {

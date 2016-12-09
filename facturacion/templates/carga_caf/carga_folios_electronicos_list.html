@@ -5,30 +5,28 @@
     <div class="wrapper wrapper-content">
         <div class="row animated fadeInRight">
             <div class="col-lg-12">
-                <div id="loading" style="display: none"></div>
                 <div class="ibox float-e-margins">
                     <div class="ibox-content">
                         <div class="ibox-tools">
-                            <button onclick="autorizar_caf()" class="btn btn-primary btn-xs" id="autoriza"><i class="fa fa-plus"></i> Autorizar Folios CAF</button>
+                            <button onclick="autorizar_caf()" class="btn btn-primary btn-xs" id="autoriza"><i class="fa fa-check"></i> Autorizar Folios CAF</button>
                             <a href="{% url 'carga_folios_electronicos' %}" class="btn btn-primary btn-xs "><i class="fa fa-plus"></i> Cargar Folios CAF</a>
                         </div>
                         <br>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover" id="tablaFoliosElectronicos" style="width: 100%!important">
-                                <thead></thead>
                                 <tbody>
-                                    {% for e in folios %}
+                                    {% for item in object_list %}
                                         <tr>
-                                            <td>{{ e.id }}</td>
-                                            <td class="text-center"><input type="checkbox"  class="select_operativo" value="{{ e.id }}" onchange="recupera_id_producto(this)"></td>
-                                            <td>{{ e.tipo_dte}}</td>
-                                            <td>{{ e.secuencia_caf}}</td>
-                                            <td>{{ e.rango_inicial}}</td>
-                                            <td>{{ e.rango_final }}</td>
-                                            <td>{{ e.folio_actual}}</td>
-                                            <td>{{ e.fecha_ingreso_caf|date:"d/m/Y"}}</td>
-                                            <td>{{ e.operativo| formato_boolean }}</td>
-                                            <td>{{ e.usuario_creacion.username}}</td>
+                                            <td>{{ item.id }}</td>
+                                            <td class="text-center"><input type="checkbox"  class="select_operativo" value="{{ item.id }}" onchange="recupera_id_producto(this)"></td>
+                                            <td>{{ item.tipo_dte}}</td>
+                                            <td>{{ item.secuencia_caf}}</td>
+                                            <td>{{ item.rango_inicial}}</td>
+                                            <td>{{ item.rango_final }}</td>
+                                            <td>{{ item.folio_actual}}</td>
+                                            <td>{{ item.fecha_ingreso_caf|date:"d/m/Y"}}</td>
+                                            <td>{{ item.operativo| formato_boolean }}</td>
+                                            <td>{{ item.usuario_creacion.username}}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -93,27 +91,32 @@
                 {
                     'width': '15%',
                     'data': 'tipo_dte',
-                    'title': 'Tipo Documento Electrónico'
+                    'title': 'Tipo Documento Electrónico',
+                    'class' : 'text-right',
                 },
                 {
                     'width': '10%',
                     'data': 'secuencia',
-                    'title': 'Secuencia'
+                    'title': 'Secuencia',
+                    'class' : 'text-right',
                 },
                 {
                     'width': '15%',
                     'data': 'rango_inicial',
-                    'title': 'Rango Inicial'
+                    'title': 'Rango Inicial',
+                    'class' : 'text-right',
                 },
                 {
                     'width': '15%',
                     'data': 'rango_final',
-                    'title': 'Rango Final'
+                    'title': 'Rango Final',
+                    'class' : 'text-right',
                 },
                 {
                     'width': '15%',
                     'data': 'folio_actual',
-                    'title': 'Folio Actual'
+                    'title': 'Folio Actual',
+                    'class' : 'text-right',
                 },
                 {
                     'width': '15%',
@@ -139,7 +142,8 @@
                 url: '{% url 'autorizar_folios_electronicos' %}',
                 type: 'POST',
                 data: {
-                    folio_seleccionado:folio_seleccionado
+                    folio_seleccionado  : folio_seleccionado,
+                    csrfmiddlewaretoken : getCookie('csrftoken'),
                 },
                 beforeSend: function() {
                     loading(true)

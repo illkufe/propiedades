@@ -9,17 +9,15 @@
                         <h5>Carga Folios CAF</h5>
                     </div>
                     <div class="ibox-content">
-                        <form method="post"  enctype="multipart/form-data" role="form" id="form_carga">
+                        <form method="post"  enctype="multipart/form-data" role="form" id="form_carga_caf">
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Carga de CAF</label>
-                                        <input type="file" class="filestyle" data-buttonText="Archivo" data-buttonName="btn-primary" name="file" id="file" accept="application/xml">
-                                        <div class="text-danger" id="validacion">
-                                            {{ errores|safe }}
-                                        </div>
+                                        <input type="file" class="filestyle" data-buttonText="Archivo" data-buttonName="btn-primary" name="file_caf" id="id_file_caf" accept="application/xml">
+                                        <div class="container-error"></div>
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
@@ -33,7 +31,7 @@
                                     </a>
                                 </div>
                                 <div class=" text-right col-md-4 col-md-offset-4">
-                                    <button type="button" onclick="cargar_xml()" class="btn btn-primary">Grabar</button>
+                                    <button type="submit" class="btn btn-primary">Grabar</button>
                                 </div>
                             </div>
                         </form>
@@ -47,80 +45,70 @@
         $(document).ready(function(){
             $(":file").filestyle({buttonText: "Find file"});
 
-            $('#file').on("click", function () {
-                $('#validacion').empty();
-            });
+            validate_upload_file()
         });
 
-        function cargar_xml() {
-            $('#validacion').empty();
-
-            if(validacion()) {
-                $('#form_carga').ajaxSubmit({
-                    dataType: 'json',
-                    beforeSubmit: function () {
-                        console.log('enviado');
+        function validate_upload_file() {
+            $("#form_carga_caf").validate({
+                rules: {
+                    file_caf: {
+                        required: true,
                     },
-                    success: function (data) {
-                        if (data.success == false) {
+                },
+                messages: {
+                    file_caf: {
+                        required: "campo requerido",
+                    },
+                },
+                errorPlacement: function(error, element) {
+                    error.appendTo(element.closest(".form-group").find('.container-error'));
+                },
+                submitHandler: function(form) {
+                    $('#form_carga_caf').ajaxSubmit({
+                        dataType: 'json',
+                        beforeSubmit: function () {
+                            console.log('enviado');
+                        },
+                        success: function (data) {
+                            if (data.success == false) {
 
-                            if (data.funcion == "obtener_datos_conexion"){
-                                var html = "";
-                                html+= data.error + '&nbsp;&nbsp;&nbsp;<a class="btn btn-primary btn-xs" style="width: 115px" href="{% url 'crear_configuracion' %}" target="_blank"><i class="fa fa-plus"></i>Crear Conexión</a>';
+                                var html = '';
+
+                                if (data.funcion == "obtener_datos_conexion"){
+                                    html += data.error + '&nbsp;&nbsp;&nbsp;<a class="btn btn-primary btn-xs" style="width: 115px" href="{% url 'configuracion_facturacion_new' %}" target="_blank"><i class="fa fa-plus"></i>Crear Conexión</a>';
+                                }
+                                else{
+                                    html += data.error
+                                }
+
+                                swal({
+                                    title: "Error Carga CAF",
+                                    text: html,
+                                    type: "error",
+                                    html: true
+                                });
+                            } else {
+                                swal({
+                                    title: "Exito",
+                                    text: 'Folios cargados exitosamente.',
+                                    type: "success",
+                                    html: true
+                                });
+                                window.location.href='{% url 'visualizar_folios_electronicos' %}'
                             }
-                            else{
-                                var html = "";
-                                html = data.error
-                            }
+                        },
+                        error: function (x,y,z) {
+                            console.log(x,y,z);
                             swal({
-                                title: "Error Carga CAF",
-                                text: html,
+                                title: "Error",
+                                text: y.toString(),
                                 type: "error",
                                 html: true
                             });
-                        } else {
-                            swal({
-                                title: "Exito",
-                                text: 'Folios cargados exitosamente.',
-                                type: "success",
-                                html: true
-                            });
-                            window.location.href='{% url 'visualizar_folios_electronicos' %}'
                         }
-                    },
-                    error: function (x,y,z) {
-                        console.log(x,y,z);
-                        swal({
-                            title: "Error",
-                            text: y.toString(),
-                            type: "error",
-                            html: true
-                        });
-                    }
-                });
-            }
-            else {
-                html = '';
-                html += '<ul>';
-                for (var i in errores){
-                    html += '<li>' + errores[i] + '</li><br>';
+                    });
                 }
-                html += '</ul>';
-                $('#validacion').html(html);
-            }
-        }
-
-        function validacion() {
-            errores=[];
-
-            var file = $('#file').val();
-            var flag = true;
-            if (file ==''){
-                var error = 'Debe seleccionar un archivo XML.';
-                errores.push(error);
-                flag=false;
-            }
-            return flag;
+            })
         }
     </script>
 {% endblock %}
