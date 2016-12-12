@@ -58,3 +58,20 @@ def calculo_total(valor):
 	valor_total	= valor + valor_iva
 
 	return formato_moneda(valor_total)
+
+@register.filter
+def is_number(valor):
+
+	valor = str(valor).replace('.', '')
+	valor = str(valor).replace('$', '')
+	valor = str(valor).replace(',', '.')
+
+	try:
+		valor = float(valor)
+
+		if isinstance(valor, float):
+			return True
+		else:
+			return False
+	except Exception as e:
+		return False

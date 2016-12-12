@@ -6,9 +6,6 @@ from accounts.models import User
 # modelos
 class ParametrosFacturacion(models.Model):
 
-	persona             = models.ForeignKey('administrador.Cliente', blank=True,null=True, on_delete=models.PROTECT)
-	id_fiscal_persona   = models.CharField(max_length=20, null=True, blank=True)
-	nombre_persona      = models.CharField(max_length=100, null=True, blank=True)
 	codigo_conexion     = models.CharField(max_length=100)
 	motor_emision       = models.ForeignKey('MotorFacturacion', on_delete=models.PROTECT)
 
@@ -23,10 +20,10 @@ class ParametrosFacturacion(models.Model):
 class ConexionFacturacion(models.Model):
 
 	parametro_facturacion   = models.ForeignKey(ParametrosFacturacion, on_delete=models.PROTECT)
-	codigo_contexto         = models.CharField(max_length=50, null=True, blank=True)
-	host                    = models.CharField(max_length=20, null=True, blank=True)
-	url                     = models.CharField(max_length=30, null=True, blank=True)
-	puerto                  = models.IntegerField()
+	codigo_contexto         = models.CharField(max_length=100)
+	host                    = models.CharField(max_length=100)
+	url                     = models.CharField(max_length=100)
+	puerto                  = models.IntegerField(null=True, blank=True)
 
 	class Meta:
 		ordering            = ['codigo_contexto']

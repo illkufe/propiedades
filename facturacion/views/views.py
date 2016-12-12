@@ -1,20 +1,19 @@
-from django.views.generic import  FormView
+from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import *
-from django.shortcuts import render, get_object_or_404
 from django.http import *
+from django.views.generic import ListView, FormView, DeleteView, UpdateView
 
 from accounts.models import UserProfile
 from facturacion.forms.forms_parametros import *
 from facturacion.app.parametros_facturacion import *
-from facturacion.forms.forms_caf import FiltroFoliosDocumentosForm
 from facturacion.app.facturacion import *
 from facturacion.models import *
 
-from administrador.views import Cliente, Empresa
+from administrador.views import Empresa
 from procesos.models import Factura
-from utilidades.views import formato_numero_sin_miles
 
 from datetime import timedelta
 
@@ -22,271 +21,123 @@ from datetime import timedelta
 import datetime
 import xml.etree.ElementTree as etree
 
+modulo = 'Facturación'
 
-##-------------------------TIPOS DE PRODUCTOS---------------------------------------------------------------------------
+##-------------------------PARAMETRO DE CONEXION FACTURACION -----------------------------------------------------------
 
-
-
-def visualizar_configuracion(request):
-
-    name = 'Lista'
-    title = 'Facturación'
-    subtitle = 'Parametros de Configuración'
-    href = '/configuracion/visualizar/'
-    parametros = ParametrosFacturacion.objects.all()
-
-    return render(request, 'configuracion/visualizar_configuracion.html', {
-                  'name': name,
-                  'title': title,
-                  'subtitle': subtitle,
-                  'href': href,
-                  'parametros': parametros
-    })
-
-class AjaxableResponseMixinParametroFacturacion(object):
-    template_name = 'configuracion/crea_configuracion.html'
-    form_class = ParametrosFacturacionForms
-    success_url =  '/configuracion/list'
-
-    def form_valid(self, form):
-
-        self.object = form.save(commit=False)
-        self.save()
-
-
-    def form_invalid(self, form):
-        pass
-
-class ParametroFacturacionNew(AjaxableResponseMixinParametroFacturacion, FormView):
+class ConfiguracionFacturacionList(ListView):
+    model           = ParametrosFacturacion
+    template_name   = 'configuracion/configuracion_facturacion_list.html'
 
     def get_context_data(self, **kwargs):
-
-        context = super(ParametroFacturacionNew, self).get_context_data(**kwargs)
-        context['title'] = 'Facturación'
-        context['subtitle'] = 'Parametros de Facturación'
-        context['name'] = ['Nuevo']
-        context['href'] = 'configuracion/list'
-        context['accion'] = 'create'
-
-        # if self.request.POST:
-        #     context['parametro'] = ParametrosFacturacionForms(self.request.POST)
-        #     context['conexion'] = ConexionFacturacionFormSet(self.request.POST)
-        # else:
-        #     context['parametro'] = ParametrosFacturacionForms()
-        #     context['conexion'] = ConexionFacturacionFormSet()
+        context = super(ConfiguracionFacturacionList, self).get_context_data(**kwargs)
+        context['title']    = modulo
+        context['subtitle'] = 'Parametros de Configuración'
+        context['name']     = 'Lista'
+        context['href']     = '/configuracion-facturacion/list'
 
         return context
 
+    def get_queryset(self):
+        queryset = ParametrosFacturacion.objects.all()
 
-@login_required
-@csrf_exempt
-def crear_configuracion(request):
-    name = 'Nuevo'
-    title = 'Facturación'
-    subtitle = 'Parametros de Configuración'
-    href = '/configuracion/visualizar/'
+        return queryset
 
-    po = request.method
-    lista_error = list()
-    kwargs = {}
+class ConfiguracionFacturacionMixin(object):
+    template_name   = 'configuracion/configuracion_facturacion_new.html'
+    form_class      = ParametrosFacturacionForms
+    success_url     = '/configuracion-facturacion/list'
 
+    def form_invalid(self, form):
 
-    if request.method == 'POST':
-        parametros = ParametrosFacturacionForms(request.POST)
-        conexion = ConexionFacturacionForms()
-        if parametros.is_valid():
-            kwargs['persona'] = request.POST.get('persona')
-            kwargs['codigo_conexion'] = request.POST.get('codigo_conexion')
-            kwargs['detalle_conexion'] = request.POST.get('detalle_conexion')
-            kwargs['motor_emision'] = request.POST.get('motor_emision')
+        response = super(ConfiguracionFacturacionMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
 
-            error = guarda_parametros_facturacion(**kwargs)
-            if not error:
-                data = {
-                    'success': True,
-                }
+    def form_valid(self, form):
+
+        context         = self.get_context_data()
+        form_conexion   = context['form_conexion']
+
+        if form_conexion.is_valid():
+            self.object = form.save()
+            form_conexion.instance = self.object
+            form_conexion.save()
+
+            response = super(ConfiguracionFacturacionMixin, self).form_valid(form)
+
+            if self.request.is_ajax():
+                data = {'estado': True,}
                 return JsonResponse(data)
             else:
-                data={
-                    'success':False,
-                    'error':error
-                }
-                return JsonResponse(data, status=400)
+                return response
 
         else:
-            if request.is_ajax():
-                return JsonResponse(parametros.errors, status=400)
+            return self.render_to_response(self.get_context_data(form=form))
 
-    else:
-        parametros = ParametrosFacturacionForms()
-        conexion = ConexionFacturacionForms()
+class ConfiguracionFacturacionNew(ConfiguracionFacturacionMixin, FormView):
+    def get_context_data(self, **kwargs):
+        context = super(ConfiguracionFacturacionNew, self).get_context_data(**kwargs)
+        context['title']    = modulo
+        context['subtitle'] = 'Parametros de Configuración'
+        context['name']     = 'Nuevo'
+        context['href']     = '/configuracion-facturacion/list'
+        context['accion']   = 'create'
 
-    return render(request, 'configuracion/crea_configuracion.html', {
-        'name': name,
-        'title': title,
-        'subtitle': subtitle,
-        'href': href,
-        'parametros': parametros,
-        'conexion' : conexion
-    })
-
-@csrf_exempt
-def busca_personas(request):
-
-    lista_cliente = list()
-
-
-    personas = Cliente.objects.filter().all()
-
-    for a in personas:
-        data = {
-            'id':a.id,
-            'id_fiscal':a.rut,
-            'razon_social':a.razon_social,
-            'nombre_fantasia':a.nombre
-
-        }
-        lista_cliente.append(data)
-
-    return JsonResponse({'lista_cliente':lista_cliente})
-
-@csrf_exempt
-def valida_rut_cliente(request):
-
-    id_fiscal = request.POST.get('id_fiscal')
-    id = request.POST.get('id_cliente')
-    tipo = request.POST.get('type')
-    list_error = list()
-    context = {}
-
-    try:
-            persona = Cliente.objects.filter(Q(rut=id_fiscal) | Q(id=id), visible=True).get()
-
-            context = {
-                'error': list_error,
-                'id': persona.id,
-                'id_fiscal': persona.rut,
-                'razon': persona.razon_social,
-                'nombre': persona.nombre
-            }
-    except Exception as e:
-        error = "No se encuentra el Cliente ingresado."
-        list_error.append(error)
-        context = {
-            'error': list_error
-        }
-
-    return JsonResponse(context)
-
-@login_required
-@csrf_exempt
-def editar_configuracion(request, pk):
-    name = 'Edita'
-    title = 'Facturación'
-    subtitle = 'Parametros de Configuración'
-    href = '/configuracion/visualizar/'
-    kwargs = {}
-
-    parametro = get_object_or_404(ParametrosFacturacion, pk=pk)
-
-    if request.method == 'POST':
-        parametro = ParametrosFacturacionForms(request.POST, instance=parametro)
-        if parametro.is_valid():
-
-            kwargs['id_parametro']      = request.POST.get('id_parametro')
-            kwargs['persona']           = request.POST.get('persona')
-            kwargs['codigo_conexion']   = request.POST.get('codigo_conexion')
-            kwargs['motor_emision']     = request.POST.get('motor_emision')
-            kwargs['detalle_conexion']  = request.POST.get('detalle_conexion')
-
-            error = editar_parametros_facturacion(**kwargs)
-
-            if not error:
-                data = {
-                    'success': True,
-                }
-                return JsonResponse(data)
-            else:
-                data = {
-                    'success': False,
-                    'error': error
-                }
-                return JsonResponse(data)
+        if self.request.POST:
+            context['form_conexion'] = ConexionFacturacionFormSet(self.request.POST)
         else:
-            if request.is_ajax():
-                return JsonResponse(parametro.errors, status=400)
-    else:
-        parametro = ParametrosFacturacionForms(instance=parametro)
-        conexion = ConexionFacturacionForms()
+            context['form_conexion'] = ConexionFacturacionFormSet()
 
-    return render(request, 'configuracion/editar_configuracion.html', {
-        'name': name,
-        'title': title,
-        'subtitle': subtitle,
-        'href': href,
-        'parametros': parametro,
-        'conexion': conexion,
-        'id': pk,
+        return context
 
-    })
+class ConfiguracionFacturacionUpdate(ConfiguracionFacturacionMixin, UpdateView):
+    model           = ParametrosFacturacion
+    form_class      = ParametrosFacturacionForms
+    template_name   = 'configuracion/configuracion_facturacion_new.html'
+    success_url     = '/configuracion-facturacion/list'
 
-@csrf_exempt
-def recupera_data_parametros(request, pk):
+    def get_object(self, queryset=None):
 
-    lista_detalle = list()
-    context = {}
-    error = ""
+        queryset = ParametrosFacturacion.objects.get(id=int(self.kwargs['pk']))
 
-    try:
-        conexion = ConexionFacturacion.objects.filter(parametro_facturacion_id=pk)
+        return queryset
 
-        for a in conexion:
-            data ={
-                'id_detalle' : a.id,
-                'codigo_contexto': a.codigo_contexto,
-                'host': a.host,
-                'url': a.url,
-                'puerto': a.puerto
-            }
-            lista_detalle.append(data)
-    except Exception as e:
-        error = str(e)
+    def get_context_data(self, **kwargs):
+        context = super(ConfiguracionFacturacionUpdate, self).get_context_data(**kwargs)
+        context['title']    = modulo
+        context['subtitle'] = 'Parametros de Configuración'
+        context['name']     = 'Editar'
+        context['href']     = '/configuracion-facturacion/list'
+        context['accion']   = 'update'
 
+        if self.request.POST:
+            context['form_conexion'] = ConexionFacturacionFormSet(self.request.POST, instance=self.object)
+        else:
+            context['form_conexion'] = ConexionFacturacionFormSet(instance=self.object)
 
-    context={
-        'lista_detalle':lista_detalle,
-        'error':error
-    }
+        return context
 
-    return JsonResponse(context)
+class ConfiguracionFacturacionDelete(DeleteView):
+    model       = ParametrosFacturacion
+    success_url = reverse_lazy('/configuracion-facturacion/listt')
 
-@login_required
-@csrf_exempt
-def eliminar_configuracion(request):
-    context = {}
-    error = ''
+    def delete(self, request, *args, **kwargs):
 
-    try:
-        id_parametro = request.POST.get('id_parametro')
+        try:
+            parametro   = ParametrosFacturacion.objects.filter(id=int(self.kwargs['pk']))
+            conexion    = ConexionFacturacion.objects.filter(parametro_facturacion_id=int(self.kwargs['pk']))
 
-        parametro   = ParametrosFacturacion.objects.filter(id=id_parametro)
-        conexion    = ConexionFacturacion.objects.filter(parametro_facturacion_id=id_parametro)
+            conexion.delete()
+            parametro.delete()
+            data = {'delete': True}
 
-        conexion.delete()
-        parametro.delete()
+        except exceptions:
+            data = {'delete': False}
 
-        context = {
-            'success'   :False,
-            'error'     : error
-        }
-    except Exception as e:
-        error = str(e)
-        context = {
-            'success'   : False,
-            'error'     : error
-        }
-
-    return JsonResponse(context)
+        return JsonResponse(data, safe=False)
 
 
 def prueba_xml(request):
@@ -1121,26 +972,26 @@ def carga_folios_electronicos(request):
     """
     # TODO revizar la funcion secuencia en duro y decode archivo leido
 
-    name = 'Carga CAF'
-    title = 'Facturacion'
-    subtitle = 'Lista de Folios Electronicos'
-    href = '/folios_electronicos/visualizar/'
+    name        = 'Carga CAF'
+    title       = 'Facturación'
+    subtitle    = 'Lista de Folios Electronicos'
+    href        = '/folios_electronicos/visualizar/'
 
     rut_empresa = ''
-    flag = 0
+    flag        = 0
 
     if request.method == 'POST':
             try:
                 rut_empresa = Empresa.objects.get(id=request.user.pk).empresa.rut
                 #rut_empresa = '76244316-3'
 
-                tempfile = request.FILES.get('file')
+                tempfile    = request.FILES.get('file')
 
-                archivo = etree.fromstring(tempfile.read())
-                xml = etree.tostring(archivo, method='xml', encoding='UTF-8', )
-                decode_xml = xml.decode('UTF-8').replace('\n','')
+                archivo     = etree.fromstring(tempfile.read())
+                xml         = etree.tostring(archivo, method='xml', encoding='UTF-8', )
+                decode_xml  = xml.decode('UTF-8').replace('\n','')
                 decode2_xml = decode_xml.replace('\t','')
-                xml_creado ='<?xml version="1.0"?>'+decode2_xml.strip()
+                xml_creado  = '<?xml version="1.0"?>'+decode2_xml.strip()
 
                 #root = archivo.getroot()
                 autorizacion = archivo.tag
@@ -1148,8 +999,8 @@ def carga_folios_electronicos(request):
                 if autorizacion != 'AUTORIZACION':
                     flag = 9
                     data = {
-                        'success': False,
-                        'error': 'El formato del CAF es Incorrecto'
+                        'success'   : False,
+                        'error'     : 'El formato del CAF es Incorrecto'
                     }
                     return JsonResponse(data)
                 else:
@@ -1159,8 +1010,8 @@ def carga_folios_electronicos(request):
                             if rut_emisor != rut_empresa:
                                 flag = 9
                                 data = {
-                                    'success': False,
-                                    'error': 'CAF NO Corresponde a este Emisor Electrónico'
+                                    'success'   : False,
+                                    'error'     : 'CAF NO Corresponde a este Emisor Electrónico'
                                 }
                                 return JsonResponse(data)
                             if a.find('TD').text:
@@ -1195,15 +1046,15 @@ def carga_folios_electronicos(request):
                             else:
                                 secuencia_folio = 1
 
-                            nuevo_folios = FoliosDocumentosElectronicos()
-                            nuevo_folios.tipo_dte = tipo_dte
-                            nuevo_folios.secuencia_caf = secuencia_folio
-                            nuevo_folios.rango_inicial = folio_desde
-                            nuevo_folios.rango_final = folio_hasta
-                            nuevo_folios.folio_actual = folio_desde
-                            nuevo_folios.xml_caf = xml_creado
-                            nuevo_folios.fecha_ingreso_caf = datetime.datetime.now()
-                            nuevo_folios.usuario_creacion_id = request.user.pk
+                            nuevo_folios                        = FoliosDocumentosElectronicos()
+                            nuevo_folios.tipo_dte               = tipo_dte
+                            nuevo_folios.secuencia_caf          = secuencia_folio
+                            nuevo_folios.rango_inicial          = folio_desde
+                            nuevo_folios.rango_final            = folio_hasta
+                            nuevo_folios.folio_actual           = folio_desde
+                            nuevo_folios.xml_caf                = xml_creado
+                            nuevo_folios.fecha_ingreso_caf      = datetime.datetime.now()
+                            nuevo_folios.usuario_creacion_id    = request.user.pk
                             nuevo_folios.save()
 
                             data = {
@@ -1230,36 +1081,33 @@ def carga_folios_electronicos(request):
         pass
 
     return render(request, 'carga_caf/carga_folios_caf.html', {
-        'name': name,
-        'title': title,
-        'subtitle': subtitle,
-        'href': href,
-        'error': ""
+        'name'      : name,
+        'title'     : title,
+        'subtitle'  : subtitle,
+        'href'      : href,
+        'error'     : ""
     })
 
-@csrf_exempt
-@login_required
-def visualizar_folios_electronicos(request):
 
-    folios = FoliosDocumentosElectronicos.objects.all()
 
-    name = 'Lista'
-    title = 'Facturación'
-    subtitle = 'Folios Electrónicos'
-    href = '/folios_electronicos/visualizar'
 
-    error = ""
-    filtro_folios = FiltroFoliosDocumentosForm()
+class FoliosElectronicosList(ListView):
+    model           = ParametrosFacturacion
+    template_name   = 'carga_caf/carga_folios_electronicos_list.html'
 
-    return render(request, 'carga_caf/visualizar_caf.html', {
-        'name': name,
-        'title': title,
-        'subtitle': subtitle,
-        'href': href,
-        'folios' : folios,
-        'filtro_folios':filtro_folios,
-        'errores': error,
-    })
+    def get_context_data(self, **kwargs):
+        context = super(FoliosElectronicosList, self).get_context_data(**kwargs)
+        context['title']    = modulo
+        context['subtitle'] = 'Folios Electrónicos'
+        context['name']     = 'Lista'
+        context['href']     = '/folios-electronicos/list'
+
+        return context
+
+    def get_queryset(self):
+        queryset = FoliosDocumentosElectronicos.objects.all()
+
+        return queryset
 
 def cargar_folios_idte(contenido_caf):
 
@@ -1269,18 +1117,18 @@ def cargar_folios_idte(contenido_caf):
     :return: retorna un objeto con el estado del proceso, además de el mensaje de error si es que existe.
     """
 
-    nievel_traza = 2  # Nivel completo de traza
-    id_dte_empresa = ''
+    nievel_traza    = 2  # Nivel completo de traza
+    id_dte_empresa  = ''
 
-    datos_conexion = {}
+    datos_conexion  = {}
     error, conexion = obtener_datos_conexion('wsMIXTO')
 
     if not error:
 
-        datos_conexion['codigo_contexto'] = conexion.codigo_contexto
-        datos_conexion['host'] = conexion.host
-        datos_conexion['url'] = conexion.url
-        datos_conexion['puerto'] = conexion.puerto
+        datos_conexion['codigo_contexto']   = conexion.codigo_contexto
+        datos_conexion['host']              = conexion.host
+        datos_conexion['url']               = conexion.url
+        datos_conexion['puerto']            = conexion.puerto
 
         id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
 
@@ -1345,13 +1193,12 @@ def cargar_folios_idte(contenido_caf):
         }
         return data
 
-@csrf_exempt
 @login_required
 def autorizar_folios_electronicos(request):
 
-    autorizar_folios = request.POST.get('folio_seleccionado')
-    respuesta = {}
-    error     = 'asdasdasdasd'
+    autorizar_folios    = request.POST.get('folio_seleccionado')
+    respuesta           = {}
+    error               = ''
 
     if int(autorizar_folios) == 0:
         data ={
@@ -1360,7 +1207,6 @@ def autorizar_folios_electronicos(request):
         }
         return  JsonResponse(data)
     else:
-
         try:
 
             folio = FoliosDocumentosElectronicos.objects.get(id=autorizar_folios)
@@ -1390,6 +1236,12 @@ def autorizar_folios_electronicos(request):
                         update_folio.save()
 
                         return JsonResponse(respuesta)
+                else:
+                    data = {
+                        'success'   : False,
+                        'error'     : "Aún queda folios operativos en el rango anterior."
+                    }
+                    return JsonResponse(data)
             else:
                 if folio.operativo == True:
                     data = {
@@ -3468,7 +3320,7 @@ def consulta_estado_control_folios(fecha_emision, secuencia):
         datos_conexion['url']               = conexion.url
         datos_conexion['puerto']            = conexion.puerto
 
-        id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
+        id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
         error_url, url_conexion = url_web_service(**datos_conexion)
 
         if not error_url:
@@ -3582,10 +3434,10 @@ def envio_factura_inet(request):
         error, conexion = obtener_datos_conexion_ws_inet('axmldocvta')
 
         if not error:
-            datos_conexion['codigo_contexto'] = conexion.codigo_contexto
-            datos_conexion['host'] = conexion.host
-            datos_conexion['url'] = conexion.url
-            datos_conexion['puerto'] = conexion.puerto
+            datos_conexion['codigo_contexto']   = conexion.codigo_contexto
+            datos_conexion['host']              = conexion.host
+            datos_conexion['url']               = conexion.url
+            datos_conexion['puerto']            = conexion.puerto
 
             # Armar URL de conexion del Web Services -------------------------------------------------------------------
             resultado_url = url_web_service_inet(**datos_conexion)
@@ -3601,19 +3453,19 @@ def envio_factura_inet(request):
                     try:
                         response_ws = envio_documento_inet(resultado_call[1], resultado_xml[1])
                         data = {
-                            'success': True,
-                            'error': '',
-                            'respuesta': response_ws
+                            'success'   : True,
+                            'error'     : '',
+                            'respuesta' : response_ws
                         }
                         return data
 
 
                     except suds.WebFault as w:
                         ##----------------------------------------------------------------------------------------------
-                        error = w.args[0].decode("utf-8")
-                        data = {
-                            'success': False,
-                            'error': error,
+                        error   = w.args[0].decode("utf-8")
+                        data    = {
+                            'success'   : False,
+                            'error'     : error,
                         }
 
                         return data
@@ -3639,8 +3491,8 @@ def envio_factura_inet(request):
 
             ##----------------------------------------------------------------------------------------------------------
             data = {
-                'success': False,
-                'error': error,
+                'success'   : False,
+                'error'     : error,
             }
 
             return data
@@ -3758,19 +3610,19 @@ def armar_dict_documento(request):
                 'descripcion_item'          : str(d.concepto.descripcion).upper(),
                 'cantidad_referencia'       : '1',
                 'unidad_medida_ref'         : '',#str(d.concepto)
-                'precio_referencia'         : formato_numero_sin_miles(d.total),
+                'precio_referencia'         : format_number(request, d.total, False),
                 'cantidad_item'             : '1',
                 'fecha_elaboracion'         : '',
                 'fecha_vencimiento_prod'    : '',
                 'unidad_medida'             : 'UNI',
-                'precio_unitario'           : formato_numero_sin_miles(d.total),
+                'precio_unitario'           : format_number(request, d.total, False),
                 'descuento_porcentaje'      : '0',
                 'descuento_monto'           : '0',
                 'recargo_porcentaje'        : '0',
                 'recargo_monto'             : '0',
                 'cod_imp_adic_1'            : '0',
                 'cod_imp_adic_2'            : '0',
-                'monto_item'                : formato_numero_sin_miles(d.total),
+                'monto_item'                : format_number(request, d.total, False),
                 'item_espectaculo'          : '',
                 'rut_mandante_b'            : '',
                 'codigos_items'             : '',  # lista_codigos_items,

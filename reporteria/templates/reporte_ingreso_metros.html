@@ -83,7 +83,7 @@
 
 					<div class="container-table">
 						<div class="table-responsive">
-							<table class="table table-striped table-bordered table-hover" id="table-ingresos" style="width: 99; !important"></table>
+							<table class="table table-striped table-bordered table-hover" id="table-ingresos" style="width: 100%!important;"></table>
 						</div>
 					</div>
 				</div>
@@ -199,7 +199,7 @@ function load_data_table(data){
 			var ingreso = []
 			ingreso.push(data[i].nombre, data[i].conceptos[j].nombre)
 			for (var k = 0; k < data[i].conceptos[j].ingresos.length; k++) {
-				ingreso.push(data[i].conceptos[j].ingresos[k].ingreso, data[i].conceptos[j].ingresos[k].metros, data[i].conceptos[j].ingresos[k].ingreso_metros)
+				ingreso.push('<div class="text-right">'+ d3.format("$,.")(data[i].conceptos[j].ingresos[k].ingreso)+'</div>' , '<div class="text-right">'+ d3.format(",.")(data[i].conceptos[j].ingresos[k].metros) +'</div>', '<div class="text-right">'+d3.format("$,.")(data[i].conceptos[j].ingresos[k].ingreso_metros) +'</div>')
 			};
 			table_ingreso.row.add(ingreso).draw()
 		};
@@ -207,6 +207,7 @@ function load_data_table(data){
 }
 
 function template_table(periods){
+    console.log(periods)
 
 	var template = '';
 
@@ -216,7 +217,7 @@ function template_table(periods){
 	template += '<th rowspan="2">Conceptos</th>'
 
 	for (var i = 0; i < periods.length; i++) {
-		template += '<th colspan="3">'+i+'</th>'
+		template += '<th colspan="3" class="text-center">'+periods[i].mes+'</th>'
 	};
 
 	template += '</tr>'

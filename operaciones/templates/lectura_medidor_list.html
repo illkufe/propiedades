@@ -259,6 +259,7 @@ function load_tabla_lecturas(){
 		'width': '5%',
 		'data': 'anio',
 		'title': 'Año',
+        'class' : 'text-right',
 	},
 	{
 		'width': '7%',
@@ -270,6 +271,7 @@ function load_tabla_lecturas(){
 		'width': '10%',
 		'data': 'valor',
 		'title': 'Lectura',
+        'class' : 'text-right',
 	},
 	{
 		'width': '15%',
@@ -304,13 +306,13 @@ function load_data_tabla_lecturas() {
                     var url_luz     = 'lectura-'+ data[i].luz[a].url
 
                     options_luz += '<div class="text-center">'
-                    options_luz += '<a class="btn btn-edit btn-bitbucket" href="/lectura-'+data[i].luz[a].url+'/update/'+data[i].luz[a].id+'"><i class="fa fa-edit"></i></a>'
-                    options_luz += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].luz[a].id+',\''+url_luz+'\', \''+tabla+'\', \''+lectura+'\')"><i class="fa fa-trash"></i></a>'
+                    options_luz += '<a class="btn btn-default btn-bitbucket" href="/lectura-'+data[i].luz[a].url+'/update/'+data[i].luz[a].id+'"><i class="fa fa-edit"></i></a>'
+                    options_luz += '<a class="btn btn-default btn-bitbucket" onclick="open_modal_delete(this, '+data[i].luz[a].id+',\''+url_luz+'\', \''+tabla+'\', \''+lectura+'\')"><i class="fa fa-trash"></i></a>'
 
                     if(data[i].luz[a].image != '') {
-                        options_luz += '<a class="btn btn-view btn-bitbucket" href="/media/'+data[i].luz[a].image +'" download><i class="fa fa-eye"></i></a>'
+                        options_luz += '<a class="btn btn-default btn-bitbucket" href="/media/'+data[i].luz[a].image +'" download><i class="fa fa-eye"></i></a>'
                     }else{
-                        options_luz += '<a class="btn btn-none btn-bitbucket"><i class="fa fa-eye"></i></a>'
+                        options_luz += '<a class="btn btn-default btn-bitbucket"><i class="fa fa-eye"></i></a>'
                     }
 
                     options_luz += '</div>'
@@ -338,13 +340,13 @@ function load_data_tabla_lecturas() {
                     var url_agua        = 'lectura-'+ data[i].agua[b].url
 
                     options_agua += '<div class="text-center">'
-                    options_agua += '<a class="btn btn-edit btn-bitbucket" href="/lectura-'+data[i].agua[b].url+'/update/'+data[i].agua[b].id+'"><i class="fa fa-edit"></i></a>'
-                    options_agua += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].agua[b].id+',\''+url_agua+'\', \''+tabla+'\', \''+lectura+'\')"><i class="fa fa-trash"></i></a>'
+                    options_agua += '<a class="btn btn-default btn-bitbucket" href="/lectura-'+data[i].agua[b].url+'/update/'+data[i].agua[b].id+'"><i class="fa fa-edit"></i></a>'
+                    options_agua += '<a class="btn btn-default btn-bitbucket" onclick="open_modal_delete(this, '+data[i].agua[b].id+',\''+url_agua+'\', \''+tabla+'\', \''+lectura+'\')"><i class="fa fa-trash"></i></a>'
 
                     if(data[i].agua[b].image != '') {
-                        options_agua += '<a class="btn btn-view btn-bitbucket" href="/media/'+data[i].agua[b].image +'" download><i class="fa fa-eye"></i></a>'
+                        options_agua += '<a class="btn btn-default btn-bitbucket" href="/media/'+data[i].agua[b].image +'" download><i class="fa fa-eye"></i></a>'
                     }else{
-                        options_agua += '<a class="btn btn-none btn-bitbucket"><i class="fa fa-eye"></i></a>'
+                        options_agua += '<a class="btn btn-default btn-bitbucket"><i class="fa fa-eye"></i></a>'
                     }
 
                     options_agua += '</div>'
@@ -375,9 +377,9 @@ function load_data_tabla_lecturas() {
                     options_gas += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].gas[c].id+',\''+url_gas+'\', \''+tabla+'\', \''+lectura+'\')"><i class="fa fa-trash"></i></a>'
 
                     if(data[i].gas[c].image != '') {
-                        options_gas += '<a class="btn btn-view btn-bitbucket" href="/media/'+data[i].gas[c].image +'" download><i class="fa fa-eye"></i></a>'
+                        options_gas += '<a class="btn btn-default btn-bitbucket" href="/media/'+data[i].gas[c].image +'" download><i class="fa fa-eye"></i></a>'
                     }else{
-                        options_gas += '<a class="btn btn-none btn-bitbucket"><i class="fa fa-eye"></i></a>'
+                        options_gas += '<a class="btn btn-default btn-bitbucket"><i class="fa fa-eye"></i></a>'
                     }
                     options_gas += '</div>'
 

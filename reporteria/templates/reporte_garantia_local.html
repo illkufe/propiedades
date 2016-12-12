@@ -14,13 +14,13 @@
 					<div class="row">
 						<div class="col-xs-12">
 							<div class="table-responsive">
-								<table class="table table-striped table-bordered table-hover" id="tabla-garantias">
+								<table class="table table-striped table-bordered table-hover" id="tabla-garantias" style="width: 100%!important;">
 									<thead>
 										<tr>
-											<th rowspan="2">Contrato</th>
-											<th rowspan="2">Local(es)</th>
-											<th colspan="2">Garantia(s)</th>
-											<th rowspan="2">Total</th>
+											<th rowspan="2" class="text-center">Contrato</th>
+											<th rowspan="2" class="text-center">Local(es)</th>
+											<th colspan="2" class="text-center">Garantia(s)</th>
+											<th rowspan="2" class="text-center">Total</th>
 										</tr>
 										<tr>
 											<th>Nombre</th>
@@ -74,19 +74,19 @@ function data_table(){
 
 				if (data[i].locales.length == 0) {
 
-					tabla_garantias.row.add([data[i].nombre, '-', '-', '-', 0]).draw()
+					tabla_garantias.row.add([data[i].nombre, '-', '-', '<div class="text-right">-</div>', '<div class="text-right">'+ 0+'</div>']).draw()
 				}
 				else{
 
 					for (var j = 0; j < data[i].locales.length; j++) {
 
 						if (data[i].locales[j].garantias.length == 0) {
-							tabla_garantias.row.add([data[i].nombre, data[i].locales[j].nombre, '-', '-', 0]).draw()
+							tabla_garantias.row.add([data[i].nombre, data[i].locales[j].nombre, '-', '<div class="text-right">-</div>','<div class="text-right">'+ 0+'</div>' ]).draw()
 						}
 						else{
 
 							for (var k = 0; k < data[i].locales[j].garantias.length; k++) {
-								tabla_garantias.row.add([data[i].nombre, data[i].locales[j].nombre, data[i].locales[j].garantias[k].nombre, data[i].locales[j].garantias[k].total, data[i].total]).draw()
+								tabla_garantias.row.add([data[i].nombre, data[i].locales[j].nombre, data[i].locales[j].garantias[k].nombre, '<div class="text-right">'+d3.format(",.")(data[i].locales[j].garantias[k].total)+'</div>', '<div class="text-right">'+d3.format(",.")(data[i].total) +'</div>']).draw()
 							};
 						}
 					};

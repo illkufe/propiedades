@@ -12,13 +12,13 @@ from .models import *
 
 class ActivoForm(forms.ModelForm):
 
-	cabidad_terreno 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), help_text='Cabidad Terreno del Activo')
-	cabidad_construccion 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), label='Cabidad Construcción', help_text='Cabidad Construcción del Activo')
-	avaluo_comercial 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), label='Avalúo Comercial', help_text='Avalúo Comercial del Activo')
-	contribuciones 			= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), help_text='Contribuciones del Activo')
-	precio_compra 			= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), help_text='Precio Compra del Activo')
-	valor_tasacion 			= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), label='Valor Tasación', help_text='Valor Tasación del Activo')
-	tasacion_fiscal 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), error_messages={'required': 'campo requerido'}, label='Tasación Fiscal', help_text='Tasación Fiscal del Activo')
+	cabidad_terreno 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), help_text='Cabidad Terreno del Activo')
+	cabidad_construccion 	= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), label='Cabidad Construcción', help_text='Cabidad Construcción del Activo')
+	avaluo_comercial 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), label='Avalúo Comercial', help_text='Avalúo Comercial del Activo')
+	contribuciones 			= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), help_text='Contribuciones del Activo')
+	precio_compra 			= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), help_text='Precio Compra del Activo')
+	valor_tasacion 			= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), label='Valor Tasación', help_text='Valor Tasación del Activo')
+	tasacion_fiscal 		= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), error_messages={'required': 'campo requerido'}, label='Tasación Fiscal', help_text='Tasación Fiscal del Activo')
 	fecha_firma_nomina 		= forms.DateField(required=False, input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), help_text='Fecha de Firma Nomina del Activo')
 	fecha_escritura 		= forms.DateField(required=False, input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), help_text='Fecha de Escritura del Activo')
 	fecha_adquisicion 		= forms.DateField(required=False, input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha Adquisición', help_text='Fecha de Adquisición del Activo')
@@ -46,8 +46,8 @@ class ActivoForm(forms.ModelForm):
 			# inscripcion vigente
 			'inscripcion'			: forms.TextInput(attrs={'class': 'form-control'}),
 			'foja'					: forms.TextInput(attrs={'class': 'form-control'}),
-			'numero_inscripcion'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'año'					: forms.NumberInput(attrs={'class': 'form-control'}),
+			'numero_inscripcion'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'año'					: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'conservador_bienes'	: forms.TextInput(attrs={'class': 'form-control'}),
 			# datos de escritura
 			'repertorio'			: forms.TextInput(attrs={'class': 'form-control'}),
@@ -153,7 +153,7 @@ class NivelForm(forms.ModelForm):
 
 class GastoMensualForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), error_messages={'required': 'campo requerido'}, help_text='Valor del Gasto Común')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), error_messages={'required': 'campo requerido'}, help_text='Valor del Gasto Común')
 
 	def __init__(self, *args, **kwargs):
 
@@ -174,7 +174,7 @@ class GastoMensualForm(forms.ModelForm):
 		widgets = {
 			'activo' 	: forms.Select(attrs={'class': 'form-control'}),
 			'mes'	 	: forms.Select(attrs={'class': 'form-control'}),
-			'anio' 		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio' 		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 		}
 
 		error_messages = {
@@ -195,7 +195,7 @@ class GastoMensualForm(forms.ModelForm):
 
 class GastoServicioForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), error_messages={'required': 'campo requerido'}, help_text='Valor del Servicio')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false'}), error_messages={'required': 'campo requerido'}, help_text='Valor del Servicio')
 
 	def __init__(self, *args, **kwargs):
 
@@ -217,7 +217,7 @@ class GastoServicioForm(forms.ModelForm):
 		widgets = {
 			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'mes'	 		: forms.Select(attrs={'class': 'form-control'}),
-			'anio' 			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio' 			: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'imagen_file' 	: forms.FileInput(attrs={'class': 'file-format'}),
 			'locales'		: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple':'multiple'}),
 		}

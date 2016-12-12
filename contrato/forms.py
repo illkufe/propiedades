@@ -50,7 +50,7 @@ class ContratoForm(forms.ModelForm):
 	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Habilitación', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Habilitación de Contrato')
 	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Renovación', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Renovación de Contrato')
 	
-	metros_bodega 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number', 'disabled': 'disabled'}), help_text='Metros Cuadrados de la Bodega')
+	metros_bodega 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'disabled': 'disabled'}), help_text='Metros Cuadrados de la Bodega')
 
 	def __init__(self, *args, **kwargs):
 
@@ -91,11 +91,11 @@ class ContratoForm(forms.ModelForm):
 
 		widgets = {
 			'bodega'				: forms.CheckboxInput(attrs={'onclick': 'habilitar_input_metros(this)'}),
-			'numero'				: forms.NumberInput(attrs={'class': 'form-control'}),
-			'meses_contrato'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'meses_aviso_comercial'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'meses_remodelacion'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'dias_salida'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'numero'				: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'meses_contrato'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'meses_aviso_comercial'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'meses_remodelacion'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'dias_salida'			: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'nombre_local'			: forms.TextInput(attrs={'class': 'form-control'}),
 			'destino_comercial'		: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
 			'tipo' 					: forms.Select(attrs={'class': 'form-control'}),
@@ -146,7 +146,7 @@ class ContratoForm(forms.ModelForm):
 class GarantiaForm(forms.ModelForm):
 
 	valor = NumberField(
-		widget = forms.TextInput(attrs={'class': 'form-control format-number'}),
+		widget = forms.TextInput(attrs={'class': 'form-control format-number text-right'}),
 		help_text = 'Valor de la Garantía',
 		error_messages = {'required': 'campo requerido'},
 		)
@@ -224,7 +224,7 @@ class MultaTipoForm(forms.ModelForm):
 
 class MultaForm(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), label='Valor Multa', error_messages={'required': 'campo requerido'}, help_text='Valor de la Multa')
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), label='Valor Multa', error_messages={'required': 'campo requerido'}, help_text='Valor de la Multa')
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'onchange': 'cambio_format_moneda(this)', 'data-table': 'false'}), error_messages={'required': 'campo requerido'}, help_text='Tipo de Moneda Asociado a la Multa')
 
 	def __init__(self, *args, **kwargs):
@@ -244,7 +244,7 @@ class MultaForm(forms.ModelForm):
 
 		widgets = {
 			'mes'	 		: forms.Select(attrs={'class': 'form-control'}),
-			'anio' 			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio' 			: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'descripcion'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
 			'multa_tipo'	: forms.Select(attrs={'class': 'form-control'}),
 			'contrato'		: forms.Select(attrs={'class': 'form-control'}),
@@ -280,7 +280,7 @@ class InformacionForm(forms.ModelForm):
 class ArriendoMinimoForm(forms.ModelForm):
 
 	valor = NumberField(
-		widget = forms.TextInput(attrs={'class': 'form-control format-number'}),
+		widget = forms.TextInput(attrs={'class': 'form-control format-number text-right'}),
 		error_messages = {'required': 'campo requerido', 'invalid': 'campo invalido'},
 		help_text = 'Valor Asociado al Arriendo Mínimo',
 		)
@@ -303,8 +303,8 @@ class ArriendoMinimoForm(forms.ModelForm):
 		widgets = {
 			'mes_inicio'		: forms.Select(attrs={'class': 'form-control'}),
 			'mes_termino'		: forms.Select(attrs={'class': 'form-control'}),
-			'anio_inicio'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'anio_termino'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio_inicio'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'anio_termino'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'metro_cuadrado' 	: forms.CheckboxInput(attrs={'class': ''}),
 		}
 
@@ -348,7 +348,7 @@ class ArriendoMinimoForm(forms.ModelForm):
 class ArriendoVariableForm(forms.ModelForm):
 
 	valor = NumberField(
-		widget = forms.TextInput(attrs={'class': 'form-control format-number'}),
+		widget = forms.TextInput(attrs={'class': 'form-control format-number text-right'}),
 		help_text='Valor de Arriendo Variable'
 		)
 
@@ -377,9 +377,9 @@ class ArriendoVariableForm(forms.ModelForm):
 		widgets = {		
 			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
 			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
-			'anio_inicio'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'anio_termino'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'dia_reajuste'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio_inicio'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'anio_termino'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'dia_reajuste'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'relacion'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
 			'vinculo' 		: forms.Select(attrs={'class': 'form-control'}),
 		}
@@ -430,7 +430,7 @@ class ArriendoVariableForm(forms.ModelForm):
 
 class ArriendoBodegaForm(forms.ModelForm):
 
-	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Arriendo Bodega')
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor de Arriendo Bodega')
 	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Valor del Arriendo')
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), help_text='Fecha de Inicio Arriendo Bodega')
 
@@ -469,7 +469,7 @@ class ArriendoBodegaForm(forms.ModelForm):
 
 class GastoComunForm(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Gasto Común')
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor de Gasto Común')
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Gasto Común')
 
 	def __init__(self, *args, **kwargs):
@@ -502,7 +502,7 @@ class GastoComunForm(forms.ModelForm):
 
 class ServicioBasicoForm(forms.ModelForm):
 
-	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor Servicio')
+	valor = NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor Servicio')
 
 	def __init__(self, *args, **kwargs):
 		contrato = kwargs.pop('contrato', None)
@@ -561,7 +561,7 @@ class ServicioBasicoForm(forms.ModelForm):
 
 class CuotaIncorporacionForm(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Cuota de Incorporación')
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor de Cuota de Incorporación')
 	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), help_text='Fecha')
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada a la Cuota de Incorporación')
 
@@ -586,7 +586,7 @@ class CuotaIncorporacionForm(forms.ModelForm):
 class GastoAsociadoForm(forms.ModelForm):
 
 	valor = NumberField(
-		widget 			= forms.TextInput(attrs={'class': 'form-control format-number'}), 
+		widget 			= forms.TextInput(attrs={'class': 'form-control format-number text-right'}),
 		error_messages 	= {'required': 'campo requerido', 'invalid': 'campo invalido'},
 		help_text 		= 'Valor del Gasto',
 		)
@@ -661,7 +661,7 @@ class GastoAsociadoForm(forms.ModelForm):
 class ReajusteForm(forms.ModelForm):
 		
 	valor = NumberField(
-		widget 			= forms.TextInput(attrs={'class': 'form-control format-number'}), 
+		widget 			= forms.TextInput(attrs={'class': 'form-control format-number text-right'}),
 		error_messages 	= {'required': 'campo requerido', 'invalid': 'campo invalido'},
 		help_text 		= 'Valor del Gasto',
 		)
@@ -699,8 +699,8 @@ class ReajusteForm(forms.ModelForm):
 		widgets = {		
 			'mes_inicio'	: forms.Select(attrs={'class': 'form-control'}),
 			'mes_termino'	: forms.Select(attrs={'class': 'form-control'}),
-			'anio_inicio'	: forms.NumberInput(attrs={'class': 'form-control'}),
-			'anio_termino'	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio_inicio'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'anio_termino'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'vinculo' 		: forms.Select(attrs={'class': 'form-control'}),
 		}
 
@@ -773,12 +773,12 @@ class PropuestaForm(forms.ModelForm):
 		exclude = ['creado_en', 'visible', 'user', 'empresa', 'propuesta']
 
 		widgets = {
-			'numero'				: forms.NumberInput(attrs={'class': 'form-control'}),
+			'numero'				: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'nombre_local'			: forms.TextInput(attrs={'class': 'form-control'}),
 			'destino_comercial'		: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
-			'meses_contrato'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'meses_aviso_comercial' : forms.NumberInput(attrs={'class': 'form-control'}),
-			'meses_remodelacion' 	: forms.NumberInput(attrs={'class': 'form-control'}),
+			'meses_contrato'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'meses_aviso_comercial' : forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'meses_remodelacion' 	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'arriendo_minimo'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'arriendo_minimo_detalle'}),
 			'arriendo_variable'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'arriendo_variable'}),
 			'arriendo_bodega'		: forms.CheckboxInput(attrs={'class': 'form-control concepto-activo', 'data-concepto':'arriendo_bodega'}),
@@ -835,7 +835,7 @@ class PropuestaForm(forms.ModelForm):
 
 class FormPropuestaGarantia(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de la Garantia')
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor de la Garantia')
 	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Asociada al Valor de la Garantia')
 
 	class Meta:
@@ -853,7 +853,7 @@ class FormPropuestaGarantia(forms.ModelForm):
 
 class FormPropuestaArriendo(forms.ModelForm):
 
-	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Reajuste')
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor de Reajuste')
 	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[2,3,4,6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'data-es-moneda': 'true', 'data-moneda': '', 'data-select': 'false', 'onchange': 'cambio_format_moneda(this)'}), help_text='Tipo de Moneda del Reajuste')
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), help_text='Fecha Inicio de Aplicación del Reajuste')
 
@@ -865,7 +865,7 @@ class FormPropuestaArriendo(forms.ModelForm):
 		widgets = {
 			'reajuste'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
 			'por_meses'		: forms.CheckboxInput(attrs={'class': 'form-control'}),
-			'meses'			: forms.NumberInput(attrs={'class': 'form-control'}),
+			'meses'			: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'fecha_inicio'	: forms.TextInput(attrs={'class': 'form-control'}),
 		}
 
@@ -891,7 +891,7 @@ class FormPropuestaArriendo(forms.ModelForm):
 
 class FormPropuestaArriendoDetalle(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor Asociado al Arriendo')
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor Asociado al Arriendo')
 	moneda 	= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Tipo de Moneda Aplicado al Arriendo')
 
 	class Meta:
@@ -912,8 +912,8 @@ class FormPropuestaArriendoDetalle(forms.ModelForm):
 		}
 
 		labels = {
-			'mes_inicio' 	: 'Año inicio',
-			'mes_termino' 	: 'Año término',
+			'mes_inicio' 	: 'Mes inicio',
+			'mes_termino' 	: 'Mes término',
 			'metros' 		: 'Valor x m²',
 		}
 
@@ -939,7 +939,7 @@ class FormPropuestaArriendoDetalle(forms.ModelForm):
 
 class FormPropuestaVariable(forms.ModelForm):
 
-	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Arriendo Variable')
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor de Arriendo Variable')
 	moneda 			= forms.ModelChoiceField(queryset=Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Valor de Arriendo variable')
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False, help_text='Fecha de Inicio de Arriendo Variable')
 	fecha_termino 	= forms.DateField(input_formats=['%d/%m/%Y'], required=False, help_text='Fecha de Término de Arriendo Variable')
@@ -952,8 +952,8 @@ class FormPropuestaVariable(forms.ModelForm):
 		widgets = {
 			'mes_inicio'		: forms.Select(attrs={'class': 'form-control'}),
 			'mes_termino'		: forms.Select(attrs={'class': 'form-control'}),
-			'anio_inicio'		: forms.NumberInput(attrs={'class': 'form-control'}),
-			'anio_termino'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio_inicio'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			'anio_termino'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 		}
 
 		error_messages = {
@@ -991,7 +991,7 @@ class FormPropuestaVariable(forms.ModelForm):
 
 class FormPropuestaBodega(forms.ModelForm):
 
-	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required'}), error_messages={'required': 'campo requerido'}, help_text='Valor de Arriendo Bodega')
+	valor 			= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number field-required text-right'}), error_messages={'required': 'campo requerido'}, help_text='Valor de Arriendo Bodega')
 	moneda 			= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control field-required moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), error_messages={'required': 'campo requerido'}, help_text='Moneda Aplicada al Valor del Arriendo')
 	fecha_inicio 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), error_messages={'invalid': 'campo invalido'}, label='Fecha de Inicio', help_text='Fecha de Inicio Arriendo Bodega')
 
@@ -1003,7 +1003,7 @@ class FormPropuestaBodega(forms.ModelForm):
 		widgets = {
 			'periodicidad'		: forms.Select(attrs={'class': 'form-control'}),
 			'metros' 			: forms.CheckboxInput(attrs={'class': 'form-control'}),
-			'cantidad_metros' 	: forms.NumberInput(attrs={'class': 'form-control field-required'}),
+			'cantidad_metros' 	: forms.NumberInput(attrs={'class': 'form-control field-required text-right'}),
 		}
 
 		labels = {
@@ -1026,7 +1026,7 @@ class FormPropuestaBodega(forms.ModelForm):
 
 class FormPropuestaCuota(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Cuota de Incorporación')
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor de Cuota de Incorporación')
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada a la Cuota de Incorporación')
 
 	class Meta:
@@ -1036,7 +1036,7 @@ class FormPropuestaCuota(forms.ModelForm):
 
 		widgets = {
 			'mes'		: forms.Select(attrs={'class': 'form-control'}),
-			'anio'		: forms.NumberInput(attrs={'class': 'form-control'}),
+			'anio'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'metros' 	: forms.CheckboxInput(attrs={'class': 'form-control'}),
 		}
 
@@ -1056,7 +1056,7 @@ class FormPropuestaCuota(forms.ModelForm):
 
 class FormPropuestaPromocion(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Fondo Promoción')
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor de Fondo Promoción')
 	fecha 	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Cobrar a partir de:', help_text='Fecha de Inicio del Cobro Fondo Promoción')
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[6]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)' }), help_text='Moneda Aplicada al Fondo Promoción')
 
@@ -1080,7 +1080,7 @@ class FormPropuestaPromocion(forms.ModelForm):
 
 class FormPropuestaComun(forms.ModelForm):
 
-	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number'}), help_text='Valor de Gasto Común')
+	valor 	= NumberField(widget=forms.TextInput(attrs={'class': 'form-control format-number text-right'}), help_text='Valor de Gasto Común')
 	moneda 	= forms.ModelChoiceField(queryset = Moneda.objects.filter(id__in=[3,5]), widget=forms.Select(attrs={'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}), help_text='Moneda Aplicada al Gasto Común')
 
 	class Meta:

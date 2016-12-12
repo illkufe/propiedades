@@ -4,8 +4,6 @@ from django.db import transaction
 from decimal import Decimal
 import json
 
-
-from utilidades.views import formato_numero_sin_miles
 from administrador.views import Cliente
 
 
@@ -92,7 +90,7 @@ def editar_parametros_facturacion(**kwargs):
                     nuevo_conexion.url              = a['url']
                     nuevo_conexion.puerto           = a['puerto']
                     nuevo_conexion.save()
-
+                    nuevo_conexion.save()
                 else:
                     if a['borrar']:
                         delete_conexion = ConexionFacturacion.objects.get(id=a['id_detalle'])

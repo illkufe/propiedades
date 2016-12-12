@@ -1,0 +1,196 @@
+{% extends 'index.html' %}
+{% block section %}
+    {% include 'partials/breadcrumbs-bar.html' %}
+    <div class="row wrapper wrapper-content animated fadeInRight" xmlns="http://www.w3.org/1999/html">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <form method="post" action="" enctype="multipart/form-data" role="form" id="form_parametro_facturacion">
+                    {% csrf_token %}
+                    <div class="ibox-title">
+						<h5>Conectividad</h5>
+					</div>
+
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+
+                                <div class="col-sm-6 form-group">
+                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="right" title="{{ form.codigo_conexion.help_text}}" ></i>
+                                    {{ form.codigo_conexion.label_tag }}
+                                    {{ form.codigo_conexion}}
+                                    <div class="container-error">
+                                        {{ form.codigo_conexion.errors }}
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 form-group">
+                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="right" title="{{ form.motor_emision.help_text}}" ></i>
+                                    {{ form.motor_emision.label_tag }}
+                                    {{ form.motor_emision}}
+                                    <div class="container-error">
+                                        {{ form.motor_emision.errors }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ibox-title">
+						<h5>Conexiones Web Services</h5>
+					</div>
+
+                    <div class="ibox-content">
+						<div class="row">
+							<div class="col-xs-12">
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila_final('tabla-conexion', 'conexionfacturacion')"><i class="fa fa-plus"></i> Nueva Garantía</button>
+                                <br>
+                                {{ form_conexion.management_form }}
+
+								{% for form in form_conexion %}
+								{% for hidden in form.hidden_fields %}
+								{{ hidden }}
+								{% endfor %}
+								{% endfor %}
+
+                                <table id="tabla-conexion" class="table table-bordered">
+									<thead>
+										<tr>
+											{% for form in form_conexion %}
+                                                {% if forloop.first %}
+                                                    <th>
+                                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.codigo_contexto.help_text }}" ></i>
+                                                        {{ form.codigo_contexto.label_tag }}
+                                                    </th>
+                                                    <th>
+                                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.host.help_text }}" ></i>
+                                                        {{ form.host.label_tag }}
+                                                    </th>
+                                                    <th>
+                                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.url.help_text }}" ></i>
+                                                        {{ form.url.label_tag }}
+                                                    </th>
+                                                    <th>
+                                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.puerto.help_text }}" ></i>
+                                                        {{ form.puerto.label_tag }}
+                                                    </th>
+                                                    <th>Opciones</th>
+                                                {% endif %}
+											{% endfor %}
+										</tr>
+									</thead>
+									<tbody>
+										{% for form in form_conexion %}
+										<tr>
+											<td>
+												<div class="form-group">
+													{{ form.codigo_contexto }}
+													<div class="container-error">
+														{{ form.codigo_contexto.errors|striptags }}
+													</div>
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.host }}
+													<div class="container-error">
+														{{ form.host.errors|striptags }}
+													</div>
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.url }}
+													<div class="container-error">
+														{{ form.url.errors|striptags }}
+													</div>
+												</div>
+											</td>
+											<td>
+												<div class="form-group">
+													{{ form.puerto }}
+													<div class="container-error">
+														{{ form.puerto.errors|striptags }}
+													</div>
+												</div>
+											</td>
+											<td class="text-center delete">
+												{{ form.DELETE }}
+												<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete_child_final(this, 'Configuración Facturación', 'update')">
+													<i class="fa fa-trash"></i>
+												</a>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+						    </div>
+						</div>
+					</div>
+                    <div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-12">
+                                <a href="{% url 'configuracion_facturacion_list' %}" class="btn btn-w-m btn-sm btn-default" role="button">Cancelar</a>
+                                <button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
+                            </div>
+						</div>
+					</div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock section %}
+{% block scripts %}
+    <script>
+
+    var tabla_conexion;
+
+    $(document).ready(function(){
+{#        load_tabla_conexion();#}
+
+    });
+
+
+
+    function load_tabla_conexion() {
+        var configuracion = {
+            'searching'     : false,
+            'order'         : [[0, 'asc']],
+            'paginate'      : false,
+            'bLengthChange' : false,
+            'bInfo'         : false,
+            'buttons'       : []
+        };
+
+        var columns = [
+            {
+                'width' : '25%',
+                'data'  : 'codigo_contexto',
+                'title' : 'Código Contexto'
+            },
+            {
+                'width'  : '15%',
+                'data'   : 'host',
+                'title'  : 'Host'
+            },
+            {
+                'width' : '15%',
+                'data'  : 'url',
+                'title' : 'URL'
+            },
+            {
+                'width': '15%',
+                'data' : 'puerto',
+                'title': 'Puerto'
+            },
+            {
+                'width'     : '10%',
+                'data'      : 'options',
+                'orderable' : false,
+                'title'     : 'Opciones'
+            }];
+
+        tabla_conexion = load_table('#tabla-conexion', columns, configuracion);
+    }
+
+</script>
+{% endblock %}

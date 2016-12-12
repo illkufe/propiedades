@@ -855,7 +855,7 @@ class MultaList(ListView):
 		queryset = Multa.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 
 		for item in queryset:
-			item.valor = formato_moneda_local(self.request, item.valor * item.moneda.moneda_historial_set.all().order_by('-id').first().valor)
+			item.valor = formato_moneda_local(self.request, item.valor * item.moneda.moneda_historial_set.all().order_by('-id').first().valor, None)
 
 		return queryset
 
@@ -1267,7 +1267,7 @@ class ContratosInactivosList(ListView):
 
 		context 			= super(ContratosInactivosList, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'Contrato Incativos'
+		context['subtitle'] = 'Contrato Inactivos'
 		context['name'] 	= 'Lista'
 		context['href'] 	= '/contratos/inactivos/list'
 

@@ -15,7 +15,7 @@ import logging
 
 
 from procesos.models import Factura
-from utilidades.views import formato_numero_sin_miles
+from utilidades.views import format_number
 
 suds_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(suds_path)
@@ -28,13 +28,15 @@ def obtener_datos_conexion(url):
     :param url: recibe la url
     :return: retorna un objeto con los datos de conexión
     """
-    error = ''
-    conexion = ''
+
+    error       = ''
+    conexion    = ''
 
     try:
-        conexion = ConexionFacturacion.objects.get(url__iexact=url)
+        conexion    = ConexionFacturacion.objects.get(url__iexact=url)
     except Exception as e:
-        error = "No existen datos de conexión "+str(url)+" del servidor de IDTE."
+        error       = "No existen datos de conexión "+str(url)+" del servidor de IDTE."
+
 
     return error, conexion
 
@@ -44,8 +46,8 @@ def call_service(url):
     :param url: url de conexión del WSDL
     :return: retorna el client con la conexion y una variable de error.
     """
-    error = ''
-    client = ''
+    error   = ''
+    client  = ''
 
     logging.basicConfig(level=logging.INFO)
     logging.getLogger('suds.client').setLevel(logging.DEBUG)
@@ -53,25 +55,13 @@ def call_service(url):
     logging.getLogger('suds.xsd.schema').setLevel(logging.DEBUG)
     logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
 
-    url     = str('http://www.ifacture.cl/wsMIXTO/servMixto.svc?wsdl').strip()
-
     try:
         client = Client(url, timeout=5)
-        print('----- client------')
-        print(client)
-        print('----- Fin client------')
     except suds.WebFault as detail:
-        print('----- Error 1------')
-        print(detail)
-        print(error)
-        print('----- Fin error------')
+        error = str(detail.fault)
     except Exception as e:
 
-        error = str(e)
-        print('----- Error 2------')
-        print(error)
-        print('----- Fin error------')
-        #error = "No se pudo realizar la conexion con el servidor de IDTE, por favor verifique los datos."
+        error = "No se pudo realizar la conexion con el servidor de IDTE, por favor verifique los datos." + str(e)
 
     return error, client
 
@@ -102,7 +92,7 @@ def crear_xml_documento(**kwargs):
         email_pdf   = SubElement(general, 'emails_PDF').text = kwargs['emails_PDF']
         email_xml   = SubElement(general, 'emails_XML').text = kwargs['emails_XML']
     except Exception as e:
-        error ="General: no se encuentra dato " +str(e.args[0]).strip()+" en el diccionario enviado."
+        error = "General: no se encuentra dato " +str(e.args[0]).strip()+" en el diccionario enviado."
         return error, xml
 
     # Encabezado--------------------------------------------------------------------------------------------------------
@@ -978,13 +968,13 @@ def url_web_service(**kwargs):
     :param kwargs: datos de conexión del web service
     :return: url de conexión
     """
-    error = ''
-    url_conexion = ''
+    error           = ''
+    url_conexion    = ''
     try:
-        codigo = kwargs['codigo_contexto']
-        host = kwargs['host']
-        url  = kwargs['url']
-        puerto = kwargs['puerto']
+        codigo  = kwargs['codigo_contexto']
+        host    = kwargs['host']
+        url     = kwargs['url']
+        puerto  = kwargs['puerto']
 
         contexto = codigo.split('_')
 
@@ -995,17 +985,17 @@ def url_web_service(**kwargs):
 
                         # inf-srv-des01.infodesarrollo.cl/wsDTE/servDTE.svc?wsdl'
     except Exception as e:
-        error ="Error al realizar el armado de la URL de conexión del Web Services, por favor verifique los datos de conexión."
+        error = "Error al realizar el armado de la URL de conexión del Web Services, por favor verifique los datos de conexión."
     return error, url_conexion
 
-def validar_folios_procesar(tipo_documento,folio_actual):
+def validar_folios_procesar(tipo_documento, folio_actual):
     """
         Función que permite realizar la validacion del folio a utilizar en un determinado tipo de documento,
     :param tipo_documento: tipo de documento electronico
     :param folio_actual: folio o caf a utilizar
     :return: retorna una valiable con el error si es que se encuentra uno determinado en la validaciones.
     """
-    error=''
+    error   = ''
     try:
         folio = FoliosDocumentosElectronicos.objects.filter(tipo_dte=tipo_documento, operativo=True).get()
 
@@ -1016,6 +1006,8 @@ def validar_folios_procesar(tipo_documento,folio_actual):
                 update_folio = FoliosDocumentosElectronicos.objects.get(tipo_dte=tipo_documento, operativo=True)
                 update_folio.operativo = False
                 update_folio.save()
+        else:
+            error = 'Aun existen folios disponibles en el rango operativo'
 
     except FoliosDocumentosElectronicos.DoesNotExist:
         error = "No Exiten folios operativos para el tipo de documento."
@@ -1031,6 +1023,7 @@ def validar_existencia_folio(tipo_documento):
     :return: retorna una variable la cual contiene o no un mensaje de error.
     """
     error = ''
+
     try:
         folio = FoliosDocumentosElectronicos.objects.filter(tipo_dte=tipo_documento, operativo=True).get()
     except FoliosDocumentosElectronicos.DoesNotExist:
@@ -1091,7 +1084,8 @@ def get_estado_documento(client, id_idte_empresa, tipo_documento, folio, traza):
         Función que permite consultar por el estado de un documento en IDTE.
 
         EJEMPLO DE RESPUESTAS ------------------------------------------------------------------------------------------
-        Calling: get_estado() OK  RESPUESTA
+        -----------OK  RESPUESTA -----------------------------------
+        Calling: get_estado()
         (RprocWS){
            Clase = "wsDTE"
            ID_trans = "5ced4227-b9ba-48d5-9c97-90c33c07d2af"
@@ -1105,7 +1099,8 @@ def get_estado_documento(client, id_idte_empresa, tipo_documento, folio, traza):
         }
         REFERENCIA VALOR = anulado|id1_erp_dte|id2_erp_dte|id3_erp_dte|id4_erp_dte|fch_emision_dte|afecto|exento|iva|total|estado_email_pdf|estado_email_xml|estado_RE|estado_RA|estado_RM|estado_SII|msg_error_SII|fch_registro|trasnferido|estado|trackID|fch_envio_SII|rut_cliente|
 
-         Calling: get_estado() ERROR EN RESPUESTA
+        -----ERROR EN RESPUESTA-----------------------------------
+         Calling: get_estado()
         (RprocWS){
            Clase = "DTEDAC"
            ID_trans = "3fc9f9f2-aa3a-42b1-8ba9-08480c8e93b1"
@@ -1162,15 +1157,6 @@ def get_archivo_documento(client, id_idte_empresa, tipo_documento, folio, format
     archivo = client.service.get_archivo(id_idte_empresa, tipo_documento, folio, formato, traza)
 
     return archivo
-    # if archivo.dio_error:
-    #     pass
-    # else:
-    #     pdf = urllib.request.urlopen(archivo.valor)
-    #     response = HttpResponse(pdf.read(), content_type='application/pdf')
-    #     response['Content-Disposition'] = 'attachment; filename=DTE-'+str(tipo_documento)+'-'+str(folio)+'.pdf'
-    #     pdf.close()
-    #
-    #     return response
 
 def get_procesar_dte_xml(client, id_idte_empresa, tipo_documento, folio, accion, traza, xml):
 
@@ -1414,9 +1400,9 @@ def crear_xml_control_folios(**kwargs):
     :param kwargs: diccionario con los datos del control de folios
     :return: retorna variable la cual contiene el string del xml.
     """
-    xml= ''
-    error = ''
-    idte = Element('IDTE_CF')
+    xml     = ''
+    error   = ''
+    idte    = Element('IDTE_CF')
 
     #------------------------------------- CONTROL DE FOLIOS -----------------------------------------------------------
     try:
@@ -1517,9 +1503,9 @@ def crear_xml_libro_compra(**kwargs):
     :return: retorna una variable la cual contiene el xml, ademas de una variable de error si es que ocurrio algún hecho
     que afecto la creacion del xml
     """
-    xml= ''
-    error = ''
-    idte = Element('IDTE_LC')
+    xml     = ''
+    error   = ''
+    idte    = Element('IDTE_LC')
 
     #------------------------------------- GENERAL ---------------------------------------------------------------------
     general = Element('General')
@@ -1664,9 +1650,9 @@ def crear_xml_libro_venta(**kwargs):
     :return: retorna una variable la cual contiene el xml, ademas de una variable de error si es que ocurrio algún hecho
     que afecto la creacion del xml
     """
-    xml = ''
-    error = ''
-    idte = Element('IDTE_LV')
+    xml     = ''
+    error   = ''
+    idte    = Element('IDTE_LV')
 
     # ------------------------------------- GENERAL ---------------------------------------------------------------------
     general = Element('General')
@@ -2034,14 +2020,14 @@ def armar_xml_inet(request):
     SDT_DocVentaExt.set('xmlns', 'http://www.informat.cl/ws')
 
     # SDT_DocVentaExt
-    EncDoc = etree.SubElement(SDT_DocVentaExt, 'EncDoc')
-    DetDoc = etree.SubElement(SDT_DocVentaExt, 'DetDoc')
-    ResumenDoc = etree.SubElement(SDT_DocVentaExt, 'ResumenDoc')
+    EncDoc      = etree.SubElement(SDT_DocVentaExt, 'EncDoc')
+    DetDoc      = etree.SubElement(SDT_DocVentaExt, 'DetDoc')
+    ResumenDoc  = etree.SubElement(SDT_DocVentaExt, 'ResumenDoc')
     Recaudacion = etree.SubElement(SDT_DocVentaExt, 'Recaudacion')
 
     # SDT_DocVentaExt/EncDoc
     # SDT_DocVentaExt/EncDoc
-    RefDoc = etree.SubElement(EncDoc, 'RefDoc')
+    RefDoc  = etree.SubElement(EncDoc, 'RefDoc')
     Cliente = etree.SubElement(EncDoc, 'Cliente')
 
     try:
@@ -2108,17 +2094,17 @@ def armar_xml_inet(request):
 
             etree.SubElement(Item, 'NumItem').text      = str(linea)
             etree.SubElement(Item, 'FechaEntrega').text = '0'
-            etree.SubElement(Item, 'PrecioRef').text    = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'PrecioRef').text    = format_number(request, d.total, False)
             etree.SubElement(Item, 'Cantidad').text     = '1'
             etree.SubElement(Item, 'PorcUno').text      = '0'
-            etree.SubElement(Item, 'MontoUno').text     = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'MontoUno').text     = format_number(request, d.total, False)
             etree.SubElement(Item, 'DescDos_Cod').text  = '0'
             etree.SubElement(Item, 'DescTre_Cod').text  = '0'
             etree.SubElement(Item, 'MontoImpUno').text  = '0'
             etree.SubElement(Item, 'PorcImpUno').text   = '0'
             etree.SubElement(Item, 'MontoImpDos').text  = '0'
             etree.SubElement(Item, 'PorcImpDos').text   = '0'
-            etree.SubElement(Item, 'TotalDocLin').text  = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'TotalDocLin').text  = format_number(request, d.total, False)
 
             Producto = etree.SubElement(Item, 'Producto')
 
@@ -2139,12 +2125,12 @@ def armar_xml_inet(request):
     valores = calculo_iva_total_documento(total_linea, 19)
 
     # SDT_DocVentaExtDetDoc/ResumenDoc
-    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = formato_numero_sin_miles(valores[0])
+    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = format_number(request, valores[0], False)
     etree.SubElement(ResumenDoc, 'CodigoDescuento').text            = '0'
     etree.SubElement(ResumenDoc, 'TotalDescuento').text             = '0'
-    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = formato_numero_sin_miles(valores[1])
+    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = format_number(request, valores[1], False)
     etree.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text        = '0'
-    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = formato_numero_sin_miles(valores[2])
+    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = format_number(request, valores[2], False)
     TotalConceptos = etree.SubElement(ResumenDoc, 'TotalConceptos')
 
     # SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
@@ -2200,8 +2186,8 @@ def armar_xml_inet(request):
     etree.SubElement(FormaPago, 'MontoaRec')
     etree.SubElement(FormaPago, 'ParidadRec')
 
-    xml = etree.tostring(SDT_DocVentaExt, short_empty_elements=False, method='xml')
-    error = ''
+    xml     = etree.tostring(SDT_DocVentaExt, short_empty_elements=False, method='xml')
+    error   = ''
     resultado = [
         error,
         xml
@@ -2337,7 +2323,7 @@ def armar_xml_inet_docvta(request):
 
 
             etree.SubElement(Item, 'FechaEntrega').text = '0'
-            etree.SubElement(Item, 'PrecioRef').text    = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'PrecioRef').text    = format_number(request, d.total, False)
             etree.SubElement(Item, 'Cantidad').text     = '1'
 
             Glosas  = etree.SubElement(Item, 'Glosas')
@@ -2348,14 +2334,14 @@ def armar_xml_inet_docvta(request):
 
             etree.SubElement(Item, 'DescUno_Cod').text  = '0'
             etree.SubElement(Item, 'PorcUno').text      = '0'
-            etree.SubElement(Item, 'MontoUno').text     = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'MontoUno').text     = format_number(request, d.total, False)
             etree.SubElement(Item, 'DescDos_Cod').text  = '0'
             etree.SubElement(Item, 'DescTre_Cod').text  = '0'
             etree.SubElement(Item, 'MontoImpUno').text  = '0'
             etree.SubElement(Item, 'PorcImpUno').text   = '0'
             etree.SubElement(Item, 'MontoImpDos').text  = '0'
             etree.SubElement(Item, 'PorcImpDos').text   = '0'
-            etree.SubElement(Item, 'TotalDocLin').text  = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'TotalDocLin').text  = format_number(request, d.total, False)
 
         except Exception as p:
             error       = "Error al crear detalle XML " + str(p)
@@ -2372,12 +2358,12 @@ def armar_xml_inet_docvta(request):
     valores = calculo_iva_total_documento(total_linea, 19)
 
     # SDT_DocVentaExtDetDoc/ResumenDoc
-    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = formato_numero_sin_miles(valores[0])
+    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = format_number(request, valores[0], False)
     etree.SubElement(ResumenDoc, 'CodigoDescuento').text            = '0'
     etree.SubElement(ResumenDoc, 'TotalDescuento').text             = '0'
-    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = formato_numero_sin_miles(valores[1])
+    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = format_number(request, valores[1], False)
     etree.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text        = '0'
-    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = formato_numero_sin_miles(valores[2])
+    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = format_number(request, valores[2], False)
     TotalConceptos = etree.SubElement(ResumenDoc, 'TotalConceptos')
 
     # SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
@@ -2450,13 +2436,17 @@ def url_web_service_inet(**kwargs):
     """
     error           = ''
     url_conexion    = ''
-    try:
-        codigo = kwargs['codigo_contexto']
-        host = kwargs['host']
-        url  = kwargs['url']
-        puerto = kwargs['puerto']
 
-        url_conexion = 'http://' + str(host).strip() + ':' + str(puerto).strip() + '/' + str(url).strip() + '/servlet/' + str(codigo).strip() + '?wsdl'
+    try:
+        codigo      = kwargs['codigo_contexto']
+        host        = kwargs['host']
+        url         = kwargs['url']
+        puerto      = kwargs['puerto']
+
+        if puerto == None:
+            error = 'Falta puerto de conexión en la configuración.'
+        else:
+            url_conexion = 'http://' + str(host).strip() + ':' + str(puerto).strip() + '/' + str(url).strip() + '/servlet/' + str(codigo).strip() + '?wsdl'
     except Exception:
         error = "Error al realizar el armado de la URL de conexión Web Service INET"
 
@@ -2472,8 +2462,8 @@ def call_service_inet(url):
     :param url: url de conexión del WSDL
     :return: retorna el client con la conexion y una variable de error.
     """
-    error = ''
-    client = ''
+    error   = ''
+    client  = ''
 
     try:
         client = Client(url, timeout=15)

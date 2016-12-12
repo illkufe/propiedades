@@ -7,19 +7,16 @@ urlpatterns = [
 
 ##------------------------------------TIPOS DE DOCUMENTOS---------------------------------------------------------------
 
-    url(r'^configuracion/visualizar/$', visualizar_configuracion, name='visualizar_configuracion'),
-    url(r'^configuracion/crear/$', crear_configuracion, name='crear_configuracion'),
-    url(r'^configuracion/busca_persona/$', busca_personas, name='busca_personas'),
-    url(r'^configuracion/valida_rut/$', valida_rut_cliente, name='valida_rut_cliente'),
-    url(r'^configuracion/editar/(?P<pk>[0-9]+)$$', editar_configuracion, name='editar_configuracion'),
-    url(r'^configuracion/recupera_data_parametros/(?P<pk>[0-9]+)$$', recupera_data_parametros, name='recupera_data_parametros'),
-    url(r'^configuracion/eliminar/$', eliminar_configuracion, name='eliminar_configuracion'),
+    url(r'^configuracion-facturacion/list$', ConfiguracionFacturacionList.as_view(), name='configuracion_facturacion_list'),
+    url(r'^configuracion-facturacion/new$', ConfiguracionFacturacionNew.as_view(), name='configuracion_facturacion_new'),
+    url(r'^configuracion-facturacion/update/(?P<pk>\d+)$', ConfiguracionFacturacionUpdate.as_view(), name='configuracion_facturacion_update'),
+    url(r'^configuracion-facturacion/delete/(?P<pk>\d+)$', ConfiguracionFacturacionDelete.as_view(), name='configuracion_facturacion_delete'),
 
-    url(r'^folios_electronicos/carga_caf/$', carga_folios_electronicos, name='carga_folios_electronicos'),
-    url(r'^folios_electronicos/visualizar/$', visualizar_folios_electronicos, name='visualizar_folios_electronicos'),
-    url(r'^folios_electronicos/autorizar_caf/$', autorizar_folios_electronicos, name='autorizar_folios_electronicos'),
+
+    url(r'^folios-electronicos/list$', FoliosElectronicosList.as_view(), name='folios_electronicos_list'),
+    url(r'^folios-electronicos/carga_caf$', carga_folios_electronicos, name='carga_folios_electronicos'),
+    url(r'^folios-electronicos/autorizar_caf$', autorizar_folios_electronicos, name='autorizar_folios_electronicos'),
 
     url(r'^xml$', prueba_xml, name='prueba_xml'),
-
 
 ]

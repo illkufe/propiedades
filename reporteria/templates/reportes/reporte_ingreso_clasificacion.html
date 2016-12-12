@@ -147,7 +147,7 @@ function enviar_formulario_ingreso_activo() {
                         row.detalle             = response[0].data[i].detalles[a].detalle_clasificacion
 
                         for(var v in response[0].data[i].detalles[a].valores_formateado){
-                            row[response[0].data[i].detalles[a].valores_formateado[v][0].replace(/\s/g,"_").toLowerCase()] = response[0].data[i].detalles[a].valores_formateado[v][1]
+                            row[response[0].data[i].detalles[a].valores[v][0].replace(/\s/g,"_").toLowerCase()] = d3.format("$,.")(response[0].data[i].detalles[a].valores[v][1])
                         }
                         rows.push(row);
                     }
@@ -216,6 +216,7 @@ function load_tabla_ingreso_clasificacion(response) {
         val.data        = response[0].cabecera[i].replace(/\s/g,"_").toLowerCase();
         val.title       = response[0].cabecera[i];
         val.orderable   = false
+        val.class       = 'text-right'
         columns.push(val)
     }
 

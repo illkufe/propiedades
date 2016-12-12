@@ -26,9 +26,9 @@
 									<td>{{ item.activo }}</td>
 									<td>{{ item.tipo }}</td>
 									<td>{{ item.mes }}</td>
-									<td>{{ item.anio }}</td>
+									<td class="text-right">{{ item.anio }}</td>
 									<td class="text-right">{{ item.valor }}</td>
-									<td class="text-right">{{ item.moneda }}</td>
+									<td>{{ item.moneda }}</td>
 									<td class="text-center">
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar gasto" href='{% url "operaciones:gasto_servicio_basico_update" item.id %}'>
 											<i class="fa fa-edit"></i>

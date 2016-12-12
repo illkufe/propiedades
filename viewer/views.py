@@ -255,7 +255,7 @@ def chart_ingreso_centro(request):
 
 		total_activo 	= total_activo if total_activo is not None else 0
 
-		data_table['table']['data'].append({'activo_id': item.id, 'activo': item.nombre, 'totales': formato_moneda_local(request, total_activo) })
+		data_table['table']['data'].append({'activo_id': item.id, 'activo': item.nombre, 'totales': formato_moneda_local(request, total_activo, None) })
 
 	return JsonResponse(data_table, safe=False)
 
@@ -302,16 +302,16 @@ def get_conceptos_activo(request, id):
 			if tipo_periodo == 1:
 
 				nombre_cabecera = str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year)
-				meses[aux] 		= [nombre_cabecera, formato_moneda_local(request, total_activo)]
+				meses[aux] 		= [nombre_cabecera, formato_moneda_local(request, total_activo, None)]
 
 			elif tipo_periodo == 2 or tipo_periodo == 3:
 
 				nombre_cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1])[:3] + '-' + str(data['fecha_termino'].year))
-				meses[aux] 		= [nombre_cabecera, formato_moneda_local(request, total_activo)]
+				meses[aux] 		= [nombre_cabecera, formato_moneda_local(request, total_activo, None)]
 			elif tipo_periodo == 4:
 
 				nombre_cabecera ='Año ' + str(data['fecha_inicio'].year),
-				meses[aux]		= [nombre_cabecera, formato_moneda_local(request, total_activo)]
+				meses[aux]		= [nombre_cabecera, formato_moneda_local(request, total_activo, None)]
 
 			aux +=1
 
@@ -328,17 +328,17 @@ def get_conceptos_activo(request, id):
 		if tipo_periodo == 1:
 
 			nombre_cabecera 					= str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year)
-			data_valor_total[nombre_cabecera] 	= formato_moneda_local(request, total_mes)
+			data_valor_total[nombre_cabecera] 	= formato_moneda_local(request, total_mes, None)
 
 		elif tipo_periodo == 2 or tipo_periodo == 3:
 
 			nombre_cabecera 					= str(str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1])[:3] + '-' + str(data['fecha_termino'].year))
-			data_valor_total[nombre_cabecera] 	= formato_moneda_local(request, total_mes)
+			data_valor_total[nombre_cabecera] 	= formato_moneda_local(request, total_mes, None)
 
 		elif tipo_periodo == 4:
 
 			nombre_cabecera 					= 'Año ' + str(data['fecha_inicio'].year),
-			data_valor_total[nombre_cabecera] 	= formato_moneda_local(request, total_mes)
+			data_valor_total[nombre_cabecera] 	= formato_moneda_local(request, total_mes, None)
 
 
 	return JsonResponse({'meses': data_encabezado, 'conceptos': data_concepto, 'total_mes': data_valor_total}, safe=False)
@@ -533,7 +533,7 @@ class CONCEPTOS_ACTIVOS(View):
 				for a in range(1, datetime.now().month + 1):
 					total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, fecha_inicio__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 					total_activo 	= total_activo if total_activo is not None else 0
-					mes[a] 			= formato_moneda_local(self.request, total_activo)
+					mes[a] 			= formato_moneda_local(self.request, total_activo, None)
 
 				concepto.append({
 					'concepto' : item.nombre,
@@ -544,7 +544,7 @@ class CONCEPTOS_ACTIVOS(View):
 			for a in range(1, datetime.now().month + 1):
 				total_mes 			= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 				total_mes 			= total_mes if total_mes is not None else 0
-				data_total_meses[a] = formato_moneda_local(self.request ,total_mes)
+				data_total_meses[a] = formato_moneda_local(self.request ,total_mes, None)
 
 			return JsonResponse({'meses': data_meses ,'conceptos' : concepto, 'total_mes': data_total_meses}, safe=False)
 
@@ -577,7 +577,7 @@ class CONCEPTOS_ACTIVOS(View):
 					for b in semestral:
 						total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, fecha_inicio__year=a, fecha_inicio__month__gte=b[0], fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 						total_activo 	= total_activo if total_activo is not None else 0
-						anos[aux] 		= formato_moneda_local(self.request, total_activo)
+						anos[aux] 		= formato_moneda_local(self.request, total_activo, None)
 						aux += 1
 				concepto.append({
 					'concepto' 	: item.nombre,
@@ -589,7 +589,7 @@ class CONCEPTOS_ACTIVOS(View):
 				for b in semestral:
 					total_mes 				= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__year=a, fecha_inicio__month__gte=b[0], fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 					total_mes 				= total_mes if total_mes is not None else 0
-					data_total_ano[aux2] 	= formato_moneda_local(self.request ,total_mes)
+					data_total_ano[aux2] 	= formato_moneda_local(self.request ,total_mes, None)
 					aux2 +=1
 			count +=1
 			ano_anterior +=1
@@ -622,7 +622,7 @@ class CONCEPTOS_ACTIVOS(View):
 					for b in semestral:
 						total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, fecha_inicio__year=a, fecha_inicio__month__gte=b[0], fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 						total_activo 	= total_activo if total_activo is not None else 0
-						anos[aux] 		= formato_moneda_local(self.request, total_activo)
+						anos[aux] 		= formato_moneda_local(self.request, total_activo, None)
 						aux += 1
 				concepto.append({
 					'concepto' 	: item.nombre,
@@ -634,7 +634,7 @@ class CONCEPTOS_ACTIVOS(View):
 				for b in semestral:
 					total_mes 				= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__year=a, fecha_inicio__month__gte=b[0], fecha_inicio__month__lte=b[1]).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 					total_mes 				= total_mes if total_mes is not None else 0
-					data_total_ano[aux2] 	= formato_moneda_local(self.request ,total_mes)
+					data_total_ano[aux2] 	= formato_moneda_local(self.request ,total_mes, None)
 					aux2 +=1
 			count +=1
 			ano_anterior +=1
@@ -660,7 +660,7 @@ class CONCEPTOS_ACTIVOS(View):
 					for a in range(datetime.now().year - 1, datetime.now().year + 1):
 						total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True, factura_detalle__concepto_id=item.id, fecha_inicio__year=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 						total_activo 	= total_activo if total_activo is not None else 0
-						anos[aux] 		= formato_moneda_local(self.request, total_activo)
+						anos[aux] 		= formato_moneda_local(self.request, total_activo, None)
 						aux += 1
 
 					concepto.append({
@@ -672,7 +672,7 @@ class CONCEPTOS_ACTIVOS(View):
 				for a in range(datetime.now().year - 1, datetime.now().year + 1):
 					total_mes 				= Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__year=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 					total_mes 				= total_mes if total_mes is not None else 0
-					data_total_ano[aux2] 	= formato_moneda_local(self.request ,total_mes)
+					data_total_ano[aux2] 	= formato_moneda_local(self.request ,total_mes, None)
 					aux2 +=1
 				count +=1
 				ano_anterior +=1
@@ -705,7 +705,7 @@ class CONCEPTOS_ACTIVOS(View):
 
 					total_activo 	= Factura.objects.filter(contrato_id__in=contratos, visible=True,factura_detalle__concepto_id=item.id, fecha_inicio__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 					total_activo 	= total_activo if total_activo is not None else 0
-					mes[a] 			= formato_moneda_local(self.request, total_activo)
+					mes[a] 			= formato_moneda_local(self.request, total_activo, None)
 
 				concepto.append({
 					'concepto' 	: item.nombre,
@@ -716,7 +716,7 @@ class CONCEPTOS_ACTIVOS(View):
 		for a in range(1, datetime.now().month + 1):
 			total_mes = Factura.objects.filter(contrato_id__in=contratos, visible=True, fecha_inicio__month=a).aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 			total_mes = total_mes if total_mes is not None else 0
-			data_total_meses[a] = formato_moneda_local(self.request,total_mes)
+			data_total_meses[a] = formato_moneda_local(self.request,total_mes, None)
 
 		return JsonResponse({'meses': data_meses,'conceptos' : concepto, 'total_mes': data_total_meses}, safe=False)
 

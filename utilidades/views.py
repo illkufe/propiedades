@@ -237,31 +237,19 @@ def formato_numero(valor):
 
 	return moneda
 
-def formato_numero_sin_miles(valor):
 
-	moneda = '{:.4f}'.format(valor)
-	#
-	# moneda = moneda.replace('.', ',')
+def formato_moneda_local(request, valor, moneda=None):
 
-
-	return moneda
-
-def formato_numero_sin_miles_decimales(valor):
-
-	moneda = '{:.0f}'.format(valor)
-	#
-	# moneda = moneda.replace('.', ',')
-
-
-	return moneda
-
-def formato_moneda_local(request, valor):#{cambiar por ...}
 
 	try:
-		user 			= request.user
-		empresa 		= user.userprofile.empresa
+
+		empresa 		= request.user.userprofile.empresa
 		configuracion 	= empresa.configuracion
-		moneda_local    = empresa.configuracion_monedas_set.get(moneda_local=True)
+
+		if moneda is None:
+			moneda_local    = empresa.configuracion_monedas_set.get(moneda_local=True)
+		else:
+			moneda_local	= empresa.configuracion_monedas_set.get(moneda=moneda)
 
 		decimales       = configuracion.cantidad_decimales if moneda_local.cantidad_decimales is None else moneda_local.cantidad_decimales
 

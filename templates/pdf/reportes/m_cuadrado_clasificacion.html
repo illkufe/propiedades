@@ -1,4 +1,5 @@
 {% load static %}
+{% load extra_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,7 +48,7 @@
             font-family: 'Courier';
         }
 
-        .table>tbody>tr.prueba {
+        .table>tbody>tr.totales {
             border-top: 1px solid #000 !important;
             border-bottom:  1px solid #000 !important;
         }
@@ -72,7 +73,11 @@
                     {% for detalle in item.detalles %}
                         <tr>
                         {% for obj_detalle in detalle %}
-                            <td> {{obj_detalle}} </td>
+                            {% if  obj_detalle|is_number%}
+                                <td class="text-right">{{ obj_detalle }} </td>
+                            {% else %}
+                                <td>{{ obj_detalle }}</td>
+                            {% endif %}
                         {% endfor %}
                         </tr>
                     {% endfor %}
@@ -83,9 +88,13 @@
                             <td></td>
                             <td></td>
                         </tr>
-                        <tr class="prueba">
+                        <tr class="totales">
                         {% for obj_total in total %}
-                            <td><strong> {{obj_total}} </strong></td>
+                            {% if  obj_total|is_number%}
+                                <td class="text-right"><strong> {{obj_total}} </strong></td>
+                            {% else %}
+                                <td><strong> {{obj_total}} </strong></td>
+                            {% endif %}
                         {% endfor %}
                         </tr>
                         <tr>

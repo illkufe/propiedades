@@ -8,7 +8,7 @@ from datetime import datetime
 
 from activos.models import Activo
 from locales.models import Local
-from utilidades.views import sumar_meses
+from utilidades.views import sumar_meses, formato_moneda_local
 
 from .forms import *
 from .models import *
@@ -718,6 +718,8 @@ class GastoServicioBasicoList(ListView):
 
 			item.mes 	= meses[int(item.mes)-1]
 			item.tipo 	= tipos[int(item.tipo)-1]
+			item.valor  = formato_moneda_local(self.request, item.valor, item.moneda.id)
+
 
 		return queryset
 

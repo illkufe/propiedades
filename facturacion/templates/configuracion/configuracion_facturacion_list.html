@@ -1,0 +1,73 @@
+{% extends 'index.html' %}
+{% block section %}
+    {% include 'partials/breadcrumbs-bar.html' %}
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div class="ibox-tools">
+                            <a href="{% url 'configuracion_facturacion_new' %}" class="btn btn-primary btn-xs "><i class="fa fa-plus"></i> Nueva Configuración Facturación</a>
+                        </div>
+                        <br>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" id="tabla-Parametros-Facturacion" style="width:100%!important;">
+                                <thead></thead>
+                                <tbody>
+                                    {% for item in object_list %}
+                                        <tr>
+                                            <td>{{ item.id }}</td>
+                                            <td>{{ item.codigo_conexion}}</td>
+                                            <td class="text-center">
+                                                <a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar configuración" href="{% url 'configuracion_facturacion_update' pk=item.id %}"><i class="fa fa-edit"></i></a>
+                                                <a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar configuración" onclick="open_modal_delete(this, {{item.id}},'configuracion-facturacion', 'tabla-Parametros-Facturacion', 'Configuración Facturación')"><i class="fa fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock section %}
+
+{% block scripts %}
+    <script>
+
+        var tabla_parametros;
+
+        $(document).ready(function(){
+
+            load_tabla_parametros();
+
+        });
+
+        function load_tabla_parametros() {
+
+
+            var columns= [
+                {
+                    'width': '1%',
+                    'data': 'id',
+                    'title': 'id',
+                    'visible': false
+                },
+                {
+                    'width': '20%',
+                    'data': 'codigo',
+                    'title': 'Código Conexión'
+                },
+                {
+                    'width': '19%',
+                    'data': 'options',
+                    'orderable': false,
+                    'title': 'Opciones'
+                }];
+
+            tabla_parametros = load_table('#tabla-Parametros-Facturacion', columns, {});
+        }
+    </script>
+{% endblock %}

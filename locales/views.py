@@ -563,7 +563,7 @@ class VENTAS(View):
 				'nro_mes'		: int(venta['month']),
 				'mes'			: meses[int(venta['month'])-1],
 				'ano'			: venta['year'],
-				'valor'			: formato_moneda_local(self.request, venta['valor__sum']),
+				'valor'			: formato_moneda_local(self.request, venta['valor__sum'], None),
 				})
 
 		return JsonResponse(data, safe=False)
@@ -694,7 +694,7 @@ class VentaDiaria(View):
 				'fecha_inicio' 	: ventas.fecha_inicio.strftime('%d-%m-%Y'),
 				'fecha_termino' : ventas.fecha_termino.strftime('%d-%m-%Y'),
 				'tipo_venta'    : PERIODICIDAD[ventas.periodicidad -1][1],
-				'valor' 	    : formato_moneda_local(self.request, ventas.valor),
+				'valor' 	    : formato_moneda_local(self.request, ventas.valor, None),
 			})
 
 		return JsonResponse(data, safe=False)
