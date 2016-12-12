@@ -321,7 +321,7 @@ class VentaDiaria(View):
                 'fecha_inicio' 	: ventas.fecha_inicio.strftime('%d-%m-%Y'),
                 'fecha_termino' : ventas.fecha_termino.strftime('%d-%m-%Y'),
                 'tipo_venta'    : PERIODICIDAD[ventas.periodicidad -1][1],
-                'valor' 	    : formato_moneda_local(self.request, ventas.valor),
+                'valor' 	    : formato_moneda_local(self.request, ventas.valor, None),
             })
 
         return JsonResponse(data, safe=False)

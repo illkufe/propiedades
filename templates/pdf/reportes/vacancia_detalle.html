@@ -1,4 +1,5 @@
 {% load static %}
+{% load extra_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,6 +47,9 @@
         .page{
             font-family: 'Courier';
         }
+        .text-center{
+            text-align: center;
+        }
 
 
     </style>
@@ -59,7 +63,7 @@
                 <tr>
                     <th>Activo</th>
                     {% for cabecera in data_cabecera%}
-                        <th>{{ cabecera }}</th>
+                        <th class="text-center">{{ cabecera }}</th>
                     {% endfor %}
                 </tr>
                 </thead>
@@ -68,7 +72,11 @@
                 {% for item in data %}
                     <tr>
                     {% for a in item %}
-                        <td>{{a}}</td>
+                        {% if  a|is_number%}
+                            <td class="text-right">{{a}}</td>
+                        {% else %}
+                            <td>{{a}}</td>
+                        {% endif %}
                     {% endfor %}
                     </tr>
                 {% endfor %}

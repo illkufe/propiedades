@@ -167,14 +167,15 @@ class REPORTE_INGRESO_ACTIVO(View):
 		data_concepto   = list()
 		count           = 0
 
-		tipo            = int(var_post['periodos'])
-		periodos        = int(var_post['cantidad_periodos'])
+
+		tipo_periodo    = int(var_post['periodos'])
+		cant_periodo    = int(var_post['cantidad_periodos'])
 		activo          = var_post.getlist('activo[]')
 		cliente         = var_post.getlist('cliente[]')
 		conceptos       = var_post.getlist('conceptos[]')
 
 		#Calculo de periodos
-		response        = calcular_periodos(tipo, periodos, 'restar')
+		periodos        = calcular_periodos(tipo_periodo, cant_periodo, 'restar')
 
 		## Se obtiene el detalle de la tabla
 
@@ -189,24 +190,26 @@ class REPORTE_INGRESO_ACTIVO(View):
 				meses = {}
 				aux = 0
 
-				for data in response:
+				for periodo in periodos:
 
 					total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
 															  factura_detalle__concepto__in=conceptos,
-															  fecha_inicio__gte=data['fecha_inicio'],
-															  fecha_inicio__lte=data['fecha_termino']) \
+															  fecha_inicio__gte=periodo['fecha_inicio'],
+															  fecha_inicio__lte=periodo['fecha_termino']) \
 							.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
 
-					total_activo = total_activo if total_activo is not None else 0
+					total_activo = format_number(request, total_activo, True) if total_activo is not None else 0
+					cabecera     = ''
 
-					if tipo == 1:
-						meses[aux]  = [str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year),formato_moneda_local(request, total_activo)]
-					elif tipo ==2 or tipo == 3:
-						meses[aux]  = [str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year)), formato_moneda_local(request, total_activo)]
-					elif tipo == 4:
-						meses[aux]  = ['Año ' + str(data['fecha_inicio'].year), formato_moneda_local(request, total_activo)]
+					if tipo_periodo == 1:
+						cabecera  	= str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+					elif tipo_periodo ==2 or tipo_periodo == 3:
+						cabecera 	= str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
+					elif tipo_periodo == 4:
+						cabecera 	= 'Año ' + str(periodo['fecha_inicio'].year)
 
+					meses[aux] = [cabecera, total_activo]
 					aux += 1
 
 				data_concepto.append({
@@ -217,14 +220,14 @@ class REPORTE_INGRESO_ACTIVO(View):
 				})
 
 		## Se obtiene Cabecera de las tablas
-		for data in response:
+		for periodo in periodos:
 
-			if tipo == 1:
-				data_cabecera[count] = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
-			elif tipo == 2 or tipo == 3:
-				data_cabecera[count] = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
-			elif tipo == 4:
-				data_cabecera[count] = 'Año ' + str(data['fecha_inicio'].year)
+			if tipo_periodo == 1:
+				data_cabecera[count] = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+			elif tipo_periodo == 2 or tipo_periodo == 3:
+				data_cabecera[count] = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
+			elif tipo_periodo == 4:
+				data_cabecera[count] = 'Año ' + str(periodo['fecha_inicio'].year)
 
 			count += 1
 
@@ -237,13 +240,13 @@ def ingreso_activo_xls(request):
 	hora            = str(time.strftime("%X"))
 	count           = 2
 
-	tipo            = int(var_post['periodos'])
-	periodos        = int(var_post['cantidad_periodos'])
+	tipo_periodo 	= int(var_post['periodos'])
+	cant_periodo 	= int(var_post['cantidad_periodos'])
 	activo          = var_post.getlist('activo')
 	cliente         = var_post.getlist('cliente')
 	conceptos       = var_post.getlist('conceptos')
 
-	response        = calcular_periodos(tipo, periodos, 'restar')
+	periodos        = calcular_periodos(tipo_periodo, cant_periodo, 'restar')
 
 	data_excel      = []
 	output          = io.BytesIO()
@@ -275,15 +278,15 @@ def ingreso_activo_xls(request):
 
 
 	## Se obtiene Cabecera de las tablas
-	for data in response:
+	for periodo in periodos:
 
 		cabecera  = ''
-		if tipo == 1:
-			cabecera = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
-		elif tipo == 2 or tipo == 3:
-			cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
-		elif tipo == 4:
-			cabecera = 'Año ' + str(data['fecha_inicio'].year)
+		if tipo_periodo == 1:
+			cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+		elif tipo_periodo == 2 or tipo_periodo == 3:
+			cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
+		elif tipo_periodo == 4:
+			cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
 
 		colums.append({'header': cabecera,'header_format': format, 'format': format_cell_number})
 
@@ -305,16 +308,16 @@ def ingreso_activo_xls(request):
 			x.append(contrato.cliente.nombre)
 			x.append(contrato.numero)
 
-			for data in response:
+			for periodo in periodos:
 
 				total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
 														  factura_detalle__concepto__in=conceptos,
-														  fecha_inicio__gte=data['fecha_inicio'],
-														  fecha_inicio__lte=data['fecha_termino']) \
+														  fecha_inicio__gte=periodo['fecha_inicio'],
+														  fecha_inicio__lte=periodo['fecha_termino']) \
 						.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
 
-				total_activo = total_activo if total_activo is not None else 0
+				total_activo = format_number(request, total_activo, True) if total_activo is not None else 0
 
 				x.append(total_activo)
 
@@ -342,25 +345,25 @@ def ingreso_activo_pdf(request):
 	data_cabecera   = []
 
 
-	tipo            = int(var_post['periodos'])
-	periodos        = int(var_post['cantidad_periodos'])
+	tipo_periodo 	= int(var_post['periodos'])
+	cant_periodo 	= int(var_post['cantidad_periodos'])
 	activo          = var_post.getlist('activo')
 	cliente         = var_post.getlist('cliente')
 	conceptos       = var_post.getlist('conceptos')
 
-	response        = calcular_periodos(tipo, periodos, 'restar')
+	periodos        = calcular_periodos(tipo_periodo, cant_periodo, 'restar')
 
 
 	## Se obtiene Cabecera de las tablas
-	for data in response:
+	for periodo in periodos:
 
 		cabecera  = ''
-		if tipo == 1:
-			cabecera = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
-		elif tipo == 2 or tipo == 3:
-			cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1])[:3] + '-' + str(data['fecha_termino'].year))
-		elif tipo == 4:
-			cabecera = 'Año ' + str(data['fecha_inicio'].year)
+		if tipo_periodo == 1:
+			cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
+		elif tipo_periodo == 2 or tipo_periodo == 3:
+			cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1])[:3] + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1])[:3] + '-' + str(periodo['fecha_termino'].year))
+		elif tipo_periodo == 4:
+			cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
 
 		data_cabecera.append(cabecera)
 
@@ -381,18 +384,18 @@ def ingreso_activo_pdf(request):
 			x.append(contrato.cliente.nombre)
 			x.append(contrato.numero)
 
-			for data in response:
+			for periodo in periodos:
 
 				total_activo = Factura.objects.filter(contrato_id=contrato.id, visible=True,
 														  factura_detalle__concepto__in=conceptos,
-														  fecha_inicio__gte=data['fecha_inicio'],
-														  fecha_inicio__lte=data['fecha_termino']) \
+														  fecha_inicio__gte=periodo['fecha_inicio'],
+														  fecha_inicio__lte=periodo['fecha_termino']) \
 						.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
 
 				total_activo = total_activo if total_activo is not None else 0
 
-				x.append(formato_moneda_local(request, total_activo))
+				x.append(formato_moneda_local(request, total_activo, None))
 
 			data_pdf.append(x)
 
@@ -480,6 +483,7 @@ def ingreso_clasificacion_xls(request):
 	hora            = str(time.strftime("%X"))
 	count           = 1
 	data_excel      = []
+
 	tipo_periodo        = int(var_post['periodos'])
 	cant_periodo        = int(var_post['cantidad_periodos'])
 	clasificacion_id    = var_post.getlist('clasificacion')
@@ -677,7 +681,7 @@ class REPORTE_VACANCIA(View):
 
 				aux         = 0
 				meses       = {}
-				cabecera    = ''
+
 
 				for periodo in periodos:
 					locales     = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'], visible=True)
@@ -686,6 +690,7 @@ class REPORTE_VACANCIA(View):
 					m_totales       = m_totales if m_totales is not None else 0
 					m_ocupados      = m_ocupados if m_ocupados is not None else 0
 					m_disponibles   = m_totales - m_ocupados
+					cabecera 		= ''
 
 					# Mensual
 					if tipo_periodos == 1:
@@ -697,7 +702,7 @@ class REPORTE_VACANCIA(View):
 					elif tipo_periodos == 4:
 						cabecera    = 'Año ' + str(periodo['fecha_inicio'].year)
 
-					meses[aux] = [cabecera, formato_numero( m_disponibles)]
+					meses[aux] = [cabecera, format_number(request, m_disponibles, False)]
 
 					aux += 1
 
@@ -718,7 +723,7 @@ class REPORTE_VACANCIA(View):
 					meses       = {}
 					meses[aux]  = ['Tipos de Locales',tipo.nombre]
 					aux         += 1
-					cabecera    = ''
+
 
 					for periodo in periodos:
 						locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
@@ -728,6 +733,7 @@ class REPORTE_VACANCIA(View):
 						m_ocupados      = m_ocupados if m_ocupados is not None else 0
 
 						m_disponibles   = m_totales - m_ocupados
+						cabecera 		= ''
 
 						# Mensual
 						if tipo_periodos == 1:
@@ -739,7 +745,7 @@ class REPORTE_VACANCIA(View):
 						elif tipo_periodos == 4:
 							cabecera    = 'Año ' + str(periodo['fecha_inicio'].year)
 
-						meses[aux] = [cabecera, formato_numero(m_disponibles)]
+						meses[aux] = [cabecera, format_number(request, m_disponibles, False)]
 
 						aux += 1
 
@@ -761,7 +767,7 @@ class REPORTE_VACANCIA(View):
 					meses       = {}
 					meses[aux]  = ['Niveles', nivel.nombre]
 					aux         += 1
-					cabecera    = ''
+
 
 					for periodo in periodos:
 						locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
@@ -771,6 +777,7 @@ class REPORTE_VACANCIA(View):
 						m_ocupados      = m_ocupados if m_ocupados is not None else 0
 
 						m_disponibles   = m_totales - m_ocupados
+						cabecera 		= ''
 
 						# Mensual
 						if tipo_periodos == 1:
@@ -782,7 +789,7 @@ class REPORTE_VACANCIA(View):
 						elif tipo_periodos == 4:
 							cabecera    = 'Año ' + str(periodo['fecha_inicio'].year)
 
-						meses[aux] = [cabecera, formato_numero(m_disponibles)]
+						meses[aux] = [cabecera, format_number(request, m_disponibles, False)]
 
 						aux += 1
 
@@ -812,6 +819,7 @@ class REPORTE_VACANCIA(View):
 						m_totales       = m_totales if m_totales is not None else 0
 						m_ocupados      = m_ocupados if m_ocupados is not None else 0
 						m_disponibles   = m_totales - m_ocupados
+						cabecera		= ''
 
 						#Mensual
 						if tipo_periodos == 1:
@@ -823,7 +831,7 @@ class REPORTE_VACANCIA(View):
 						elif tipo_periodos == 4:
 							cabecera    = 'Año ' + str(periodo['fecha_inicio'].year)
 
-						meses[aux] = [cabecera, formato_numero(m_disponibles)]
+						meses[aux] = [cabecera, format_number(request, m_disponibles, False)]
 
 						aux += 1
 
@@ -871,7 +879,7 @@ def vacancia_xls(request):
 	cant_periodos   = int(var_post['cantidad_periodos'])
 
 	# Calculo de periodos
-	response        = calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
+	periodos        = calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
 
 	data_excel      = []
 	output          = io.BytesIO()
@@ -916,15 +924,15 @@ def vacancia_xls(request):
 		count += 1
 
 	## Se obtiene Cabecera de los Periodos seleccionados
-	for data in response:
+	for periodo in periodos:
 
 		cabecera  = ''
 		if tipo_periodos == 1:
-			cabecera = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
+			cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 		elif tipo_periodos == 2 or tipo_periodos == 3:
-			cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
+			cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 		elif tipo_periodos == 4:
-			cabecera = 'Año ' + str(data['fecha_inicio'].year)
+			cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
 
 		colums.append({'header': cabecera,'header_format': format, 'format': format_cell_number})
 
@@ -943,15 +951,15 @@ def vacancia_xls(request):
 			x = []
 			x.append(activo.nombre)
 
-			for data in response:
-				locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'], visible=True)
+			for periodo in periodos:
+				locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'], visible=True)
 				m_ocupados      = Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 				m_totales       = m_totales if m_totales is not None else 0
 				m_ocupados      = m_ocupados if m_ocupados is not None else 0
 				m_disponibles   = m_totales - m_ocupados
 
-				x.append(m_disponibles)
+				x.append(format_number(request, m_disponibles, False))
 
 			data_excel.append(x)
 
@@ -967,8 +975,8 @@ def vacancia_xls(request):
 				x.append(activo.nombre)
 				x.append(tipo.nombre)
 
-				for data in response:
-					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+				for periodo in periodos:
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
 					m_ocupados      = Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 					m_totales       = m_totales if m_totales is not None else 0
@@ -991,15 +999,15 @@ def vacancia_xls(request):
 				x.append(activo.nombre)
 				x.append(nivel.nombre)
 
-				for data in response:
-					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+				for periodo in periodos:
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
 					m_ocupados      = Local.objects.filter(id__in=locales, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 					m_totales       = m_totales if m_totales is not None else 0
 					m_ocupados      = m_ocupados if m_ocupados is not None else 0
 					m_disponibles   = m_totales - m_ocupados
 
-					x.append(m_disponibles)
+					x.append(format_number(request, m_disponibles, False))
 
 				data_excel.append(x)
 
@@ -1015,16 +1023,16 @@ def vacancia_xls(request):
 				x.append(activo.nombre)
 				x.append(sector.nombre)
 
-				for data in response:
+				for periodo in periodos:
 
-					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
 					m_ocupados      = Local.objects.filter(id__in=locales, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 					m_totales       = m_totales if m_totales is not None else 0
 					m_ocupados      = m_ocupados if m_ocupados is not None else 0
 					m_disponibles   = m_totales - m_ocupados
 
-					x.append(m_disponibles)
+					x.append(format_number(request, m_disponibles, False))
 
 				data_excel.append(x)
 
@@ -1055,7 +1063,7 @@ def vacancia_pdf(request):
 	cant_periodos   = int(var_post['cantidad_periodos'])
 
 	# Calculo de periodos
-	response        = calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
+	periodos        = calcular_periodos(tipo_periodos, cant_periodos, 'sumar')
 
 	# Agrega cabecera de Agrupador al pdf
 	cabecera_agrupador = ''
@@ -1073,15 +1081,15 @@ def vacancia_pdf(request):
 
 
 	## Se obtiene Cabecera de los Periodos seleccionados
-	for data in response:
+	for periodo in periodos:
 
 		cabecera  = ''
 		if tipo_periodos == 1:
-			cabecera = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
+			cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 		elif tipo_periodos == 2 or tipo_periodos == 3:
-			cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1])[:3] + '-' + str(data['fecha_termino'].year))
+			cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1])[:3] + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1])[:3] + '-' + str(periodo['fecha_termino'].year))
 		elif tipo_periodos == 4:
-			cabecera = 'Año ' + str(data['fecha_inicio'].year)
+			cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
 
 		data_cabecera.append(cabecera)
 
@@ -1101,8 +1109,8 @@ def vacancia_pdf(request):
 			x = []
 			x.append(activo.nombre)
 
-			for data in response:
-				locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'], visible=True)
+			for data in periodos:
+				locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'], visible=True)
 				m_ocupados      = Local.objects.filter(id__in=locales, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 				m_totales       = m_totales if m_totales is not None else 0
@@ -1126,8 +1134,8 @@ def vacancia_pdf(request):
 				x.append(activo.nombre)
 				x.append(tipo.nombre)
 
-				for data in response:
-					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+				for periodo in periodos:
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
 					m_ocupados      = Local.objects.filter(id__in=locales, local_tipo=tipo, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 					m_totales       = m_totales if m_totales is not None else 0
@@ -1150,8 +1158,8 @@ def vacancia_pdf(request):
 				x.append(activo.nombre)
 				x.append(nivel.nombre)
 
-				for data in response:
-					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+				for periodo in periodos:
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
 					m_ocupados      = Local.objects.filter(id__in=locales, nivel=nivel, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 					m_totales       = m_totales if m_totales is not None else 0
@@ -1174,9 +1182,9 @@ def vacancia_pdf(request):
 				x.append(activo.nombre)
 				x.append(sector.nombre)
 
-				for data in response:
+				for periodo in periodos:
 
-					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=data['fecha_termino'], fecha_termino__lte=data['fecha_termino'])
+					locales         = Contrato.objects.values_list('locales', flat=True).filter(locales__in=activo.local_set.all().filter(visible=True), visible=True, fecha_termino__gte=periodo['fecha_termino'], fecha_termino__lte=periodo['fecha_termino'])
 					m_ocupados      = Local.objects.filter(id__in=locales, sector=sector, visible=True).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
 
 					m_totales       = m_totales if m_totales is not None else 0
@@ -1263,7 +1271,7 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 		cant_periodos   = int(var_post['cantidad_periodos'])
 
 		#Calculo de periodos
-		response        = calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
+		periodos        = calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
 
 		## Se obtiene el detalle de la tabla
 		activos = Activo.objects.filter(id__in=activo , empresa=request.user.userprofile.empresa, visible=True).order_by('nombre')
@@ -1278,22 +1286,23 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 				meses   = {}
 				aux     = 0
 
-				for data in response:
+				for periodo in periodos:
 
 					fecha_contrato  = contrato.fecha_termino
-					fecha_desde     = data['fecha_inicio']
-					fecha_hasta     = data['fecha_termino']
+					fecha_desde     = periodo['fecha_inicio']
+					fecha_hasta     = periodo['fecha_termino']
+					cabecera        = ''
 
 					if tipo_periodo == 1:
-						cabecera = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
+						cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 					elif tipo_periodo == 2 or tipo_periodo == 3:
-						cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
+						cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 					elif tipo_periodo == 4:
-						cabecera        = 'Año ' + str(data['fecha_inicio'].year)
+						cabecera        = 'Año ' + str(periodo['fecha_inicio'].year)
 
 						fecha_contrato  = contrato.fecha_termino.year
-						fecha_desde     = data['fecha_inicio'].year
-						fecha_hasta     = data['fecha_termino'].year
+						fecha_desde     = periodo['fecha_inicio'].year
+						fecha_hasta     = periodo['fecha_termino'].year
 
 					if fecha_contrato >= fecha_desde and fecha_contrato <= fecha_hasta:
 						valor = 'si'
@@ -1311,14 +1320,14 @@ class REPORTE_VENCIMIENTO_CONTRATOS(View):
 				})
 
 		## Se obtiene Cabecera de las tablas
-		for data in response:
+		for periodo in periodos:
 
 			if tipo_periodo == 1:
-				cabecera = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
+				cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 			elif tipo_periodo == 2 or tipo_periodo == 3:
-				cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
+				cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 			elif tipo_periodo == 4:
-				cabecera = 'Año ' + str(data['fecha_inicio'].year)
+				cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
 
 			data_cabecera[count] = cabecera
 			count += 1
@@ -1354,7 +1363,7 @@ def vencimiento_contrato_xls(request):
 	tipo_periodo    = int(var_post['periodos'])
 	cant_periodos   = int(var_post['cantidad_periodos'])
 
-	response        = calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
+	periodos        = calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
 
 	data_excel      = []
 	output          = io.BytesIO()
@@ -1386,15 +1395,15 @@ def vencimiento_contrato_xls(request):
 
 
 	## Se obtiene Cabecera de las tablas
-	for data in response:
+	for periodo in periodos:
 
 		cabecera  = ''
 		if tipo_periodo == 1:
-			cabecera = str(nombre_meses[data['fecha_inicio'].month - 1]) + ' ' + str(data['fecha_inicio'].year)
+			cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
 		elif tipo_periodo == 2 or tipo_periodo == 3:
-			cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1]) + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1]) + '-' + str(data['fecha_termino'].year))
+			cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1]) + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1]) + '-' + str(periodo['fecha_termino'].year))
 		elif tipo_periodo == 4:
-			cabecera = 'Año ' + str(data['fecha_inicio'].year)
+			cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
 
 		colums.append({'header': cabecera,'header_format': format, 'format': format_cell_text})
 
@@ -1414,16 +1423,16 @@ def vencimiento_contrato_xls(request):
 			x.append(activo.nombre)
 			x.append(contrato.cliente.nombre)
 			x.append(contrato.numero)
-			for data in response:
+			for periodo in periodos:
 
 				fecha_contrato  = contrato.fecha_termino
-				fecha_desde     = data['fecha_inicio']
-				fecha_hasta     = data['fecha_termino']
+				fecha_desde     = periodo['fecha_inicio']
+				fecha_hasta     = periodo['fecha_termino']
 
 				if tipo_periodo == 4:
 					fecha_contrato  = contrato.fecha_termino.year
-					fecha_desde     = data['fecha_inicio'].year
-					fecha_hasta     = data['fecha_termino'].year
+					fecha_desde     = periodo['fecha_inicio'].year
+					fecha_hasta     = periodo['fecha_termino'].year
 
 				if fecha_contrato >= fecha_desde and fecha_contrato <= fecha_hasta:
 					valor = 'Caducidad Contrato'
@@ -1462,19 +1471,19 @@ def vencimiento_contrato_pdf(request):
 	tipo_periodo    = int(var_post['periodos'])
 	cant_periodos   = int(var_post['cantidad_periodos'])
 
-	response        = calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
+	periodos        = calcular_periodos(tipo_periodo, cant_periodos, 'sumar')
 
 
 	## Se obtiene Cabecera de las tablas
-	for data in response:
+	for periodo in periodos:
 
 		cabecera  = ''
 		if tipo_periodo == 1:
-			cabecera = str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + ' ' + str(data['fecha_inicio'].year)
+			cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1])[:3] + ' ' + str(periodo['fecha_inicio'].year)
 		elif tipo_periodo == 2 or tipo_periodo == 3:
-			cabecera = str(str(nombre_meses[data['fecha_inicio'].month - 1])[:3] + '-' + str(data['fecha_inicio'].year) + '  ' + str(nombre_meses[data['fecha_termino'].month - 1])[:3] + '-' + str(data['fecha_termino'].year))
+			cabecera = str(str(nombre_meses[periodo['fecha_inicio'].month - 1])[:3] + '-' + str(periodo['fecha_inicio'].year) + '  ' + str(nombre_meses[periodo['fecha_termino'].month - 1])[:3] + '-' + str(periodo['fecha_termino'].year))
 		elif tipo_periodo == 4:
-			cabecera = 'Año ' + str(data['fecha_inicio'].year)
+			cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
 
 		data_cabecera.append(cabecera)
 
@@ -1494,16 +1503,16 @@ def vencimiento_contrato_pdf(request):
 			x.append(activo.nombre)
 			x.append(contrato.cliente.nombre)
 			x.append(contrato.numero)
-			for data in response:
+			for periodo in periodos:
 
 				fecha_contrato  = contrato.fecha_termino
-				fecha_desde     = data['fecha_inicio']
-				fecha_hasta     = data['fecha_termino']
+				fecha_desde     = periodo['fecha_inicio']
+				fecha_hasta     = periodo['fecha_termino']
 
 				if tipo_periodo == 4:
 					fecha_contrato  = contrato.fecha_termino.year
-					fecha_desde     = data['fecha_inicio'].year
-					fecha_hasta     = data['fecha_termino'].year
+					fecha_desde     = periodo['fecha_inicio'].year
+					fecha_hasta     = periodo['fecha_termino'].year
 
 				if fecha_contrato >= fecha_desde and fecha_contrato <= fecha_hasta:
 					valor = 'Caducidad Contrato'
@@ -1612,17 +1621,17 @@ class REPORTE_METROS_CUADRADOS_CLASIFICACION(View):
 
 					items_detalle.append({
 						'detalle'               : obj.nombre,
-						'm_cuadrados_detalle'   : formato_numero(m2_detalle),
+						'm_cuadrados_detalle'   : format_number(request, m2_detalle, False),
 					})
 
 				items_detalle.append({
 					'detalle'               : 'Sin Clasificación',
-					'm_cuadrados_detalle'   : formato_numero(m2_detalle_sin_clas),
+					'm_cuadrados_detalle'   : format_number(request, m2_detalle_sin_clas, False),
 				})
 				data.append({
 					'activo'                : activo.nombre,
 					'clasificacion'         : items.nombre,
-					'm_cuadrado_total'      : formato_numero(m_clasificacion),
+					'm_cuadrado_total'      : format_number(request, m_clasificacion, False),
 					'detalles'              : items_detalle
 				})
 
@@ -1739,14 +1748,13 @@ def metros_cuadrados_clasificacion_pdf(request):
 
 	for activo in activos:
 
-		data_pdf_detalle    = []
-		data_pdf_totales    = []
-
 		clasificaciones = Clasificacion.objects.filter(id__in=clasificacion, empresa=request.user.userprofile.empresa,
 														   visible=True,
 														   tipo_clasificacion_id=1)
 
 		for items in clasificaciones:
+			data_pdf_detalle = []
+			data_pdf_totales = []
 
 			det_clasificaciones = Clasificacion_Detalle.objects.filter(clasificacion=items)
 			m2_detalle_sin_clas = Local.objects.filter(visible=True, activo=activo).exclude(clasificaciones__isnull=False).aggregate(Sum('metros_cuadrados'))['metros_cuadrados__sum']
@@ -1775,12 +1783,12 @@ def metros_cuadrados_clasificacion_pdf(request):
 			data.append(formato_numero(m2_detalle_sin_clas))
 			data_pdf_detalle.append(data)
 
-			data_pdf_totales.append(['M² Total','','',formato_numero(m_clasificacion)])
+			data_pdf_totales.append(['','','M² Total',formato_numero(m_clasificacion)])
 
-		pdf_data.append({
-			'detalles'  : data_pdf_detalle,
-			'totales'   : data_pdf_totales
-		})
+			pdf_data.append({
+				'detalles'  : data_pdf_detalle,
+				'totales'   : data_pdf_totales
+			})
 
 	hora    = str(time.strftime("%X"))
 	context = {'empresa': request.user.userprofile.empresa.nombre.encode(encoding='UTF-8', errors='strict'),
@@ -1883,7 +1891,8 @@ def data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasi
 															 fecha_inicio__lte=periodo['fecha_termino']) \
 					.aggregate(Sum('factura_detalle__total'))['factura_detalle__total__sum']
 
-				total_clasificacion = total_clasificacion if total_clasificacion is not None else 0
+				total_clasificacion = format_number(request, total_clasificacion, True) if total_clasificacion is not None else 0
+
 				if tipo_periodo == 1:
 
 					nom_cabecera = str(nombre_meses[periodo['fecha_inicio'].month - 1]) + ' ' + str(periodo['fecha_inicio'].year)
@@ -1896,7 +1905,7 @@ def data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasi
 					nom_cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
 
 				meses[aux]          = [nom_cabecera, total_clasificacion]
-				meses_format[aux]   = [nom_cabecera, formato_moneda_local(request, total_clasificacion)]
+				meses_format[aux]   = [nom_cabecera, formato_moneda_local(request, total_clasificacion, None)]
 				aux += 1
 
 			data_detalle.append({
@@ -1933,7 +1942,7 @@ def data_report_ingreso_clasificacion(request, tipo_periodo, cant_periodo, clasi
 				nom_cabecera = 'Año ' + str(periodo['fecha_inicio'].year)
 
 			meses[aux]          = [nom_cabecera, total_clasificacion]
-			meses_format[aux]   = [nom_cabecera, formato_moneda_local(request, total_clasificacion)]
+			meses_format[aux]   = [nom_cabecera, formato_moneda_local(request, total_clasificacion, None)]
 
 			aux += 1
 
@@ -1993,7 +2002,7 @@ class REPORTE_GARANTIA_LOCAL(View):
 		cliente         = var_post['cliente']
 		conceptos       = var_post['conceptos']
 
-		response        = calcular_periodos(tipo, periodos)
+		response        = calcular_periodos(tipo, periodos, 'restar')
 
 		## Se obtiene el detalle de la tabla
 		if activo  != '':
@@ -2162,9 +2171,10 @@ def data_report_ingreso_activo_metros(request, periodos, activos, conceptos):
 				data_ingresos.append({
 					'fecha_inicio'      : periodo['fecha_inicio'],
 					'fecha_termino'     : periodo['fecha_termino'],
-					'metros'            : metros,
-					'ingreso'           : ingreso,
-					'ingreso_metros'    : ingreso_metros,
+					'metros'            : format_number(request, metros, False),
+					'ingreso'           : format_number(request, ingreso, True),
+					'ingreso_metros'    : format_number(request, ingreso_metros, True),
+					'mes'               : str(nombre_meses[periodo['fecha_termino'].month - 1])
 					})
 
 			data_conceptos.append({

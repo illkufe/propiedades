@@ -74,7 +74,7 @@ class PropuestaProcesarList(ListView):
 				'fecha_inicio'	: item.fecha_inicio,
 				'fecha_termino' : item.fecha_termino,
 				'contrato'		: item.contrato,
-				'total'			: formato_moneda_local(self.request, item.total)
+				'total'			: formato_moneda_local(self.request, item.total, None)
 			})
 
 		for item in Factura.objects.filter(user__in=users, estado_id__in=[2,4,5], visible=True):
@@ -85,7 +85,7 @@ class PropuestaProcesarList(ListView):
 				'fecha_inicio'	: item.fecha_inicio,
 				'fecha_termino'	: item.fecha_termino,
 				'contrato'		: item.contrato,
-				'total'			: formato_moneda_local(self.request, item.total)
+				'total'			: formato_moneda_local(self.request, item.total, None)
 			})
 
 		context['facturas_propuestas'] = data_propuestas
@@ -2026,7 +2026,7 @@ class FACTURA(View):
 				detalles.append({
 					'id'		: detalle.id,
 					'nombre' 	: detalle.nombre,
-					'total'		: formato_moneda_local(self.request, detalle.total),
+					'total'		: formato_moneda_local(self.request, detalle.total, None),
 					})
 
 			# Calculo Neto e IVA.
@@ -2037,9 +2037,9 @@ class FACTURA(View):
 				'fecha' 		: factura.creado_en,
 				'fecha_inicio'	: factura.fecha_inicio,
 				'fecha_termino'	: factura.fecha_termino,
-				'neto'			: formato_moneda_local(self.request, valores[0]),
-				'iva'			: formato_moneda_local(self.request, valores[1]),
-				'total'			: formato_moneda_local(self.request, valores[2]),
+				'neto'			: formato_moneda_local(self.request, valores[0], None),
+				'iva'			: formato_moneda_local(self.request, valores[1], None),
+				'total'			: formato_moneda_local(self.request, valores[2], None),
 				'estado' 		: estado,
 				'url_documento' : factura.url_documento,
 				'contrato' 		: contrato,

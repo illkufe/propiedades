@@ -718,7 +718,8 @@ class GastoServicioBasicoList(ListView):
 
 			item.mes 	= meses[int(item.mes)-1]
 			item.tipo 	= tipos[int(item.tipo)-1]
-			item.valor  = formato_moneda_local(self.request, item.valor)
+			item.valor  = formato_moneda_local(self.request, item.valor, item.moneda.id)
+
 
 		return queryset
 

@@ -144,7 +144,7 @@ function enviar_formulario_vacancia_activo() {
                     row.activo  = response.data[i].activo;
 
                     for(var v in response.data[i].valores){
-                        row[response.data[i].valores[v][0].replace(/\s/g,"_").toLowerCase()] = response.data[i].valores[v][1]
+                        row[response.data[i].valores[v][0].replace(/\s/g,"_").toLowerCase()] = d3.format(",.")(response.data[i].valores[v][1])
                     }
                     rows.push(row);
                 }

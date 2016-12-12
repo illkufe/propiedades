@@ -4,8 +4,6 @@ from django.db import transaction
 from decimal import Decimal
 import json
 
-
-from utilidades.views import formato_numero_sin_miles
 from administrador.views import Cliente
 
 

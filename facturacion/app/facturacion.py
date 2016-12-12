@@ -15,7 +15,7 @@ import logging
 
 
 from procesos.models import Factura
-from utilidades.views import formato_numero_sin_miles
+from utilidades.views import format_number
 
 suds_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(suds_path)
@@ -2094,17 +2094,17 @@ def armar_xml_inet(request):
 
             etree.SubElement(Item, 'NumItem').text      = str(linea)
             etree.SubElement(Item, 'FechaEntrega').text = '0'
-            etree.SubElement(Item, 'PrecioRef').text    = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'PrecioRef').text    = format_number(request, d.total, False)
             etree.SubElement(Item, 'Cantidad').text     = '1'
             etree.SubElement(Item, 'PorcUno').text      = '0'
-            etree.SubElement(Item, 'MontoUno').text     = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'MontoUno').text     = format_number(request, d.total, False)
             etree.SubElement(Item, 'DescDos_Cod').text  = '0'
             etree.SubElement(Item, 'DescTre_Cod').text  = '0'
             etree.SubElement(Item, 'MontoImpUno').text  = '0'
             etree.SubElement(Item, 'PorcImpUno').text   = '0'
             etree.SubElement(Item, 'MontoImpDos').text  = '0'
             etree.SubElement(Item, 'PorcImpDos').text   = '0'
-            etree.SubElement(Item, 'TotalDocLin').text  = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'TotalDocLin').text  = format_number(request, d.total, False)
 
             Producto = etree.SubElement(Item, 'Producto')
 
@@ -2125,12 +2125,12 @@ def armar_xml_inet(request):
     valores = calculo_iva_total_documento(total_linea, 19)
 
     # SDT_DocVentaExtDetDoc/ResumenDoc
-    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = formato_numero_sin_miles(valores[0])
+    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = format_number(request, valores[0], False)
     etree.SubElement(ResumenDoc, 'CodigoDescuento').text            = '0'
     etree.SubElement(ResumenDoc, 'TotalDescuento').text             = '0'
-    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = formato_numero_sin_miles(valores[1])
+    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = format_number(request, valores[1], False)
     etree.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text        = '0'
-    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = formato_numero_sin_miles(valores[2])
+    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = format_number(request, valores[2], False)
     TotalConceptos = etree.SubElement(ResumenDoc, 'TotalConceptos')
 
     # SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
@@ -2323,7 +2323,7 @@ def armar_xml_inet_docvta(request):
 
 
             etree.SubElement(Item, 'FechaEntrega').text = '0'
-            etree.SubElement(Item, 'PrecioRef').text    = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'PrecioRef').text    = format_number(request, d.total, False)
             etree.SubElement(Item, 'Cantidad').text     = '1'
 
             Glosas  = etree.SubElement(Item, 'Glosas')
@@ -2334,14 +2334,14 @@ def armar_xml_inet_docvta(request):
 
             etree.SubElement(Item, 'DescUno_Cod').text  = '0'
             etree.SubElement(Item, 'PorcUno').text      = '0'
-            etree.SubElement(Item, 'MontoUno').text     = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'MontoUno').text     = format_number(request, d.total, False)
             etree.SubElement(Item, 'DescDos_Cod').text  = '0'
             etree.SubElement(Item, 'DescTre_Cod').text  = '0'
             etree.SubElement(Item, 'MontoImpUno').text  = '0'
             etree.SubElement(Item, 'PorcImpUno').text   = '0'
             etree.SubElement(Item, 'MontoImpDos').text  = '0'
             etree.SubElement(Item, 'PorcImpDos').text   = '0'
-            etree.SubElement(Item, 'TotalDocLin').text  = formato_numero_sin_miles(d.total)
+            etree.SubElement(Item, 'TotalDocLin').text  = format_number(request, d.total, False)
 
         except Exception as p:
             error       = "Error al crear detalle XML " + str(p)
@@ -2358,12 +2358,12 @@ def armar_xml_inet_docvta(request):
     valores = calculo_iva_total_documento(total_linea, 19)
 
     # SDT_DocVentaExtDetDoc/ResumenDoc
-    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = formato_numero_sin_miles(valores[0])
+    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = format_number(request, valores[0], False)
     etree.SubElement(ResumenDoc, 'CodigoDescuento').text            = '0'
     etree.SubElement(ResumenDoc, 'TotalDescuento').text             = '0'
-    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = formato_numero_sin_miles(valores[1])
+    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = format_number(request, valores[1], False)
     etree.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text        = '0'
-    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = formato_numero_sin_miles(valores[2])
+    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = format_number(request, valores[2], False)
     TotalConceptos = etree.SubElement(ResumenDoc, 'TotalConceptos')
 
     # SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos

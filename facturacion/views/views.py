@@ -14,7 +14,6 @@ from facturacion.models import *
 
 from administrador.views import Empresa
 from procesos.models import Factura
-from utilidades.views import formato_numero_sin_miles
 
 from datetime import timedelta
 
@@ -3611,19 +3610,19 @@ def armar_dict_documento(request):
                 'descripcion_item'          : str(d.concepto.descripcion).upper(),
                 'cantidad_referencia'       : '1',
                 'unidad_medida_ref'         : '',#str(d.concepto)
-                'precio_referencia'         : formato_numero_sin_miles(d.total),
+                'precio_referencia'         : format_number(request, d.total, False),
                 'cantidad_item'             : '1',
                 'fecha_elaboracion'         : '',
                 'fecha_vencimiento_prod'    : '',
                 'unidad_medida'             : 'UNI',
-                'precio_unitario'           : formato_numero_sin_miles(d.total),
+                'precio_unitario'           : format_number(request, d.total, False),
                 'descuento_porcentaje'      : '0',
                 'descuento_monto'           : '0',
                 'recargo_porcentaje'        : '0',
                 'recargo_monto'             : '0',
                 'cod_imp_adic_1'            : '0',
                 'cod_imp_adic_2'            : '0',
-                'monto_item'                : formato_numero_sin_miles(d.total),
+                'monto_item'                : format_number(request, d.total, False),
                 'item_espectaculo'          : '',
                 'rut_mandante_b'            : '',
                 'codigos_items'             : '',  # lista_codigos_items,

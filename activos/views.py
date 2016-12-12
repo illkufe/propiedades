@@ -19,14 +19,6 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
 
-
-
-
-
-
-
-
-
 # variables
 modulo 	= 'Activos'
 
@@ -120,7 +112,7 @@ class ActivoList(ListView):
 		queryset 	= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		for item in queryset:
 
-			item.tasacion_fiscal = formato_moneda_local(self.request, item.tasacion_fiscal)
+			item.tasacion_fiscal = formato_moneda_local(self.request, item.tasacion_fiscal, None)
 
 		return queryset
 
@@ -267,7 +259,7 @@ class GastoMensualList(ListView):
 
 			item.mes 		= meses[int(item.mes)-1]
 			item.creado_en 	= item.creado_en.strftime('%d/%m/%Y')
-			item.valor		= formato_moneda_local(self.request, item.valor)
+			item.valor		= formato_moneda_local(self.request, item.valor, None)
 
 		return queryset
 
