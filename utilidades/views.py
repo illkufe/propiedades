@@ -8,14 +8,22 @@ from datetime import date, datetime, timedelta
 from suds.client import Client
 from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from django.conf import settings
 from django.views.generic import View
+
+from utilidades.plugins.owncloud import *
 
 from administrador.models import Configuracion_Monedas
 from .models import *
 
+
 import pdfkit
 import calendar
+import string
+import random
+
 
 # variables globales
 def variables_globales(request):
@@ -58,9 +66,6 @@ def configuracion_monedas(request, pk):
 	return JsonResponse(data, safe=False)
 
 # funciones globales (fechas)
-def fecha_actual():
-
-	return datetime.now()
 
 def primer_dia(fecha):
 
@@ -222,27 +227,6 @@ def meses(valor):
 	return meses[int(valor)-1]
 
 # funciones globales (numeros)
-def formato_moneda(valor): #{cambiar por formato_moneda_final}
-
-	moneda = '${:,.4f}'.format(valor)
-
-	moneda = moneda.replace('.', '*')
-	moneda = moneda.replace(',', '.')
-	moneda = moneda.replace('*', ',')
-
-	return moneda
-
-def formato_moneda_final(valor):
-
-	moneda = '${:,.4f}'.format(valor)
-
-	moneda = moneda.replace('.', '*')
-	moneda = moneda.replace(',', '.')
-	moneda = moneda.replace('*', ',')
-
-	return moneda
-
-
 def formato_numero(valor):
 
 	moneda = '{:,.4f}'.format(valor)
@@ -256,7 +240,7 @@ def formato_numero(valor):
 def formato_numero_sin_miles(valor):
 
 	moneda = '{:.4f}'.format(valor)
-    #
+	#
 	# moneda = moneda.replace('.', ',')
 
 
@@ -265,14 +249,13 @@ def formato_numero_sin_miles(valor):
 def formato_numero_sin_miles_decimales(valor):
 
 	moneda = '{:.0f}'.format(valor)
-    #
+	#
 	# moneda = moneda.replace('.', ',')
 
 
 	return moneda
 
-
-def formato_moneda_local(request, valor):#{cambiar por formato_moneda_final}
+def formato_moneda_local(request, valor):#{cambiar por ...}
 
 	try:
 		user 			= request.user
@@ -294,7 +277,6 @@ def formato_moneda_local(request, valor):#{cambiar por formato_moneda_final}
 	moneda = moneda.replace('*', ',')
 
 	return moneda
-
 
 def format_number(request, value, local):
 
@@ -396,11 +378,6 @@ class NumberField(forms.Field):
 		if value is not '' and value is not None:
 			return value.replace(".", "").replace(",", ".")
 
-
-
-
-
-
 # get
 class CURRENCIES_LAST(View):
 	http_method_names = ['get']
@@ -452,53 +429,87 @@ class CURRENCIES_LAST(View):
 
 
 
-def file_type(content_type):
 
-	types = [
-	{
-		'name': 'pdf',
-		'icon': 'fa fa-file-pdf-o',
-
-	},
-	{
-		'name': 'excel',
-		'icon': 'fa fa-file-excel-o',
-
-	},
-	{
-		'name': 'word',
-		'icon': 'fa fa-file-word-o',
-
-	},
-	{
-		'name': 'power point',
-		'icon': 'fa fa-file-powerpoint-o',
-
-	},
-	{
-		'name': 'text',
-		'icon': 'fa fa-file-text-o',
-	},
-	{
-		'name': 'img',
-		'icon': 'fa fa-file-image-o',
-	},
-	{
-		'name': 'file',
-		'icon': 'fa fa-file-o',
-	},
-	]
-
-	if content_type == 'application/pdf':
-		content = 0
-	elif content_type == 'application/vnd.ms-excel':
-		content = 1
-	elif content_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-		content = 2
-	elif content_type == 'image/jpeg' or content_type == 'image/x-png':
-		content = 5
-	else:
-		pass
 		
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Funciones Finales -------------------
+
+
+# get
+def get_password_random(size):
+
+	chars       = string.ascii_letters + string.digits
+	password    = ''.join((random.choice(chars)) for x in range(size))
+
+	return password
+
+# validaciones
+def validate_rut(rut):
+
+	if '-' in rut:
+
+		[rut, digito] = rut.replace('.', '').split('-')
+
+		return True if digito == validate_digito(rut) else False
+
+	else:
+		return False
+
+def validate_digito(rut):
+
+	value = 11 - sum([ int(a)*int(b)  for a,b in zip(str(rut).zfill(8), '32765432')])%11
+
+	return {10: 'K', 11: '0'}.get(value, str(value))
+
+
+# funciones owncloud
+def owncloud_create_folder(request):
+
+	var_post	= request.POST.copy()
+	oc_path 	= var_post.get('path')
+	oc_name 	= var_post.get('name')
+
+	response 	= oc_create_directory(oc_path, oc_name)
+
+	return JsonResponse(response, safe=False)
+
+def owncloud_delete(request):
+
+	var_post	= request.POST.copy()
+	oc_path 	= var_post.get('path')
+	oc_name 	= var_post.get('name')
+	oc_type 	= var_post.get('type')
+
+	response 	= oc_delete(oc_path, oc_name, oc_type)
+
+	return JsonResponse(response, safe=False)
+
+def owncloud_upload_file(request):
 	
-	return types[content]
+	var_file 	= request.FILES.copy()
+	var_post	= request.POST.copy()
+	
+	oc_file 	= var_file['file']
+	oc_path 	= var_post.get('path')
+
+	path 		= default_storage.save('tmp/'+str(oc_file), ContentFile(oc_file.read()))
+	tmp_file 	= os.path.join(settings.MEDIA_ROOT, path)
+
+	response 	= oc_upload_file(oc_path+'/', tmp_file)
+
+	os.remove(tmp_file)
+
+	return JsonResponse(response, safe=False)
+

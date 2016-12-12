@@ -20,8 +20,8 @@ class UserType(models.Model):
 class UserProfile(models.Model):
 
 	# atributos (generales)
-	rut				= models.CharField(max_length=250, blank=True)
-	cargo			= models.CharField(max_length=250, blank=True)
+	rut				= models.CharField(max_length=250)
+	cargo			= models.CharField(max_length=250)
 	direccion 		= models.CharField(max_length=250, blank=True)
 	ciudad 			= models.CharField(max_length=250, blank=True)
 	comuna 			= models.CharField(max_length=250, blank=True)
@@ -39,7 +39,7 @@ class UserProfile(models.Model):
 	cliente 		= models.ForeignKey(Cliente, blank=True, null=True)
 
 	def __str__(self):
-		return self.user.first_name + ' ' + self.user.last_name
+		return self.user.email
 
 	class Meta:
 		verbose_name 		= 'Perfil'

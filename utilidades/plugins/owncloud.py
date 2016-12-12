@@ -1,5 +1,6 @@
 from datetime import datetime
 import owncloud
+import os
 
 def oc_conection():
 
@@ -10,42 +11,60 @@ def oc_conection():
 
 def oc_list_directory(oc_name, oc_path):
 
-    oc 			= oc_conection()
-    elements	= oc.list(oc_path)
-    children 	= oc_files_in_directory(elements, oc)
+	status 	= True
+	message = 'correcto'
+	data 	= list()
 
-    data = [{
-        'text': oc_name,
-        'data' : {
-            'type' : 'folder',
-            'permissions' : {
-                'edit' 		: False,
-                'remove' 	: False,
-            },
-        },
-        'state': {
-            'opened': True
-        },
-        'children': children,
-    }]
+	try:
 
-    return data
+		oc 			= oc_conection()
+		elements	= oc.list(oc_path)
+		children 	= oc_files_in_directory(elements, oc)
+
+		data.append({
+			'text'	: oc_name,
+			'icon' 	: 'fa fa-folder',
+			'data' 	: {
+				'type' 	: 'folder',
+				'path'	: oc_path,
+				'permissions' : {
+					'edit' 		: False,
+					'remove' 	: False,
+				},
+			},
+			'state': {
+				'opened': True
+			},
+			'children': children,
+		})
+	except Exception as e:
+
+		status 	= False
+		message = str(e)
+
+
+	return {
+		'status' 	: status,
+		'message' 	: message,
+		'data'		: data,
+	}
 
 def oc_files_in_directory(oc_element, oc):
 
-    response = list()
+	response = list()
 
-    for item in oc_element:
+	for item in oc_element:
 
-        share = oc.share_file_with_link(item.path)
+		share = oc.share_file_with_link(item.path)
 
-        if item.is_dir():
+		if item.is_dir():
 
-            elements 	= oc.list(item.path)
-            directory 	= oc_files_in_directory(elements, oc)
+			elements 	= oc.list(item.path)
+			directory 	= oc_files_in_directory(elements, oc)
 
-            response.append({
+			response.append({
 				'text'	: item.name,
+				'icon' 	: 'fa fa-folder',
 				'data' 	: {
 					'type'	: 'folder',
 					'id' 	: share.get_id(),
@@ -62,11 +81,11 @@ def oc_files_in_directory(oc_element, oc):
 				},
 				'children': directory,
 				})
-        else:
+		else:
 
-            response.append({
+			response.append({
 				'text'	: item.name,
-				'type' 	: 'html',
+				'icon'	: oc_info_file(item.name)['icon'],
 				'data' 	: {
 					'type'	: 'file',
 					'id' 	: share.get_id(),
@@ -79,7 +98,7 @@ def oc_files_in_directory(oc_element, oc):
 						},
 					}
 				})
-    return response
+	return response
 
 def oc_create_directory(oc_path, oc_name):
 
@@ -150,8 +169,8 @@ def oc_upload_file(oc_path, source_file, **kwargs):
 
 	try:		
 		if oc.put_file(oc_path, source_file, **kwargs):
-			status  = False
-			message = 1
+			status  = True
+			message = 0
 
 		else:
 			status  = False
@@ -167,7 +186,36 @@ def oc_upload_file(oc_path, source_file, **kwargs):
 		'message' 	: messages[message],
 	}
 
+def oc_info_file(name):
 
+	info_file = {
+		'file' : {
+			'icon' : 'fa fa-file-o',
+		},
+		'pdf' : {
+			'icon' : 'fa fa-file-pdf-o',
+		},
+		'xls' : {
+			'icon' : 'fa fa-file-excel-o',
+		},
+		'xlsx' : {
+			'icon' : 'fa fa-file-excel-o',
+		},
+		'doc' : {
+			'icon' : 'fa fa-file-word-o',
+		},
+		'txt' : {
+			'icon' : 'fa fa-file-text-o',
+		},
+		'png' : {
+			'icon' : 'fa fa-file-image-o',
+		}
+	}
+
+	name, extension = os.path.splitext(name)
+	extension	 	= extension.replace('.', '')
+
+	return info_file.get('file') if info_file.get(extension, False) is False else info_file.get(extension)
 
 # def create_directory(path_owncloud_directory, name_directory):
 

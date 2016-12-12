@@ -16,7 +16,10 @@ from .forms import *
 from .models import *
 
 from utilidades.views import *
+from utilidades.plugins.owncloud import *
 from copy import deepcopy
+
+from datetime import datetime
 
 import base64
 import pdfkit
@@ -29,7 +32,6 @@ modulo = 'Contrato'
 
 # tipo de contrato
 class ContratoTipoList(ListView):
-
 	model 			= Contrato_Tipo
 	template_name 	= 'contrato_tipo_list.html'
 
@@ -274,6 +276,37 @@ class ContratoDelete(DeleteView):
 		payload = {'delete': 'ok'}
 
 		return JsonResponse(payload, safe=False)
+
+class ContratoDocuments(ListView):
+
+	model 			= Contrato
+	template_name 	= 'contrato_documents.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ContratoDocuments, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'contrato'
+		context['name'] 	= 'documentos'
+		context['href'] 	= '/contrato/list'
+		context['id'] 		= int(self.kwargs['pk'])
+
+		# check folder
+		contrato 		= Contrato.objects.get(id=self.kwargs['pk'])
+		folder_cliente 	= oc_list_directory(str(contrato.nombre_local), 'Iproperty/Clientes/'+str(contrato.cliente.nombre))
+
+		if folder_cliente['status'] is False:
+
+			oc_create_directory('Iproperty/Clientes', str(contrato.cliente.nombre))
+
+			folder_contrato = oc_list_directory(str(contrato.nombre_local), 'Iproperty/Clientes/'+str(contrato.cliente.nombre)+'/'+str(contrato.nombre_local))
+
+			if folder_contrato['status'] is False:
+
+				oc_create_directory('Iproperty/Clientes/'+str(contrato.cliente.nombre), str(contrato.nombre_local))
+
+		return context
+
 
 
 # propuesta
@@ -1315,6 +1348,18 @@ class CONTRATO(View):
 
 		return JsonResponse(data, safe=False)
 
+class GET_CONTRATO_DOCUMENTS(View):
+
+	http_method_names = ['get']
+
+	def get(self, request, pk):
+
+		contrato = Contrato.objects.get(id=pk)
+
+		data = oc_list_directory(str(contrato.nombre_local), 'Iproperty/Clientes/'+str(contrato.cliente.nombre)+'/'+str(contrato.nombre_local))
+
+		return JsonResponse(data, safe=False)
+
 class PROPUESTA_CONTRATO(View):
 
 	http_method_names = ['get']
@@ -1473,6 +1518,9 @@ class PROPUESTA_CONTRATO_WORKFLOW(View):
 				})
 
 		return JsonResponse(data, safe=False)
+
+
+
 
 # funciones - propuesta contrato
 def propuesta_enviar_correo(request):
@@ -1844,10 +1892,10 @@ def propuesta_workflow(request):
 def contrato_activar(request, contrato_id):
 
 	try:
-		data 		= {'estado': 'ok'}
-		contrato 	= Contrato.objects.get(id=contrato_id)
-		contrato.fecha_activacion 	= fecha_actual()
-		contrato.estado 	= Contrato_Estado.objects.get(id=4)
+		data 						= {'estado': 'ok'}
+		contrato 					= Contrato.objects.get(id=contrato_id)
+		contrato.fecha_activacion 	= datetime.now()
+		contrato.estado 			= Contrato_Estado.objects.get(id=4)
 		contrato.save()
 		
 	except Exception:

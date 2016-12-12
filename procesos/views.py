@@ -258,6 +258,7 @@ def propuesta_guardar(request):
 	response 	= list()
 	var_post 	= request.POST.copy()
 	data 		= json.loads(var_post['contratos'])
+	facturas 	= list()
 
 	try:
 		with transaction.atomic():
@@ -317,7 +318,8 @@ def propuesta_guardar(request):
 				factura.total = total
 				factura.save()
 
-			id 		= factura.id
+				facturas.append(factura.id)
+
 			estado 	= True
 			mensaje = 'ok'
 
@@ -326,28 +328,32 @@ def propuesta_guardar(request):
 		estado 	= False
 		mensaje = str(error)
 
-	return JsonResponse({'estado':estado, 'mensaje':mensaje, 'id':id}, safe=False)
+	return JsonResponse({'estado':estado, 'mensaje':mensaje, 'facturas':facturas}, safe=False)
 
 def propuesta_pdf(request, pk=None):
 
+	var_post 	= request.POST.copy()
+	total_g 	= 0
 	data 		= list()
-	total 		= 0
-	propuesta 	= Factura.objects.get(id=pk)
-	conceptos 	= list()
+	facturas 	= Factura.objects.filter(id__in=map(int, var_post['facturas'].split(',')))
 
-	for factura in propuesta.factura_detalle_set.all():
-		
-		subtotal	= 0
-		subtotal 	+= factura.total
-		total 		+= factura.total
+	for factura in facturas:
 
-		conceptos.append({
-			'nombre'	: factura.nombre,
-			'total'		: formato_moneda(factura.total),
+		total 		= 0
+		conceptos 	= list()
+
+		for detalle in factura.factura_detalle_set.all():
+
+			total 	+= detalle.total
+			total_g += detalle.total
+
+			conceptos.append({
+				'nombre'	: detalle.nombre,
+				'total'		: formato_moneda_local(request, detalle.total),
 			})
 
-	item = {'contrato': propuesta.contrato, 'conceptos':conceptos, 'subtotal': formato_moneda(total)}
-	data.append(item)
+		item = {'contrato': factura.contrato, 'conceptos':conceptos, 'subtotal': formato_moneda_local(request, total)}
+		data.append(item)
 
 	options = {
 		'margin-top'	: '0.5in',
@@ -359,12 +365,11 @@ def propuesta_pdf(request, pk=None):
 
 	css 		= 'static/assets/css/bootstrap.min.css'
 	template 	= get_template('pdf/procesos/propuesta_facturacion.html')
-	
+		
 
 	context = Context({
-		'propuesta' 	: propuesta,
-		'propuestas' 	: data,
-		'total'			: formato_moneda(total),
+		'facturas' 	: data,
+		'total' 	: formato_moneda_local(request, total_g),
 	})
 
 	html 		= template.render(context)
@@ -507,6 +512,8 @@ def propuesta_enviar(request):
 
 def factura_pdf(request, pk=None):
 
+	print ('asd')
+
 	data = list()
 	total = 0
 	propuesta = Propuesta.objects.get(id=pk)
@@ -522,10 +529,10 @@ def factura_pdf(request, pk=None):
 
 			conceptos.append({
 				'nombre': detalle.nombre,
-				'total'	: formato_moneda(detalle.total),
+				'total'	: formato_moneda_local(request, detalle.total),
 			})
 
-		item = {'contrato': factura.contrato, 'conceptos' :conceptos, 'subtotal': formato_moneda(subtotal)}
+		item = {'contrato': factura.contrato, 'conceptos' :conceptos, 'subtotal': formato_moneda_local(request, subtotal)}
 
 		data.append(item)
 
@@ -544,7 +551,7 @@ def factura_pdf(request, pk=None):
 	context = Context({
 		'propuesta' 	: propuesta,
 		'propuestas' 	: data,
-		'total'			: formato_moneda(total),
+		'total'			: formato_moneda_local(request, total),
 	})
 
 	html 		= template.render(context)

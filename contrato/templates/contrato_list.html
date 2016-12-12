@@ -38,6 +38,7 @@
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar contrato" href="{% url 'contrato:contrato_update' item.id %}"><i class="fa fa-edit"></i></a>
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar contrato" onclick="open_modal_delete(this, {{item.id}},'contrato', 'tabla-contratos', 'Contrato')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar contrato" href="{% url 'contrato:contrato_pdf' item.id %}"><i class="fa fa-eye"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="archivos del activo" href='{% url "contrato:contrato_documents" item.id %}'><i class="fa fa-cloud"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -86,12 +87,12 @@ function load_tabla_contratos(){
 		'title': 'Cliente',
 	},
 	{
-		'width': '20%',
+		'width': '18.5%',
 		'data': 'nombre',
 		'title': 'Marca Comercial',
 	},
 	{
-		'width': '12.5%',
+		'width': '10%',
 		'data': 'tipo',
 		'title': 'Tipo',
 	},
@@ -111,7 +112,7 @@ function load_tabla_contratos(){
 		'title': 'Estado',
 	},
 	{
-		'width': '17.5%',
+		'width': '21.5%',
 		'data': 'options',
 		'orderable': false,
 		'title': '<div class="text-center">Opciones</div>',

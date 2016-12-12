@@ -17,10 +17,11 @@ urlpatterns = [
 	url(r'^propuesta/historial/(?P<pk>\d+)$', views.PropuestaHistorialList.as_view(), name='propuesta_historial'),
 
 	# contrato
-	url(r'^contrato/list$', views.ContratoList.as_view(), name='contrato_list'),
-	url(r'^contrato/new$', views.ContratoNew.as_view(), name='contrato_new'),
-	url(r'^contrato/delete/(?P<pk>\d+)$', views.ContratoDelete.as_view(), name='contrato_delete'),
-	url(r'^contrato/update/(?P<pk>\d+)$', views.ContratoUpdate.as_view(), name='contrato_update'),
+	url(r'^contrato/list/$', views.ContratoList.as_view(), name='contrato_list'),
+	url(r'^contrato/new/$', views.ContratoNew.as_view(), name='contrato_new'),
+	url(r'^contrato/delete/(?P<pk>\d+)/$', views.ContratoDelete.as_view(), name='contrato_delete'),
+	url(r'^contrato/update/(?P<pk>\d+)/$', views.ContratoUpdate.as_view(), name='contrato_update'),
+	url(r'^contrato/documents/(?P<pk>\d+)/$', views.ContratoDocuments.as_view(),name='contrato_documents'),
 
 	# contrato_tipo
 	url(r'^contrato-tipo/list$', views.ContratoTipoList.as_view(), name='contrato_tipo_list'),
@@ -55,9 +56,14 @@ urlpatterns = [
 	url(r'^funcion/propuesta/pdf/(?P<id>\d+)$', views.propuesta_generar_pdf, name='propuesta_generar_pdf'),
 	url(r'^funcion/propuesta/workflow$', views.propuesta_workflow, name='propuesta_workflow'),
 
+	
+
 	# get - contratos
 	url(r'^get/contratos/$', csrf_exempt(views.CONTRATO.as_view()),name='get_contratos'),
 	url(r'^get/contratos/(?P<id>\d+)$', csrf_exempt(views.CONTRATO.as_view()),name='get_contratos'),
+	url(r'^get/contrato/documents/(?P<pk>\d+)/$', csrf_exempt(views.GET_CONTRATO_DOCUMENTS.as_view()),name='get_contrato_documents'),
+
+	
 
 	# get - propuestas contrato
 	url(r'^get/propuestas-contrato$', csrf_exempt(views.PROPUESTA_CONTRATO.as_view()),name='get_propuestas'),

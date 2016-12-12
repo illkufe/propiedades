@@ -1,63 +1,3 @@
-/* STYLE botons */
-
-/*.btn{
-	padding: 4px 8px;
-}*/
-
-.btn-default,
-.btn-config,
-.btn-edit,
-.btn-delete,
-.btn-view,
-.btn-download,
-.btn-send,
-.btn-none{
-	color: #FFF;
-	border: 1px solid #e7eaec;
-	padding: 4px 8px;
-	margin: 0px 2px;
-}
-
-.btn-default{
-	background: #FFFFFF;
-}
-
-.btn-config{
-	background: #FFCC80;
-}
-
-.btn-edit{
-	background: #90CAF9;
-}
-
-.btn-delete{
-	background: #EF9A9A;
-}
-
-.btn-view{
-	background: #A5D6A7;
-}
-
-.btn-download{
-	background: #80DEEA;
-}
-
-.btn-send{
-	background: #B39DDB;
-}
-
-.btn-none{
-	background: #C1C1C1;
-}
-
-.btn-config:hover,
-.btn-edit:hover,
-.btn-delete:hover,
-.btn-view:hover
-.btn-none:hover{
-	color: #EBEBEB;
-}
-
 .info-succes{
 	color: #4CAF50;
 }
@@ -219,19 +159,6 @@ table.dataTable thead .sorting_desc:after{
 }
 
 
-.btn-default {
-	/*padding: 2px 10px;*/
-	/*color: inherit;*/
-	/*background: white;*/
-	border: 1px solid #E7EAEC;
-	color: #676A6C;
-	/*border-radius: initial;*/
-}
-
-.btn-default:hover {
-	background: #E7EAEC;
-	color: #676A6C;
-}
 
 .wizard > .steps a, .wizard > .steps a:hover, .wizard > .steps a:active {
 	background: #6FD1BD;
@@ -330,6 +257,101 @@ form#form-conceptos-new .select2.select2-container.select2-container--default{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* STYLE FINAL */
+
+/* cambios buttons */
+
+.btn-default,
+.btn-config,
+.btn-edit,
+.btn-delete,
+.btn-view,
+.btn-download,
+.btn-send,
+.btn-none{
+	color: #FFF;
+	border: 1px solid #e7eaec;
+	margin: 0px 2px;
+}
+
+.btn-bitbucket{
+	padding: 3px 8px;
+}
+
+.btn-default{
+	color: #676A6C;
+	border: 1px solid #E7EAEC;
+}
+
+.btn-config{
+	background: #FFCC80;
+}
+
+.btn-edit{
+	background: #90CAF9;
+}
+
+.btn-delete{
+	background: #EF9A9A;
+}
+
+.btn-view{
+	background: #A5D6A7;
+}
+
+.btn-download{
+	background: #80DEEA;
+}
+
+.btn-send{
+	background: #B39DDB;
+}
+
+.btn-none{
+	background: #C1C1C1;
+}
+
+.btn-config:hover,
+.btn-edit:hover,
+.btn-delete:hover,
+.btn-view:hover
+.btn-none:hover{
+	color: #EBEBEB;
+}
+
+/* formatos */
+.format-rut{
+	text-align: right;
+}
+
+
 /* cambios plugin bootstrap-select */
 
 .bootstrap-select .dropdown-menu > li > a{
@@ -344,6 +366,7 @@ form#form-conceptos-new .select2.select2-container.select2-container--default{
 .bootstrap-select .bs-actionsbox{
     min-width: 255px;
 }
+
 
 /* cambios plugin chart c3 */
 

@@ -9,27 +9,8 @@ from utilidades.plugins.owncloud import *
 from .forms import *
 from .models import *
 
-
-import owncloud
-# from utilidades.plugins.owncloud import conection as client_owncloud
-
-
-import os
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.conf import settings
-
-
-
-
-
-
-
-
-
 # variables
 modulo 	= 'Activos'
-
 
 # activo
 class ActivoMixin(object):
@@ -182,6 +163,30 @@ class ActivoUpdate(ActivoMixin, UpdateView):
 			context['nivelform'] 	= NivelFormSet(instance=self.object)
 
 		return context
+
+class ActivoDocuments(ListView):
+
+	model 			= Activo
+	template_name 	= 'activo_documents.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ActivoDocuments, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'activo'
+		context['name'] 	= 'documentos'
+		context['href'] 	= '/activos/list'
+		context['id'] 		= int(self.kwargs['pk'])
+
+		activo 	= Activo.objects.get(id=self.kwargs['pk'])
+		data 	= oc_list_directory(str(activo.nombre), 'Iproperty/Activos/'+str(activo.nombre))
+
+		if data['status'] is False:
+			oc_create_directory('Iproperty/Activos',str(activo.nombre))
+
+
+		return context
+
 
 
 # gasto mensual (gasto común)
@@ -447,75 +452,14 @@ class ACTIVOS(View):
 		return JsonResponse(data, safe=False)
 
 
+class GET_ACTIVO_DOCUMENTS(View):
 
+	http_method_names = ['get']
 
+	def get(self, request, pk):
 
+		activo = Activo.objects.get(id=pk)
 
+		data = oc_list_directory(str(activo.nombre), 'Iproperty/Activos/'+str(activo.nombre))
 
-
-class ACTIVO_DOCUMENTOS(View):
-
-	http_method_names = ['get', 'post']
-
-	def get(self, request, id=None):
-
-		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
-
-			data = oc_list_directory('Mall Plaza Maule', 'Iproperty/Activos/Mall Plaza Maule')
-
-			return JsonResponse(data, safe=False)
-
-		else:
-
-			return render(request, 'activo_documento_list.html', {
-				'title'     : 'Activos',
-				'href'      : '/activos/list',
-				'subtitle'  : 'activo',
-				'name'      : 'documentos',
-				'activo_id' : id,
-				})
-
-
-def activo_owncloud_create_folder(request):
-
-	var_post	= request.POST.copy()
-	oc_path 	= var_post.get('path')
-	oc_name 	= var_post.get('name')
-
-	response 	= oc_create_directory(oc_path, oc_name)
-
-	return JsonResponse(response, safe=False)
-
-
-def activo_owncloud_delete(request):
-
-	var_post	= request.POST.copy()
-	oc_path 	= var_post.get('path')
-	oc_name 	= var_post.get('name')
-	oc_type 	= var_post.get('type')
-
-	response 	= oc_delete(oc_path, oc_name, oc_type)
-
-	return JsonResponse(response, safe=False)
-
-
-def activo_owncloud_upload_file(request):
-
-	response = list()
-
-	var_file 	= request.FILES.copy()
-	file_data 	= var_file['file']
-	
-	path 		= default_storage.save('tmp/'+str(file_data), ContentFile(file_data.read()))
-	tmp_file 	= os.path.join(settings.MEDIA_ROOT, path)
-	
-	
-
-	oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-	oc.login('enunez', 'asgard2016')
-	oc.put_file('Iproperty/Activos/Mall Plaza Maule/Docs/asd/', tmp_file)
-	
-
-	return JsonResponse(response, safe=False)
-
-
+		return JsonResponse(data, safe=False)

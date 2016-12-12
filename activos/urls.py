@@ -12,6 +12,7 @@ urlpatterns = [
 	url(r'^activos/new$', views.ActivoNew.as_view(), name='activo_new'),
 	url(r'^activos/delete/(?P<pk>\d+)$', views.ActivoDelete.as_view(), name='activo_delete'),
 	url(r'^activos/update/(?P<pk>\d+)$', views.ActivoUpdate.as_view(), name='activo_update'),
+	url(r'^activos/documents/(?P<pk>\d+)$', views.ActivoDocuments.as_view(), name='activo_documents'),
 
 	# gasto mensual (gasto común)
 	url(r'^gastos-mensual/list$', views.GastoMensualList.as_view(), name='gasto_mensual_list'),
@@ -29,10 +30,7 @@ urlpatterns = [
 	url(r'^empresa/(?P<empresa_id>\d+)/activos$', csrf_exempt(views.ACTIVOS.as_view()),name='api_activos'),
 	url(r'^empresa/(?P<empresa_id>\d+)/activos/(?P<id>\d+)$', csrf_exempt(views.ACTIVOS.as_view()),name='api_activos'),
 
-	url(r'^activos/documentos/(?P<id>\d+)/$', csrf_exempt(views.ACTIVO_DOCUMENTOS.as_view()),name='activo_documento_list'),
-
-	url(r'^activos/documentos/create-folder/$', views.activo_owncloud_create_folder, name='activo_owncloud_create_folder'),
-	url(r'^activos/documentos/upload-file/$', views.activo_owncloud_upload_file, name='activo_owncloud_upload_file'),
-	url(r'^activos/documentos/delete/$', views.activo_owncloud_delete, name='activo_owncloud_delete'),
+	# get 
+	url(r'^get/activo/documents/(?P<pk>\d+)/$', csrf_exempt(views.GET_ACTIVO_DOCUMENTS.as_view()),name='get_activo_documents'),
 
 ]

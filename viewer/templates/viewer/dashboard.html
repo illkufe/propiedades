@@ -2,8 +2,9 @@
 {% block section %}
 
 <div class="wrapper wrapper-content">
-	<div class="row flags">
-
+	<div class="row">
+		
+		<!-- flag: indicadores -->
 		<div class="col-lg-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
@@ -17,6 +18,7 @@
 			</div>
 		</div>
 
+		<!-- flag: locales disponibles -->
 		<div class="col-lg-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
@@ -28,7 +30,8 @@
 				</div>
 			</div>
 		</div>
-
+		
+		<!-- flag: contratos por vencer -->
 		<div class="col-lg-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
@@ -47,6 +50,7 @@
 			</div>
 		</div>
 
+		<!-- flag: lista contratos -->
 		<div class="col-lg-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
@@ -387,7 +391,8 @@
 	</div>
 </div>
 
-<div class="modal fade" id="m-vacancia" tabindex="-1" role="dialog"  aria-hidden="true">
+<!-- modal: vacancia -->
+<div class="modal fade" id="m-vacancia" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -459,7 +464,8 @@
 	</div>
 </div>
 
-<div class="modal fade" id="modal-dashbord" tabindex="-1" role="dialog"  aria-hidden="true">
+<!-- modal: ingreso por activo -->
+<div class="modal fade" id="m-ingreso-activo" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog" id="tamano-modal">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -476,24 +482,14 @@
 	</div>
 </div>
 
-<div class="modal fade" id="modal-dashbord-lg" tabindex="-1" role="dialog"  aria-hidden="true">
+<!-- modal: ingreso por clasificación -->
+<div class="modal fade" id="m-ingreso-clasificacion" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
 				<div class="ibox-title">
 					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 					<h4 class="modal-title">Titulo</h4>
-					<!-- <div class="ibox-tools">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<i class="fa fa-wrench"></i>
-						</a>
-						<ul class="dropdown-menu dropdown-user">
-							<li><a onclick="load_filtro_concepto_activo(this, 0)">Mensual</a></li>
-							<li><a onclick="load_filtro_concepto_activo(this, 1)">Trimestral</a></li>
-							<li><a onclick="load_filtro_concepto_activo(this, 2)">Semestral</a></li>
-							<li><a onclick="load_filtro_concepto_activo(this, 3)">Anual</a></li>
-						</ul>
-					</div> -->
 				</div>
 			</div>
 			<div class="modal-body">
@@ -582,13 +578,13 @@ function initialize(){
 
 function asd (obj, val) {
 
-		var fecha 	= new Date();
-		fecha.setMonth(fecha.getMonth() + parseInt(val));
-		fecha = moment(fecha).format("DD/MM/YYYY")
+	var fecha 	= new Date();
+	fecha.setMonth(fecha.getMonth() + parseInt(val));
+	fecha = moment(fecha).format("DD/MM/YYYY")
 
-		load_section_vacancia(fecha)
+	load_section_vacancia(fecha)
 	
-	}
+}
 
 function load_section_garantias(){
 
@@ -1117,8 +1113,8 @@ function cargar_modal_clasificacion(clasificacion, nombre) {
 		},
 		success: function (data) {
 
-			$('#modal-dashbord-lg .modal-title').html('')
-			$('#modal-dashbord-lg .modal-body #tabla-conceptos-activos').html('')
+			$('#m-ingreso-clasificacion .modal-title').html('')
+			$('#m-ingreso-clasificacion .modal-body #tabla-conceptos-activos').html('')
 
 			if (table_conceptos_activos != undefined) {
 				table_conceptos_activos.destroy();
@@ -1164,12 +1160,12 @@ function cargar_modal_clasificacion(clasificacion, nombre) {
 			table_conceptos_activos.rows.add(rows).draw();
 
 			var texto = 'Detalle de Clasificación ' + nombre
-			$('#modal-dashbord-lg .modal-title').html(texto)
+			$('#m-ingreso-clasificacion .modal-title').html(texto)
 
 		},
 		complete:function () {
 			loading(false)
-			$('#modal-dashbord-lg').modal('show')
+			$('#m-ingreso-clasificacion').modal('show')
 		}
 	})
 }
@@ -1193,7 +1189,7 @@ function load_section_ingreso_centro_comercial(obj, add_month, conceptos) {
 				temp_body = ''
 				temp_body += '<tr>'
 
-				temp_body += '<td class="text-center"><button class="btn btn-info btn-circle btn-activo-detalle" type="button" onclick="detalle_conceptos_activo(this)" data-activo-nombre="'+data.table.data[i].activo+'" data-activo-id="'+data.table.data[i].activo_id+'" data-placement="top" data-toggle="tooltip"><i class="fa fa-info"></i></button></td>'
+				temp_body += '<td class="text-center"><button class="btn btn-info btn-circle" type="button" onclick="detalle_conceptos_activo(this)" data-activo-nombre="'+data.table.data[i].activo+'" data-activo-id="'+data.table.data[i].activo_id+'" data-placement="top" data-toggle="tooltip"><i class="fa fa-info"></i></button></td>'
 				// temp_body += '<td class="text-center"><a href="/static/assets/img/alexis.gif" class="btn btn-default btn-bitbucket" role="button"><i class="fa fa-eye"></i></a></td>'
 				temp_body += '<td>' + data.table.data[i].activo + '</td>'
 				temp_body += '<td class="text-right">' + data.table.data[i].totales + '</td>'
@@ -1258,8 +1254,8 @@ function load_conceptos() {
 		},
 		success: function (data) {
 
-			$('#modal-dashbord .modal-title').html('')
-			$('#modal-dashbord .modal-body').html('')
+			$('#m-ingreso-activo .modal-title').html('')
+			$('#m-ingreso-activo .modal-body').html('')
 
 			var temp_concepto    = ''
 			temp_concepto       += '<select id="id_conceptos" class="select2 form-control" name="conceptos" multiple="" tabindex="0" aria-hidden="false">'
@@ -1272,11 +1268,11 @@ function load_conceptos() {
 
 			temp_concepto       += '</select>'
 
-			$('#modal-dashbord .modal-title').html('Filtro Conceptos')
+			$('#m-ingreso-activo .modal-title').html('Filtro Conceptos')
 
-			$('#modal-dashbord .modal-body').append(temp_concepto)
+			$('#m-ingreso-activo .modal-body').append(temp_concepto)
 			$('#id_conceptos').select2()
-			$('#modal-dashbord').modal('show')
+			$('#m-ingreso-activo').modal('show')
 		}
 	})
 }
@@ -1285,7 +1281,7 @@ function filtrar_conceptos() {
 	var conceptos = $('#id_conceptos').select2('val')
 
 	load_section_ingreso_centro_comercial(null, 0, conceptos)
-	$('#modal-dashbord').modal('hide')
+	$('#m-ingreso-activo').modal('hide')
 }
 
 function detalle_conceptos_activo(obj) {
@@ -1310,8 +1306,8 @@ function load_filtro_concepto_activo(obj, type_filter) {
 		},
 		success: function (data) {
 
-			$('#modal-dashbord-lg .modal-title').html('')
-			$('#modal-dashbord-lg .modal-body #tabla-conceptos-activos').html('')
+			$('#m-ingreso-clasificacion .modal-title').html('')
+			$('#m-ingreso-clasificacion .modal-body #tabla-conceptos-activos').html('')
 
 			if (table_conceptos_activos != undefined) {
 				table_conceptos_activos.destroy();
@@ -1362,9 +1358,9 @@ function load_filtro_concepto_activo(obj, type_filter) {
 			table_conceptos_activos.rows.add(rows).draw();
 
 			var texto = 'Detalle de Conceptos ' + nombre_activo
-			$('#modal-dashbord-lg .modal-title').html(texto)
+			$('#m-ingreso-clasificacion .modal-title').html(texto)
 			loading(false)
-			$('#modal-dashbord-lg').modal('show')
+			$('#m-ingreso-clasificacion').modal('show')
 		}
 	})
 }

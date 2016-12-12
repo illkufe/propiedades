@@ -1,0 +1,356 @@
+{% extends 'index.html' %}
+{% block section %}
+{% load extra_tags %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Documentos del Contrato</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row">
+
+						<div class="col-sm-4">
+							<div class="input-group m-b">
+								<span class="input-group-addon">Buscar :</span>
+								<input type="text" placeholder="Archivo o Carpeta" class="form-control" style="height:27px;">
+							</div>
+						</div>
+
+						<div class="col-sm-8">
+							<p>
+								<button id="btn-create-folder" class="btn btn-default btn-xs" type="button" disabled="disabled"><i class="fa fa-plus"></i>&nbsp;Crear Carpeta</button>
+								<button id="btn-upload-file" class="btn btn-default btn-xs" type="button" disabled="disabled"><i class="fa fa-upload"></i>&nbsp;Subir Archivo</button>
+								<a id="btn-download" class="btn btn-default btn-xs" disabled="disabled" download><i class="fa fa-download"></i>&nbsp;Descargar Archivo</a>
+								<button id="btn-delete" class="btn btn-default btn-xs" type="button" disabled="disabled"><i class="fa fa-trash"></i>&nbsp;Eliminar</button>
+							</p>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<div id="directorio"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- modal create folder -->
+<div class="modal fade" id="m-create-folder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Crear Carpeta</h4>
+			</div>
+
+			<form id="form-create-folder" role="form" action="{% url 'owncloud_create_folder' %}" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="path">
+
+				<div class="modal-body">
+
+					<div class="form-group">
+						<label>Nombre</label>
+						<input type="text" name="name" placeholder="Ingresar nombre" class="form-control">
+						<div class="container-error"></div>
+					</div>
+
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">Salir</button>
+					<button type="submit" class="btn btn-w-m btn-sm btn-primary">Aceptar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- modal upload file -->
+<div class="modal fade" id="m-upload-file" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Subir Archivo</h4>
+			</div>
+
+			<form id="form-upload-file" role="form" action="{% url 'owncloud_upload_file' %}" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="path">
+
+				<div class="modal-body">
+
+					<div class="form-group">
+						<span>
+							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="Archivo Excel de Medidores a Cargar" ></i>
+							<label for="file">Archivo</label>
+						</span>
+						<input type="file" id="file" name="file" class="filestyle input-sm" data-buttonText="">
+						<div class="container-error"></div>
+					</div>
+
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">Salir</button>
+					<button type="submit" class="btn btn-w-m btn-sm btn-primary">Aceptar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+$(document).ready(function(){
+
+	load_tree()
+	form_create_folder()
+	form_upload_file()
+	initialize()
+
+});
+
+
+function initialize(){
+
+	$('#btn-create-folder').click(owncloud_create_folder)
+	$('#btn-upload-file').click(owncloud_upload_file)
+	$('#btn-delete').click(owncloud_delete)
+}
+
+function load_tree(){
+
+	$.ajax({
+		url: '/get/contrato/documents/{{id}}/',
+		type: 'get',
+		dataType: 'json',
+		beforeSend: function(){
+			loading(true)
+		},
+		success: function(response){
+			loading(false)
+
+			$('#directorio')
+			.on('select_node.jstree', function (node,a) {
+				enable_buttons(a.node.data)
+			}).jstree({
+				'core' : {
+					'data': response.data,
+				},
+				'plugins' : [ 'types', 'dnd' ],
+				'types' : {
+					'default' : {
+						'icon' : 'fa fa-folder'
+					},
+					'html' : {
+						'icon' : 'fa fa-file-code-o'
+					},
+					'svg' : {
+						'icon' : 'fa fa-file-picture-o'
+					},
+					'css' : {
+						'icon' : 'fa fa-file-code-o'
+					},
+					'img' : {
+						'icon' : 'fa fa-file-image-o'
+					},
+					'js' : {
+						'icon' : 'fa fa-file-text-o'
+					}
+				}
+			});
+		}
+	})
+}
+
+function enable_buttons(obj){
+
+	// disabled buttons
+	$('#btn-create-folder').attr('disabled', true)
+	$('#btn-upload-file').attr('disabled', true)
+	$('#btn-download').attr('disabled', true)
+	$('#btn-delete').attr('disabled', false)
+
+	// enable buttons
+	if (obj.type == 'folder') {
+		if (obj.permissions.remove == false) {
+			$('#btn-delete').attr('disabled', true)
+		}
+		$('#btn-create-folder').attr('disabled', false)
+		$('#btn-upload-file').attr('disabled', false)
+	}else{
+		$('#btn-download').attr('disabled', false)
+	}
+
+	// data object for delete
+	$('#btn-delete').attr('data-id', 	obj.id)
+	$('#btn-delete').attr('data-path', 	obj.path)
+	$('#btn-delete').attr('data-type', 	obj.type)
+	$('#btn-delete').attr('data-name', 	obj.name)
+
+	// data object for create folder
+	$('#m-create-folder input[name="path"]').val(obj.path)
+
+	// data object for upload file
+	$('#m-upload-file input[name="path"]').val(obj.path)
+
+	// data object for download
+	$('#btn-download').attr('href', obj.link+'/download')
+}
+
+function owncloud_delete(){
+
+	var path = $(this).attr('data-path')
+	var type = $(this).attr('data-type')
+	var name = $(this).attr('data-name')
+
+	swal({
+		title: '¿ Eliminar Archivo y/o Carpeta?',
+		text: '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#F8BB86',
+		cancelButtonColor: '#D0D0D0',
+		confirmButtonText: 'Si, eliminar',
+		cancelButtonText: 'Cancelar',
+		closeOnConfirm: true,
+	}).then(function() {
+
+		$.ajax({
+			url: '{% url "owncloud_delete" %}',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				path : path,
+				type : type,
+				name : name,
+				csrfmiddlewaretoken: getCookie('csrftoken'),
+			},
+			success: function(data){
+
+				$('#directorio').jstree().destroy()
+				load_tree()
+			},
+			error:function(data){
+
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se puedo eliminar',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
+			}
+		})
+	})
+}
+
+function owncloud_create_folder(){
+	$('#m-create-folder').modal('show')
+	$('#m-create-folder input[name="name"]').val('')
+	$('#m-create-folder .container-error').html('')
+}
+
+function form_create_folder(){
+	$("#form-create-folder").validate({
+		rules: {
+			name: {
+				required: true,
+			},
+		},
+		messages: {
+			name: {
+				required: "campo requerido",
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group").find('.container-error'));
+		},
+		submitHandler: function(form){
+			$('#form-create-folder').ajaxSubmit({
+				dataType: 'json',
+				success: function(data){
+					$('#m-create-folder').modal('hide')
+					$('#directorio').jstree().destroy()
+					load_tree()
+				},
+				error: function(){
+					loading(false)
+
+					var configuracion = {
+						'toast_type'	: 'error',
+						'toast_text' 	: 'ocurrio algún error',
+						'toast_title' 	: 'Error',
+					}
+
+					notification_toast(configuracion)
+				}
+			});
+		}
+	})
+}
+
+function form_upload_file(){
+	$("#form-upload-file").validate({
+		rules: {
+			file: {
+				required: true,
+			},
+		},
+		messages: {
+			file: {
+				required: "campo requerido",
+			},
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest(".form-group").find('.container-error'));
+		},
+		submitHandler: function(form){
+			$('#form-upload-file').ajaxSubmit({
+				dataType: 'json',
+				success: function(data){
+
+					$('#m-upload-file').modal('hide')
+
+					$('#directorio').jstree().destroy()
+					load_tree()
+				},
+				error: function(){
+
+					loading(false)
+
+					var configuracion = {
+						'toast_type'	: 'error',
+						'toast_text' 	: 'ocurrio algún error',
+						'toast_title' 	: 'Error',
+					}
+					notification_toast(configuracion)
+				}
+			});
+		}
+	})
+}
+
+function owncloud_upload_file(){
+	$('#m-upload-file').modal('show')
+}
+
+</script>
+
+{% endblock scripts %}

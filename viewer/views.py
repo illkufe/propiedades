@@ -18,6 +18,7 @@ from datetime import datetime
 from django.db.models import Sum, Q
 from utilidades.views import *
 
+
 import json
 
 nombre_meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']

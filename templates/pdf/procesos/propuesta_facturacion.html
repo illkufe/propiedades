@@ -79,13 +79,13 @@
             <p><span>Usuario</span>         : {{proceso.user.first_name}} {{proceso.user.last_name}}</p>
         </div> -->
 
-        {% for propuesta in propuestas %}
+        {% for factura in facturas %}
 
         <div class="informacion-proceso">
-            <p><span>Nº Contrato</span>     : {{ propuesta.contrato.numero }} </p>
-            <p><span>Cliente</span>         : {{ propuesta.contrato.cliente.nombre }} </p>
-            <p><span>Rut</span>             : {{ propuesta.contrato.cliente.rut}} </p>
-            <p><span>Marca Comercial</span> : {{ propuesta.contrato.nombre_local}} </p>
+            <p><span>Nº Contrato</span>     : {{ factura.contrato.numero }} </p>
+            <p><span>Cliente</span>         : {{ factura.contrato.cliente.nombre }} </p>
+            <p><span>Rut</span>             : {{ factura.contrato.cliente.rut}} </p>
+            <p><span>Marca Comercial</span> : {{ factura.contrato.nombre_local}} </p>
         </div>
 
         <table class="table table-bordered">
@@ -96,7 +96,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for detalle in propuesta.conceptos %}
+                {% for detalle in factura.conceptos %}
                 <tr>
                     <td>{{detalle.nombre}}</td>
                     <td class="text-right">{{detalle.total}}</td>
@@ -109,7 +109,7 @@
             <tfoot>
                 <th>
                     <span style="display:inline-block; width:50%; text-align:left">Subtotal</span>
-                    <span style="display:inline-block; width:49%; text-align:right">{{propuesta.subtotal}}</span>
+                    <span style="display:inline-block; width:49%; text-align:right">{{factura.subtotal}}</span>
                 </th>
             </tfoot>
         </table>

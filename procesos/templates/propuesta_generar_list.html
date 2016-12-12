@@ -3,6 +3,8 @@
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
+
+
 <!-- modal: formulario generar propuesta -->
 <div id="m-generar-propuesta" class="modal fade" tabindex="-1" role="dialog">
 	<div class="modal-dialog" role="document">
@@ -869,12 +871,16 @@ function validar_form_propuesta(){
 				},
 				success: function(data){
 					loading(false)
+
+					console.log(data)
+
 					if (data.estado == true) {
 						swal({
 							title 	: 'Propuesta Creada',
 							// text 	: '',
 							type 	: 'success',
-							html 	: '<a href="/procesos/propuesta/pdf/'+data.id+'"><span style="color:#575757">Descargar PDF<span>',
+							html 	: '<form action="/procesos/propuesta/pdf/" method="POST"><input type="hidden" value="'+data.facturas+'"name="facturas"><button type="submit">Descargar PDF</button></form>',
+							// html 	: '<a href="/procesos/propuesta/pdf/"><span style="color:#575757">Descargar PDF<span>',
 							showCancelButton 	: true,
 							confirmButtonColor 	: '#FCC491',
 							confirmButtonText 	: '<a href="/propuesta/generar/list"><span style="color:#FFF">Nueva Propuesta<span>',

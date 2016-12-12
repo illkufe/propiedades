@@ -23,10 +23,10 @@
 								<tr>
 									<td>{{ item.id }}</td>
 									<td>{{ item.activo }}</td>
-									<td class="text-right">{{ item.mes }}</td>
+									<td>{{ item.mes }}</td>
 									<td class="text-right">{{ item.anio }}</td>
 									<td class="text-right">{{ item.creado_en }}</td>
-									<td class="text-center">{{ item.user.first_name }}</td>
+									<td>{{ item.user.first_name }}</td>
 									<td class="text-right">{{ item.valor }}</td>
 									<td class="text-center">
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar gasto mensual" href='{% url "gasto_mensual_update" item.id %}'><i class="fa fa-edit"></i></a>

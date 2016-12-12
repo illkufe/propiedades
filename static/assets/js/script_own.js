@@ -145,16 +145,7 @@ function change_config_money_selected(moneda, obj) {
 
 }
 
-$('.format-rut').rut({
-	formatOn: 'keyup',
-	validateOn: 'blur'
-}).on('rutInvalido', function(){
-	$(this).closest('.form-group').find('.container-error').text('')
-	$(this).closest('.form-group').find('.container-error').append('rut invalido')
-	$(this).val('')
-}).on('rutValido', function(){
-	$(this).closest('.form-group').find('.container-error').text('')
-});
+
 
 $('.format-date').datepicker({
 	language: "es",
@@ -233,7 +224,6 @@ function apply_errors_form(errors){
 }
 
 function clear_errors_form(form){
-
 	$(form +' '+ '.container-error').html('')
 }
 
@@ -610,3 +600,55 @@ var myFormatters = d3.locale({
 });
 
 d3.shortMonths.format = myFormatters.shortMonths; */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Funciones Finales
+
+// formato rut
+$('.format-rut').rut({
+	formatOn: 'keyup',
+	validateOn: 'blur'
+})
+
+// .on('rutInvalido', function(){
+// 	$(this).closest('.form-group').find('.container-error').text('')
+// 	$(this).closest('.form-group').find('.container-error').append('rut invalido')
+// 	$(this).val('')
+// }).on('rutValido', function(){
+// 	$(this).closest('.form-group').find('.container-error').text('')
+// });
+
+
+
+
+// limpiar error del formulario
+function form_clear_errors(form){
+	$(form +' '+ '.container-error').html('')
+}
+
+// pintar errores del formulario
+function form_put_errors(errors){
+	$.each(errors, function(index, value) {
+		$("#id_" + index).closest('.form-group').find('.container-error').append(value[0])
+		
+	});
+}

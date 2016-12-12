@@ -9,7 +9,7 @@
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>Documentos del Activos</h5>
+					<h5>Documentos del Activo</h5>
 				</div>
 				<div class="ibox-content">
 					<div class="row">
@@ -53,7 +53,7 @@
 				<h4 class="modal-title" id="myModalLabel">Crear Carpeta</h4>
 			</div>
 
-			<form id="form-create-folder" role="form" action="{% url 'activo_owncloud_create_folder' %}" method="POST">
+			<form id="form-create-folder" role="form" action="{% url 'owncloud_create_folder' %}" method="POST">
 				{% csrf_token %}
 				<input type="hidden" name="path">
 
@@ -87,22 +87,18 @@
 				<h4 class="modal-title" id="myModalLabel">Subir Archivo</h4>
 			</div>
 
-			<form id="form-upload-file" role="form" action="{% url 'activo_owncloud_upload_file' %}" method="POST">
+			<form id="form-upload-file" role="form" action="{% url 'owncloud_upload_file' %}" method="POST">
 				{% csrf_token %}
 				<input type="hidden" name="path">
 
 				<div class="modal-body">
 
 					<div class="form-group">
-
-						<!-- <input type="file" name="file"> -->
-
-
 						<span>
 							<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="Archivo Excel de Medidores a Cargar" ></i>
-							<label for="">Archivo</label>
+							<label for="file">Archivo</label>
 						</span>
-						<input type="file" id="file" name="file" class="filestyle input-sm" data-buttonText="" >
+						<input type="file" id="file" name="file" class="filestyle input-sm" data-buttonText="">
 						<div class="container-error"></div>
 					</div>
 
@@ -142,43 +138,26 @@ function initialize(){
 function load_tree(){
 
 	$.ajax({
-		url: '/activos/documentos/{{activo_id}}/',
+		url: '/get/activo/documents/{{id}}/',
 		type: 'get',
 		dataType: 'json',
 		beforeSend: function(){
 			loading(true)
 		},
 		success: function(data){
+
 			loading(false)
+
+			console.log(data)
 
 			$('#directorio')
 			.on('select_node.jstree', function (node,a) {
 				enable_buttons(a.node.data)
 			}).jstree({
 				'core' : {
-					'data': data,
+					'data': data.data,
 				},
 				'plugins' : [ 'types', 'dnd' ],
-				'types' : {
-					'default' : {
-						'icon' : 'fa fa-folder'
-					},
-					'html' : {
-						'icon' : 'fa fa-file-code-o'
-					},
-					'svg' : {
-						'icon' : 'fa fa-file-picture-o'
-					},
-					'css' : {
-						'icon' : 'fa fa-file-code-o'
-					},
-					'img' : {
-						'icon' : 'fa fa-file-image-o'
-					},
-					'js' : {
-						'icon' : 'fa fa-file-text-o'
-					}
-				}
 			});
 		}
 	})
@@ -238,7 +217,7 @@ function owncloud_delete(){
 	}).then(function() {
 
 		$.ajax({
-			url: '{% url "activo_owncloud_delete" %}',
+			url: '{% url "owncloud_delete" %}',
 			type: 'POST',
 			dataType: 'json',
 			data: {
@@ -290,15 +269,14 @@ function form_create_folder(){
 			$('#form-create-folder').ajaxSubmit({
 				dataType: 'json',
 				success: function(data){
-
+					console.log(data)
 					$('#m-create-folder').modal('hide')
-
 					$('#directorio').jstree().destroy()
 					load_tree()
 				},
-				error: function(){
-
+				error: function(data){
 					loading(false)
+					console.log(data)
 
 					var configuracion = {
 						'toast_type'	: 'error',
@@ -333,12 +311,10 @@ function form_upload_file(){
 				dataType: 'json',
 				success: function(data){
 
-					console.log(data)
+					$('#m-upload-file').modal('hide')
 
-					// $('#m-create-folder').modal('hide')
-
-					// $('#directorio').jstree().destroy()
-					// load_tree()
+					$('#directorio').jstree().destroy()
+					load_tree()
 				},
 				error: function(){
 
@@ -349,7 +325,6 @@ function form_upload_file(){
 						'toast_text' 	: 'ocurrio algún error',
 						'toast_title' 	: 'Error',
 					}
-
 					notification_toast(configuracion)
 				}
 			});

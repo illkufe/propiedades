@@ -14,37 +14,60 @@
 					<div class="row">
 						<div class="col-sm-12">
 
-							<form id="form-usuario-new" role="form" action="" method="post">
+							<form id="form-user-new" role="form" action="" method="post">
 								{% csrf_token %}
 
 								<div class="row">
-									{% for field in form %}
+
 									<div class="form-group col-sm-3">
-                                        <span>
-                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ field.help_text }}" ></i>
-                                            {{ field.label_tag }}
-                                        </span>
-										{{ field }}
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.first_name.help_text }}" ></i>
+											{{ form.first_name.label_tag }}
+										</span>
+										{{ form.first_name }}
 										<div class="container-error">
-											{{ field.errors|striptags }}
+											{{ form.first_name.errors|striptags }}
 										</div>
 									</div>
-									{% endfor %}
 
-									{{ userprofileform.management_form }}
-									{% for form in userprofileform %}
-									{% for hidden in form.hidden_fields %}
-									{{ hidden }}
-									{% endfor %}
-									{% endfor %}
-
-									{% for form in userprofileform %}
-									
 									<div class="form-group col-sm-3">
-                                        <span>
-                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.rut.help_text }}" ></i>
-                                            <label>{{ form.rut.label_tag }}</label>
-                                        </span>
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.last_name.help_text }}" ></i>
+											{{ form.last_name.label_tag }}
+										</span>
+										{{ form.last_name }}
+										<div class="container-error">
+											{{ form.last_name.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.email.help_text }}" ></i>
+											{{ form.email.label_tag }}
+										</span>
+										{{ form.email }}
+										<div class="container-error">
+											{{ form.email.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.username.help_text }}" ></i>
+											{{ form.username.label_tag }}
+										</span>
+										{{ form.username }}
+										<div class="container-error">
+											{{ form.username.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.rut.help_text }}" ></i>
+											{{ form.rut.label_tag }}
+										</span>
 										{{ form.rut }}
 										<div class="container-error">
 											{{ form.rut.errors|striptags }}
@@ -52,43 +75,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-                                        <span>
-                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
-                                            <label>{{ form.tipo.label_tag }}</label>
-                                        </span>
-										{{ form.tipo }}
-										<div class="container-error">
-											{{ form.tipo.errors|striptags }}
-										</div>
-									</div>
-
-									<div class="form-group col-sm-3">
-                                        <span>
-                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cargo.help_text }}" ></i>
-                                            <label>{{ form.cargo.label_tag }}</label>
-                                        </span>
-										{{ form.cargo }}
-										<div class="container-error">
-											{{ form.cargo.errors|striptags }}
-										</div>
-									</div>
-
-									<div class="form-group col-sm-3">
-                                        <span>
-                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.direccion.help_text }}" ></i>
-                                            <label>{{ form.direccion.label_tag }}</label>
-                                        </span>
-										{{ form.direccion }}
-										<div class="container-error">
-											{{ form.direccion.errors|striptags }}
-										</div>
-									</div>
-
-									<div class="form-group col-sm-3">
-                                        <span>
-                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.ciudad.help_text }}" ></i>
-                                            <label>{{ form.ciudad.label_tag }}</label>
-                                        </span>
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.ciudad.help_text }}" ></i>
+											{{ form.ciudad.label_tag }}
+										</span>
 										{{ form.ciudad }}
 										<div class="container-error">
 											{{ form.ciudad.errors|striptags }}
@@ -96,10 +86,10 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-                                        <span>
-                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.comuna.help_text }}" ></i>
-                                            <label>{{ form.comuna.label_tag }}</label>
-                                        </span>
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.comuna.help_text }}" ></i>
+											{{ form.comuna.label_tag }}
+										</span>
 										{{ form.comuna }}
 										<div class="container-error">
 											{{ form.comuna.errors|striptags }}
@@ -107,23 +97,66 @@
 									</div>
 
 									<div class="form-group col-sm-3">
-                                        <span>
-                                            <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
-                                            <label>{{ form.descripcion.label_tag }}</label>
-                                        </span>
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.direccion.help_text }}" ></i>
+											{{ form.direccion.label_tag }}
+										</span>
+										{{ form.direccion }}
+										<div class="container-error">
+											{{ form.direccion.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cargo.help_text }}" ></i>
+											{{ form.cargo.label_tag }}
+										</span>
+										{{ form.cargo }}
+										<div class="container-error">
+											{{ form.cargo.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+											{{ form.tipo.label_tag }}
+										</span>
+										{{ form.tipo }}
+										<div class="container-error">
+											{{ form.tipo.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cliente.help_text }}" ></i>
+											{{ form.cliente.label_tag }}
+										</span>
+										{{ form.cliente }}
+										<div class="container-error">
+											{{ form.cliente.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
+											{{ form.descripcion.label_tag }}
+										</span>
 										{{ form.descripcion }}
 										<div class="container-error">
 											{{ form.descripcion.errors|striptags }}
 										</div>
 									</div>
 								</div>
-								{% endfor %}
 
-								<br>
-								<br>
-
-								<a href="/usuarios/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR</button>
+								<p class="m-t m-b-lg">(*) campos obligatorios</p>
+								
+								<button id="submit-form-user" class="btn btn-w-m btn-sm btn-primary pull-right m-l" type="button">GUARDAR</button>
+								<a href="/usuarios/list" class="btn btn-w-m btn-sm btn-default pull-right">CANCELAR</a>
+								
 							</form>
 						</div>
 					</div>
@@ -139,100 +172,60 @@
 <script>
 
 $(document).ready(function(){
-	guardar_usuario()
+	initialize()
 });
 
-function guardar_usuario(){
 
-	$("#form-usuario-new").validate({
-		focusInvalid: false,
-		rules: {
-			'first_name': {
-				required: true,
-			},
-			'last_name': {
-				required: true,
-			},
-			'email': {
-				required: true,
-			},
-			'userprofile-0-rut': {
-				required: true,
-			},
-			'userprofile-0-tipo': {
-				required: true,
-			},
-			'userprofile-0-cargo': {
-				required: true,
-			},
-		},
-		messages: {
-			'first_name': {
-				required: "campo requerido",
-			},
-			'last_name': {
-				required: "campo requerido",
-			},
-			'email': {
-				required: "campo requerido", email: 'email invalido',
-			},
-			'userprofile-0-rut': {
-				required: "campo requerido",
-			},
-			'userprofile-0-tipo': {
-				required: "campo requerido",
-			},
-			'userprofile-0-cargo': {
-				required: "campo requerido",
-			}
-		},
-		errorPlacement: function(error, element) {
-			error.appendTo(element.closest(".form-group").find('.container-error'));
-		},
-		submitHandler: function(form) {
-			$('#form-usuario-new').ajaxSubmit({
-				dataType: 'json',
-				success: function(data){
+function initialize(){
+	$('#submit-form-user').click(submit_form_user)
+}
 
-					var template 	= ''
-					var title 		= 'Usuario <small>editado</small>'
+function submit_form_user(){
 
-					if (data.tipo == 'create') {
-						title = 'Usuario <small>creado</small>'
-						template += '<p>'+data.nombre+' '+data.apellido+'</p>'
-						template += '<p>'+data.email+'</p>'
-						template += '<p>Contraseña: <strong>'+data.password+'</strong></p>'
-						template += '<p style="margin-top:10px">Se envio un correo al usuario creado</p>'
-					};
+	$('#form-user-new').ajaxSubmit({
+		dataType: 'json',
+		success: function(data){
 
-					swal({
-						title: title,
-						text: template,
-						type: 'success',
-						showCancelButton: true,
-						confirmButtonColor: '#8CD4F5',
-						cancelButtonColor: '#D0D0D0',
-						confirmButtonText: data.tipo == 'create' ? "Nuevo Usuario" : "Seguir Editando",
-						cancelButtonText: 'Ver Usuarios',
-					}).then(function() {
-						console.log('then')
-						if (data.tipo == 'create') {
-							window.location.href = "/usuarios/new";
-						}
-					}, function(dismiss) {
-						console.log(dismiss)
-						console.log('1')
-						if (dismiss === 'cancel') {
-							console.log('2')
-							window.location.href = "/usuarios/list";
-						}
-					})
-				},
-				error: function(data, textStatus, jqXHR) {
+			var template 	= ''
+			var title 		= 'Usuario <small>editado</small>'
+
+			if (data.tipo == 'create') {
+				title = 'Usuario <small>creado</small>'
+				template += '<p>'+data.nombre+' '+data.apellido+'</p>'
+				template += '<p>'+data.email+'</p>'
+				template += '<p>Contraseña: <strong>'+data.password+'</strong></p>'
+				template += '<p style="margin-top:10px">Se envio un correo al usuario creado</p>'
+			};
+
+			swal({
+				title: title,
+				text: template,
+				type: 'success',
+				showCancelButton: true,
+				confirmButtonColor: '#8CD4F5',
+				cancelButtonColor: '#D0D0D0',
+				confirmButtonText: data.tipo == 'create' ? "Nuevo Usuario" : "Seguir Editando",
+				cancelButtonText: 'Ver Usuarios',
+			}).then(function() {
+				console.log('then')
+				if (data.tipo == 'create') {
+					window.location.href = "/usuarios/new";
 				}
-			});
+			}, function(dismiss) {
+				console.log(dismiss)
+				console.log('1')
+				if (dismiss === 'cancel') {
+					console.log('2')
+					window.location.href = "/usuarios/list";
+				}
+			})
 		},
-	})
+		error: function(data, textStatus, jqXHR) {
+			form_clear_errors('#form-user-new')
+			form_put_errors($.parseJSON(data.responseText))
+		}
+	});
+
 }
 
 </script>

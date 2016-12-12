@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -7,18 +6,16 @@ from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse_lazy
 from django.core.mail import send_mail
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
-
+from utilidades.views import *
 from notificaciones.models import Alerta, Alerta_Miembro
-from .models import UserProfile
-from .forms import UserForm, UserProfileForm, UserProfileFormSet, UpdateUserProfileForm, UpdatePasswordForm, UpdatePasswordAdminForm
+
+from .models import *
+from .forms import *
+
 from datetime import datetime
 
-import string
-import random
-
-
 # variables
-modulo 	= 'Configuración'
+modulo = 'Configuración'
 
 # usuario
 class UsuarioList(ListView):
@@ -92,15 +89,15 @@ class UsuarioUpdateMixin(object):
 		else:
 			return response
 
-class UsuarioNewMixin(object):
+class UsuarioMixin(object):
 
 	template_name 	= 'usuario_new.html'
-	form_class 		= UserForm
+	form_class 		= UserProfileFormFinal
 	success_url 	= '/usuarios/list'
 
 	def form_invalid(self, form):
 
-		response = super(UsuarioNewMixin, self).form_invalid(form)
+		response = super(UsuarioMixin, self).form_invalid(form)
 		if self.request.is_ajax():
 			return JsonResponse(form.errors, status=400)
 		else:
@@ -108,45 +105,36 @@ class UsuarioNewMixin(object):
 
 	def form_valid(self, form):
 
-		user 	= User.objects.get(pk=self.request.user.pk)
-		profile = UserProfile.objects.get(user=user)
+		user = User(
+			email 		= form.cleaned_data['email'],
+			first_name 	= form.cleaned_data['first_name'],
+			last_name 	= form.cleaned_data['last_name'],
+			username 	= form.cleaned_data['username'],
+			)
 
-		context 		= self.get_context_data()
-		form_profile 	= context['userprofileform']
-		password 		= password_random(8)
+		user.set_password(get_password_random(8))
+		user.save()
 
-		obj 			= form.save(commit=False)
-		obj.username 	= obj.email
-		obj.set_password(password)
+		obj 		= form.save(commit=False)
+		obj.user 	= user
+		obj.empresa = self.request.user.userprofile.empresa
 		obj.save()
 
-		if form_profile.is_valid():
-
-			# {falta: enviar correo al usuario}
-
-			self.object 			= form.save(commit=False)
-			form_profile.instance 	= self.object
-			detalle_nuevo 			= form_profile.save(commit=False)
-
-			for item in detalle_nuevo:
-				item.empresa_id = profile.empresa_id
-				item.save()
-
-		response = super(UsuarioNewMixin, self).form_valid(form)
+		response = super(UsuarioMixin, self).form_valid(form)
 
 		if self.request.is_ajax():
 			data = {
-				'tipo':'create',
-				'nombre': obj.first_name,
-				'apellido': obj.last_name,
-				'password': password,
-				'email': obj.email,
+				# 'tipo':'create',
+				# 'nombre': obj.first_name,
+				# 'apellido': obj.last_name,
+				# 'password': password,
+				# 'email': obj.email,
 			}
 			return JsonResponse(data)
 		else:
 			return response
 
-class UsuarioNew(UsuarioNewMixin, FormView):
+class UsuarioNew(UsuarioMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 		
@@ -164,21 +152,6 @@ class UsuarioNew(UsuarioNewMixin, FormView):
 
 		return context
 	
-
-
-class UsuarioDelete(DeleteView):
-
-	model 		= User
-	success_url = reverse_lazy('/usuarios/list')
-
-	def delete(self, request, *args, **kwargs):
-
-		self.object = self.get_object()
-		self.object.is_active = False
-		self.object.save()
-		payload = {'delete': 'ok'}
-		return JsonResponse(payload, safe=False)
-
 class UsuarioUpdate(UsuarioUpdateMixin, UpdateView):
 
 	model 			= User
@@ -202,6 +175,20 @@ class UsuarioUpdate(UsuarioUpdateMixin, UpdateView):
 
 		return context
 
+
+class UsuarioDelete(DeleteView):
+
+	model 		= User
+	success_url = reverse_lazy('/usuarios/list')
+
+	def delete(self, request, *args, **kwargs):
+
+		self.object = self.get_object()
+		self.object.is_active = False
+		self.object.save()
+		payload = {'delete': 'ok'}
+		return JsonResponse(payload, safe=False)
+
 def user_login(request):
 	if request.method == 'POST':
 		action = request.POST.get('action', None)
@@ -223,33 +210,25 @@ def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/')
 
-def password_random(size):
-
-	chars       = string.ascii_letters + string.digits
-	password    = ''.join((random.choice(chars)) for x in range(size))
-
-	return password
 
 def profile(request):
-	data_alert 	= list()
-	alertas 	= Alerta.objects.all()
-	date 		= datetime.now()
+	# data_alert 	= list()
+	# alertas 	= Alerta.objects.all()
+	# date 		= datetime.now()
 
-	for alerta in alertas:
+	# for alerta in alertas:
 
-		if date >= alerta.fecha:
+	# 	if date >= alerta.fecha:
 
-			alerta_miembros = alerta.alerta_miembro_set.all()
+	# 		alerta_miembros = alerta.alerta_miembro_set.all()
 
-			for alerta_miembro in alerta_miembros:
-				if alerta_miembro.user == request.user:
-					
-					# crear alerta firebase
-					data_alert.append({
-						"mensaje"		: alerta.nombre,
-						"descripcion"	: alerta.descripcion,
-						"emisor"		: alerta.creador.first_name
-						})
+	# 		for alerta_miembro in alerta_miembros:
+	# 			if alerta_miembro.user == request.user:
+	# 				data_alert.append({
+	# 					"mensaje"		: alerta.nombre,
+	# 					"descripcion"	: alerta.descripcion,
+	# 					"emisor"		: alerta.creador.first_name
+	# 					})
 
 
 
@@ -257,7 +236,7 @@ def profile(request):
 	form_password   = UpdatePasswordForm(user=request.user)
 
 	return render(request, 'perfil.html', {
-		'alertas'		: data_alert,
+		# 'alertas'		: data_alert,
 		'form_profile'	: form_profile,
 		'form_password'	: form_password,
 		'title' 		: 'Perfil',

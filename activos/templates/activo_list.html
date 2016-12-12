@@ -32,7 +32,7 @@
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar activo" href='{% url "activo_update" item.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar activo" onclick="open_modal_delete(this, {{item.id}},'activos', 'tabla-activos', 'Activo')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar activo"><i class="fa fa-eye"></i></a>
-										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="archivos del activo" href='{% url "activo_documento_list" item.id %}'><i class="fa fa-cloud"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="archivos del activo" href='{% url "activo_documents" item.id %}'><i class="fa fa-cloud"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
