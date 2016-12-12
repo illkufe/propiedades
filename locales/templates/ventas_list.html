@@ -318,7 +318,7 @@ function load_tabla_ventas(){
 				row.mes 	= data[i].mes
 				row.ano 	= data[i].ano
 				row.total 	= data[i].valor
-				row.options = '<div class="text-center"><a class="btn btn-delete btn-bitbucket" data-local="'+data[i].local_id+'" data-mes="'+data[i].nro_mes+'" data-ano="'+data[i].ano+'" onclick="open_modal_delete_ventas(this)"><i class="fa fa-trash"></i></a><a class="btn btn-view btn-bitbucket" data-local="'+data[i].local_id+'" data-mes="'+data[i].nro_mes+'" data-ano="'+data[i].ano+'" onclick="open_modal_ventas_diarias(this)"><i class="fa fa-eye"></i></a></div>'
+				row.options = '<div class="text-center"><a class="btn btn-default btn-bitbucket" data-local="'+data[i].local_id+'" data-mes="'+data[i].nro_mes+'" data-ano="'+data[i].ano+'" onclick="open_modal_delete_ventas(this)"><i class="fa fa-trash"></i></a><a class="btn btn-default btn-bitbucket" data-local="'+data[i].local_id+'" data-mes="'+data[i].nro_mes+'" data-ano="'+data[i].ano+'" onclick="open_modal_ventas_diarias(this)"><i class="fa fa-eye"></i></a></div>'
 
 				rows.push(row)
 			};
