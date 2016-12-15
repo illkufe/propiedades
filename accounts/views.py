@@ -175,7 +175,6 @@ def user_login(request):
 	else:
 		return render(request, 'login.html', {})
 
-
 @login_required
 def user_logout(request):
 	logout(request)
@@ -184,10 +183,13 @@ def user_logout(request):
 def profile(request):
 	
 	form_owncloud    = ConfigOwnCloudForm()
+
+	form 			= UserProfileForm(instance=request.user.userprofile)
 	form_password   = UpdatePasswordForm(user=request.user)
 
 	return render(request, 'perfil.html', {
-		# 'alertas'		: data_alert,
+		'user'			: request.user,
+		'form'			: form,
 		'form_owncloud'	: form_owncloud,
 		'form_password'	: form_password,
 		'title' 		: 'Perfil',
@@ -195,7 +197,6 @@ def profile(request):
 		'name' 			: 'editar',
 		'href' 			: '/perfil',
 		})
-
 
 def update_profile(request):
 	
@@ -220,7 +221,7 @@ def update_profile(request):
 		return JsonResponse({'estado':'ok'})
 	else:
 		return JsonResponse(form.errors, status=400)
-	
+
 def update_password(request, pk=None):
 	if pk is None:
 

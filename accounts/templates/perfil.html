@@ -29,9 +29,8 @@
 
 						<p><i class="fa fa-briefcase"></i> &nbsp;&nbsp;{{ request.user.userprofile.cargo }}</p>
 						<p><i class="fa fa-envelope-o"></i> &nbsp;&nbsp;{{ request.user.email }}</p>
-						<p><i class="fa fa-map-marker"></i> &nbsp;&nbsp;{{ request.user.userprofile.direccion }}</p>
-						<p>{{ request.user.userprofile.descripcion }}</p>
-
+						<p class="m-b-lg"><i class="fa fa-map-marker"></i> &nbsp;&nbsp;{{ request.user.userprofile.direccion }}</p>
+						
 						<div class="row">
 							<div class="col-md-12">
 								<button type="button" class="btn btn-primary btn-sm btn-block" id="btn-change-avatar"><i class="fa fa-image"></i> Editar Avatar</button>
@@ -41,34 +40,10 @@
 								<button type="button" class="btn btn-default btn-sm btn-block m-t-sm"><i class="fa fa-key"></i> Editar Contraseña</button>
 							</div>
 						</div>
-						
 					</div>
-
-
 				</div>
 			</div>
 		</div>
-
-<!-- 		<div class="col-md-9">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Alertas</h5>
-					<div class="ibox-tools">
-						<a class="collapse-link">
-							<i class="fa fa-chevron-up"></i>
-						</a>
-					</div>
-				</div>
-				<div class="ibox-content">
-					{% for alerta in alertas %}
-					<div class="alert alert-info">
-						{{alerta.mensaje}} : {{alerta.descripcion}}<a class="alert-link pull-right">{{alerta.emisor}}</a>.
-					</div>
-					{% endfor %}
-				</div>
-			</div>
-		</div> -->
-
 
 		<div class="col-md-9">
 			<div class="ibox float-e-margins">
@@ -82,117 +57,162 @@
 					</div>
 				</div>
 				<div class="ibox-content">
-					<form id="form-update-profile" action="update-profile" role="form" method="post">
-						{% csrf_token %}
 
-						<div class="row">
-							<div class="col-sm-12">
-								<div class="form-group col-sm-4">
-									<span>
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.first_name.help_text }}" ></i>
-										{{ form_profile.first_name.label_tag }}
-									</span>
-									{{ form_profile.first_name }}
-									<div class="container-error">
-										{{ form_profile.first_name.errors }}
+					<div class="row">
+						<div class="col-sm-12">
+
+							<form id="form-user-new" role="form" action="{% url 'accounts:usuario_update' user.userprofile.id %}" method="post">
+								{% csrf_token %}
+
+
+								<div class="row">
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.first_name.help_text }}" ></i>
+											{{ form.first_name.label_tag }}
+										</span>
+										{{ form.first_name }}
+										<div class="container-error">
+											{{ form.first_name.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.last_name.help_text }}" ></i>
+											{{ form.last_name.label_tag }}
+										</span>
+										{{ form.last_name }}
+										<div class="container-error">
+											{{ form.last_name.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.email.help_text }}" ></i>
+											{{ form.email.label_tag }}
+										</span>
+										{{ form.email }}
+										<div class="container-error">
+											{{ form.email.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.username.help_text }}" ></i>
+											{{ form.username.label_tag }}
+										</span>
+										{{ form.username }}
+										<div class="container-error">
+											{{ form.username.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.rut.help_text }}" ></i>
+											{{ form.rut.label_tag }}
+										</span>
+										{{ form.rut }}
+										<div class="container-error">
+											{{ form.rut.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.ciudad.help_text }}" ></i>
+											{{ form.ciudad.label_tag }}
+										</span>
+										{{ form.ciudad }}
+										<div class="container-error">
+											{{ form.ciudad.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.comuna.help_text }}" ></i>
+											{{ form.comuna.label_tag }}
+										</span>
+										{{ form.comuna }}
+										<div class="container-error">
+											{{ form.comuna.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.direccion.help_text }}" ></i>
+											{{ form.direccion.label_tag }}
+										</span>
+										{{ form.direccion }}
+										<div class="container-error">
+											{{ form.direccion.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cargo.help_text }}" ></i>
+											{{ form.cargo.label_tag }}
+										</span>
+										{{ form.cargo }}
+										<div class="container-error">
+											{{ form.cargo.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3 hide">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.tipo.help_text }}" ></i>
+											{{ form.tipo.label_tag }}
+										</span>
+										{{ form.tipo }}
+										<div class="container-error">
+											{{ form.tipo.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-3 hide">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.cliente.help_text }}" ></i>
+											{{ form.cliente.label_tag }}
+										</span>
+										{{ form.cliente }}
+										<div class="container-error">
+											{{ form.cliente.errors|striptags }}
+										</div>
+									</div>
+
+									<div class="form-group col-sm-9">
+										<span>
+											<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.descripcion.help_text }}" ></i>
+											{{ form.descripcion.label_tag }}
+										</span>
+										{{ form.descripcion }}
+										<div class="container-error">
+											{{ form.descripcion.errors|striptags }}
+										</div>
 									</div>
 								</div>
-
-								<div class="form-group col-sm-4">
-									<span>
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.last_name.help_text }}" ></i>
-										{{ form_profile.last_name.label_tag }}
-									</span>
-									{{ form_profile.last_name }}
-									<div class="container-error">
-										{{ form_profile.last_name.errors }}
-									</div>
-								</div>
-
-								<div class="form-group col-sm-4">
-									<span>
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.rut.help_text }}" ></i>
-										{{ form_profile.rut.label_tag }}
-									</span>
-									{{ form_profile.rut }}
-									<div class="container-error">
-										{{ form_profile.rut.errors }}
-									</div>
-								</div>
-
-								<div class="form-group col-sm-4">
-									<span>
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.cargo.help_text }}" ></i>
-										{{ form_profile.cargo.label_tag }}
-									</span>
-									{{ form_profile.cargo }}
-									<div class="container-error">
-										{{ form_profile.cargo.errors }}
-									</div>
-								</div>
-
-								<div class="form-group col-sm-4">
-									<span>
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.ciudad.help_text }}" ></i>
-										{{ form_profile.ciudad.label_tag }}
-									</span>
-									{{ form_profile.ciudad }}
-									<div class="container-error">
-										{{ form_profile.ciudad.errors }}
-									</div>
-								</div>
-
-								<div class="form-group col-sm-4">
-									<span>
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.comuna.help_text }}" ></i>
-										{{ form_profile.comuna.label_tag }}
-									</span>
-									{{ form_profile.comuna }}
-									<div class="container-error">
-										{{ form_profile.comuna.errors }}
-									</div>
-								</div>
-
-								<div class="form-group col-sm-4">
-									<span>
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.direccion.help_text }}" ></i>
-										{{ form_profile.direccion.label_tag }}
-									</span>
-									{{ form_profile.direccion }}
-									<div class="container-error">
-										{{ form_profile.direccion.errors }}
-									</div>
-								</div>
-
-								<div class="form-group col-sm-8">
-									<span>
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.descripcion.help_text }}" ></i>
-										{{ form_profile.descripcion.label_tag }}
-									</span>
-									{{ form_profile.descripcion }}
-									<div class="container-error">
-										{{ form_profile.descripcion.errors }}
-									</div>
-								</div>
-							</div>
+								
+								<p class="m-t">el cliente es obligatorio cuando se escoje el tipo de usuario "cliente"</p>
+								<p class="m-b-md">(*) campos obligatorios</p>
+								
+								<button id="submit-form-user" class="btn btn-w-m btn-sm btn-primary pull-right m-l" type="button">Actualizar</button>
+								
+							</form>
 						</div>
-
-						<div class="row">
-							<div class="col-sm-12">
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">Actualizar</button>
-							</div>
-						</div>
-					</form>
-
+					</div>
 				</div>
 			</div>
 		</div>
 
-
-
-
-
-		<div class="col-md-12">
+		<div class="col-md-12 hide">
 			<div class="ibox float-e-margins">
 
 				<div class="ibox-title">
@@ -325,12 +345,14 @@
 $(document).ready(function(){
 
 	initialize()
-	update_profile()
-	update_password()
+	// update_password()
 
 })
 
 function initialize(){
+
+	$('#submit-form-user').click(submit_form_user)
+
 	$("input[name=avatar]").change(function(){
 		$('#form-update-avatar').submit();
 	});
@@ -342,72 +364,26 @@ function initialize(){
 	$('[data-toggle="tooltip"]').tooltip();
 }
 
-function update_profile(){
-	
-	$("#form-update-profile").validate({
-		rules: {
-			first_name: {
-				required: true,
-			},
-			last_name: {
-				required: true,
-			},
-			rut: {
-				required: true,
-			},
-			cargo: {
-				required: true,
-			},
-			ciudad: {
-				required: true,
-			},
-			comuna: {
-				required: true,
-			},
-			direccion: {
-				required: true,
-			},
+function submit_form_user(){
+
+	$('#form-user-new').ajaxSubmit({
+		dataType: 'json',
+		success: function(data){
+
+			var configuracion = {
+				'toast_type'	: 'success',
+				'toast_text' 	: 'perfil actualizada correctamente',
+				'toast_title' 	: 'Éxito',
+			}
+
+			notification_toast(configuracion)
+
 		},
-		messages: {
-			first_name: {
-				required: "campo requerido",
-			},
-			last_name: {
-				required: "campo requerido",
-			},
-			rut: {
-				required: "campo requerido",
-			},
-			cargo: {
-				required: "campo requerido",
-			},
-			ciudad: {
-				required: "campo requerido",
-			},
-			comuna: {
-				required: "campo requerido",
-			},
-			direccion: {
-				required: "campo requerido",
-			},
-		},
-		errorPlacement: function(error, element) {
-			error.appendTo(element.closest(".form-group").find('.container-error'));
-		},
-		submitHandler: function(form) {
-			$('#form-update-profile').ajaxSubmit({
-				dataType: 'json',
-				success: function(data){
-					window.location.href = "/perfil";
-				},
-				error: function(data, textStatus, jqXHR) {
-					clear_errors_form('#form-update-profile')
-					var errors = $.parseJSON(data.responseText)
-					apply_errors_form(errors)
-				}
-			});
+		error: function(data, textStatus, jqXHR) {
+			form_clear_errors('#form-user-new')
+			form_put_errors($.parseJSON(data.responseText))
 		}
-	}) 
+	});
 }
 
 function update_password(){
