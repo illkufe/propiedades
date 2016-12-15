@@ -52,9 +52,6 @@ class ActivoMixin(object):
 
 		response = super(ActivoMixin, self).form_valid(form)
 
-		# path   = 'Iproperty/Activos/'
-		# estado = create_directory(path, obj.nombre)
-
 		if self.request.is_ajax():
 			data = {'estado': True,}
 			return JsonResponse(data)
@@ -115,10 +112,6 @@ class ActivoDelete(DeleteView):
 		self.object 		= self.get_object()
 		self.object.visible = False
 		self.object.save()
-
-		# path   					= 'Iproperty/Activos/'
-		# path_directory_backups 	= 'Iproperty/Activos/Respaldos/'
-		# estado = backups_directory(path, self.object.nombre, path_directory_backups)
 
 		data 				= {'estado': True}
 

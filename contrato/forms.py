@@ -42,17 +42,18 @@ class ContratoTipoForm(forms.ModelForm):
 
 class ContratoForm(forms.ModelForm):
 
-	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Contrato')
-	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Inicio de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Inicio de Contrato')
-	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Término de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Término de Contrato')
-	fecha_inicio_renta	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Inicio de Renta',error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Inicio de Renta')
-	fecha_entrega		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Entrega Local', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Entrega de Local')
-	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Habilitación', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Habilitación de Contrato')
-	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Renovación', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Renovación de Contrato')
+	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha en la cual quedará registrado su ingreso de contrato')
+	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Inicio de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha donde comenzará a regir el contrato, está fecha sera tomada en cuenta al monento de facturar')
+	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Término de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha que pondrá término a la vigencia del contrato.')
+	fecha_inicio_renta	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Inicio de Renta',error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha en que se dará comienzo al cobro del arriendo del o los local(es)')
+	fecha_entrega		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Entrega Local', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha en la cual el propietario hace entrega del local(es) al cliente')
+	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Habilitación', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha correspondiente a la apertura del local')
+	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Renovación', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha previa al término de contrato para realizar el proceso de renovación')
 	
 	metros_bodega		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'disabled': 'disabled'}), help_text='Metros Cuadrados de la Bodega')
-	meses_aviso_comercial = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'class': 'form-control text-right'}), help_text='Cantidad de Meses de Arriendo Local')
-	meses_remodelacion	= forms.IntegerField(required=False, max_value=120, min_value=0, widget=forms.NumberInput(attrs={'class': 'form-control text-right'}), help_text='Cantidad de Meses de Aviso Comercial', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido', 'min':'asd'})
+	meses_aviso_comercial = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'class': 'form-control text-right'}), help_text='Cantidad de meses previos al término de contrato, para dar aviso al área comercial')
+	meses_remodelacion	= forms.IntegerField(required=False, max_value=120, min_value=0, widget=forms.NumberInput(attrs={'class': 'form-control text-right'}), help_text='Cantidad de Meses Para Remodelación Local', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido', 'min':'asd'})
+
 
 	def __init__(self, *args, **kwargs):
 
@@ -81,9 +82,6 @@ class ContratoForm(forms.ModelForm):
 			'bodega'				: forms.CheckboxInput(attrs={'onclick': 'habilitar_input_metros(this)'}),
 			'numero'				: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'meses_contrato'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
-			# 'meses_aviso_comercial'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
-			# 'meses_remodelacion'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
-			'dias_salida'			: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'nombre_local'			: forms.TextInput(attrs={'class': 'form-control'}),
 			'destino_comercial'		: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
 			'tipo' 					: forms.Select(attrs={'class': 'form-control'}),
@@ -117,18 +115,17 @@ class ContratoForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'bodega'				: 'Local Presenta Bodega',
-			'numero'				: 'Número de Contrato',
-			'meses_contrato'		: 'Cantidad de Meses de Arriendo Local',
-			'meses_aviso_comercial'	: 'Cantidad de Meses de Aviso Comercial',
+			'bodega'				: 'Establece si el contrato tendra asociado bodega(s)',
+			'numero'				: 'Identificador único del contrato',
+			'meses_contrato'		: 'Cantidad de meses que se arrendará el o los local(es)',
+			'meses_aviso_comercial'	: 'Cantidad de meses previos al término de contrato, para dar aviso al área comercial',
 			'meses_remodelacion'	: 'Cantidad de Meses Para Remodelación Local',
-			'dias_salida'			: 'Cantidad de Meses de Aviso Comercial',
-			'nombre_local'			: 'Marcar Comercial Cliente',
-			'destino_comercial'		: 'Destino Comercial Contrato',
-			'tipo' 					: 'Tipo de Contrato a Generar',
-			'cliente'				: 'Cliente',
+			'nombre_local'			: 'Corresponde al termino, simbolo, etc. que identifica a las empresas que existen en el mercado.',
+			'destino_comercial'		: 'Descripción de la actividad que realizará el local',
+			'tipo' 					: 'Corresponde al tipo de contrato',
+			'cliente'				: 'Persona natural o jurídica a la cual se le asigna el contrato',
 			'locales'				: 'Locales Asociados a Contrato',
-			'conceptos'				: 'Conceptos Asociados a Contrato',
+			'conceptos'				: 'Conceptos que serán facturados para el contrato',
 		}
 
 	def clean_numero(self):
@@ -149,14 +146,14 @@ class GarantiaForm(forms.ModelForm):
 
 	valor = NumberField(
 		widget = forms.TextInput(attrs={'class': 'form-control format-number text-right'}),
-		help_text = 'Valor de la Garantía',
+		help_text = 'Monto de la garantía',
 		error_messages = {'required': 'campo requerido'},
 		)
 
 	moneda = forms.ModelChoiceField(
 		queryset = Moneda.objects.filter(id__in = [3,5]), 
 		widget = forms.Select(attrs = {'class': 'form-control moneda', 'data-table': 'true', 'onchange': 'cambio_format_moneda(this)'}),
-		help_text = 'Moneda Asociada al Valor de la Garantía',
+		help_text = 'Moneda asociada al monto de la garantía',
 		error_messages = {'required': 'campo requerido'},
 		)
 
@@ -184,9 +181,9 @@ class GarantiaForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'codigo' 	: 'Código de la Garantía',
-			'nombre' 	: 'Nombre de la Garantía',
-			'local' 	: 'Local Asociado a la Garantía',
+			'codigo' 	: 'Código identificador de la garantía',
+			'nombre' 	: 'Nombre o descripción asociado a la garantía',
+			'local' 	: 'Local(es) vinculados a la garantía',
 		}
 
 		error_messages = {
@@ -532,34 +529,6 @@ class ServicioBasicoForm(forms.ModelForm):
 			# 'locales' 	: 'Locales donde Aplican Servicio Básico',
 			}
 
-	# def clean(self):
-
-		# print (self.__dict__)
-
-		# for form in self.forms:
-
-		# print (self.forms)
-
-		# for x in self.cleaned_data:
-			# self.add_error('valor_electricidad', 'seleccionar otra valor')
-			# print (x)
-
-
-		# fijo 		= self.cleaned_data.get('valor_fijo')
-		# vinculo 	= self.cleaned_data.get('vinculo', None)
-		# moneda 		= self.cleaned_data.get('moneda', None)
-
-		# if fijo and vinculo is not None:
-		# 	self.add_error('vinculo', 'campo no requerido')
-		# elif fijo and vinculo is None:
-		# 	if moneda is not None and moneda.id == 6:
-		# 		self.add_error('moneda', 'seleccionar otra moneda')
-		# else:
-		# 	if vinculo is None:
-		# 		self.add_error('vinculo', 'campo requerido')
-		# 	else:
-		# 		if moneda is not None and moneda.id != 6:
-		# 			self.add_error('moneda', 'seleccionar otra moneda')
 
 class CuotaIncorporacionForm(forms.ModelForm):
 

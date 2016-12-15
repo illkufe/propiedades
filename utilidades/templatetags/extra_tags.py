@@ -12,7 +12,7 @@ def meses(valor):
 @register.filter
 def formato_moneda(valor):
 
-	moneda = '${:,.2f}'.format(valor)
+	moneda = '${:,.0f}'.format(valor)
 	
 	moneda = moneda.replace('.', '*')
 	moneda = moneda.replace(',', '.')
@@ -23,7 +23,7 @@ def formato_moneda(valor):
 @register.filter
 def formato_numero(valor):
 
-	moneda = '{:,.2f}'.format(valor)
+	moneda = '{:,.4f}'.format(valor)
 	
 	moneda = moneda.replace('.', '*')
 	moneda = moneda.replace(',', '.')

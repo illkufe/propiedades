@@ -11,6 +11,12 @@
 					<h5>Ingresos por Activos</h5>
 				</div>
 				<div class="ibox-content">
+
+                    <form id="form-garantias-local" role="form" action="{% url 'garantias_local_reporte' %}" method="post">
+                        <div class="hide">
+                            <input type="hidden" name="tipo">
+                        </div>
+                    </form>
 					<div class="row">
 						<div class="col-xs-12">
 							<div class="table-responsive">
@@ -55,6 +61,16 @@ function initialize(){
 
 	var configuracion = {
 		'rowsGroup': [0, 4, 1],
+        'buttons': [
+		{
+			text: '<i class="fa fa-file-excel-o"></i><span style="vertical-align:middle;"> Excel</span>',
+			action: function ( e, dt, node, config ) {download_archive('excel')}
+		},
+		{
+			text: '<i class="fa fa-file-pdf-o"></i><span style="vertical-align:middle;"> PDF</span>',
+			action: function ( e, dt, node, config ) {download_archive('pdf')}
+		},
+		],
 	}
 
 	tabla_garantias = load_table('#tabla-garantias', null, configuracion)
@@ -94,6 +110,12 @@ function data_table(){
 			};
 		}
 	})
+}
+
+function download_archive(type){
+
+	$('#form-garantias-local input[name="tipo"]').val(type);
+	$('#form-garantias-local').submit()
 }
 
 </script>
