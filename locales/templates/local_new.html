@@ -208,7 +208,7 @@
 								{% endfor %}
 
 								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-electricidad', 'medidor_electricidad')"><i class="fa fa-plus"></i> Medidor de Electricidad</button>
-								<table id="tabla-electricidad" class="table">
+								<table id="tabla-electricidad" class="table table-bordered">
 									<thead>
 										{% for form in form_electricidad %}
 										{% if forloop.first %}
@@ -305,7 +305,7 @@
 								{% endfor %}
 
 								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-agua', 'medidor_agua')"><i class="fa fa-plus"></i> Medidor de Agua</button>
-								<table id="tabla-agua" class="table">
+								<table id="tabla-agua" class="table table-bordered">
 									<thead>
 										{% for form in form_agua %}
 										{% if forloop.first %}
@@ -365,7 +365,7 @@
 								{% endfor %}
 
 								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila('tabla-gas', 'medidor_')"><i class="fa fa-plus"></i> Medidor de Gas</button>
-								<table id="tabla-gas" class="table">
+								<table id="tabla-gas" class="table table-bordered">
 									<thead>
 										{% for form in form_gas %}
 										{% if forloop.first %}

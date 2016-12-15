@@ -50,14 +50,16 @@ class ContratoForm(forms.ModelForm):
 	fecha_habilitacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Habilitación', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Habilitación de Contrato')
 	fecha_renovacion	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Renovación', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha de Renovación de Contrato')
 	
-	metros_bodega 		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'disabled': 'disabled'}), help_text='Metros Cuadrados de la Bodega')
+	metros_bodega		= NumberField(required=False, widget=forms.TextInput(attrs={'class': 'form-control format-number text-right', 'disabled': 'disabled'}), help_text='Metros Cuadrados de la Bodega')
+	meses_aviso_comercial = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'class': 'form-control text-right'}), help_text='Cantidad de Meses de Arriendo Local')
+	meses_remodelacion	= forms.IntegerField(required=False, max_value=120, min_value=0, widget=forms.NumberInput(attrs={'class': 'form-control text-right'}), help_text='Cantidad de Meses de Aviso Comercial', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido', 'min':'asd'})
 
 	def __init__(self, *args, **kwargs):
 
 		self.request 	= kwargs.pop('request')
 		activos 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
 
-		super(ContratoForm, self).__init__(*args, **kwargs)	
+		super(ContratoForm, self).__init__(*args, **kwargs)
 
 		if self.instance.pk is not None:
 			locales_id = Contrato.objects.values_list('locales', flat=True).filter(visible=True).exclude(id=self.instance.pk)
@@ -70,20 +72,6 @@ class ContratoForm(forms.ModelForm):
 		self.fields['tipo'].queryset 		= Contrato_Tipo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		self.fields['estado'].required 		= False
 
-	def clean_numero(self):
-
-		numero 		= self.cleaned_data['numero']
-		is_insert 	= self.instance.id is None
-
-		if is_insert:
-			if Contrato.objects.filter(numero=numero, visible=True).exists():
-				raise forms.ValidationError('Ya existe un contrato con este número.')
-		else:
-			if numero != Contrato.objects.get(id=self.instance.id).nombre and Contrato.objects.filter(numero=numero, visible=True).exists():
-				raise forms.ValidationError('Ya existe un contrato con este número.')
-
-		return numero
-
 	class Meta:
 		model 	= Contrato
 		fields 	= '__all__'
@@ -93,8 +81,8 @@ class ContratoForm(forms.ModelForm):
 			'bodega'				: forms.CheckboxInput(attrs={'onclick': 'habilitar_input_metros(this)'}),
 			'numero'				: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'meses_contrato'		: forms.NumberInput(attrs={'class': 'form-control text-right'}),
-			'meses_aviso_comercial'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
-			'meses_remodelacion'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			# 'meses_aviso_comercial'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
+			# 'meses_remodelacion'	: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'dias_salida'			: forms.NumberInput(attrs={'class': 'form-control text-right'}),
 			'nombre_local'			: forms.TextInput(attrs={'class': 'form-control'}),
 			'destino_comercial'		: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
@@ -142,6 +130,20 @@ class ContratoForm(forms.ModelForm):
 			'locales'				: 'Locales Asociados a Contrato',
 			'conceptos'				: 'Conceptos Asociados a Contrato',
 		}
+
+	def clean_numero(self):
+
+		numero 		= self.cleaned_data['numero']
+		is_insert 	= self.instance.id is None
+
+		if is_insert:
+			if Contrato.objects.filter(numero=numero, visible=True).exists():
+				raise forms.ValidationError('Ya existe un contrato con este número.')
+		else:
+			if numero != Contrato.objects.get(id=self.instance.id).nombre and Contrato.objects.filter(numero=numero, visible=True).exists():
+				raise forms.ValidationError('Ya existe un contrato con este número.')
+
+		return numero
 
 class GarantiaForm(forms.ModelForm):
 

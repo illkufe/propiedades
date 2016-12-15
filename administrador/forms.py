@@ -25,7 +25,7 @@ class ClienteForm(forms.ModelForm):
 			'nombre'		    : forms.TextInput(attrs={'class': 'form-control'}),
 			'razon_social'	    : forms.TextInput(attrs={'class': 'form-control'}),
 			'email'			    : forms.EmailInput(attrs={'class': 'form-control'}),
-			'giro'			    : forms.Select(attrs={'class': 'form-control'}),
+			'giro'			    : forms.Select(attrs={'class': 'form-control select2'}),
 			'region'		    : forms.TextInput(attrs={'class': 'form-control'}),
 			'ciudad'		    : forms.TextInput(attrs={'class': 'form-control'}),
 			'comuna'		    : forms.TextInput(attrs={'class': 'form-control'}),

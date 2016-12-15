@@ -12,8 +12,6 @@ from notificaciones.models import Alerta, Alerta_Miembro
 from .models import *
 from .forms import *
 
-from datetime import datetime
-
 # variables
 modulo = 'Configuración'
 
@@ -42,57 +40,10 @@ class UsuarioList(ListView):
 
 		return queryset
 
-class UsuarioUpdateMixin(object):
-
-	template_name 	= 'usuario_new.html'
-	form_class 		= UserForm
-	success_url 	= '/usuarios/list'
-
-	def form_invalid(self, form):
-
-		response = super(UsuarioUpdateMixin, self).form_invalid(form)
-		if self.request.is_ajax():
-			return JsonResponse(form.errors, status=400)
-		else:
-			return response
-
-	def form_valid(self, form):
-
-		context 		= self.get_context_data()
-		form_profile 	= context['userprofileform']
-
-		obj 			= form.save(commit=False)
-		obj.username 	= obj.email
-		obj.save()
-
-		if form_profile.is_valid():
-
-			self.object 			= form.save(commit=False)
-			form_profile.instance 	= self.object
-			detalle_nuevo 			= form_profile.save(commit=False)
-
-			for item in detalle_nuevo:
-				item.empresa = self.request.user.userprofile.empresa
-				item.save()
-
-		response = super(UsuarioUpdateMixin, self).form_valid(form)
-
-		if self.request.is_ajax():
-			data = {
-				'tipo':'update',
-				'nombre': obj.first_name,
-				'apellido': obj.last_name,
-				'password': 'asd',
-				'email': obj.email,
-			}
-			return JsonResponse(data)
-		else:
-			return response
-
 class UsuarioMixin(object):
 
 	template_name 	= 'usuario_new.html'
-	form_class 		= UserProfileFormFinal
+	form_class 		= UserProfileForm
 	success_url 	= '/usuarios/list'
 
 	def form_invalid(self, form):
@@ -103,33 +54,47 @@ class UsuarioMixin(object):
 		else:
 			return response
 
-	def form_valid(self, form):
+	def form_valid(self, form, **kwargs):
+		
+		context 	= self.get_context_data(**kwargs)
+		password 	= False
 
-		user = User(
-			email 		= form.cleaned_data['email'],
-			first_name 	= form.cleaned_data['first_name'],
-			last_name 	= form.cleaned_data['last_name'],
-			username 	= form.cleaned_data['username'],
-			)
+		if context['accion'] == 'create':
 
-		user.set_password(get_password_random(8))
-		user.save()
+			user = User(
+				email 		= form.cleaned_data['email'],
+				first_name 	= form.cleaned_data['first_name'],
+				last_name 	= form.cleaned_data['last_name'],
+				username 	= form.cleaned_data['username'],
+				)
 
-		obj 		= form.save(commit=False)
-		obj.user 	= user
-		obj.empresa = self.request.user.userprofile.empresa
-		obj.save()
+			password = get_password_random(8)
+			user.set_password(password)
+			user.save()
 
-		response = super(UsuarioMixin, self).form_valid(form)
+			obj 		= form.save(commit=False)
+			obj.user 	= user
+			obj.empresa = self.request.user.userprofile.empresa
+			obj.save()
+
+		else:
+
+			obj 			= form.save(commit=False)
+			user 			= obj.user
+			user.first_name = form.cleaned_data['first_name']
+			user.last_name 	= form.cleaned_data['last_name']
+			user.save()
+			obj.save()
+
+		response 	= super(UsuarioMixin, self).form_valid(form)
+		data 		= {
+			'tipo'		: context['accion'],
+			'nombre'	: user.first_name,
+			'apellido'	: user.last_name,
+			'email'		: user.email,
+		}
 
 		if self.request.is_ajax():
-			data = {
-				# 'tipo':'create',
-				# 'nombre': obj.first_name,
-				# 'apellido': obj.last_name,
-				# 'password': password,
-				# 'email': obj.email,
-			}
 			return JsonResponse(data)
 		else:
 			return response
@@ -137,44 +102,33 @@ class UsuarioMixin(object):
 class UsuarioNew(UsuarioMixin, FormView):
 
 	def get_context_data(self, **kwargs):
-		
+
 		context 			= super(UsuarioNew, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'usuarios'
+		context['subtitle'] = 'usuario'
 		context['name'] 	= 'nuevo'
 		context['href'] 	= '/usuarios/list'
 		context['accion']	= 'create'
 
-		if self.request.POST:
-			context['userprofileform'] = UserProfileFormSet(self.request.POST)
-		else:
-			context['userprofileform'] = UserProfileFormSet()
-
 		return context
-	
-class UsuarioUpdate(UsuarioUpdateMixin, UpdateView):
 
-	model 			= User
-	form_class 		= UserForm
+class UsuarioUpdate(UsuarioMixin, UpdateView):
+
+	model 			= UserProfile
+	form_class 		= UserProfileForm
 	template_name 	= 'usuario_new.html'
 	success_url 	= '/usuarios/list'
 
 	def get_context_data(self, **kwargs):
-		
+
 		context 			= super(UsuarioUpdate, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
-		context['subtitle'] = 'usuarios'
+		context['subtitle'] = 'usuario'
 		context['name'] 	= 'editar'
 		context['href'] 	= '/usuarios/list'
-		context['accion'] 	= 'update'
-
-		if self.request.POST:
-			context['userprofileform'] = UserProfileFormSet(self.request.POST, instance=self.object)
-		else:
-			context['userprofileform'] = UserProfileFormSet(instance=self.object)
+		context['accion']	= 'update'
 
 		return context
-
 
 class UsuarioDelete(DeleteView):
 
@@ -189,15 +143,32 @@ class UsuarioDelete(DeleteView):
 		payload = {'delete': 'ok'}
 		return JsonResponse(payload, safe=False)
 
+
+
+
+
 def user_login(request):
+
 	if request.method == 'POST':
-		action = request.POST.get('action', None)
-		username = request.POST.get('username', None)
-		password = request.POST.get('password', None)
-		user = authenticate(username=username, password=password)
+
+		action 		= request.POST.get('action', None)
+		username 	= request.POST.get('username', None)
+		password 	= request.POST.get('password', None)
+		user 		= authenticate(username=username, password=password)
 
 		if user:
+
 			login(request, user)
+
+			if ConfigOwnCloud.objects.filter(user=user).exists():
+				request.session['oc_url'] 		= user.configowncloud.url
+				request.session['oc_username'] 	= user.configowncloud.usuario
+				request.session['oc_password'] 	= user.configowncloud.password
+			else:
+				request.session['oc_url'] 		= ''
+				request.session['oc_username'] 	= ''
+				request.session['oc_password'] 	= ''
+
 			return HttpResponseRedirect('/')
 		else:
 			return HttpResponseRedirect('/')
@@ -210,34 +181,14 @@ def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/')
 
-
 def profile(request):
-	# data_alert 	= list()
-	# alertas 	= Alerta.objects.all()
-	# date 		= datetime.now()
-
-	# for alerta in alertas:
-
-	# 	if date >= alerta.fecha:
-
-	# 		alerta_miembros = alerta.alerta_miembro_set.all()
-
-	# 		for alerta_miembro in alerta_miembros:
-	# 			if alerta_miembro.user == request.user:
-	# 				data_alert.append({
-	# 					"mensaje"		: alerta.nombre,
-	# 					"descripcion"	: alerta.descripcion,
-	# 					"emisor"		: alerta.creador.first_name
-	# 					})
-
-
-
-	form_profile    = UpdateUserProfileForm(user=request.user)
+	
+	form_owncloud    = ConfigOwnCloudForm()
 	form_password   = UpdatePasswordForm(user=request.user)
 
 	return render(request, 'perfil.html', {
 		# 'alertas'		: data_alert,
-		'form_profile'	: form_profile,
+		'form_owncloud'	: form_owncloud,
 		'form_password'	: form_password,
 		'title' 		: 'Perfil',
 		'subtitle' 		: 'perfil',

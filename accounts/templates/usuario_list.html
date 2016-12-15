@@ -31,7 +31,7 @@
 									<td>{{ item.userprofile.cargo }}</td>
 									<td class="text-center">
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="cambiar contraseña" onclick="open_modal_password({{item.id}})"><i class="fa fa-key"></i></a>
-										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar usuario" href='{% url "accounts:usuario_update" item.id %}'><i class="fa fa-edit"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar usuario" href='{% url "accounts:usuario_update" item.userprofile.id %}'><i class="fa fa-edit"></i></a>
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar usuario" onclick="open_modal_delete(this, {{item.id}}, 'usuarios', 'tabla-usuarios', 'Usuario')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar usuario"><i class="fa fa-eye"></i></a>
 									</td>

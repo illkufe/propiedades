@@ -150,7 +150,7 @@ class Giro(models.Model):
 	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	def __str__(self):
-		return self.descripcion
+		return str(self.codigo)+' - '+str(self.descripcion)
 
 	class Meta:
 		verbose_name 		= 'Giro'

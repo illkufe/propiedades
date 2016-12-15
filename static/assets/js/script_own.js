@@ -228,8 +228,10 @@ function clear_errors_form(form){
 }
 
 function clear_form(form){
+
 	// inputs y selects normales
 	$(form +' '+ '.form-group input[type="number"]').val('')
+	$(form +' '+ '.form-group input[type="email"]').val('')
 	$(form +' '+ '.form-group input[type="text"]').val('')
 	$(form +' '+ '.form-group textarea').val('')
 	$(form +' '+ 'select option:first-child').prop('selected', true);
@@ -583,34 +585,6 @@ function diferencia_entre_meses(fecha_inicio, fecha_termino) {
 
 $('[data-toggle="tooltip"]').tooltip();
 
-/*
-var myFormatters = d3.locale({
-	  "decimal": ".",
-	  "thousands": ",",
-	  "grouping": [3],
-	  "currency": ["$", ""],
-	  "dateTime": "%a %b %e %X %Y",
-	  "date": "%m/%d/%Y",
-	  "time": "%H:%M:%S",
-	  "periods": ["AM", "PM"],
-	  "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-	  "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-	  "months": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-	  "shortMonths": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
-});
-
-d3.shortMonths.format = myFormatters.shortMonths; */
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -629,16 +603,20 @@ $('.format-rut').rut({
 	validateOn: 'blur'
 })
 
-// .on('rutInvalido', function(){
-// 	$(this).closest('.form-group').find('.container-error').text('')
-// 	$(this).closest('.form-group').find('.container-error').append('rut invalido')
-// 	$(this).val('')
-// }).on('rutValido', function(){
-// 	$(this).closest('.form-group').find('.container-error').text('')
-// });
+// limpiar inputs del formulario
+function form_clear_fields(form){
 
-
-
+	// inputs y selects normales
+	$(form +' '+ '.form-group input[type="number"]').val('')
+	$(form +' '+ '.form-group input[type="email"]').val('')
+	$(form +' '+ '.form-group input[type="text"]').val('')
+	$(form +' '+ '.form-group textarea').val('')
+	$(form +' '+ 'select option:first-child').prop('selected', true);
+	// inputs y selects formularios hijos
+	$(form +' '+ 'tbody input').val('')
+	// select 2
+	$('.select2').val(null).trigger("change")
+}
 
 // limpiar error del formulario
 function form_clear_errors(form){

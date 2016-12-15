@@ -7,8 +7,11 @@ from .models import *
 class UserProfileInline(admin.StackedInline):
 	model = UserProfile
 
+class ConfigOwnCloudInline(admin.StackedInline):
+	model = ConfigOwnCloud
+
 class UserInlineAdmin(UserAdmin):
-	inlines = [ UserProfileInline]
+	inlines = [UserProfileInline, ConfigOwnCloudInline]
 
 admin.site.unregister(User)
 admin.site.register(User, UserInlineAdmin)

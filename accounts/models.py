@@ -44,3 +44,24 @@ class UserProfile(models.Model):
 	class Meta:
 		verbose_name 		= 'Perfil'
 		verbose_name_plural = 'Perfil'
+
+class ConfigOwnCloud(models.Model):
+
+	# atributos (generales)
+	usuario		= models.CharField(max_length=250)
+	password	= models.CharField(max_length=250)
+	url 		= models.TextField()
+
+	# atributos (por defecto)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	user = models.OneToOneField(User)
+
+	def __str__(self):
+		return self.user.email
+
+	class Meta:
+		verbose_name 		= 'Configuración OwnCloud'
+		verbose_name_plural = 'Configuraciones OwnCloud'

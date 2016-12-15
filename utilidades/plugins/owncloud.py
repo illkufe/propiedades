@@ -1,52 +1,82 @@
-from datetime import datetime
 import owncloud
 import os
 
-def oc_conection():
+# code description
+# 1 = conection owncloud
+# 2 = list directory
+# 3 = create folder
+# 4 = delete folder or file
+# 5 = upload file
 
-	oc = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-	oc.login('enunez', 'asgard2016')
-	
-	return oc
+def oc_conection(data):
 
-def oc_list_directory(oc_name, oc_path):
-
-	status 	= True
-	message = 'correcto'
-	data 	= list()
+	oc = None
 
 	try:
+		oc 		= owncloud.Client(data['url'])
+		oc.login(data['username'], data['password'])
+		status 	= True
+		message = 'correcto'
 
-		oc 			= oc_conection()
-		elements	= oc.list(oc_path)
-		children 	= oc_files_in_directory(elements, oc)
-
-		data.append({
-			'text'	: oc_name,
-			'icon' 	: 'fa fa-folder',
-			'data' 	: {
-				'type' 	: 'folder',
-				'path'	: oc_path,
-				'permissions' : {
-					'edit' 		: False,
-					'remove' 	: False,
-				},
-			},
-			'state': {
-				'opened': True
-			},
-			'children': children,
-		})
-	except Exception as e:
+	except Exception as error:
 
 		status 	= False
-		message = str(e)
-
+		message = 'verificar configuración de conexión'
 
 	return {
-		'status' 	: status,
-		'message' 	: message,
-		'data'		: data,
+		'response' : {
+			'status' 	: status,
+			'message' 	: message,
+			'phase' 	: 1
+			},
+		'data' : oc,
+	}
+
+def oc_list_directory(oc_name, oc_path, data_conection):
+
+	data 	= list()
+	oc 		= oc_conection(data_conection)
+	message = 'correcto'
+	status 	= True
+	phase 	= 2
+
+	if oc['response']['status']:
+		try:
+			elements   = oc['data'].list(oc_path)
+			children   = oc_files_in_directory(elements, oc['data'])
+
+			data = [{
+				'text'	: oc_name,
+				'icon'	: 'fa fa-folder',
+				'data' 	: {
+					'type' 	: 'folder',
+					'path' 	: oc_path,
+					'permissions' : {
+						'edit' 		: False,
+						'remove' 	: False,
+					},
+				},
+				'state': {
+					'opened': True
+				},
+				'children': children,
+			}]
+		except Exception as error:
+
+			message = 'no existe la carpeta'
+			status 	= False
+	else:
+		message = oc['response']['message']
+		status 	= oc['response']['status']
+		phase 	= oc['response']['phase']
+
+	return {
+		'response' : {
+			'status'	: status,
+			'message'	: message,
+			'phase'		: phase,
+		},
+		'data': data
 	}
 
 def oc_files_in_directory(oc_element, oc):
@@ -100,90 +130,97 @@ def oc_files_in_directory(oc_element, oc):
 				})
 	return response
 
-def oc_create_directory(oc_path, oc_name):
+def oc_create_directory(oc_path, oc_name, data_conection):
 
-	messages = [
-		'correcto',
-		'error: no se pudo crear la carpeta',
-	]
+	oc 		= oc_conection(data_conection)
+	phase 	= 3
 
-	path 	= str(oc_path) + '/' + str(oc_name)
-	oc 		= oc_conection()
+	if oc['response']['status']:
 
-	try:
+		path = str(oc_path) + '/' + str(oc_name)
 
-		if oc.mkdir(path):
+		try:
+
+			oc['data'].mkdir(path)
 			status  = True
-			message = 0
+			message = 'correcto'
 
-		else:
+		except Exception as error:
+
 			status  = False
-			message = 1
-	except Exception:
-
-		status  = False
-		message = 1
-
-	return {
-		'status' 	: status,
-		'message' 	: messages[message],
-	}
-
-def oc_delete(oc_path, oc_name, oc_type):
-
-	messages = [
-		'correcto',
-		'error: no se pudo eliminar el archivo y/o carpeta',
-	]
-
-	path 	= str(oc_path) if oc_type == 'folder' else str(oc_path) + '/' + str(oc_name)
-	oc 		= oc_conection()
-
-	try:
-
-		if oc.delete(path):
-			status  = True
-			message = 0
-
-		else:
-			status  = False
-			message = 1
-
-	except Exception:
-		status  = False
-		message = 1
-
-	return {
-		'status' 	: status,
-		'message' 	: messages[message],
-	}
-
-def oc_upload_file(oc_path, source_file, **kwargs):
-
-	messages = [
-		'correcto',
-		'error: no se pudo crear la carpeta',
-	]
-
-	oc = oc_conection()
-
-	try:		
-		if oc.put_file(oc_path, source_file, **kwargs):
-			status  = True
-			message = 0
-
-		else:
-			status  = False
-			message = 1
-
-	except Exception:
-		status  = False
-		message = 1
+			message = 'no se pudo crear la carpeta'
+			
+	else:
 		
+		status 	= oc['response']['status']
+		message = oc['response']['message']
+		phase  	= oc['response']['phase']
 
 	return {
-		'status' 	: status,
-		'message' 	: messages[message],
+		'status'	: status,
+		'message'	: message,
+		'phase'		: phase,
+	}
+
+def oc_delete(oc_path, oc_name, oc_type, data_conection):
+
+	oc 		= oc_conection(data_conection)
+	phase 	= 4
+
+	if oc['response']['status']:
+
+		try:
+
+			path 	= str(oc_path) if oc_type == 'folder' else str(oc_path) + '/' + str(oc_name)
+			oc['data'].delete(path)
+			status  = True
+			message = 'correcto'
+
+		except Exception as error:
+
+			status  = False
+			message = 'no se pudo eliminar el archivo o carpeta'
+
+	else:
+
+		status 	= oc['response']['status']
+		message = oc['response']['message']
+		phase  	= oc['response']['phase']
+
+	return {
+		'status'	: status,
+		'message'	: message,
+		'phase'		: phase,
+	}
+
+def oc_upload_file(oc_path, source_file, data_conection, **kwargs):
+
+	oc 		= oc_conection(data_conection)
+	phase 	= 5
+
+	if oc['response']['status']:
+
+		try:
+
+			oc['data'].put_file(oc_path, source_file, **kwargs)
+			status  = True
+			message = 'correcto'
+
+		except Exception as error:
+
+			status  = False
+			message = 'no se pudo subir el archivo'
+
+	else:
+
+		status 	= oc['response']['status']
+		message = oc['response']['message']
+		phase  	= oc['response']['phase']
+
+	return {
+		'status'	: status,
+		'message'	: message,
+		'phase'		: phase,
 	}
 
 def oc_info_file(name):
@@ -217,434 +254,21 @@ def oc_info_file(name):
 
 	return info_file.get('file') if info_file.get(extension, False) is False else info_file.get(extension)
 
-# def create_directory(path_owncloud_directory, name_directory):
+def oc_path_exists(oc_path, data_conection):
 
-# 	"""
-# 		función que permite realiza la creación de un directorio owncloud.
-# 	:param path_owncloud_directory: ruta del directorio base
-# 	:param name_directory: nombre de la carpeta a crear
-# 	:return: objeto con un estado del proceso y una descripcion del error.
-# 	"""
+	try:
+		oc = oc_conection(data_conection)
+		oc['data'].file_info(oc_path)
 
-# 	data    = list()
-# 	error   = None
-# 	oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-# 	oc.login('enunez', 'asgard2016')
+		status 	= True
+		message = 'correcto'
+		
+	except Exception as error:
 
-# 	# try:
+		status 	= False
+		message = error
 
-# 	if not path_owncloud_directory.endswith('/'):
-# 		path_owncloud_directory += '/'
-
-# 	path_owncloud_directory = path_owncloud_directory + str(name_directory)
-# 		# file_info               = oc.file_info(path_owncloud_directory)
-
-# 		#Existe directorio
-# 		# if not file_info:
-# 	try:
-# 		status = oc.mkdir(path_owncloud_directory)
-# 		if status:
-# 			data.append({
-# 				'estado': True,
-# 				'error' : error
-# 			})
-# 		else:
-# 			error = 'Error en la creación del directorio'
-# 			data.append({
-# 				'estado': False,
-# 				'error' : error
-# 			})
-# 	except Exception:
-# 		error = 'Error en la creación del directorio'
-# 		data.append({
-# 			'estado': False,
-# 			'error': error
-# 		})
-# 		# else:
-# 		# 	error = 'Directorio ya existe.'
-# 		# 	data.append({
-# 		# 		'estado': False,
-# 		# 		'error': error
-# 		# 	})
-
-# 	# except Exception:
-
-# 	# 	error = 'Directorio ya existe.'
-# 	# 	data.append({
-# 	# 		'estado': False,
-# 	# 		'error': error
-# 	# 	})
-
-# 	return data
-
-# def delete_directory(path_owncloud_directory, name_directory):
-# 	"""
-# 		función que permite realizar la eliminacion de un directorio o archivo
-# 	:param path_owncloud_directory: ruta base del directorio
-# 	:param name_directory: nombre de la carpeta o archivo a eliminar
-# 	:return: objeto con un estado del proceso y una descripcion del error.
-# 	"""
-
-# 	data    = list()
-# 	error   = None
-# 	oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-# 	oc.login('enunez', 'asgard2016')
-
-# 	try:
-# 		path_owncloud_directory = path_owncloud_directory + str(name_directory)
-# 		file_info               = oc.file_info(path_owncloud_directory)
-
-# 		if file_info:
-# 			try:
-# 				status = oc.delete(path_owncloud_directory)
-
-# 				if status:
-# 					data.append({
-# 						'estado': True,
-# 						'error' : error
-# 					})
-# 				else:
-# 					error = 'Error en la eliminación del directorio'
-# 					data.append({
-# 						'estado': False,
-# 						'error' : error
-# 					})
-# 			except Exception:
-# 				error = 'Error en la eliminación del directorio'
-# 				data.append({
-# 					'estado': False,
-# 					'error': error
-# 				})
-# 		else:
-# 			error = 'Archivo o directorio no se encuentra.'
-# 			data.append({
-# 				'estado': False,
-# 				'error' : error
-# 			})
-
-# 	except Exception:
-# 		error = 'Directorio No existe.'
-# 		data.append({
-# 			'estado' : False,
-# 			'error'  : error
-# 		})
-
-# 	return data
-
-# def backups_directory(path_owncloud_directory, name_directory, path_directory_backups):
-# 	"""
-# 		función que permite realizar el backup de una carpeta en un directorio de respaldos.
-# 	:param path: ruta del directorio base
-# 	:param name_directory: nombre de la carpeta a crear
-# 	:param path_directory_backups: ruta del directorio de respaldo
-# 	:return: objeto con un estado del proceso y una descripcion del error.
-# 	"""
-# 	try:
-# 		data    = list()
-# 		error   = None
-# 		oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-# 		oc.login('enunez', 'asgard2016')
-
-# 		path_owncloud_directory                = path_owncloud_directory + str(name_directory)
-
-# 		if not path_directory_backups.endswith('/'):
-# 			path_directory_backups += '/'
-
-# 		if not path_owncloud_directory.endswith('/'):
-# 			path_owncloud_directory += '/'
-
-
-# 		try:
-# 			directory_info          = oc.file_info(path_directory_backups)
-
-# 			#Directorio de respaldo Existe
-# 			if directory_info:
-# 				try:
-# 					# Creacion de carpeta backup del activo en respaldo
-# 					path_directory_backups  = path_directory_backups + name_directory + '_' + datetime.now().strftime('%d-%m-%Y %I:%M:%S') + '/'
-# 					status_dir              = oc.mkdir(path_directory_backups)
-# 					if status_dir:
-# 						try:
-# 							# Copia de archivos y posterior eliminacion de la carpeta original del directorio
-# 							status_copy             = oc.copy(path_owncloud_directory, path_directory_backups)
-# 							status_delete           = oc.delete(path_owncloud_directory[:-1])
-# 							if status_copy and status_delete:
-# 								data.append({
-# 									'estado': True,
-# 									'error' : error
-# 								})
-# 							else:
-# 								error = 'Error en creación de respaldo de activo'
-# 								data.append({
-# 									'estado': False,
-# 									'error': error
-# 								})
-# 						except Exception:
-# 							error = 'Error en creación de respaldo de activo'
-# 							data.append({
-# 								'estado': False,
-# 								'error': error
-# 							})
-# 					else:
-# 						error = 'Error en creación de directorio del activo en carpeta de respaldos'
-# 						data.append({
-# 							'estado': False,
-# 							'error': error
-# 						})
-# 				except Exception:
-# 					error = 'Error en creación de directorio del activo en carpeta de respaldos'
-# 					data.append({
-# 						'estado': False,
-# 						'error': error
-# 					})
-# 		except Exception:
-
-# 			try:
-# 				# Creacion de directorio de respaldos
-# 				status_dir = oc.mkdir(path_directory_backups)
-# 				if status_dir:
-# 					try:
-# 						#Creacion de carpeta backup del activo en respaldo
-# 						path_directory_backups  = path_directory_backups + name_directory + '_' + datetime.now().strftime('%d-%m-%Y') + '/'
-# 						status_dir              = oc.mkdir(path_directory_backups)
-# 						if status_dir:
-
-# 							try:
-# 								#Copia de archivos y posterior eliminacion de la carpeta original del directorio
-# 								status_copy     = oc.copy(path_owncloud_directory, path_directory_backups)
-# 								status_delete   = oc.delete(path_owncloud_directory[:-1])
-
-# 								if status_copy and status_delete:
-# 									data.append({
-# 										'estado': True,
-# 										'error': error
-# 									})
-# 								else:
-# 									error = 'Error realizacion del respaldo del activo'
-# 									data.append({
-# 										'estado': False,
-# 										'error': error
-# 									})
-# 							except Exception:
-# 								error = 'Error realizacion del respaldo del activo'
-# 								data.append({
-# 									'estado': False,
-# 									'error': error
-# 								})
-# 						else:
-# 							error = 'Error en creación de directorio del activo en carpeta de respaldos.'
-# 							data.append({
-# 								'estado': False,
-# 								'error': error
-# 							})
-# 					except Exception:
-# 						error = 'Error en creación de directorio del activo en carpeta de respaldos.'
-# 						data.append({
-# 							'estado': False,
-# 							'error': error
-# 						})
-# 				else:
-# 					error = 'Error en la creación del directorio respaldo.'
-# 					data.append({
-# 						'estado': False,
-# 						'error': error
-# 					})
-# 			except Exception:
-# 				error = 'Error en la creación del directorio respaldo'
-# 				data.append({
-# 					'estado': False,
-# 					'error': error
-# 				})
-
-# 	except Exception as e:
-# 		error = 'Error respaldo del activo'
-# 		data.append({
-# 			'estado' : False,
-# 			'error'  : error
-# 		})
-
-# 	return data
-
-# def upload_directory(path_owncloud_directory, path_local_directory, **kwargs):
-
-# 	data    = list()
-# 	error   = None
-# 	oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-# 	oc.login('enunez', 'asgard2016')
-
-# 	try:
-
-# 		directory_info = oc.file_info(path_owncloud_directory)
-
-# 		if directory_info:
-# 			try:
-# 				status_upload   = oc.put_directory(path_owncloud_directory, path_local_directory, **kwargs)
-# 				if status_upload:
-# 					data.append({
-# 						'estado': True,
-# 						'error': error
-# 					})
-# 				else:
-# 					error = 'No se pudo subir directorio a Owncloud'
-# 					data.append({
-# 						'estado': False,
-# 						'error': error
-# 					})
-# 			except Exception:
-# 				error = 'No se pudo subir directorio a Owncloud'
-# 				data.append({
-# 					'estado': False,
-# 					'error': error
-# 				})
-# 		else:
-# 			error = 'Directorio Owncloud no existe.'
-# 			data.append({
-# 				'estado': False,
-# 				'error': error
-# 			})
-# 	except Exception:
-# 		error = 'Directorio Owncloud no existe.'
-# 		data.append({
-# 			'estado': False,
-# 			'error': error
-# 		})
-
-# 	return data
-
-# def upload_file(path_owncloud_directory, local_source_file,**kwargs):
-
-# 	data    = list()
-# 	error   = None
-# 	oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-# 	oc.login('enunez', 'asgard2016')
-
-# 	try:
-
-# 		directory_info = oc.file_info(path_owncloud_directory)
-
-# 		if directory_info:
-# 			try:
-# 				status_upload   = oc.put_file(path_owncloud_directory, local_source_file, **kwargs)
-# 				if status_upload:
-# 					data.append({
-# 						'estado': True,
-# 						'error': error
-# 					})
-# 				else:
-# 					error = 'No se pudo subir el archivo a Owncloud'
-# 					data.append({
-# 						'estado': False,
-# 						'error': error
-# 					})
-# 			except Exception:
-# 				error = 'No se pudo subir el archivo a Owncloud'
-# 				data.append({
-# 					'estado': False,
-# 					'error': error
-# 				})
-# 		else:
-# 			error = 'Directorio Owncloud no existe.'
-# 			data.append({
-# 				'estado': False,
-# 				'error': error
-# 			})
-# 	except Exception:
-# 		error = 'Directorio Owncloud no existe.'
-# 		data.append({
-# 			'estado': False,
-# 			'error': error
-# 		})
-
-# 	return data
-
-# def download_directory_as_zip(path_owncloud_directory, path_local):
-
-# 	data    = list()
-# 	error   = None
-# 	oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-# 	oc.login('enunez', 'asgard2016')
-
-# 	try:
-
-# 		directory_info = oc.file_info(path_owncloud_directory)
-
-# 		if directory_info:
-# 			try:
-# 				status_download   = oc.get_directory_as_zip(path_owncloud_directory, path_local)
-# 				if status_download:
-# 					data.append({
-# 						'estado': True,
-# 						'error': error
-# 					})
-# 				else:
-# 					error = 'No se pudo descargar la carpeta desde Owncloud'
-# 					data.append({
-# 						'estado': False,
-# 						'error': error
-# 					})
-# 			except Exception:
-# 				error = 'No se pudo descargar la carpeta desde Owncloud'
-# 				data.append({
-# 					'estado': False,
-# 					'error': error
-# 				})
-# 		else:
-# 			error = 'Directorio Owncloud no existe.'
-# 			data.append({
-# 				'estado': False,
-# 				'error': error
-# 			})
-# 	except Exception:
-# 		error = 'Directorio Owncloud no existe.'
-# 		data.append({
-# 			'estado': False,
-# 			'error': error
-# 		})
-
-# 	return data
-
-# def download_file(path_owncloud_directory, path_local=None):
-
-# 	data    = list()
-# 	error   = None
-# 	oc      = owncloud.Client('http://ec2-54-211-31-88.compute-1.amazonaws.com/owncloud/')
-# 	oc.login('enunez', 'asgard2016')
-
-# 	try:
-
-# 		directory_info = oc.file_info(path_owncloud_directory)
-
-# 		if directory_info:
-# 			try:
-# 				status_download   = oc.get_file(path_owncloud_directory, path_local)
-# 				if status_download:
-# 					data.append({
-# 						'estado': True,
-# 						'error': error
-# 					})
-# 				else:
-# 					error = 'No se pudo descargar el archivo desde Owncloud'
-# 					data.append({
-# 						'estado': False,
-# 						'error': error
-# 					})
-# 			except Exception:
-# 				error = 'No se pudo descargar el archivo desde Owncloud'
-# 				data.append({
-# 					'estado': False,
-# 					'error': error
-# 				})
-# 		else:
-# 			error = 'Directorio Owncloud no existe.'
-# 			data.append({
-# 				'estado': False,
-# 				'error': error
-# 			})
-# 	except Exception:
-# 		error = 'Directorio Owncloud no existe.'
-# 		data.append({
-# 			'estado': False,
-# 			'error': error
-# 		})
-
-# 	return data
+	return {
+		'status'	: status,
+		'message'	: message,
+	}

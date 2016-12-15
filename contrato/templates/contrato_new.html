@@ -29,7 +29,7 @@
 									</div>
 								</div>
 
-								<div class="form-group col-sm-2">
+								<div class="form-group col-sm-4">
 									<span>
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre_local.help_text }}" ></i>
 										{{ form.nombre_local.label_tag }}
@@ -68,17 +68,6 @@
 									</div>
 								</div>
 
-								<div class="form-group col-sm-2">
-									<span>
-										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.destino_comercial.help_text }}" ></i>
-										{{ form.destino_comercial.label_tag }}
-									</span>
-									{{ form.destino_comercial }}
-									<div class="container-error">
-										{{ form.destino_comercial.errors|striptags }}
-									</div>
-								</div>
-
 								<div class="form-group col-sm-3">
 									<span>
 										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.locales.help_text }}" ></i>
@@ -106,6 +95,17 @@
 									{{ form.conceptos }}
 									<div class="container-error">
 										{{ form.conceptos.errors|striptags }}
+									</div>
+								</div>
+
+								<div class="form-group col-sm-12">
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.destino_comercial.help_text }}" ></i>
+										{{ form.destino_comercial.label_tag }}
+									</span>
+									{{ form.destino_comercial }}
+									<div class="container-error">
+										{{ form.destino_comercial.errors|striptags }}
 									</div>
 								</div>
 

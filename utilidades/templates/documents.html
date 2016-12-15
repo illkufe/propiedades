@@ -9,7 +9,7 @@
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>Documentos del Contrato</h5>
+					<h5>Documentos</h5>
 				</div>
 				<div class="ibox-content">
 					<div class="row">
@@ -127,7 +127,6 @@ $(document).ready(function(){
 
 });
 
-
 function initialize(){
 
 	$('#btn-create-folder').click(owncloud_create_folder)
@@ -138,44 +137,44 @@ function initialize(){
 function load_tree(){
 
 	$.ajax({
-		url: '/get/contrato/documents/{{id}}/',
-		type: 'get',
-		dataType: 'json',
+		url: '{% url "owncloud_list_directory" %}',
+		type : 'POST',
+		dataType : 'json',
+		data : {
+			id 		: {{id}},
+			url 	: '{{url}}',
+			model 	: '{{model}}',
+			csrfmiddlewaretoken : getCookie('csrftoken'),
+		},
 		beforeSend: function(){
 			loading(true)
 		},
-		success: function(response){
+		success: function(data){
+
 			loading(false)
 
-			$('#directorio')
-			.on('select_node.jstree', function (node,a) {
-				enable_buttons(a.node.data)
-			}).jstree({
-				'core' : {
-					'data': response.data,
-				},
-				'plugins' : [ 'types', 'dnd' ],
-				'types' : {
-					'default' : {
-						'icon' : 'fa fa-folder'
+			if(data.response.status == true){
+
+				$('#directorio')
+				.on('select_node.jstree', function (node,a) {
+					enable_buttons(a.node.data)
+				}).jstree({
+					'core' : {
+						'data': data.data,
 					},
-					'html' : {
-						'icon' : 'fa fa-file-code-o'
-					},
-					'svg' : {
-						'icon' : 'fa fa-file-picture-o'
-					},
-					'css' : {
-						'icon' : 'fa fa-file-code-o'
-					},
-					'img' : {
-						'icon' : 'fa fa-file-image-o'
-					},
-					'js' : {
-						'icon' : 'fa fa-file-text-o'
-					}
+					'plugins' : [ 'types', 'dnd' ],
+				});
+
+			}else{
+
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: data.response.message,
+					'toast_title' 	: 'Error',
 				}
-			});
+
+				notification_toast(configuracion)
+			}
 		}
 	})
 }
@@ -245,8 +244,22 @@ function owncloud_delete(){
 			},
 			success: function(data){
 
-				$('#directorio').jstree().destroy()
-				load_tree()
+				if(data.status == true){
+
+					$('#directorio').jstree().destroy()
+					load_tree()
+
+				}else{
+
+					var configuracion = {
+						'toast_type'	: 'error',
+						'toast_text' 	: data.message,
+						'toast_title' 	: 'Error',
+					}
+
+					notification_toast(configuracion)
+
+				};
 			},
 			error:function(data){
 
@@ -286,13 +299,28 @@ function form_create_folder(){
 			$('#form-create-folder').ajaxSubmit({
 				dataType: 'json',
 				success: function(data){
+					
 					$('#m-create-folder').modal('hide')
-					$('#directorio').jstree().destroy()
-					load_tree()
-				},
-				error: function(){
-					loading(false)
 
+					if(data.status == true){
+
+						$('#directorio').jstree().destroy()
+						load_tree()
+
+					}else{
+
+						var configuracion = {
+							'toast_type'	: 'error',
+							'toast_text' 	: data.message,
+							'toast_title' 	: 'Error',
+						}
+
+						notification_toast(configuracion)
+
+					};
+				},
+				error: function(data){
+					loading(false)
 					var configuracion = {
 						'toast_type'	: 'error',
 						'toast_text' 	: 'ocurrio algún error',
@@ -328,8 +356,21 @@ function form_upload_file(){
 
 					$('#m-upload-file').modal('hide')
 
-					$('#directorio').jstree().destroy()
-					load_tree()
+					if(data.status == true){
+						$('#directorio').jstree().destroy()
+						load_tree()
+					}else{
+
+						var configuracion = {
+							'toast_type'	: 'error',
+							'toast_text' 	: data.message,
+							'toast_title' 	: 'Error',
+						}
+
+						notification_toast(configuracion)
+
+					};
+
 				},
 				error: function(){
 

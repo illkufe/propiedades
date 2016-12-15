@@ -16,6 +16,8 @@ from django.views.generic import View
 from utilidades.plugins.owncloud import *
 
 from administrador.models import Configuracion_Monedas
+from activos.models import Activo
+from contrato.models import Contrato
 from .models import *
 
 
@@ -32,14 +34,14 @@ def variables_globales(request):
 		user 			= request.user
 		empresa 		= user.userprofile.empresa
 		configuracion 	= empresa.configuracion
-		moneda_local    = empresa.configuracion_monedas_set.get(moneda_local=True).moneda_id
+		moneda_local 	= empresa.configuracion_monedas_set.get(moneda_local=True).moneda_id
 
 		return {
 		'lease_user_id' 		: user.id,
 		'lease_format_dec' 		: ',' if configuracion.formato_decimales == 1 else '.',
 		'lease_format_mil' 		: '.' if configuracion.formato_decimales == 1 else ',',
 		'lease_decimales' 		: configuracion.cantidad_decimales,
-		'lease_moneda_local' 	: 5   if not moneda_local else moneda_local
+		'lease_moneda_local' 	: 5 if not moneda_local else moneda_local
 		}
 	except Exception:
 		return {'estado':'error'}
@@ -438,8 +440,8 @@ class CURRENCIES_LAST(View):
 # get
 def get_password_random(size):
 
-	chars       = string.ascii_letters + string.digits
-	password    = ''.join((random.choice(chars)) for x in range(size))
+	chars 		= string.ascii_letters + string.digits
+	password 	= ''.join((random.choice(chars)) for x in range(size))
 
 	return password
 
@@ -463,13 +465,45 @@ def validate_digito(rut):
 
 
 # funciones owncloud
+def data_concetion(request):
+
+	oc_concetion = { 
+		'url' 		: request.session['oc_url'] ,
+		'username' 	: request.session['oc_username'],
+		'password' 	: request.session['oc_password'],
+		}
+
+	return  oc_concetion
+
+def owncloud_list_directory(request):
+
+	var_post 	= request.POST.copy()
+	item_id 	= var_post.get('id')
+
+	if var_post.get('model') == 'activo':
+
+		item 		= Activo.objects.get(id=item_id)
+		item_nombre = item.nombre
+
+	elif var_post.get('model') == 'contrato':
+
+		item 		= Contrato.objects.get(id=item_id)
+		item_nombre = item.nombre_local
+
+	else:
+		pass
+
+	response = oc_list_directory(str(item_nombre), str(var_post.get('url'))+'/'+str(item_nombre), data_concetion(request))
+
+	return JsonResponse(response, safe=False)
+
 def owncloud_create_folder(request):
 
 	var_post	= request.POST.copy()
 	oc_path 	= var_post.get('path')
 	oc_name 	= var_post.get('name')
 
-	response 	= oc_create_directory(oc_path, oc_name)
+	response 	= oc_create_directory(oc_path, oc_name, data_concetion(request))
 
 	return JsonResponse(response, safe=False)
 
@@ -480,7 +514,7 @@ def owncloud_delete(request):
 	oc_name 	= var_post.get('name')
 	oc_type 	= var_post.get('type')
 
-	response 	= oc_delete(oc_path, oc_name, oc_type)
+	response 	= oc_delete(oc_path, oc_name, oc_type, data_concetion(request))
 
 	return JsonResponse(response, safe=False)
 
@@ -495,9 +529,30 @@ def owncloud_upload_file(request):
 	path 		= default_storage.save('tmp/'+str(oc_file), ContentFile(oc_file.read()))
 	tmp_file 	= os.path.join(settings.MEDIA_ROOT, path)
 
-	response 	= oc_upload_file(oc_path+'/', tmp_file)
+	response 	= oc_upload_file(oc_path+'/', tmp_file, data_concetion(request))
 
 	os.remove(tmp_file)
 
 	return JsonResponse(response, safe=False)
+
+def owncloud_create_path(request, names):
+
+	path 	 	= ''
+	oc_path 	= ''
+	response 	= list()
+
+	for name in names:
+
+		path += name if path == '' else '/'+name
+
+		if oc_path_exists(path, data_concetion(request))['status'] is False:
+			response = oc_create_directory(oc_path, name, data_concetion(request))
+
+		oc_path += name if oc_path == '' else '/'+name
+
+
+	return JsonResponse(response, safe=False)
+
+
+
 

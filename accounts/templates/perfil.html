@@ -6,7 +6,7 @@
 
 <div class="wrapper wrapper-content">
 	<div class="row animated fadeInRight">
-		<div class="col-md-4">
+		<div class="col-md-3">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
 					<h5>Perfil</h5>
@@ -18,9 +18,7 @@
 
 							<form id="form-update-avatar" action="/avatar/add/" method="POST" enctype="multipart/form-data">
 								{% csrf_token %}
-								<br>
 								<input id="id_avatar" class="hide" name="avatar" type="file" accept="image/*">
-								<button type="button" id="btn-change-avatar" class="btn btn-primary btn-xs">Cambiar Avatar</button>
 							</form>
 						</div>
 					</div>
@@ -31,17 +29,27 @@
 
 						<p><i class="fa fa-briefcase"></i> &nbsp;&nbsp;{{ request.user.userprofile.cargo }}</p>
 						<p><i class="fa fa-envelope-o"></i> &nbsp;&nbsp;{{ request.user.email }}</p>
-						<p><i class="fa fa-map-marker"></i> &nbsp;&nbsp;&nbsp;&nbsp;{{ request.user.userprofile.direccion }}</p>
-						
-						<h5>Sobre mi</h5>
-						<p class="text-center">{{ request.user.userprofile.descripcion }}</p>
+						<p><i class="fa fa-map-marker"></i> &nbsp;&nbsp;{{ request.user.userprofile.direccion }}</p>
+						<p>{{ request.user.userprofile.descripcion }}</p>
+
+						<div class="row">
+							<div class="col-md-12">
+								<button type="button" class="btn btn-primary btn-sm btn-block" id="btn-change-avatar"><i class="fa fa-image"></i> Editar Avatar</button>
+							</div>
+							
+							<div class="col-md-12">
+								<button type="button" class="btn btn-default btn-sm btn-block m-t-sm"><i class="fa fa-key"></i> Editar Contraseña</button>
+							</div>
+						</div>
 						
 					</div>
+
+
 				</div>
 			</div>
 		</div>
 
-		<div class="col-md-8">
+<!-- 		<div class="col-md-9">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
 					<h5>Alertas</h5>
@@ -59,31 +67,31 @@
 					{% endfor %}
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 
-		<div class="col-md-8">
-			<div class="ibox float-e-margins border-bottom">
+		<div class="col-md-9">
+			<div class="ibox float-e-margins">
 
 				<div class="ibox-title">
 					<h5>Actualizar Información General</h5>
 					<div class="ibox-tools">
 						<a class="collapse-link">
-							<i class="fa fa-chevron-down"></i>
+							<i class="fa fa-chevron-up"></i>
 						</a>
 					</div>
 				</div>
-				<div class="ibox-content" style="display: none;">
+				<div class="ibox-content">
 					<form id="form-update-profile" action="update-profile" role="form" method="post">
 						{% csrf_token %}
 
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="form-group col-sm-4">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.first_name.help_text }}" ></i>
-                                        {{ form_profile.first_name.label_tag }}
-                                    </span>
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.first_name.help_text }}" ></i>
+										{{ form_profile.first_name.label_tag }}
+									</span>
 									{{ form_profile.first_name }}
 									<div class="container-error">
 										{{ form_profile.first_name.errors }}
@@ -91,10 +99,10 @@
 								</div>
 
 								<div class="form-group col-sm-4">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.last_name.help_text }}" ></i>
-                                        {{ form_profile.last_name.label_tag }}
-                                    </span>
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.last_name.help_text }}" ></i>
+										{{ form_profile.last_name.label_tag }}
+									</span>
 									{{ form_profile.last_name }}
 									<div class="container-error">
 										{{ form_profile.last_name.errors }}
@@ -102,10 +110,10 @@
 								</div>
 
 								<div class="form-group col-sm-4">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.rut.help_text }}" ></i>
-                                        {{ form_profile.rut.label_tag }}
-                                    </span>
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.rut.help_text }}" ></i>
+										{{ form_profile.rut.label_tag }}
+									</span>
 									{{ form_profile.rut }}
 									<div class="container-error">
 										{{ form_profile.rut.errors }}
@@ -113,10 +121,10 @@
 								</div>
 
 								<div class="form-group col-sm-4">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.cargo.help_text }}" ></i>
-                                        {{ form_profile.cargo.label_tag }}
-                                    </span>
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.cargo.help_text }}" ></i>
+										{{ form_profile.cargo.label_tag }}
+									</span>
 									{{ form_profile.cargo }}
 									<div class="container-error">
 										{{ form_profile.cargo.errors }}
@@ -124,10 +132,10 @@
 								</div>
 
 								<div class="form-group col-sm-4">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.ciudad.help_text }}" ></i>
-                                        {{ form_profile.ciudad.label_tag }}
-                                    </span>
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.ciudad.help_text }}" ></i>
+										{{ form_profile.ciudad.label_tag }}
+									</span>
 									{{ form_profile.ciudad }}
 									<div class="container-error">
 										{{ form_profile.ciudad.errors }}
@@ -135,21 +143,21 @@
 								</div>
 
 								<div class="form-group col-sm-4">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.comuna.help_text }}" ></i>
-                                        {{ form_profile.comuna.label_tag }}
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.comuna.help_text }}" ></i>
+										{{ form_profile.comuna.label_tag }}
 									</span>
-                                    {{ form_profile.comuna }}
+									{{ form_profile.comuna }}
 									<div class="container-error">
 										{{ form_profile.comuna.errors }}
 									</div>
 								</div>
 
 								<div class="form-group col-sm-4">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.direccion.help_text }}" ></i>
-                                        {{ form_profile.direccion.label_tag }}
-                                    </span>
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.direccion.help_text }}" ></i>
+										{{ form_profile.direccion.label_tag }}
+									</span>
 									{{ form_profile.direccion }}
 									<div class="container-error">
 										{{ form_profile.direccion.errors }}
@@ -157,10 +165,10 @@
 								</div>
 
 								<div class="form-group col-sm-8">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.descripcion.help_text }}" ></i>
-                                        {{ form_profile.descripcion.label_tag }}
-                                    </span>
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_profile.descripcion.help_text }}" ></i>
+										{{ form_profile.descripcion.label_tag }}
+									</span>
 									{{ form_profile.descripcion }}
 									<div class="container-error">
 										{{ form_profile.descripcion.errors }}
@@ -171,7 +179,7 @@
 
 						<div class="row">
 							<div class="col-sm-12">
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit" style="margin-right: 15px;">Actualizar</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">Actualizar</button>
 							</div>
 						</div>
 					</form>
@@ -180,66 +188,131 @@
 			</div>
 		</div>
 
-		<div class="col-md-8">
-			<div class="ibox float-e-margins border-bottom">
+
+
+
+
+		<div class="col-md-12">
+			<div class="ibox float-e-margins">
+
 				<div class="ibox-title">
-					<h5>Actualizar Contraseña</h5>
+					<h5>Actualizar Información General</h5>
 					<div class="ibox-tools">
 						<a class="collapse-link">
-							<i class="fa fa-chevron-down"></i>
+							<i class="fa fa-chevron-up"></i>
 						</a>
 					</div>
 				</div>
-
-				<div class="ibox-content" style="display: none;">					
-					<form id="form-update-password" action="update-password" role="form" method="post">
+				<div class="ibox-content">
+					<form id="form-update-profile" action="update-profile" role="form" method="post">
 						{% csrf_token %}
+
 						<div class="row">
 							<div class="col-sm-12">
-
-								<div class="form-group col-sm-4">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_password.password_actual.help_text }}" ></i>
-                                        {{ form_password.password_actual.label_tag }}
-                                    </span>
-									{{ form_password.password_actual }}
+								<div class="form-group col-sm-12">
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_owncloud.url.help_text }}" ></i>
+										{{ form_owncloud.url.label_tag }}
+									</span>
+									{{ form_owncloud.url }}
 									<div class="container-error">
-										{{ form_password.password_actual.errors }}
+										{{ form_owncloud.url.errors }}
 									</div>
 								</div>
 
-								<div class="form-group col-sm-4">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_password.password_nueva.help_text }}" ></i>
-                                        {{ form_password.password_nueva.label_tag }}
-                                    </span>
-									{{ form_password.password_nueva }}
+								<div class="form-group col-sm-6">
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_owncloud.usuario.help_text }}" ></i>
+										{{ form_owncloud.usuario.label_tag }}
+									</span>
+									{{ form_owncloud.usuario }}
 									<div class="container-error">
-										{{ form_password.password_nueva.errors }}
+										{{ form_owncloud.usuario.errors }}
 									</div>
 								</div>
 
-								<div class="form-group col-sm-4">
-                                    <span>
-                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_password.password_copia.help_text }}" ></i>
-                                        {{ form_password.password_copia.label_tag }}
-                                    </span>
-									{{ form_password.password_copia }}
+								<div class="form-group col-sm-6">
+									<span>
+										<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form_owncloud.password.help_text }}" ></i>
+										{{ form_owncloud.password.label_tag }}
+									</span>
+									{{ form_owncloud.password }}
 									<div class="container-error">
-										{{ form_password.password_copia.errors }}
+										{{ form_owncloud.password.errors }}
 									</div>
 								</div>
+
 							</div>
 						</div>
 
 						<div class="row">
 							<div class="col-sm-12">
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit" style="margin-right: 15px;">Actualizar</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">Actualizar</button>
 							</div>
 						</div>
 					</form>
+
 				</div>
 			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- modal: actualizar contraseña -->
+<div class="modal fade" id="m-form-password" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Actualizar Contraseña</h4>
+			</div>
+			<form id="form-update-password" action="update-password" role="form" method="post">
+				{% csrf_token %}
+
+				<div class="modal-body">
+					<div class="row">
+
+						<div class="form-group col-sm-12">
+							<span>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="ingresar nueva contraseña, 8 caracteres mínimo"></i>
+								{{ form_password.password_actual.label_tag }}
+							</span>
+							{{ form_password.password_actual }}
+							<div class="container-error">
+								{{ form_password.password_actual.errors }}
+							</div>
+						</div>
+
+						<div class="form-group col-sm-12">
+							<span>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="ingresar nueva contraseña, 8 caracteres mínimo"></i>
+								{{ form_password.password_nueva.label_tag }}
+							</span>
+							{{ form_password.password_nueva }}
+							<div class="container-error">
+								{{ form_password.password_nueva.errors }}
+							</div>
+						</div>
+
+						<div class="form-group col-sm-12">
+							<span>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="repetir contraseña ingresada"></i>
+								{{ form_password.password_copia.label_tag }}
+							</span>
+							{{ form_password.password_copia }}
+							<div class="container-error">
+								{{ form_password.password_copia.errors }}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+					<button type="submit" class="btn btn-w-m btn-sm btn-primary pull-right">GUARDAR</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
@@ -266,7 +339,7 @@ function initialize(){
 		$("input[name=avatar]").trigger('click');
 	});
 
-    $('[data-toggle="tooltip"]').tooltip();
+	$('[data-toggle="tooltip"]').tooltip();
 }
 
 function update_profile(){

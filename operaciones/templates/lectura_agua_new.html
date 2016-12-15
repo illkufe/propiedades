@@ -95,18 +95,20 @@
 {% block scripts %}
 <script>
 
+var accion = "{{accion}}"
+
 $(document).ready(function(){
-
 	intialize()
-
 });
 
 function intialize(){
 
 	var fecha = new Date();
 
-	$('#form-lectura-medidor select[name="mes"]').val(fecha.getMonth() + 1)
-	$('#form-lectura-medidor input[name="anio"]').val(fecha.getFullYear())	
+	if (accion == 'create') {
+		$('#form-lectura-medidor select[name="mes"]').val(fecha.getMonth() + 1)
+		$('#form-lectura-medidor input[name="anio"]').val(fecha.getFullYear())	
+	};
 
 }
 

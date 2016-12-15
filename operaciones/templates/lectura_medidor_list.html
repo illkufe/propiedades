@@ -373,8 +373,8 @@ function load_data_tabla_lecturas() {
                     var url_gas     = 'lectura-'+ data[i].gas[c].url
 
                     options_gas += '<div class="text-center">'
-                    options_gas += '<a class="btn btn-edit btn-bitbucket" href="/lectura-'+data[i].gas[c].url+'/update/'+data[i].gas[c].id+'"><i class="fa fa-edit"></i></a>'
-                    options_gas += '<a class="btn btn-delete btn-bitbucket" onclick="open_modal_delete(this, '+data[i].gas[c].id+',\''+url_gas+'\', \''+tabla+'\', \''+lectura+'\')"><i class="fa fa-trash"></i></a>'
+                    options_gas += '<a class="btn btn-default btn-bitbucket" href="/lectura-'+data[i].gas[c].url+'/update/'+data[i].gas[c].id+'"><i class="fa fa-edit"></i></a>'
+                    options_gas += '<a class="btn btn-default btn-bitbucket" onclick="open_modal_delete(this, '+data[i].gas[c].id+',\''+url_gas+'\', \''+tabla+'\', \''+lectura+'\')"><i class="fa fa-trash"></i></a>'
 
                     if(data[i].gas[c].image != '') {
                         options_gas += '<a class="btn btn-default btn-bitbucket" href="/media/'+data[i].gas[c].image +'" download><i class="fa fa-eye"></i></a>'

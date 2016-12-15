@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, UpdateView, DeleteView
 from locales.models import *
-from utilidades.views import formato_moneda_local
+from utilidades.views import *
 from utilidades.plugins.owncloud import *
 from .forms import *
 from .models import *
@@ -167,7 +167,7 @@ class ActivoUpdate(ActivoMixin, UpdateView):
 class ActivoDocuments(ListView):
 
 	model 			= Activo
-	template_name 	= 'activo_documents.html'
+	template_name 	= 'documents.html'
 
 	def get_context_data(self, **kwargs):
 
@@ -176,17 +176,18 @@ class ActivoDocuments(ListView):
 		context['subtitle'] = 'activo'
 		context['name'] 	= 'documentos'
 		context['href'] 	= '/activos/list'
+
+		# activo
+		activo = Activo.objects.get(id=self.kwargs['pk'])
+
+		# info for owncloud
 		context['id'] 		= int(self.kwargs['pk'])
+		context['url'] 		= 'Iproperty/Activos'
+		context['model'] 	= 'activo'
 
-		activo 	= Activo.objects.get(id=self.kwargs['pk'])
-		data 	= oc_list_directory(str(activo.nombre), 'Iproperty/Activos/'+str(activo.nombre))
-
-		if data['status'] is False:
-			oc_create_directory('Iproperty/Activos',str(activo.nombre))
-
+		owncloud_create_path(self.request, ['Iproperty', 'Activos', str(activo.nombre)])
 
 		return context
-
 
 
 # gasto mensual (gasto común)
@@ -450,7 +451,6 @@ class ACTIVOS(View):
 				})
 
 		return JsonResponse(data, safe=False)
-
 
 class GET_ACTIVO_DOCUMENTS(View):
 

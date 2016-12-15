@@ -452,13 +452,11 @@ def facturas_generadas(self):
 
 #Facturas
 class PropuestaProcesarPortalClienteList(ListView):
+
 	model           = Factura
 	template_name   = 'portal_cliente/propuesta_procesar_list.html'
 
 	def get_context_data(self, **kwargs):
-
-		users       = self.request.user.userprofile.cliente.empresa.userprofile_set.all().values_list('user_id', flat=True)
-		propuestas  = Factura.objects.filter(user__in=users).values_list('id', flat=True)
 
 		context = super(PropuestaProcesarPortalClienteList, self).get_context_data(**kwargs)
 		context['title']    = 'Facturas / Pedidos'
@@ -466,8 +464,6 @@ class PropuestaProcesarPortalClienteList(ListView):
 		context['name']     = 'lista'
 		context['href']     = '/'
 
-		context['facturas_procesadas'] = Factura.objects.filter(propuesta__in=propuestas,
-                                                                estado_id__in=[2, 4, 5],
-																visible=True)
+		context['facturas_procesadas'] = Factura.objects.filter(contrato__cliente=self.request.user.userprofile.cliente, estado_id__in=[2, 4, 5], visible=True)
 
 		return context

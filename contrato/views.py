@@ -280,7 +280,7 @@ class ContratoDelete(DeleteView):
 class ContratoDocuments(ListView):
 
 	model 			= Contrato
-	template_name 	= 'contrato_documents.html'
+	template_name 	= 'documents.html'
 
 	def get_context_data(self, **kwargs):
 
@@ -289,24 +289,18 @@ class ContratoDocuments(ListView):
 		context['subtitle'] = 'contrato'
 		context['name'] 	= 'documentos'
 		context['href'] 	= '/contrato/list'
+
+		# contrato
+		contrato 			= Contrato.objects.get(id=self.kwargs['pk'])
+
+		# info for owncloud
 		context['id'] 		= int(self.kwargs['pk'])
+		context['url'] 		= 'Iproperty/Clientes/'+str(contrato.cliente.nombre)
+		context['model'] 	= 'contrato'
 
-		# check folder
-		contrato 		= Contrato.objects.get(id=self.kwargs['pk'])
-		folder_cliente 	= oc_list_directory(str(contrato.nombre_local), 'Iproperty/Clientes/'+str(contrato.cliente.nombre))
-
-		if folder_cliente['status'] is False:
-
-			oc_create_directory('Iproperty/Clientes', str(contrato.cliente.nombre))
-
-			folder_contrato = oc_list_directory(str(contrato.nombre_local), 'Iproperty/Clientes/'+str(contrato.cliente.nombre)+'/'+str(contrato.nombre_local))
-
-			if folder_contrato['status'] is False:
-
-				oc_create_directory('Iproperty/Clientes/'+str(contrato.cliente.nombre), str(contrato.nombre_local))
+		owncloud_create_path(self.request, ['Iproperty', 'Clientes', str(contrato.cliente.nombre), str(contrato.nombre_local)])
 
 		return context
-
 
 
 # propuesta

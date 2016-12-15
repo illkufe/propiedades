@@ -151,8 +151,9 @@
 										</div>
 									</div>
 								</div>
-
-								<p class="m-t m-b-lg">(*) campos obligatorios</p>
+								
+								<p class="m-t">el cliente es obligatorio cuando se escoje el tipo de usuario "cliente"</p>
+								<p class="m-b-lg">(*) campos obligatorios</p>
 								
 								<button id="submit-form-user" class="btn btn-w-m btn-sm btn-primary pull-right m-l" type="button">GUARDAR</button>
 								<a href="/usuarios/list" class="btn btn-w-m btn-sm btn-default pull-right">CANCELAR</a>
@@ -177,7 +178,28 @@ $(document).ready(function(){
 
 
 function initialize(){
+
 	$('#submit-form-user').click(submit_form_user)
+
+	if ($('#id_tipo').val() == '2'){
+		$('#id_cliente').attr('disabled', false)
+	}else{
+		$('#id_cliente').attr('disabled', true)
+	}
+
+	if ("{{accion}}" == 'update') {
+		$('#id_email').attr('readonly', true)
+		$('#id_username').attr('readonly', true)
+	};
+
+	$('#id_tipo').change(function(){
+		if ($(this).val() == '2'){
+			$('#id_cliente').attr('disabled', false)
+		}else{
+			$('#id_cliente').val('')
+			$('#id_cliente').attr('disabled', true)
+		}
+	})
 }
 
 function submit_form_user(){
@@ -188,13 +210,15 @@ function submit_form_user(){
 
 			var template 	= ''
 			var title 		= 'Usuario <small>editado</small>'
+			template 		+= '<p>'+data.nombre+' '+data.apellido+'</p>'
+			template 		+= '<p>'+data.email+'</p>'
 
 			if (data.tipo == 'create') {
-				title = 'Usuario <small>creado</small>'
-				template += '<p>'+data.nombre+' '+data.apellido+'</p>'
-				template += '<p>'+data.email+'</p>'
-				template += '<p>Contraseña: <strong>'+data.password+'</strong></p>'
-				template += '<p style="margin-top:10px">Se envio un correo al usuario creado</p>'
+
+				form_clear_fields('#form-user-new')
+
+				title 		= 'Usuario <small>creado</small>'
+				template 	+= '<p>Contraseña: <strong>'+data.password+'</strong></p>'
 			};
 
 			swal({
@@ -207,15 +231,11 @@ function submit_form_user(){
 				confirmButtonText: data.tipo == 'create' ? "Nuevo Usuario" : "Seguir Editando",
 				cancelButtonText: 'Ver Usuarios',
 			}).then(function() {
-				console.log('then')
 				if (data.tipo == 'create') {
 					window.location.href = "/usuarios/new";
 				}
 			}, function(dismiss) {
-				console.log(dismiss)
-				console.log('1')
 				if (dismiss === 'cancel') {
-					console.log('2')
 					window.location.href = "/usuarios/list";
 				}
 			})
