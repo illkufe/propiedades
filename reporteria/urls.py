@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
@@ -35,6 +35,5 @@ urlpatterns = [
 
 	# reporte garantias por local
 	url(r'^reportes/garantia-local/$', csrf_exempt(views.REPORTE_GARANTIA_LOCAL.as_view()),name='reporte_garantia_local'),
-	url(r'^reportes/garantia-local/excel/$', views.ingreso_activo_xls,name='reporte_ingreso_activo_excel'),
-	url(r'^reportes/garantia-local/pdf/$', views.ingreso_activo_pdf, name='reporte_ingreso_activo_pdf'),
+	url(r'^reportes/garantia-local/reporte/$', csrf_exempt(views.garantias_local_reporte), name='garantias_local_reporte'),
 ]

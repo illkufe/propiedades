@@ -41,7 +41,7 @@ class FormIngresoMetrosCuadrados(forms.Form):
 		)
 
 	cantidad = forms.ChoiceField(
-		choices = CANTIDAD_PERIODO,
+		choices = CANTIDAD_PERIODO[:6],
 		widget = forms.Select(attrs={'class': 'form-control selectpicker', 'title':'seleccionar'}),
 		label = 'Cantidad de Periodos',
 		help_text = 'cantidad de periodos antecesores al período actual'

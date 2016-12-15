@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse_lazy
 from django.core.mail import send_mail
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
