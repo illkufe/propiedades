@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from administrador.models import Empresa
+from administrador.models import *
 from activos.models import Activo
 
 # modelos
@@ -34,12 +34,6 @@ class Concepto(models.Model):
 	nombre 				= models.CharField(max_length=250)
 	codigo 				= models.CharField(max_length=10)
 	iva 				= models.BooleanField(default=False)
-	codigo_documento 	= models.CharField(max_length=100, blank=True)
-	codigo_producto 	= models.CharField(max_length=100, blank=True)
-	codigo_1 			= models.CharField(max_length=100, blank=True) # cuenta contable
-	codigo_2 			= models.CharField(max_length=100, blank=True) # area
-	codigo_3 			= models.CharField(max_length=100, blank=True) # centro de costo
-	codigo_4 			= models.CharField(max_length=100, blank=True) # item
 	descripcion 		= models.TextField(blank=True)
 
 	# atributos (por defecto)
@@ -50,6 +44,7 @@ class Concepto(models.Model):
 	# relaciones
 	concepto_tipo 	= models.ForeignKey(Concepto_Tipo)
 	empresa 		= models.ForeignKey(Empresa)
+	configuracion 	= models.ManyToManyField(Cliente, through='Configuracion_Concepto')
 
 	def __str__(self):
 		return self.nombre
@@ -57,3 +52,26 @@ class Concepto(models.Model):
 	class Meta:
 		verbose_name 		= 'Concepto'
 		verbose_name_plural = 'Conceptos'
+
+
+class Configuracion_Concepto(models.Model):
+
+	# atributos (generales)
+	estado 				= models.BooleanField(default=False)
+	codigo_documento 	= models.CharField(max_length=100)
+	codigo_producto 	= models.CharField(max_length=100)
+	codigo_1 			= models.CharField(max_length=100, blank=True) # cuenta contable
+	codigo_2 			= models.CharField(max_length=100, blank=True) # area
+	codigo_3 			= models.CharField(max_length=100, blank=True) # centro de costo
+	codigo_4 			= models.CharField(max_length=100, blank=True) # item
+
+	# relaciones
+	concepto 	= models.ForeignKey(Concepto)
+	cliente 	= models.ForeignKey(Cliente)
+
+	def __str__(self):
+		return self.cliente.nombre+' - '+self.concepto.nombre
+
+	class Meta:
+		verbose_name 		= 'Miembro de Alerta'
+		verbose_name_plural = 'Miembros de Alertas'
