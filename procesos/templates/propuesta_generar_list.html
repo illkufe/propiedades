@@ -211,12 +211,32 @@
 									<div id="seccion-seleccionar-contratos" class="panel-body hide">
 
 										<div class="row">
-											<div class="col-xs-12">
-												<p class="m-t-md m-b-md">
-													<strong>Descripción :</strong> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-												</p>
-											</div>
+                                            <div class="col-sm-3">
+                                                <p>
+                                                    <i class="fa fa-check-circle info-succes"></i>
+                                                    <span> concepto facturado</span>
+                                                </p>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <p>
+                                                    <i class="fa fa-times-circle info-error"></i>
+                                                    <span> concepto no facturado</span>
+                                                </p>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <p>
+                                                    <i class="fa fa-times-circle info-error-config"></i>
+                                                    <span> concepto no configurado</span>
+                                                </p>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <p>
+                                                    <i class="fa fa-minus-square info-none"></i>
+                                                    <span> concepto no asociado al contrato</span>
+                                                </p>
+                                            </div>
 										</div>
+                                        <br>
 
 										<div class="row">
 											<div class="col-xs-12">
@@ -457,8 +477,8 @@ function form_filtrar_contratos(){
 					notification_toast(configuracion)
 				}
 			});
-}
-})
+        }
+    })
 }
 
 function form_generar_propuesta(){
@@ -516,35 +536,45 @@ function form_generar_propuesta(){
 				success: function(data){
 
 					loading(false)
+                    //agregar validacion de configuracion de conceptos
+                    if (data[0].estado == false){
+                        var configuracion = {
+                            'toast_type'	: 'warning',
+                            'toast_text' 	: data[0].mensaje,
+                            'toast_title' 	: 'Advertencia',
+                        }
+                        notification_toast(configuracion)
+                    }else{
 
-					$('#m-generar-propuesta').modal('hide')
-					$('#form-validar-propuesta input[name="mes"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="mes"]').val())
-					$('#form-validar-propuesta input[name="anio"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="anio"]').val())
-					$('#form-validar-propuesta input[name="nombre"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="nombre"]').val())
-					$('#form-validar-propuesta input[name="uf_valor"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_valor"]').val())
-					$('#form-validar-propuesta input[name="uf_modificada"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_modificada"]').prop('checked'))
+                        $('#m-generar-propuesta').modal('hide')
+                        $('#form-validar-propuesta input[name="mes"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="mes"]').val())
+                        $('#form-validar-propuesta input[name="anio"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="anio"]').val())
+                        $('#form-validar-propuesta input[name="nombre"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="nombre"]').val())
+                        $('#form-validar-propuesta input[name="uf_valor"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_valor"]').val())
+                        $('#form-validar-propuesta input[name="uf_modificada"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_modificada"]').prop('checked'))
 
-					// mostrar y cerrar secciones
-					$('#seccion-validar-propuesta').removeClass('hide')
-					$('#collapse-1').collapse('hide')
-					$('#collapse-2').collapse('hide')
-					$('#collapse-3').collapse('show')
-					$('[data-toggle="tooltip"]').tooltip()
+                        // mostrar y cerrar secciones
+                        $('#seccion-validar-propuesta').removeClass('hide')
+                        $('#collapse-1').collapse('hide')
+                        $('#collapse-2').collapse('hide')
+                        $('#collapse-3').collapse('show')
+                        $('[data-toggle="tooltip"]').tooltip()
 
-					var configuracion = {
-						'toast_type'	: 'success',
-						'toast_text' 	: 'propuesta generada',
-						'toast_title' 	: 'Correcto',
-					}
-					notification_toast(configuracion)
-					cargar_propuesta(data)
+                        var configuracion = {
+                            'toast_type'	: 'success',
+                            'toast_text' 	: 'propuesta generada',
+                            'toast_title' 	: 'Correcto',
+                        }
+                        notification_toast(configuracion)
+                        cargar_propuesta(data)
+                    }
 				},
 				error: function(){
 					loading(false)
 				}
 			});
-		}
-	})
+}
+})
 }
 
 function load_tabla_contratos(conceptos){
@@ -610,8 +640,8 @@ function data_tabla_contratos(data){
 	for (var i = 0; i < data.length; i++) {
 		
 		row = {}
+		var status = false
 
-		row['opciones'] = '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'" onchange="seleccionar_uno()"></div>'
 		row['numero']	= data[i].numero
 		row['nombre']	= data[i].nombre
 		row['cliente']	= data[i].cliente
@@ -624,20 +654,26 @@ function data_tabla_contratos(data){
 			if (data[i].conceptos[j].asociado == true) {
 				if (data[i].conceptos[j].valido.estado == true) {
 					template += '<i class="fa fa-check-circle info-succes"></i>'
+                    status    = true
 				}else{
 					if (data[i].conceptos[j].valido.tipo == null) {
 						template += '<i class="fa fa-times-circle info-error" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
 					} else{
 						template += '<i class="fa fa-times-circle info-error-config" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
-					};
-					
+					}
 				}
 			}else{
-				template += '<i class="fa fa-minus-square info-none"></i>'
+				template += '<i class="fa fa-minus-square info-none" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
 			}
 
 			template += '</div>'
 			row[data[i].conceptos[j].id] = template
+
+            if(status == true){
+			    row['opciones'] = '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'" onchange="seleccionar_uno()"></div>'
+            }else{
+                row['opciones'] = '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'" onchange="seleccionar_uno()" disabled="disabled"></div>'
+            }
 
 		}
 		rows.push(row)
@@ -732,7 +768,9 @@ function seleccionar_todo(obj){
 	}
 
 	$('.checkbox-contrato', tabla.fnGetNodes()).each(function(i){
-		$(this).prop('checked', all)
+	    if(!$(this).is(':disabled')){
+            $(this).prop('checked', all)
+        }
 	})
 }
 
@@ -770,13 +808,14 @@ function template_propuesta(contrato){
 
 	var template = ''
 
-	template += '<div data-id="@contrato_id" class="ibox-content" style="display: block;">'
+	template += '<div data-id="@contrato_id" data-numero-doc="@documento_numero" class="ibox-content" style="display: block;">'
 
 	template += '<div class="contrato-informacion">'
 	template += '<p><span>Nº Contrato</span><span>@contrato_numero</span></p>'
 	template += '<p><span>Cliente</span><span>@cliente_nombre</span></p>'
 	template += '<p><span>RUT</span><span>@cliente_rut</span></p>'
 	template += '<p><span>Marca comercial</span><span>@contrato_nombre</span></p>'
+    template += '<p><span>Nº Documento</span><span>@documento_numero</span></p>'
 	template += '</div>'
 
 	template += '<div class="container-tabla">'
@@ -812,6 +851,7 @@ function template_propuesta(contrato){
 	template = template.replace(/@cliente_nombre/g, 	contrato.cliente.nombre);
 	template = template.replace(/@cliente_rut/g, 		contrato.cliente.rut);
 	template = template.replace(/@contrato_nombre/g, 	contrato.nombre);
+	template = template.replace(/@documento_numero/g, 	contrato.numero_documento);
 
 	return template
 }
@@ -838,9 +878,11 @@ function validar_form_propuesta(){
 			// armar data
 			$("#container-propuesta .ibox-content").each(function (index){
 
-				var contrato 		= {}
-				contrato.id 		=  $(this).data("id")
-				contrato.conceptos 	=  []
+				var contrato 		        = {}
+				contrato.id 		        =  $(this).data("id")
+                contrato.numero_documento   =  $(this).data("data-numero-doc")
+				contrato.conceptos 	        =  []
+
 
 				$('#tabla-conceptos-'+contrato.id+' > tbody > tr').each(function(){
 
@@ -910,8 +952,8 @@ function validar_form_propuesta(){
 					loading(false)
 				}
 			})
-		}
-	})
+        }
+    })
 
 	// agregar validacion a los campos nombre
 	$("#form-validar-propuesta [name^=nombre]").each(function () {
@@ -934,9 +976,6 @@ function validar_form_propuesta(){
 	});
 
 }
-
-
-
 
 </script>
 

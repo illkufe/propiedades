@@ -56,7 +56,7 @@ def call_service(url):
     logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
 
     try:
-        client = Client(url, timeout=5)
+        client = Client(url, timeout=30)
     except suds.WebFault as detail:
         error = str(detail.fault)
     except Exception as e:
@@ -237,12 +237,12 @@ def crear_xml_documento(**kwargs):
                     tipo_documento_liq      = SubElement(registro_detalle, 'TpoDocLiq').text        = d['tipo_documento_liq']
                     indicador_exencion      = SubElement(registro_detalle, 'IndExe').text           = d['ind_exencion']
                     nombre_item             = SubElement(registro_detalle, 'NmbItem').text          = d['nombre_item']
-                    descripcion_item        = SubElement(registro_detalle, 'DescItem').text          = d['descripcion_item']
+                    descripcion_item        = SubElement(registro_detalle, 'DescItem').text         = d['descripcion_item']
                     cantidad_referencia     = SubElement(registro_detalle, 'QtyRef').text           = d['cantidad_referencia']
                     unidad_referencia       = SubElement(registro_detalle, 'UnmdRef').text          = d['unidad_medida_ref']
                     precio_referencia       = SubElement(registro_detalle, 'PrcRef').text           = d['precio_referencia']
                     cantidad                = SubElement(registro_detalle, 'QtyItem').text          = d['cantidad_item']
-                    fecha_elaboracion       = SubElement(registro_detalle, 'FchaElabor').text        = d['fecha_elaboracion']
+                    fecha_elaboracion       = SubElement(registro_detalle, 'FchaElabor').text       = d['fecha_elaboracion']
                     fecha_vencimiento_prod  = SubElement(registro_detalle, 'FchVencim').text        = d['fecha_vencimiento_prod']
                     unidad_medida           = SubElement(registro_detalle, 'UnmdItem').text         = d['unidad_medida']
                     precio_unitario         = SubElement(registro_detalle, 'PrcItem').text          = d['precio_unitario']
@@ -2195,7 +2195,6 @@ def armar_xml_inet(request):
 
     return resultado
 
-
 def armar_xml_inet_docvta(request):
 
     var_post        = request.POST.copy()
@@ -2315,11 +2314,13 @@ def armar_xml_inet_docvta(request):
 
             Producto = etree.SubElement(Item, 'Producto')
 
-            Producto_Vta        = etree.SubElement(Producto, 'Producto_Vta').text   = str(d.concepto.codigo_producto).strip()
+            configuracion       = d.concepto.configuracion_concepto_set.filter(cliente=factura.contrato.cliente)
+
+            Producto_Vta        = etree.SubElement(Producto, 'Producto_Vta').text   = '' if not configuracion else str(configuracion.codigo_producto).strip()
             Producto_Vta_Desc   = etree.SubElement(Producto, 'Descripcion').text    = str(d.concepto.nombre).upper()
             Unidad              = etree.SubElement(Producto, 'Unidad').text         = 'Unid'
             Unidad_Desc         = etree.SubElement(Producto, 'Unidad_Dsc')
-            Agrupacion          = etree.SubElement(Producto, 'Agrupacion').text     = str(d.concepto.codigo_producto).strip()
+            Agrupacion          = etree.SubElement(Producto, 'Agrupacion').text     = '' if not configuracion else str(configuracion.codigo_producto).strip()
 
 
             etree.SubElement(Item, 'FechaEntrega').text = '0'

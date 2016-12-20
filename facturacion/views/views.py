@@ -1088,9 +1088,6 @@ def carga_folios_electronicos(request):
         'error'     : ""
     })
 
-
-
-
 class FoliosElectronicosList(ListView):
     model           = ParametrosFacturacion
     template_name   = 'carga_caf/carga_folios_electronicos_list.html'
@@ -1316,7 +1313,6 @@ def envio_documento_tributario_electronico(**kwargs):
 
                 ##Creacion de xml-------------------------------------------------------------------------------------------
                 error_creacion, xml = crear_xml_documento(**kwargs)
-                print(xml)
 
                 if not error_creacion:
                     ##Obtener datos de conexion IDTE -----------------------------------------------------------------------
@@ -1660,7 +1656,6 @@ def envio_documento_tributario_electronico(**kwargs):
             'ruta_archivo': '',
         }
         return data
-
 
 def actualizar_estados_documentos_sii_lease():
 
@@ -3602,6 +3597,15 @@ def armar_dict_documento(request):
 
         for d in detalle:
 
+            lista_codigos_items = list()
+            configuracion       = d.concepto.configuracion_concepto_set.filter(cliente=factura_xml.contrato.cliente)
+
+            lista_codigos_items.append({
+                'valor_codigo_item' : '' if not configuracion else configuracion.codigo_producto,
+                'tipo_codigo_item'  : 'INT'
+            })
+
+
             lista_detalle.append({
                 'nro_linea'                 : str(linea),
                 'tipo_documento_liq'        : '',
@@ -3625,7 +3629,7 @@ def armar_dict_documento(request):
                 'monto_item'                : format_number(request, d.total, False),
                 'item_espectaculo'          : '',
                 'rut_mandante_b'            : '',
-                'codigos_items'             : '',  # lista_codigos_items,
+                'codigos_items'             : lista_codigos_items,  # lista_codigos_items,
                 'info_ticket'               : '',  # lista_infoticket
                 'otras_monedas_detalle'     : '',  # lista_otra_moneda_detalle
                 'retenedor_detalle'         : '',  # lista_retenedor_detalle
@@ -3646,7 +3650,7 @@ def armar_dict_documento(request):
             'monto_base'            : '0',          ## Monto Informado >0
             'monto_margen_comerc'   : '0',          ## Monto informado
             'tasa_iva'              : '19',         ## Tasa iva
-            'iva'                   : valores[1],     ## Monto neto * tasa IVA
+            'iva'                   : valores[1],   ## Monto neto * tasa IVA
             'iva_propio'            : '0',          ## < que IVA
             'iva_terceros'          : '0',          ## < que IVA
             'iva_no_retenido'       : '0',          ## IVA - IVA retenido
@@ -3655,7 +3659,7 @@ def armar_dict_documento(request):
             'valor_comision_neto'   : '0',          ## Suma detalles valores comision
             'valor_comision_exento' : '0',          ## Suma detalles valores comisiones y otros cargos no afectos o exentos
             'valor_comision_iva'    : '0',          ## Suma detalle iva valor comision y otros cargos
-            'monto_total'           : valores[2], ## Monto total documento
+            'monto_total'           : valores[2],   ## Monto total documento
             'monto_no_facturable'   : '0',          ## Suma monto bienes o servicios con indicador facturacion
             'monto_periodo'         : '0',          ## Monto total + monto no facturable
             'saldo_anterior'        : '0',          ## Saldo anterior. * Solo con fines de ilustrar claridad de cobros

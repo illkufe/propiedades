@@ -42,8 +42,8 @@ class ContratoTipoForm(forms.ModelForm):
 
 class ContratoForm(forms.ModelForm):
 
-	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha en la cual quedará registrado su ingreso de contrato')
-	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Inicio de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha donde comenzará a regir el contrato, está fecha sera tomada en cuenta al monento de facturar')
+	fecha_contrato		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Corresponde a la fecha en la cual quedará registrado en el sistema el ingreso de contrato')
+	fecha_inicio		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Inicio de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha en la cuál comenzará a regir el contrato. Está fecha será tomada en cuenta al momento de la facturación')
 	fecha_termino		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Término de Contrato', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha que pondrá término a la vigencia del contrato.')
 	fecha_inicio_renta	= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Inicio de Renta',error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha en que se dará comienzo al cobro del arriendo del o los local(es)')
 	fecha_entrega		= forms.DateField(input_formats=['%d/%m/%Y'],widget=forms.TextInput(attrs={'class': 'form-control format-date'}), label='Fecha de Entrega Local', error_messages={'required': 'campo requerido', 'invalid': 'campo invalido'}, help_text='Fecha en la cual el propietario hace entrega del local(es) al cliente')
@@ -115,16 +115,16 @@ class ContratoForm(forms.ModelForm):
 		}
 
 		help_texts = {
-			'bodega'				: 'Establece si el contrato tendra asociado bodega(s)',
-			'numero'				: 'Identificador único del contrato',
+			'bodega'				: 'Establece si el contrato tendrá asociado bodega(s)',
+			'numero'				: 'Número de identificación único del contrato',
 			'meses_contrato'		: 'Cantidad de meses que se arrendará el o los local(es)',
 			'meses_aviso_comercial'	: 'Cantidad de meses previos al término de contrato, para dar aviso al área comercial',
 			'meses_remodelacion'	: 'Cantidad de Meses Para Remodelación Local',
-			'nombre_local'			: 'Corresponde al termino, simbolo, etc. que identifica a las empresas que existen en el mercado.',
+			'nombre_local'			: 'Corresponde al nombre, término o  símbolo que identifica a las empresas que existen en el mercado.',
 			'destino_comercial'		: 'Descripción de la actividad que realizará el local',
-			'tipo' 					: 'Corresponde al tipo de contrato',
+			'tipo' 					: 'Corresponde al tipo de contrato establecido en la negociación. Por ejemplo: “Contrato arrendamiento mensual tienda mayor”',
 			'cliente'				: 'Persona natural o jurídica a la cual se le asigna el contrato',
-			'locales'				: 'Locales Asociados a Contrato',
+			'locales'				: 'Locales asociados al contrato',
 			'conceptos'				: 'Conceptos que serán facturados para el contrato',
 		}
 
@@ -137,7 +137,7 @@ class ContratoForm(forms.ModelForm):
 			if Contrato.objects.filter(numero=numero, visible=True).exists():
 				raise forms.ValidationError('Ya existe un contrato con este número.')
 		else:
-			if numero != Contrato.objects.get(id=self.instance.id).nombre and Contrato.objects.filter(numero=numero, visible=True).exists():
+			if numero != Contrato.objects.get(id=self.instance.id).numero and Contrato.objects.filter(numero=numero, visible=True).exists():
 				raise forms.ValidationError('Ya existe un contrato con este número.')
 
 		return numero
