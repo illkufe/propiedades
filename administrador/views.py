@@ -173,6 +173,30 @@ class ClienteDelete(DeleteView):
 		payload = {'delete': 'ok'}
 		return JsonResponse(payload, safe=False)
 
+
+# configuración conceptos
+class ConfiguracionConceptoList(ListView):
+
+	model 			= Cliente
+	template_name 	= 'configuracion_concepto_list.html'
+
+	def get_context_data(self, **kwargs):
+
+		context 			= super(ConfiguracionConceptoList, self).get_context_data(**kwargs)
+		context['title'] 	= modulo
+		context['subtitle'] = 'clientes'
+		context['name'] 	= 'lista'
+		context['href'] 	= '/clientes/list'
+		
+		return context
+
+	def get_queryset(self):
+
+		queryset = Cliente.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+		return queryset
+
+
 def obtener_clasificacion(self, cliente_id):
 	cabeceras = self.request.user.userprofile.empresa.clasificacion_set.filter(visible=True, tipo_clasificacion=2)
 	cabecera = list()

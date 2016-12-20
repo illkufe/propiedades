@@ -570,35 +570,49 @@ def factura_pdf(request, pk=None):
 
 def validar_concepto(contrato, concepto, fecha):
 
-	if concepto.concepto_tipo.id == 1:
-		return validar_arriendo_minimo(contrato, concepto, fecha)
+	configuracion = validar_concepto_configuracion(contrato, concepo)
 
-	elif concepto.concepto_tipo.id == 2:
-		return validar_arriendo_variable(contrato, concepto, fecha)
+	if configuracion['status'] is True:
 
-	elif concepto.concepto_tipo.id == 3:
-		return validar_gasto_comun(contrato, concepto, fecha)
+		if concepto.concepto_tipo.id == 1:
+			return validar_arriendo_minimo(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 4:
-		return validar_servicios_basicos(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 2:
+			return validar_arriendo_variable(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 5:
-		return validar_cuota_de_incorporacion(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 3:
+			return validar_gasto_comun(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 6:
-		return validar_gasto_asociado(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 4:
+			return validar_servicios_basicos(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 7:
-		return validar_arriendo_bodega(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 5:
+			return validar_cuota_de_incorporacion(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 8:
-		return validar_servicios_varios(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 6:
+			return validar_gasto_asociado(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 9:
-		return validar_multas(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 7:
+			return validar_arriendo_bodega(contrato, concepto, fecha)
 
+		elif concepto.concepto_tipo.id == 8:
+			return validar_servicios_varios(contrato, concepto, fecha)
+
+		elif concepto.concepto_tipo.id == 9:
+			return validar_multas(contrato, concepto, fecha)
+
+		else:
+			return True
 	else:
-		return True
+		return configuracion
+
+
+def validar_concepto_configuracion(contrato, concepto):
+	return {
+		'estado'	: estado,
+		'tipo'		: 1,
+		'mensaje'	: mensajes[mensaje],
+	}
 
 def validar_arriendo_minimo(contrato, concepto, periodo):
 

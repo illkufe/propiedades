@@ -16,7 +16,7 @@ class ConceptoForm(forms.ModelForm):
 	class Meta:
 		model 	= Concepto
 		fields 	= '__all__'
-		exclude = ['empresa', 'creado_en', 'visible', 'codigo_documento', 'codigo_producto', 'codigo_1', 'codigo_2', 'codigo_3', 'codigo_4']
+		exclude = ['empresa', 'creado_en', 'visible', 'configuracion']
 
 		widgets = {
 			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),

@@ -13,6 +13,8 @@ urlpatterns = [
 	url(r'^clientes/delete/(?P<pk>\d+)$', views.ClienteDelete.as_view(), name='cliente_delete'),
 	url(r'^clientes/update/(?P<pk>\d+)$', views.ClienteUpdate.as_view(), name='cliente_update'),
 
+	# configuración
+	url(r'^configuracion-conceptos/list$', views.ConfiguracionConceptoList.as_view(), name='configuracion_conceptos_list'),
 
 	# conexion
 	url(r'^conexion-cliente$', csrf_exempt(views.CONEXION_CLIENTE.as_view()),name='conexion_cliente_update'),

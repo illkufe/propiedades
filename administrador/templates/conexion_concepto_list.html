@@ -162,7 +162,7 @@ function actualizar_conceptos(){
 		type: 'post',
 		dataType: 'json',
 		data:{
-			conceptos : JSON.stringify(rows),
+			conceptos 			: JSON.stringify(rows),
 			csrfmiddlewaretoken : getCookie('csrftoken'),
 		},
 		success: function(data){

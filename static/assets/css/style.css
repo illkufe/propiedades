@@ -160,9 +160,9 @@ h5 {
   font-size: 12px;
 }
 .nav-header {
-  /* modificado padding: 33px 25px;*/
+  /* modificado padding: 33px 25px; */
   padding: 15px 25px;  
-   /*background: url("patterns/header-profile.png") no-repeat;*/
+  /* background: url("patterns/header-profile.png") no-repeat; */
   background: url("patterns/4.jpg") no-repeat;
 }
 .pace-done .nav-header {
@@ -3540,7 +3540,7 @@ body.body-small .footer.fixed {
 /* PANELS */
 .page-heading {
   border-top: 0;
-  padding: 0 10px 20px 10px;
+  padding: 0 10px 10px 10px;
 }
 .panel-heading h1,
 .panel-heading h2 {
@@ -3575,7 +3575,7 @@ body.body-small .footer.fixed {
 .table > tfoot > tr > td {
   border-top: 1px solid #e7eaec;
   line-height: 1.42857;
-  padding: 6px 8px;
+  padding: 4px 8px;
   vertical-align: top;
 }
 /* PANELS */

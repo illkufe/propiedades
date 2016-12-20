@@ -53,7 +53,6 @@ class Concepto(models.Model):
 		verbose_name 		= 'Concepto'
 		verbose_name_plural = 'Conceptos'
 
-
 class Configuracion_Concepto(models.Model):
 
 	# atributos (generales)
@@ -73,5 +72,7 @@ class Configuracion_Concepto(models.Model):
 		return self.cliente.nombre+' - '+self.concepto.nombre
 
 	class Meta:
-		verbose_name 		= 'Miembro de Alerta'
-		verbose_name_plural = 'Miembros de Alertas'
+		verbose_name 		= 'Configuración de Concepto'
+		verbose_name_plural = 'Configuración de Conceptos'
+
+

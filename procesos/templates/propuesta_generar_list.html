@@ -543,8 +543,8 @@ function form_generar_propuesta(){
 					loading(false)
 				}
 			});
-}
-})
+		}
+	})
 }
 
 function load_tabla_contratos(conceptos){
@@ -625,7 +625,12 @@ function data_tabla_contratos(data){
 				if (data[i].conceptos[j].valido.estado == true) {
 					template += '<i class="fa fa-check-circle info-succes"></i>'
 				}else{
-					template += '<i class="fa fa-times-circle info-error" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
+					if (data[i].conceptos[j].valido.tipo == null) {
+						template += '<i class="fa fa-times-circle info-error" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
+					} else{
+						template += '<i class="fa fa-times-circle info-error-config" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
+					};
+					
 				}
 			}else{
 				template += '<i class="fa fa-minus-square info-none"></i>'
@@ -905,8 +910,8 @@ function validar_form_propuesta(){
 					loading(false)
 				}
 			})
-}
-})
+		}
+	})
 
 	// agregar validacion a los campos nombre
 	$("#form-validar-propuesta [name^=nombre]").each(function () {
