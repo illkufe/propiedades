@@ -9,10 +9,10 @@ class ParametrosFacturacionForms(ModelForm):
 
         super(ParametrosFacturacionForms, self).__init__(*args, **kwargs)
 
-        self.fields['motor_emision'].queryset = MotorFacturacion.objects.all()
+        self.fields['motor_emision'].queryset = Motor_Factura.objects.all()
 
     class Meta:
-        model   = ParametrosFacturacion
+        model   = Parametro_Factura
         fields  = ('codigo_conexion', 'motor_emision')
 
         widgets = {
@@ -37,36 +37,42 @@ class ParametrosFacturacionForms(ModelForm):
 
 class ConexionFacturacionForms(ModelForm):
     class Meta:
-        model = ConexionFacturacion
+        model = Conexion_Factura
         fields = '__all__'
         exclude= ('parametro_facturacion',)
 
         widgets = {
-            'codigo_contexto'   : forms.TextInput(attrs={'class': 'form-control'}),
-            'host'	            : forms.TextInput(attrs={'class': 'form-control'}),
-            'url'               : forms.TextInput(attrs={'class': 'form-control'}),
-            'puerto'            : forms.NumberInput(attrs={'class': 'form-control'}),
+            'host'	                : forms.TextInput(attrs={'class': 'form-control'}),
+            'puerto'                : forms.NumberInput(attrs={'class': 'form-control'}),
+            'nombre_contexto'       : forms.TextInput(attrs={'class': 'form-control'}),
+            'nombre_web_service'    : forms.TextInput(attrs={'class': 'form-control'}),
+
         }
 
         error_messages = {
-            'codigo_contexto' 	: {'required': 'campo requerido'},
-            'host'              : {'required': 'campo requerido'},
-            'url'               : {'required': 'campo requerido'},
-            'puerto'            : {'required': 'campo requerido'},
+
+            'host'                  : {'required': 'campo requerido'},
+            'puerto'                : {'required': 'campo requerido'},
+            'nombre_contexto'       : {'required': 'campo requerido'},
+            'nombre_web_service'    : {'required': 'campo requerido'},
         }
 
         labels = {
-            'codigo_contexto'	: 'Código Contexto',
-            'host'	            : 'Host',
-            'url'	            : 'URL',
-            'puerto'	        : 'Puerto',
+
+            'host'	                : 'Host',
+            'puerto'	            : 'Puerto',
+            'nombre_contexto'	    : 'Nombre contexto',
+            'nombre_web_service'    : 'Nombre web service',
+
         }
 
         help_texts = {
-            'codigo_contexto' 	: 'Nombre o código del contexto del Web Service',
-            'host' 		        : 'Ip de servidor o nombre',
-            'url'               : '6456tyert',
-            'puerto' 		    : 'Puerto de conexión',
+
+            'host' 		            : 'Ip de servidor o nombre',
+            'puerto' 		        : 'Puerto de conexión',
+            'nombre_contexto'       : 'Nombre o código del contexto del web service',
+            'nombre_web_service'    : 'Nombre de web service',
+
         }
 
-ConexionFacturacionFormSet = inlineformset_factory(ParametrosFacturacion, ConexionFacturacion, form=ConexionFacturacionForms, extra=0, min_num=1, can_delete=True, validate_min=True)
+ConexionFacturacionFormSet = inlineformset_factory(Parametro_Factura, Conexion_Factura, form=ConexionFacturacionForms, extra=0, min_num=1, can_delete=True, validate_min=True)

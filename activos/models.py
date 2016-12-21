@@ -63,6 +63,30 @@ class Activo(models.Model):
 		verbose_name 		= 'Activo'
 		verbose_name_plural = 'Activos'
 
+class Configuracion_Activo(models.Model):
+
+	# atributos (generales)
+
+	host                = models.CharField(max_length=100)
+	puerto              = models.IntegerField(null=True, blank=True)
+	nombre_contexto     = models.CharField(max_length=100)
+	nombre_web_service	= models.CharField(max_length=100)
+
+	# atributos (por defecto)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
+
+	# relaciones
+	activo = models.OneToOneField(Activo)
+
+	def __str__(self):
+		return self.activo.nombre
+
+	class Meta:
+		verbose_name 		= 'Configuración de Activo'
+		verbose_name_plural = 'Configuraciones de Activos'
+
 class Sector(models.Model):
 
 	# atributos (generales)

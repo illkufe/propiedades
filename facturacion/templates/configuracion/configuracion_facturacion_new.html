@@ -42,7 +42,7 @@
                     <div class="ibox-content">
 						<div class="row">
 							<div class="col-xs-12">
-								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila_final('tabla-conexion', 'conexionfacturacion')"><i class="fa fa-plus"></i> Nueva Garantía</button>
+								<button type="button" class="btn btn-primary btn-xs pull-right" onclick="agregar_fila_final('tabla-conexion', 'conexion_factura')"><i class="fa fa-plus"></i> Nueva Conexión</button>
                                 <br>
                                 {{ form_conexion.management_form }}
 
@@ -58,20 +58,20 @@
 											{% for form in form_conexion %}
                                                 {% if forloop.first %}
                                                     <th>
-                                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.codigo_contexto.help_text }}" ></i>
-                                                        {{ form.codigo_contexto.label_tag }}
-                                                    </th>
-                                                    <th>
                                                         <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.host.help_text }}" ></i>
                                                         {{ form.host.label_tag }}
                                                     </th>
                                                     <th>
-                                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.url.help_text }}" ></i>
-                                                        {{ form.url.label_tag }}
-                                                    </th>
-                                                    <th>
                                                         <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.puerto.help_text }}" ></i>
                                                         {{ form.puerto.label_tag }}
+                                                    </th>
+                                                    <th>
+                                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre_contexto.help_text }}" ></i>
+                                                        {{ form.nombre_contexto.label_tag }}
+                                                    </th>
+                                                    <th>
+                                                        <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ form.nombre_web_service.help_text }}" ></i>
+                                                        {{ form.nombre_web_service.label_tag }}
                                                     </th>
                                                     <th>Opciones</th>
                                                 {% endif %}
@@ -83,33 +83,33 @@
 										<tr>
 											<td>
 												<div class="form-group">
-													{{ form.codigo_contexto }}
-													<div class="container-error">
-														{{ form.codigo_contexto.errors|striptags }}
-													</div>
-												</div>
-											</td>
-											<td>
-												<div class="form-group">
 													{{ form.host }}
 													<div class="container-error">
 														{{ form.host.errors|striptags }}
 													</div>
 												</div>
 											</td>
-											<td>
+                                            <td>
 												<div class="form-group">
-													{{ form.url }}
+													{{ form.puerto }}
 													<div class="container-error">
-														{{ form.url.errors|striptags }}
+														{{ form.puerto.errors|striptags }}
 													</div>
 												</div>
 											</td>
 											<td>
 												<div class="form-group">
-													{{ form.puerto }}
+													{{ form.nombre_contexto }}
 													<div class="container-error">
-														{{ form.puerto.errors|striptags }}
+														{{ form.nombre_contexto.errors|striptags }}
+													</div>
+												</div>
+											</td>
+                                            <td>
+												<div class="form-group">
+													{{ form.nombre_web_service }}
+													<div class="container-error">
+														{{ form.nombre_web_service.errors|striptags }}
 													</div>
 												</div>
 											</td>
@@ -163,24 +163,24 @@
 
         var columns = [
             {
-                'width' : '25%',
-                'data'  : 'codigo_contexto',
-                'title' : 'Código Contexto'
-            },
-            {
                 'width'  : '15%',
                 'data'   : 'host',
                 'title'  : 'Host'
             },
             {
-                'width' : '15%',
-                'data'  : 'url',
-                'title' : 'URL'
-            },
-            {
                 'width': '15%',
                 'data' : 'puerto',
                 'title': 'Puerto'
+            },
+            {
+                'width' : '15%',
+                'data'  : 'contexto',
+                'title' : 'Nombre Contexto'
+            },
+            {
+                'width' : '25%',
+                'data'  : 'web_service',
+                'title' : 'Nombre Web Service'
             },
             {
                 'width'     : '10%',

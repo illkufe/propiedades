@@ -13,3 +13,4 @@ class ActivoInlineAdmin(admin.ModelAdmin):
 
 admin.site.register(Activo, ActivoInlineAdmin)
 admin.site.register(Gasto_Mensual)
+admin.site.register(Configuracion_Activo)

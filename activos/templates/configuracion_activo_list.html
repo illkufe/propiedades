@@ -1,0 +1,189 @@
+{% extends 'index.html' %}
+{% block section %}
+
+{% include 'partials/breadcrumbs-bar.html' %}
+
+<div class="wrapper wrapper-content">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>Configuración de Activos</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table id="tabla-activo" class="table table-striped table-hover" style="width:100%!important;"></table>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-12">
+							<button type="button" class="btn btn-primary btn-sm btn-w-m pull-right" onclick="actualizar_activos()">Actualizar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock section %}
+
+{% block scripts %}
+<script>
+
+var tabla_activos;
+
+$(document).ready(function(){
+
+	load_tabla_activos()
+	data_tabla_activos()
+
+});
+
+
+function load_tabla_activos(){
+
+	var configuracion = {
+		'paginate': false,
+		'bLengthChange': false,
+		'bInfo': false,
+		'searching': false,
+		'buttons': [],
+	} 
+
+	var columns = [
+	{		
+		'data': 'id',
+		'visible': false,
+	},
+	{
+		'width': '10%',
+		'data': 'codigo',
+		'title': 'Código',
+	},
+	{
+		'width': '15%',
+		'data': 'nombre',
+		'title': 'Nombre',
+	},
+	{
+		'width': '15%',
+		'data': 'propietario',
+		'title': 'Propietario',
+	},
+	{
+		'width': '15%',
+		'data': 'host',
+		'title': 'Host',
+		'orderable': false,
+	},
+    {
+		'width': '10%',
+		'data': 'puerto',
+		'title': 'Puerto',
+		'orderable': false,
+	},
+    {
+		'width': '15%',
+		'data': 'contexto',
+		'title': 'Nombre Contexto',
+		'orderable': false,
+	},
+    {
+		'width': '20%',
+		'data': 'webservice',
+		'title': 'Nombre WebService',
+		'orderable': false,
+	}
+	];
+
+	tabla_activos = load_table('#tabla-activo', columns, configuracion)
+}
+
+function data_tabla_activos(){
+
+	tabla_activos.clear().draw();
+
+	$.ajax({
+		url: '/conexion-activo',
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			rows = [];
+
+			for (var i = 0; i < data.length; i++) {
+
+				var row = {}
+
+				row.id 			        = data[i].id
+				row.codigo		        = data[i].codigo
+				row.nombre		        = data[i].nombre
+				row.propietario	        = data[i].propietario
+				row.host	            = '<input class="form-control" id="code-1-'+data[i].id+'"type="text" value="'+data[i].host+'">'
+                row.puerto	            = '<input class="form-control" id="code-2-'+data[i].id+'"type="text" value="'+data[i].puerto+'">'
+                row.contexto	        = '<input class="form-control" id="code-3-'+data[i].id+'"type="text" value="'+data[i].contexto+'">'
+                row.webservice	        = '<input class="form-control" id="code-4-'+data[i].id+'"type="text" value="'+data[i].webservice+'">'
+
+				rows.push(row)
+			}
+			tabla_activos.rows.add(rows).draw();
+		}
+	})
+}
+
+function actualizar_activos(){
+
+	var rows = []
+
+	tabla_activos.rows().every(function (rowIdx, tableLoop, rowLoop){
+
+		var data 	= this.data();
+		var row 	= {}
+
+		row.id          = data.id
+		row.host        = $('input#code-1-'+data.id).val()
+        row.puerto      = $('input#code-2-'+data.id).val()
+        row.contexto    = $('input#code-3-'+data.id).val()
+        row.webservice  = $('input#code-4-'+data.id).val()
+
+		rows.push(row)
+
+	});
+
+	$.ajax({
+		url: '/conexion-activo',
+		type: 'post',
+		dataType: 'json',
+		data:{
+			activos : JSON.stringify(rows),
+			csrfmiddlewaretoken : getCookie('csrftoken'),
+		},
+		success: function(data){
+
+			if (data.estado == true ) {
+				var configuracion = {
+					'toast_type'	: 'success',
+					'toast_text' 	: 'Guardado correctamente',
+					'toast_title' 	: 'ÉXITO',
+				}
+			}else{
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'No se pudo actualizar',
+					'toast_title' 	: 'Error',
+				}
+			}
+
+			notification_toast(configuracion)
+			data_tabla_activos()
+		}
+	})
+}
+
+</script>
+
+{% endblock scripts %}
+
+

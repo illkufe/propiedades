@@ -2,7 +2,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 from utilidades.models import *
-from facturacion.models import *
+from facturacion.models import Motor_Factura
+
 
 # modelos
 class Empresa(models.Model):
@@ -58,7 +59,6 @@ class Configuracion_Monedas(models.Model):
 	class Meta:
 		verbose_name 		= 'Configuración de Moneda'
 		verbose_name_plural = 'Configuraciones de Monedas'
-
 
 class Configuracion_Owncloud(models.Model):
 
@@ -158,7 +158,7 @@ class Configuracion(models.Model):
     cantidad_decimales	= models.IntegerField()
 
     # relaciones
-    motor_factura   	= models.ForeignKey(MotorFacturacion)
+    motor_factura   	= models.ForeignKey(Motor_Factura)
     empresa         	= models.OneToOneField(Empresa)
 
     def __str__(self):

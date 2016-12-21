@@ -8,7 +8,6 @@ from django.views.generic import ListView, FormView, DeleteView, UpdateView
 
 from accounts.models import UserProfile
 from facturacion.forms.forms_parametros import *
-from facturacion.app.parametros_facturacion import *
 from facturacion.app.facturacion import *
 from facturacion.models import *
 
@@ -26,7 +25,7 @@ modulo = 'Facturación'
 ##-------------------------PARAMETRO DE CONEXION FACTURACION -----------------------------------------------------------
 
 class ConfiguracionFacturacionList(ListView):
-    model           = ParametrosFacturacion
+    model           = Parametro_Factura
     template_name   = 'configuracion/configuracion_facturacion_list.html'
 
     def get_context_data(self, **kwargs):
@@ -39,7 +38,7 @@ class ConfiguracionFacturacionList(ListView):
         return context
 
     def get_queryset(self):
-        queryset = ParametrosFacturacion.objects.all()
+        queryset = Parametro_Factura.objects.all()
 
         return queryset
 
@@ -94,14 +93,14 @@ class ConfiguracionFacturacionNew(ConfiguracionFacturacionMixin, FormView):
         return context
 
 class ConfiguracionFacturacionUpdate(ConfiguracionFacturacionMixin, UpdateView):
-    model           = ParametrosFacturacion
+    model           = Parametro_Factura
     form_class      = ParametrosFacturacionForms
     template_name   = 'configuracion/configuracion_facturacion_new.html'
     success_url     = '/configuracion-facturacion/list'
 
     def get_object(self, queryset=None):
 
-        queryset = ParametrosFacturacion.objects.get(id=int(self.kwargs['pk']))
+        queryset = Parametro_Factura.objects.get(id=int(self.kwargs['pk']))
 
         return queryset
 
@@ -121,20 +120,20 @@ class ConfiguracionFacturacionUpdate(ConfiguracionFacturacionMixin, UpdateView):
         return context
 
 class ConfiguracionFacturacionDelete(DeleteView):
-    model       = ParametrosFacturacion
+    model       = Parametro_Factura
     success_url = reverse_lazy('/configuracion-facturacion/listt')
 
     def delete(self, request, *args, **kwargs):
 
         try:
-            parametro   = ParametrosFacturacion.objects.filter(id=int(self.kwargs['pk']))
-            conexion    = ConexionFacturacion.objects.filter(parametro_facturacion_id=int(self.kwargs['pk']))
+            parametro   = Parametro_Factura.objects.filter(id=int(self.kwargs['pk']))
+            conexion    = Conexion_Factura.objects.filter(parametro_facturacion_id=int(self.kwargs['pk']))
 
             conexion.delete()
             parametro.delete()
             data = {'delete': True}
 
-        except exceptions:
+        except Exception:
             data = {'delete': False}
 
         return JsonResponse(data, safe=False)
@@ -1027,7 +1026,7 @@ def carga_folios_electronicos(request):
                                 fecha_autorizacion = a.find('FA').text
 
                     if flag == 0:
-                        folios = FoliosDocumentosElectronicos.objects.filter(tipo_dte=tipo_dte,
+                        folios = Folio_Documento_Electronico.objects.filter(tipo_dte=tipo_dte,
                                                                              folio_actual__gte=folio_desde,
                                                                              folio_actual__lte=folio_hasta)
                         if not folios:
@@ -1040,13 +1039,13 @@ def carga_folios_electronicos(request):
 
                         if encontro == 0:
                             # Buscar el ultimo numero de secuencia del tipo de dte
-                            secuencia = FoliosDocumentosElectronicos.objects.filter(tipo_dte=tipo_dte).values('secuencia_caf').last()
+                            secuencia = Folio_Documento_Electronico.objects.filter(tipo_dte=tipo_dte).values('secuencia_caf').last()
                             if secuencia:
                                 secuencia_folio = secuencia['secuencia_caf'] +1
                             else:
                                 secuencia_folio = 1
 
-                            nuevo_folios                        = FoliosDocumentosElectronicos()
+                            nuevo_folios                        = Folio_Documento_Electronico()
                             nuevo_folios.tipo_dte               = tipo_dte
                             nuevo_folios.secuencia_caf          = secuencia_folio
                             nuevo_folios.rango_inicial          = folio_desde
@@ -1089,7 +1088,7 @@ def carga_folios_electronicos(request):
     })
 
 class FoliosElectronicosList(ListView):
-    model           = ParametrosFacturacion
+    model           = Parametro_Factura
     template_name   = 'carga_caf/carga_folios_electronicos_list.html'
 
     def get_context_data(self, **kwargs):
@@ -1102,7 +1101,7 @@ class FoliosElectronicosList(ListView):
         return context
 
     def get_queryset(self):
-        queryset = FoliosDocumentosElectronicos.objects.all()
+        queryset = Folio_Documento_Electronico.objects.all()
 
         return queryset
 
@@ -1122,10 +1121,12 @@ def cargar_folios_idte(contenido_caf):
 
     if not error:
 
-        datos_conexion['codigo_contexto']   = conexion.codigo_contexto
+
         datos_conexion['host']              = conexion.host
-        datos_conexion['url']               = conexion.url
         datos_conexion['puerto']            = conexion.puerto
+        datos_conexion['nombre_contexto']   = conexion.nombre_contexto
+        datos_conexion['nombre_webservice'] = conexion.nombre_web_service
+
 
         id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
 
@@ -1206,13 +1207,13 @@ def autorizar_folios_electronicos(request):
     else:
         try:
 
-            folio = FoliosDocumentosElectronicos.objects.get(id=autorizar_folios)
+            folio = Folio_Documento_Electronico.objects.get(id=autorizar_folios)
             if folio.operativo == False and (folio.tipo_dte != 0 and folio.secuencia_caf !=0):
 
                 try:
-                    pepito = FoliosDocumentosElectronicos.objects.get(tipo_dte=folio.tipo_dte, operativo=True)
-                    fol_hasta   = pepito.rango_final
-                    fol_activo  = pepito.folio_actual
+                    folios = Folio_Documento_Electronico.objects.get(tipo_dte=folio.tipo_dte, operativo=True)
+                    fol_hasta   = folios.rango_final
+                    fol_activo  = folios.folio_actual
 
                 except Exception as a:
                     fol_hasta  = 0
@@ -1228,7 +1229,7 @@ def autorizar_folios_electronicos(request):
                     if respuesta['success'] == False:
                         return JsonResponse(respuesta)
                     else:
-                        update_folio = FoliosDocumentosElectronicos.objects.get(id=autorizar_folios)
+                        update_folio = Folio_Documento_Electronico.objects.get(id=autorizar_folios)
                         update_folio.operativo = True
                         update_folio.save()
 
@@ -1247,7 +1248,7 @@ def autorizar_folios_electronicos(request):
                     }
                     return JsonResponse(data)
 
-        except FoliosDocumentosElectronicos.DoesNotExist:
+        except Folio_Documento_Electronico.DoesNotExist:
             error = "No se encuentra en la base de datos el CAF a autorizar."
         except Exception as e:
             error = str(e)
@@ -1319,10 +1320,12 @@ def envio_documento_tributario_electronico(**kwargs):
                     error, conexion = obtener_datos_conexion('wsDTE')
 
                     if not error:
-                        datos_conexion['codigo_contexto'] = conexion.codigo_contexto
-                        datos_conexion['host'] = conexion.host
-                        datos_conexion['url'] = conexion.url
-                        datos_conexion['puerto'] = conexion.puerto
+
+                        datos_conexion['host']              = conexion.host
+                        datos_conexion['puerto']            = conexion.puerto
+                        datos_conexion['nombre_contexto']   = conexion.nombre_contexto
+                        datos_conexion['nombre_webservice'] = conexion.nombre_web_service
+
 
                         id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
 
@@ -1687,10 +1690,11 @@ def actualizar_estados_documentos_sii_lease():
 
     if not error:
 
-        datos_conexion['codigo_contexto']   = conexion.codigo_contexto
-        datos_conexion['host']              = conexion.host
-        datos_conexion['url']               = conexion.url
-        datos_conexion['puerto']            = conexion.puerto
+
+        datos_conexion['host']                  = conexion.host
+        datos_conexion['puerto']                = conexion.puerto
+        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
+        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
 
         id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
         error_url, url_conexion = url_web_service(**datos_conexion)
@@ -1827,10 +1831,10 @@ def consulta_estado_documento_sii(tipo_documento, folio_documento):
 
     if not error:
 
-        datos_conexion['codigo_contexto']   = conexion.codigo_contexto
-        datos_conexion['host']              = conexion.host
-        datos_conexion['url']               = conexion.url
-        datos_conexion['puerto']            = conexion.puerto
+        datos_conexion['host']                  = conexion.host
+        datos_conexion['puerto']                = conexion.puerto
+        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
+        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
 
         id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
 
@@ -1929,17 +1933,17 @@ def obtener_documento_xml_pdf(tipo_documento, folio_documento, formato_documento
             'ruta_archivo':archivo.valor
         }
     """
-    nievel_traza = 2  # Nivel completo de traza
-    id_dte_empresa = ''
-    datos_conexion = {}
+    nievel_traza    = 2  # Nivel completo de traza
+    id_dte_empresa  = ''
+    datos_conexion  = {}
     error, conexion = obtener_datos_conexion('wsDTE')
 
     if not error:
 
-        datos_conexion['codigo_contexto'] = conexion.codigo_contexto
-        datos_conexion['host'] = conexion.host
-        datos_conexion['url'] = conexion.url
-        datos_conexion['puerto'] = conexion.puerto
+        datos_conexion['host']                  = conexion.host
+        datos_conexion['puerto']                = conexion.puerto
+        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
+        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
 
         id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
 
@@ -2374,10 +2378,10 @@ def envio_libro_compras_ventas_electronico(**kwargs):
         error, conexion = obtener_datos_conexion('wsLCV')
 
         if not error:
-            datos_conexion['codigo_contexto']   = conexion.codigo_contexto
             datos_conexion['host']              = conexion.host
-            datos_conexion['url']               = conexion.url
             datos_conexion['puerto']            = conexion.puerto
+            datos_conexion['nombre_contexto']   = conexion.nombre_contexto
+            datos_conexion['nombre_webservice'] = conexion.nombre_web_service
 
             id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
             error_url, url_conexion = url_web_service(**datos_conexion)
@@ -2598,10 +2602,11 @@ def consulta_estado_libro_compras_ventas_sii(id_hist_lcv):
     error, conexion = obtener_datos_conexion('wsLCV')
 
     if not error:
-        datos_conexion['codigo_contexto']   = conexion.codigo_contexto
-        datos_conexion['host']              = conexion.host
-        datos_conexion['url']               = conexion.url
-        datos_conexion['puerto']            = conexion.puerto
+
+        datos_conexion['host']                  = conexion.host
+        datos_conexion['puerto']                = conexion.puerto
+        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
+        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
 
         id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
         error_url, url_conexion = url_web_service(**datos_conexion)
@@ -2733,10 +2738,11 @@ def consulta_mensaje_rechazo_libro_compras_ventas_sii(id_hist_lcv):
     error, conexion = obtener_datos_conexion('wsLCV')
 
     if not error:
-        datos_conexion['codigo_contexto']   = conexion.codigo_contexto
-        datos_conexion['host']              = conexion.host
-        datos_conexion['url']               = conexion.url
-        datos_conexion['puerto']            = conexion.puerto
+
+        datos_conexion['host']                  = conexion.host
+        datos_conexion['puerto']                = conexion.puerto
+        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
+        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
 
         id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
         error_url, url_conexion = url_web_service(**datos_conexion)
@@ -2823,10 +2829,11 @@ def envio_libro_ventas_electronico(**kwargs):
         error, conexion = obtener_datos_conexion('wsLCV')
 
         if not error:
-            datos_conexion['codigo_contexto']   = conexion.codigo_contexto
+
             datos_conexion['host']              = conexion.host
-            datos_conexion['url']               = conexion.url
             datos_conexion['puerto']            = conexion.puerto
+            datos_conexion['nombre_contexto']   = conexion.nombre_contexto
+            datos_conexion['nombre_webservice'] = conexion.nombre_web_service
 
             id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
             error_url, url_conexion = url_web_service(**datos_conexion)
@@ -3084,10 +3091,11 @@ def envio_control_folios(**kwargs):
         error, conexion = obtener_datos_conexion('wsMIXTO')
 
         if not error:
-            datos_conexion['codigo_contexto']   = conexion.codigo_contexto
+
             datos_conexion['host']              = conexion.host
-            datos_conexion['url']               = conexion.url
             datos_conexion['puerto']            = conexion.puerto
+            datos_conexion['nombre_contexto']   = conexion.nombre_contexto
+            datos_conexion['nombre_webservice'] = conexion.nombre_web_service
 
             id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
             error_url, url_conexion = url_web_service(**datos_conexion)
@@ -3310,10 +3318,11 @@ def consulta_estado_control_folios(fecha_emision, secuencia):
     error, conexion = obtener_datos_conexion('wsMIXTO')
 
     if not error:
-        datos_conexion['codigo_contexto']   = conexion.codigo_contexto
-        datos_conexion['host']              = conexion.host
-        datos_conexion['url']               = conexion.url
-        datos_conexion['puerto']            = conexion.puerto
+
+        datos_conexion['host']                  = conexion.host
+        datos_conexion['puerto']                = conexion.puerto
+        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
+        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
 
         id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
         error_url, url_conexion = url_web_service(**datos_conexion)
@@ -3426,13 +3435,14 @@ def envio_factura_inet(request):
     if not resultado_xml[0]:
 
         ##Obtener datos de conexion IDTE -------------------------------------------------------------------------------
-        error, conexion = obtener_datos_conexion_ws_inet('axmldocvta')
+        error, conexion = obtener_datos_conexion_ws_inet(request, 'axmldocvta')
 
         if not error:
-            datos_conexion['codigo_contexto']   = conexion.codigo_contexto
+
             datos_conexion['host']              = conexion.host
-            datos_conexion['url']               = conexion.url
             datos_conexion['puerto']            = conexion.puerto
+            datos_conexion['nombre_contexto']   = conexion.nombre_contexto
+            datos_conexion['nombre_webservice'] = conexion.nombre_web_service
 
             # Armar URL de conexion del Web Services -------------------------------------------------------------------
             resultado_url = url_web_service_inet(**datos_conexion)

@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from conceptos.models import Concepto
 from contrato.models import Contrato
-from facturacion.models import MotorFacturacion
+from facturacion.models import Motor_Factura
 
 # modelos
 class Factura_Estado(models.Model):
@@ -51,7 +51,7 @@ class Factura(models.Model):
 	user 				= models.ForeignKey(User)
 	estado		    	= models.ForeignKey(Factura_Estado)
 	contrato	    	= models.ForeignKey(Contrato)
-	motor_emision   	= models.ForeignKey(MotorFacturacion, on_delete=models.PROTECT)
+	motor_emision   	= models.ForeignKey(Motor_Factura, on_delete=models.PROTECT)
 
 	def __str__(self):
 		return self.nombre+' - '+self.contrato.nombre_local

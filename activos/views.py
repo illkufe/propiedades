@@ -9,6 +9,8 @@ from utilidades.plugins.owncloud import *
 from .forms import *
 from .models import *
 
+import json
+
 # variables
 modulo 	= 'Activos'
 
@@ -413,6 +415,88 @@ class GastoServicioUpdate(GastoServicioMixin, UpdateView):
 		context['accion'] 	= 'update'
 
 		return context
+
+# conexion activo
+class CONEXION_ACTIVO(View):
+
+	http_method_names = ['get', 'post']
+
+	def get(self, request, id=None):
+
+		self.object_list = request.user.userprofile.empresa.activo_set.filter(visible=True)
+
+		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
+
+			return self.json_to_response()
+
+		else:
+
+			return render(request, 'configuracion_activo_list.html', {
+				'title' 	: 'Conexión',
+				'href' 		: 'conexion-activo',
+				'subtitle'	: 'Activos',
+				'name' 		: 'Configuración',
+			})
+
+	def post(self, request):
+
+		try:
+			var_post 	= request.POST.copy()
+			activos 	= json.loads(var_post['activos'])
+
+			for item in activos:
+
+				if Configuracion_Activo.objects.filter(activo_id=int(item['id'])).exists():
+
+					activo = Configuracion_Activo.objects.get(activo_id=int(item['id']))
+
+					activo.host 				= item['host']
+					activo.puerto 				= item['puerto']
+					activo.nombre_contexto 		= item['contexto']
+					activo.nombre_web_service	= item['webservice']
+
+					activo.save()
+
+					estado = True
+
+				else:
+					activo 						= Configuracion_Activo()
+					activo.host 				= item['host']
+					activo.puerto 				= item['puerto']
+					activo.nombre_contexto 		= item['contexto']
+					activo.nombre_web_service	= item['webservice']
+					activo.activo_id    		= int(item['id'])
+					activo.save()
+
+					estado = True
+
+		except Exception:
+
+			estado = False
+
+		return JsonResponse({'estado': estado}, safe=False)
+
+	def json_to_response(self):
+
+		data = list()
+
+		for item in self.object_list:
+
+			data.append({
+				'id' 				: item.id,
+				'codigo' 			: item.codigo,
+				'nombre' 			: item.nombre,
+				'propietario' 		: item.propietario,
+				'host' 				: '' if not hasattr(item, 'configuracion_activo') else item.configuracion_activo.host,
+				'puerto' 			: '' if not hasattr(item, 'configuracion_activo') else item.configuracion_activo.puerto,
+				'contexto' 			: '' if not hasattr(item, 'configuracion_activo') else item.configuracion_activo.nombre_contexto,
+				'webservice' 		: '' if not hasattr(item, 'configuracion_activo') else item.configuracion_activo.nombre_web_service,
+			})
+
+		return JsonResponse(data, safe=False)
+
+
+
 
 # api: activo
 class ACTIVOS(View):

@@ -1,10 +1,10 @@
 from django import forms
 from django.forms import ModelForm
-from facturacion.models import FoliosDocumentosElectronicos
+from facturacion.models import Folio_Documento_Electronico
 
 class FiltroFoliosDocumentosForm(ModelForm):
     class Meta:
-        model= FoliosDocumentosElectronicos
+        model= Folio_Documento_Electronico
         fields= ['tipo_dte']
 
         widgets = {

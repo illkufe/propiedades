@@ -26,6 +26,10 @@ urlpatterns = [
 	url(r'^gastos-servicios/delete/(?P<pk>\d+)$', views.GastoServicioDelete.as_view(), name='gasto_servicio_delete'),
 	url(r'^gastos-servicios/update/(?P<pk>\d+)$', views.GastoServicioUpdate.as_view(), name='gasto_servicio_update'),
 
+
+	url(r'^conexion-activo$', csrf_exempt(views.CONEXION_ACTIVO.as_view()),name='conexion_activo_update'),
+	url(r'^conexion-activo/list$', csrf_exempt(views.CONEXION_ACTIVO.as_view()),name='conexion_activo_list'),
+
 	# api
 	url(r'^empresa/(?P<empresa_id>\d+)/activos$', csrf_exempt(views.ACTIVOS.as_view()),name='api_activos'),
 	url(r'^empresa/(?P<empresa_id>\d+)/activos/(?P<id>\d+)$', csrf_exempt(views.ACTIVOS.as_view()),name='api_activos'),
