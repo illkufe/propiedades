@@ -220,6 +220,7 @@ def propuesta_generar(request):
 	data_error = list()
 	
 	contratos = Contrato.objects.filter(id__in=contratos_id)
+
 	for contrato in contratos:
 	
 		conceptos = contrato.conceptos.filter(id__in=conceptos_id)
@@ -235,18 +236,16 @@ def propuesta_generar(request):
 	
 				return JsonResponse(data_error, safe=False)
 
-	for contrato_id in contratos_id:
+	for contrato in contratos:
 
-		contrato 		= Contrato.objects.get(id=contrato_id)
-		data_conceptos 	= list()
+		codigos = Configuracion_Concepto.objects.filter(concepto__in=contrato.conceptos.filter(id__in=conceptos_id), cliente=contrato.cliente).values_list('codigo_documento', flat=True).distinct()
+		
 
-		documentos  = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__cliente=contrato.cliente, visible=True).values_list('configuracion_concepto__codigo_documento', flat=True).distinct()
+		for codigo in list(filter(None, codigos)):
 
-		print (documentos)
+			data_conceptos 	= list()
 
-		for documento in documentos:
-
-			conceptos   = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__codigo_documento=documento, visible=True, configuracion_concepto__cliente=contrato.cliente)
+			conceptos   = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__codigo_documento=codigo, configuracion_concepto__cliente=contrato.cliente, visible=True)
 
 			for concepto in conceptos:
 
@@ -258,7 +257,7 @@ def propuesta_generar(request):
 					data_conceptos.append({
 						'id'		: concepto.id,
 						'nombre'	: concepto.nombre,
-						'total'		: total,
+						'total'		: format_number(request, total, True)
 						})
 
 			cliente = {
@@ -273,7 +272,7 @@ def propuesta_generar(request):
 				'nombre'			: contrato.nombre_local,
 				'cliente'			: cliente,
 				'conceptos' 		: data_conceptos,
-				'numero_documento'	: documento,
+				'numero_documento'	: codigo,
 				'estado'            : True,
 				})
 
@@ -542,8 +541,6 @@ def propuesta_enviar(request):
 		return JsonResponse(data, safe=False)
 
 def factura_pdf(request, pk=None):
-
-	print ('asd')
 
 	data = list()
 	total = 0

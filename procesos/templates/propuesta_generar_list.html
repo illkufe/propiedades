@@ -748,7 +748,7 @@ function modal_abrir_generar_propuesta(){
 function load_table_propuesta(){
 
 	var configuracion = {
-		'rowsGroup' : [2, 1, 0],
+		'rowsGroup' : [4,3,1,6],
 		'ordering'	: false,
 		'paginate' 	: false,
 		'searching'	: false,
@@ -784,8 +784,10 @@ function load_table_propuesta(){
 		'visible'	: false,
 	},
 	{
+		'width'		: '15%',
 		'data'		: 'documento_id',
-		'visible'	: false,
+		'title'		: 'Documento',
+		// 'visible'	: false,
 	},
 	{
 		'width'		: '15%',
@@ -814,6 +816,7 @@ function data_table_propuesta(data){
 	rows = []
 	
 	for (var i = 0; i < data.length; i++) {
+
 		for (var j = 0; j < data[i].conceptos.length; j++) {
 
 			row = {}
@@ -828,7 +831,7 @@ function data_table_propuesta(data){
 			row.concepto_id		= data[i].conceptos[j].id
 			row.concepto_nombre	= data[i].conceptos[j].nombre
 			row.glosa			= '<input type="text" name="glosa" id="glosa_'+data[i].id+'_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].nombre+'">'
-			row.total			= '<input type="text" name="total" id="total_'+data[i].id+'_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].total+'">'
+			row.total			= '<input type="text" name="total" id="total_'+data[i].id+'_'+data[i].conceptos[j].id+'" value="'+d3.format(",.")(data[i].conceptos[j].total)+'" class="text-right format-number" data-es-moneda="true" data-moneda="" data-select="false">'
 
 			rows.push(row)
 
@@ -836,6 +839,14 @@ function data_table_propuesta(data){
 	};
 
 	table_propuesta.rows.add(rows).draw();
+
+	// Configuracion de Moneda Pesos
+	$('.format-number').autoNumeric("init",{
+		aSep: LEASE_CURRENCY_THOUSANDS,
+		aDec: LEASE_CURRENCY_DECIMALS,
+		mDec: LEASE_CURRENCY_FORMAT,
+	})
+	change_config_money()
 	submit_validar_propuesta()
 }
 
@@ -970,11 +981,11 @@ function group_propuesta(data){
 	$.each(data, function(i, item) {
 
 		var level 	= item.id;
-		var codigo 	= item.codigo;
-		var key 	= level+'_'+codigo 
+		var documento 	= item.documento;
+		var key 	= level+'_'+documento 
 
 		delete item.id;
-		delete item.codigo;
+		delete item.documento;
 
 		if(groups[key]) {
 			groups[key].push(item);
