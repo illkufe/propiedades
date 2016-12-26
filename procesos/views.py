@@ -255,10 +255,11 @@ def propuesta_generar(request):
 @transaction.atomic
 def propuesta_guardar(request):
 
-	response 	= list()
+	status 		= True
+
+	facturas 	= list()
 	var_post 	= request.POST.copy()
 	data 		= json.loads(var_post['contratos'])
-	facturas 	= list()
 
 	try:
 		with transaction.atomic():
@@ -270,7 +271,7 @@ def propuesta_guardar(request):
 			for item in data:
 
 				total 		= 0 
-				contrato 	= Contrato.objects.get(id=int(item['id']))
+				contrato 	= Contrato.objects.get(id=int(item['contrato']))
 				estado 		= Factura_Estado.objects.get(id=int(1))			
 				conceptos 	= item['conceptos']
 
@@ -290,8 +291,8 @@ def propuesta_guardar(request):
 				factura.save()
 				
 				for concepto in conceptos:
-					if Factura_Detalle.objects.filter(factura__contrato=contrato, concepto_id=concepto['id'], factura__fecha_inicio=fecha_inicio, factura__fecha_termino=fecha_termino).exists():
-						factura_detalle 		= Factura_Detalle.objects.get(factura__contrato=contrato, concepto_id=concepto['id'], factura__fecha_inicio=fecha_inicio, factura__fecha_termino=fecha_termino)
+					if Factura_Detalle.objects.filter(factura__contrato=contrato, concepto_id=concepto['concepto'], factura__fecha_inicio=fecha_inicio, factura__fecha_termino=fecha_termino).exists():
+						factura_detalle 		= Factura_Detalle.objects.get(factura__contrato=contrato, concepto_id=concepto['concepto'], factura__fecha_inicio=fecha_inicio, factura__fecha_termino=fecha_termino)
 						factura_anterior 		= factura_detalle.factura
 						factura_anterior.total 	= factura_anterior.total - factura_detalle.total
 						factura_anterior.save()
@@ -301,10 +302,10 @@ def propuesta_guardar(request):
 							factura_anterior.delete()
 							
 
-					concepto_id 		= concepto['id']
-					concepto_nombre 	= concepto['nombre']
-					concepto_total 		= Decimal(concepto['total'].replace(".", "").replace(",", "."))
-					concepto_modificado = concepto['modified']
+					concepto_id 		= concepto['concepto']
+					concepto_nombre 	= concepto['glosa']
+					concepto_total 		= Decimal(concepto['total'].replace(".", "").replace(",", ".")) #Decimal(concepto['total'].replace(".", "").replace(",", "."))
+					concepto_modificado = False #concepto['modified']
 
 					Factura_Detalle(
 						nombre 			= concepto_nombre,
@@ -320,15 +321,18 @@ def propuesta_guardar(request):
 
 				facturas.append(factura.id)
 
-			estado 	= True
-			mensaje = 'ok'
-
 	except Exception as error:
-		id 		= None
-		estado 	= False
-		mensaje = str(error)
 
-	return JsonResponse({'estado':estado, 'mensaje':mensaje, 'facturas':facturas}, safe=False)
+		status 	= False
+		message = str(error)
+	
+	response = {
+		'status' 	: status,
+		'message' 	: False if status else message,
+		'data' 		: facturas if status else False,
+		}
+
+	return JsonResponse(response, safe=False)
 
 def propuesta_pdf(request, pk=None):
 
@@ -570,49 +574,35 @@ def factura_pdf(request, pk=None):
 
 def validar_concepto(contrato, concepto, fecha):
 
-	configuracion = validar_concepto_configuracion(contrato, concepo)
+	if concepto.concepto_tipo.id == 1:
+		return validar_arriendo_minimo(contrato, concepto, fecha)
 
-	if configuracion['status'] is True:
+	elif concepto.concepto_tipo.id == 2:
+		return validar_arriendo_variable(contrato, concepto, fecha)
 
-		if concepto.concepto_tipo.id == 1:
-			return validar_arriendo_minimo(contrato, concepto, fecha)
+	elif concepto.concepto_tipo.id == 3:
+		return validar_gasto_comun(contrato, concepto, fecha)
 
-		elif concepto.concepto_tipo.id == 2:
-			return validar_arriendo_variable(contrato, concepto, fecha)
+	elif concepto.concepto_tipo.id == 4:
+		return validar_servicios_basicos(contrato, concepto, fecha)
 
-		elif concepto.concepto_tipo.id == 3:
-			return validar_gasto_comun(contrato, concepto, fecha)
+	elif concepto.concepto_tipo.id == 5:
+		return validar_cuota_de_incorporacion(contrato, concepto, fecha)
 
-		elif concepto.concepto_tipo.id == 4:
-			return validar_servicios_basicos(contrato, concepto, fecha)
+	elif concepto.concepto_tipo.id == 6:
+		return validar_gasto_asociado(contrato, concepto, fecha)
 
-		elif concepto.concepto_tipo.id == 5:
-			return validar_cuota_de_incorporacion(contrato, concepto, fecha)
+	elif concepto.concepto_tipo.id == 7:
+		return validar_arriendo_bodega(contrato, concepto, fecha)
 
-		elif concepto.concepto_tipo.id == 6:
-			return validar_gasto_asociado(contrato, concepto, fecha)
+	elif concepto.concepto_tipo.id == 8:
+		return validar_servicios_varios(contrato, concepto, fecha)
 
-		elif concepto.concepto_tipo.id == 7:
-			return validar_arriendo_bodega(contrato, concepto, fecha)
+	elif concepto.concepto_tipo.id == 9:
+		return validar_multas(contrato, concepto, fecha)
 
-		elif concepto.concepto_tipo.id == 8:
-			return validar_servicios_varios(contrato, concepto, fecha)
-
-		elif concepto.concepto_tipo.id == 9:
-			return validar_multas(contrato, concepto, fecha)
-
-		else:
-			return True
 	else:
-		return configuracion
-
-
-def validar_concepto_configuracion(contrato, concepto):
-	return {
-		'estado'	: estado,
-		'tipo'		: 1,
-		'mensaje'	: mensajes[mensaje],
-	}
+		return True
 
 def validar_arriendo_minimo(contrato, concepto, periodo):
 

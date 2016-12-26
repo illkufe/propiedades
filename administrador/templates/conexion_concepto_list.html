@@ -4,24 +4,51 @@
 {% include 'partials/breadcrumbs-bar.html' %}
 
 <div class="wrapper wrapper-content">
-
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>Configuración de Conceptos</h5>
+					<h5>Lista de Clientes</h5>
 				</div>
 				<div class="ibox-content">
-					<div class="table-responsive">
-						<table id="tabla-conceptos" class="table table-striped table-hover" style="width:100%;"></table>
-					</div>
-
 					<div class="row">
-						<div class="col-xs-12">
-							<button type="button" class="btn btn-primary btn-sm btn-w-m pull-right" onclick="actualizar_conceptos()">Actualizar</button>
+
+						<div class="col-sm-12">
+
+							<div class="table-responsive">
+								<table id="t-clientes" class="table table-striped table-bordered table-hover" width="100%"></table>
+							</div>
+						</div>
+
+						<div class="col-sm-12">
+							<button class="btn btn-w-m btn-sm btn-primary pull-right btn-configuration" type="button" data-type="multiple"><i class="fa fa-cog"></i> CONFIGURAR CONCEPTOS</button>
 						</div>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="m-configuration" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Parametros de Conexión</h4>
+			</div>
+			
+			<div class="modal-body">
+				<div class="table-responsive">
+					<input id="clientes" type="hidden">
+					<table id="t-conceptos" class="table table-striped">
+					</table>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">Salir</button>
+				<button type="button" class="btn btn-w-m btn-sm btn-primary" data-dismiss="modal" onclick="actualizar_conceptos()">Guardar</button>
 			</div>
 		</div>
 	</div>
@@ -32,29 +59,40 @@
 {% block scripts %}
 <script>
 
-var tabla_conceptos;
+var table_clientes;
+var table_conceptos;
 
 $(document).ready(function(){
 
-	load_tabla_conceptos()
-	data_tabla_conceptos()
+	initialize()
+	load_table_clientes()
+	load_table_conceptos()
+	data_table_clientes()
 
 });
 
+function initialize(){
 
-function load_tabla_conceptos(){
+	$('[data-toggle="tooltip"]').tooltip();
+}
+
+function load_table_clientes(){
 
 	var configuracion = {
-		'paginate': false,
-		'bLengthChange': false,
-		'bInfo': false,
-		'searching': false,
-		'buttons': [],
+		'order'			: [[1, 'desc']],
+		'buttons'		: [],
 	} 
 
 	var columns = [
-	{		
+	{
+		'width'		: '5%',
+		'data'		: 'select',
+		'orderable'	: false,
+		'title'		: '<div class="text-center"><input type="checkbox" class="checkbox-all" onchange="select_all(this)"></div>',
+	},
+	{
 		'data': 'id',
+		'title': 'ID',
 		'visible': false,
 	},
 	{
@@ -64,52 +102,94 @@ function load_tabla_conceptos(){
 	},
 	{
 		'width': '15%',
-		'data': 'codigo_documento',
-		'title': 'Código Documento',
-		'orderable': false,
+		'data': 'rut',
+		'title': 'RUT',
+	},
+	{
+		'width': '25%',
+		'data': 'direccion',
+		'title': 'Dirección',
 	},
 	{
 		'width': '15%',
-		'data': 'codigo_producto',
-		'title': 'Código Producto',
-		'orderable': false,
+		'data': 'telefono',
+		'title': 'Teléfono',
 	},
 	{
-		'width': '12.5%',
-		'data': 'codigo_1',
-		'title': 'Código',
+		'width': '5%',
+		'data': 'concepto',
 		'orderable': false,
-	},
-	{
-		'width': '12.5%',
-		'data': 'codigo_2',
-		'title': 'Código',
-		'orderable': false,
-	},
-	{
-		'width': '12.5%',
-		'data': 'codigo_3',
-		'title': 'Código',
-		'orderable': false,
-	},
-	{
-		'width': '12.5%',
-		'data': 'codigo_4',
-		'title': 'Código',
-		'orderable': false,
-		'visible': false,
-	}
-	];
+		'title': '<div class="text-center">Conceptos</div>',
+	}]
 
-	tabla_conceptos = load_table('#tabla-conceptos', columns, configuracion)
+	table_clientes = load_table('#t-clientes', columns, configuracion)	
 }
 
-function data_tabla_conceptos(){
+function load_table_conceptos(){
 
-	tabla_conceptos.clear().draw();
+	var configuracion = {
+		'searching'	: false,
+		'ordering'	: false,
+		'paginate' 	:false,
+		'buttons'	: [],
+	} 
+
+	var columns = [
+	{
+		'data': 'id',
+		'title': 'ID',
+		'visible': false,
+	},
+	{
+		'width': '20%',
+		'data': 'nombre',
+		'title': 'Concepto',
+	},
+	{
+		'width': '13%',
+		'data': 'codigo_documento',
+		'title': 'Código Documento',
+	},
+	{
+		'width': '13%',
+		'data': 'codigo_producto',
+		'title': 'Código Producto',
+	},
+	{
+		'width': '13%',
+		'data': 'codigo_1',
+		'title': 'Cuenta Contable',
+		'visible': true,
+	},
+	{
+		'width': '13%',
+		'data': 'codigo_2',
+		'title': 'Área de Negocio',
+		'visible': true,
+	},
+	{
+		'width': '13%',
+		'data': 'codigo_3',
+		'title': 'Centro de Costo',
+		'visible': true,
+	},
+	{
+		'width': '13%',
+		'data': 'codigo_4',
+		'title': 'item',
+		'visible': true,
+	}
+	]
+
+	table_conceptos = load_table('#t-conceptos', columns, configuracion)	
+}
+
+function data_table_clientes(){
+
+	table_clientes.clear().draw();
 
 	$.ajax({
-		url: '/conexion-concepto',
+		url: '{% url "get_configuracion_conceptos" %}',
 		type: 'get',
 		dataType: 'json',
 		success: function(data){
@@ -120,75 +200,191 @@ function data_tabla_conceptos(){
 
 				var row = {}
 
-				row.id 					= data[i].id
-				row.nombre				= data[i].nombre
-				row.codigo_documento	= '<input style="width:95%" id="codigo_documento-'+data[i].id+'"type="text" value="'+data[i].codigo_documento+'">'
-				row.codigo_producto		= '<input style="width:95%" id="codigo_producto-'+data[i].id+'"type="text" value="'+data[i].codigo_producto+'">'
-				row.codigo_1			= '<input style="width:95%" id="code-1-'+data[i].id+'"type="text" value="'+data[i].codigo_1+'">'
-				row.codigo_2			= '<input style="width:95%" id="code-2-'+data[i].id+'"type="text" value="'+data[i].codigo_2+'">'
-				row.codigo_3			= '<input style="width:95%" id="code-3-'+data[i].id+'"type="text" value="'+data[i].codigo_3+'">'
-				row.codigo_4			= '<input style="width:95%" id="code-4-'+data[i].id+'"type="text" value="'+data[i].codigo_4+'">'
+				row.id 			= data[i].id
+				row.nombre		= data[i].nombre
+				row.rut			= data[i].rut
+				row.direccion	= data[i].direccion
+				row.telefono	= data[i].telefono
+
+				row.select 		= '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'" onchange="select_one()"></div>'
+
+				var template 	= ''
+				template 		+= '<div class="text-center">'
+				template 		+= data[i].estado == true ? '<i class="fa fa-check-circle info-succes"></i>' : '<i class="fa fa-times-circle info-error"></i>'
+				template 		+= '<a class="btn btn-default btn-bitbucket btn-configuration" data-type="single" data-id="'+data[i].id+'"><i class="fa fa-cog"></i></a>'
+				template 		+= '</div>'
+
+				row.concepto	= template
 
 				rows.push(row)
 			}
-			tabla_conceptos.rows.add(rows).draw();
+
+			table_clientes.rows.add(rows).draw();
+			$('.btn-configuration').click(open_modal_configuration)
+
+		}
+	})
+}
+
+function open_modal_configuration(){
+
+	var type 		= $(this).attr('data-type')
+	var id 			= $(this).attr('data-id')
+	var clientes 	= []
+	
+	if (type == 'multiple') {
+		var table = $('#t-clientes').dataTable()
+		$('.checkbox-contrato:checked', table.fnGetNodes()).each(function(i){
+			clientes.push($(this).val())
+		})
+
+	} else{
+		clientes.push(id)
+	};
+	
+	$('#m-configuration').modal('show')
+
+	data_tabla_conceptos(type, clientes)
+}
+
+function data_tabla_conceptos(type, clientes){
+
+	url = type == 'multiple' ? '/get/conexion-conceptos/' : '/get/conexion-conceptos/'+clientes[0]+'/'
+
+	table_conceptos.clear().draw();
+
+	$('#m-configuration #clientes').val(clientes)
+
+	$.ajax({
+		url: url,
+		type: 'get',
+		dataType: 'json',
+		success: function(data){
+
+			var rows = [];
+
+			if (type == 'multiple') {
+
+				for (var i = 0; i < data[0].conceptos.length; i++) {
+
+					var row = {}
+
+					row.id 					= data[0].conceptos[i].id
+					row.nombre				= data[0].conceptos[i].nombre
+					row.codigo_documento	= '<input "type="text" style="width:100px" id="codigo_documento_'+data[0].conceptos[i].id+'">'
+					row.codigo_producto		= '<input "type="text" style="width:100px" id="codigo_producto_'+data[0].conceptos[i].id+'">'
+					row.codigo_1			= '<input "type="text" style="width:100px" id="codigo_1_'+data[0].conceptos[i].id+'">'
+					row.codigo_2			= '<input "type="text" style="width:100px" id="codigo_2_'+data[0].conceptos[i].id+'">'
+					row.codigo_3			= '<input "type="text" style="width:100px" id="codigo_3_'+data[0].conceptos[i].id+'">'
+					row.codigo_4			= '<input "type="text" style="width:100px" id="codigo_4_'+data[0].conceptos[i].id+'">'
+
+					rows.push(row)
+				}
+
+			} else{
+
+				for (var i = 0; i < data.length; i++) {
+
+					for (var j = 0; j < data[i].conceptos.length; j++) {
+
+						var row = {}
+
+						row.id 					= data[i].conceptos[j].id
+						row.nombre				= data[i].conceptos[j].nombre
+						row.codigo_documento	= '<input "type="text" style="width:100px" id="codigo_documento_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].codigo_documento+'">'
+						row.codigo_producto		= '<input "type="text" style="width:100px" id="codigo_producto_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].codigo_producto+'">'
+						row.codigo_1			= '<input "type="text" style="width:100px" id="codigo_1_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].codigo_1+'">'
+						row.codigo_2			= '<input "type="text" style="width:100px" id="codigo_2_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].codigo_2+'">'
+						row.codigo_3			= '<input "type="text" style="width:100px" id="codigo_3_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].codigo_3+'">'
+						row.codigo_4			= '<input "type="text" style="width:100px" id="codigo_4_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].codigo_4+'">'
+
+						rows.push(row)
+
+					};
+				}
+			}
+			table_conceptos.rows.add(rows).draw();
 		}
 	})
 }
 
 function actualizar_conceptos(){
 
-	var rows = []
+	var clientes 	= $('#m-configuration #clientes').val().split(',')
+	var conceptos 	= []
 
-	tabla_conceptos.rows().every(function (rowIdx, tableLoop, rowLoop){
+	table_conceptos.rows().every(function (rowIdx, tableLoop, rowLoop){
 
 		var data 	= this.data();
 		var row 	= {}
 
 		row.id 					= data.id
-		row.codigo_documento 	= $('input#codigo_documento-'+data.id).val()
-		row.codigo_producto 	= $('input#codigo_producto-'+data.id).val()
-		row.codigo_1 			= $('input#code-1-'+data.id).val()
-		row.codigo_2 			= $('input#code-2-'+data.id).val()
-		row.codigo_3 			= $('input#code-3-'+data.id).val()
-		row.codigo_4 			= $('input#code-4-'+data.id).val()
+		row.codigo_documento 	= $('input#codigo_documento_'+data.id).val()
+		row.codigo_producto 	= $('input#codigo_producto_'+data.id).val()
+		row.codigo_1 			= $('input#codigo_1_'+data.id).val()
+		row.codigo_2 			= $('input#codigo_2_'+data.id).val()
+		row.codigo_3 			= $('input#codigo_3_'+data.id).val()
+		row.codigo_4 			= $('input#codigo_4_'+data.id).val()
 
-		rows.push(row)
+		conceptos.push(row)
 		
 	});
 
 	$.ajax({
-		url: '/conexion-concepto',
+		url: '{% url "post_configuracion_conceptos" %}',
 		type: 'post',
 		dataType: 'json',
 		data:{
-			conceptos 			: JSON.stringify(rows),
+			clientes 			: JSON.stringify(clientes),
+			conceptos 			: JSON.stringify(conceptos),
 			csrfmiddlewaretoken : getCookie('csrftoken'),
 		},
 		success: function(data){
 
-			if (data.estado == true ) {
-				var configuracion = {
-					'toast_type'	: 'success',
-					'toast_text' 	: 'Guardado correctamente',
-					'toast_title' 	: 'ÉXITO',
-				}
-			}else{
-				var configuracion = {
-					'toast_type'	: 'error',
-					'toast_text' 	: 'No se pudo actualizar',
-					'toast_title' 	: 'Error',
-				}
+			var notification = {
+				'toast_type'	: data.status == true ? 'success' : 'error',
+				'toast_text' 	: data.status == true ? 'Guardado correctamente' : data.message,
+				'toast_title' 	: data.status == true ? 'Éxito' : 'Error',
 			}
 
-			notification_toast(configuracion)
-			data_tabla_conceptos()
+			notification_toast(notification)
+			data_table_clientes()
+		},
+		error: function(){
+
+			var notification = {
+				'toast_type'	: 'error',
+				'toast_text' 	: 'ocurrio algun error',
+				'toast_title' 	: 'Error',
+			}
+
+			notification_toast(notification)
 		}
 	})
 }
 
+function select_one(){
+
+	$('.checkbox-all').prop('checked', false)
+}
+
+function select_all(obj){
+
+	var all 	= false
+	var tabla 	= $('#t-clientes').dataTable();
+
+	if($(obj).is(':checked')){
+		all = true
+	}
+
+	$('.checkbox-contrato', tabla.fnGetNodes()).each(function(i){
+		$(this).prop('checked', all)
+	})
+}
+
+
+
 </script>
 
 {% endblock scripts %}
-
 

@@ -3396,3 +3396,87 @@ def propuesta_pdf(proceso, pk=None):
 // }).on('rutValido', function(){
 // 	$(this).closest('.form-group').find('.container-error').text('')
 // });
+
+
+
+// antigua forma de generar la propuesta
+
+function cargar_propuesta(contratos){
+
+	var nombre_propuesta 	= $('#m-generar-propuesta #form-generar-propuesta input[name="nombre"]').val()
+	var valor_uf 			= $('#m-generar-propuesta #form-generar-propuesta input[name="uf_valor"]').val()
+
+	var buttons = '' 
+	buttons += '<button type="button" class="btn btn-outline btn-success" style="font-size:12px; margin-left:5px">'+nombre_propuesta+'</button>'
+	buttons += '<button type="button" class="btn btn-outline btn-success" style="font-size:12px; margin-left:5px">UF : <i class="fa fa-usd"></i> '+valor_uf+'</button>'
+	
+	$('#informacion-propuesta').html('')
+	$('#informacion-propuesta').append(buttons)
+
+	$('#validar-propuesta').removeClass('hide')
+	$('#container-propuesta').html('')
+
+	for (var i = 0; i < contratos.length; i++) {
+		$('#container-propuesta').append(template_propuesta(contratos[i]))
+	}
+
+	// Configuracion de Moneda Pesos
+	$('.format-number').autoNumeric("init",{
+		aSep: LEASE_CURRENCY_THOUSANDS,
+		aDec: LEASE_CURRENCY_DECIMALS,
+		mDec: LEASE_CURRENCY_FORMAT,
+	})
+	change_config_money()
+	submit_validar_propuesta()
+}
+
+function template_propuesta(contrato){
+
+	var template = ''
+
+	template += '<div data-id="@contrato_id" class="ibox-content" style="display: block;">'
+
+	template += '<div class="contrato-informacion">'
+	template += '<p><span>Nº Contrato</span><span>@contrato_numero</span></p>'
+	template += '<p><span>Cliente</span><span>@cliente_nombre</span></p>'
+	template += '<p><span>RUT</span><span>@cliente_rut</span></p>'
+	template += '<p><span>Marca comercial</span><span>@contrato_nombre</span></p>'
+	template += '</div>'
+
+	template += '<div class="container-tabla">'
+	template += '<table id="tabla-conceptos-@contrato_id" class="table table-striped">'
+	template += '<thead>'
+	template += '<tr>'
+	template += '<th>concepto a facturar</th>'
+	template += '<th class="text-right">total ($)</th>'
+	template += '</tr>'
+	template += '</thead>'
+	template += '<tbody>'
+
+	for (var i = 0; i < contrato.conceptos.length; i++) {
+
+		template += '<tr>'
+		template += '<input type="hidden" class="id" value="@concepto_id">'
+		template += '<td class="container-input"><input type="text" class="nombre"  name="nombre-@contrato_id-@concepto_id" value="@concepto_nombre"><div class="container-error"></div></td>'
+		template += '<td class="container-input"><input type="text" class="total text-right format-number" data-es-moneda="true" data-moneda="" data-select="false" name="total-@contrato_id-@concepto_id"  value="@concepto_total"><div class="container-error"></div></td>'
+		template += '</tr>'
+
+		template = template.replace(/@concepto_id/g, 		contrato.conceptos[i].id);
+		template = template.replace(/@concepto_nombre/g, 	contrato.conceptos[i].nombre);
+		template = template.replace(/@concepto_total/g, 	contrato.conceptos[i].total);
+
+	};
+
+	template += '</tbody>'
+	template += '</table>'
+	template += '</div>'
+	template += '</div>'
+
+	template = template.replace(/@contrato_id/g, 		contrato.id);
+	template = template.replace(/@contrato_numero/g, 	contrato.numero);
+	template = template.replace(/@cliente_nombre/g, 	contrato.cliente.nombre);
+	template = template.replace(/@cliente_rut/g, 		contrato.cliente.rut);
+	template = template.replace(/@contrato_nombre/g, 	contrato.nombre);
+
+	return template
+}

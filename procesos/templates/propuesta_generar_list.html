@@ -3,8 +3,6 @@
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
-
-
 <!-- modal: formulario generar propuesta -->
 <div id="m-generar-propuesta" class="modal fade" tabindex="-1" role="dialog">
 	<div class="modal-dialog" role="document">
@@ -249,9 +247,11 @@
 
 								<!-- seccion -->
 								<div id="collapse-3" class="panel-collapse collapse" aria-expanded="true" style="height: 0px;">
+
 									<div id="seccion-validar-propuesta" class="panel-body hide">
 
 										<form id="form-validar-propuesta">
+
 											<input type="hidden" name="mes">
 											<input type="hidden" name="anio">
 											<input type="hidden" name="nombre">
@@ -259,7 +259,11 @@
 											<input type="hidden" name="uf_modificada">
 
 											<div class="row">
-												<div id="container-propuesta"></div>												
+												<div class="col-xs-12">
+													<div class="container-table">
+														<table id="t-propuesta" class="table table-striped table-bordered table-hover" width="100%"></table>
+													</div>
+												</div>
 											</div>
 
 											<div class="row">
@@ -301,7 +305,7 @@
 	padding: 0 10px;
 }
 
-.generar-propuesta #form-validar-propuesta .container-tabla{
+/*.generar-propuesta #form-validar-propuesta .container-tabla{
 	margin-top: 20px;
 }
 
@@ -319,7 +323,7 @@
 
 .generar-propuesta #form-validar-propuesta #container-propuesta .ibox-content{
 	border: none;
-}
+}*/
 </style>
 
 {% endblock section %}
@@ -329,12 +333,15 @@
 <script>
 
 var tabla_contratos;
+var table_propuesta;
 
 $(document).ready(function(){
 
 	initialize()
-	form_filtrar_contratos()
-	form_generar_propuesta()
+	submit_filtrar_contratos()
+	submit_generar_propuesta()
+
+	load_table_propuesta()
 });
 
 function initialize(){
@@ -366,7 +373,7 @@ function initialize(){
 	})
 }
 
-function form_filtrar_contratos(){
+function submit_filtrar_contratos(){
 	$("#form-fitrar-contratos").validate({
 		rules: {
 			mes: {
@@ -461,7 +468,8 @@ function form_filtrar_contratos(){
 })
 }
 
-function form_generar_propuesta(){
+function submit_generar_propuesta(){
+
 	$('#form-generar-propuesta').validate({
 		rules: {
 			mes: {
@@ -537,14 +545,14 @@ function form_generar_propuesta(){
 						'toast_title' 	: 'Correcto',
 					}
 					notification_toast(configuracion)
-					cargar_propuesta(data)
+					data_table_propuesta(data)
 				},
 				error: function(){
 					loading(false)
 				}
 			});
-		}
-	})
+}
+})
 }
 
 function load_tabla_contratos(conceptos){
@@ -570,7 +578,7 @@ function load_tabla_contratos(conceptos){
 		'width'	: '15%',
 		'data'	: 'numero',
 		'title'	: 'Nº Contrato',
-        'class' : 'text-right',
+		'class' : 'text-right',
 	},
 	{
 		'width'		: '15%',
@@ -625,12 +633,7 @@ function data_tabla_contratos(data){
 				if (data[i].conceptos[j].valido.estado == true) {
 					template += '<i class="fa fa-check-circle info-succes"></i>'
 				}else{
-					if (data[i].conceptos[j].valido.tipo == null) {
-						template += '<i class="fa fa-times-circle info-error" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
-					} else{
-						template += '<i class="fa fa-times-circle info-error-config" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
-					};
-					
+					template += '<i class="fa fa-times-circle info-error" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
 				}
 			}else{
 				template += '<i class="fa fa-minus-square info-none"></i>'
@@ -682,8 +685,6 @@ function modal_cargar_generar_propuesta(){
 			$('#m-generar-propuesta #form-generar-propuesta .uf-fecha').text(data[0].fecha)
 		}
 	})
-
-
 }
 
 function modal_abrir_generar_propuesta(){
@@ -716,6 +717,202 @@ function modal_abrir_generar_propuesta(){
 
 
 
+// sección generar propuesta
+function load_table_propuesta(){
+
+	var configuracion = {
+		'rowsGroup' : [2, 1, 0],
+		'ordering'	: false,
+		'paginate' 	: false,
+		'searching'	: false,
+		'buttons' 	: [],
+	}
+
+	var columns = [
+	{
+		'data'		: 'cliente_id',
+		'visible'	: false,
+	},
+	{
+		'width'		: '15%',
+		'data'		: 'cliente_nombre',
+		'title'		: 'Cliente',
+	},
+	{
+		'data'		: 'contrato_id',
+		'visible'	: false,
+	},
+	{
+		'width'		: '15%',
+		'data'		: 'contrato_numero',
+		'title'		: 'Nº Contrato',
+	},
+	{
+		'width'		: '15%',
+		'data'		: 'contrato_nombre',
+		'title'		: 'Marca Comercial',
+	},
+	{
+		'data'		: 'concepto_id',
+		'visible'	: false,
+	},
+	{
+		'width'		: '15%',
+		'data'		: 'concepto_nombre',
+		'title'		: 'Concepto',
+	},
+	{
+		'width'		: '15%',
+		'data'		: 'glosa',
+		'title'		: 'Glosa',
+	},
+	{
+		'width'		: '15%',
+		'data'		: 'total',
+		'title'		: 'Total',
+	}
+	];
+
+	table_propuesta = load_table('#t-propuesta', columns, configuracion)
+}
+
+function data_table_propuesta(data){
+
+	table_propuesta.clear().draw();
+	
+	rows = []
+	
+	for (var i = 0; i < data.length; i++) {
+		for (var j = 0; j < data[i].conceptos.length; j++) {
+
+			row = {}
+
+			row.cliente_id		= data[i].cliente.id
+			row.cliente_nombre	= data[i].cliente.nombre
+			row.contrato_id		= data[i].id
+			row.contrato_numero	= data[i].numero
+			row.contrato_nombre	= data[i].nombre
+			row.concepto_id		= data[i].conceptos[j].id
+			row.concepto_nombre	= data[i].conceptos[j].nombre
+			row.glosa			= '<input type="text" name="glosa" id="glosa_'+data[i].id+'_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].nombre+'">'
+			row.total			= '<input type="text" name="total" id="total_'+data[i].id+'_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].total+'">'
+
+			rows.push(row)
+
+		};
+	};
+
+	table_propuesta.rows.add(rows).draw();
+
+	submit_validar_propuesta()
+}
+
+function submit_validar_propuesta(){
+
+	$("#form-validar-propuesta").validate({
+
+		errorPlacement: function(error, element) {
+			error.appendTo(element.closest('.container-input').find('.container-error'));
+		},
+		submitHandler: function(form) {
+
+			var rows = []
+
+			table_propuesta.rows().every(function (rowIdx, tableLoop, rowLoop){
+
+				var data 	= this.data();
+				var row 	= {}
+
+				row.id 			= data.contrato_id
+				row.concepto 	= data.concepto_id
+				row.glosa		= $('input#glosa_'+data.contrato_id+'_'+data.concepto_id).val()
+				row.total 		= $('input#total_'+data.contrato_id+'_'+data.concepto_id).val()
+				row.codigo 		= data.concepto_id
+
+				rows.push(row)
+
+			});
+
+
+			$.ajax({
+				url: '/procesos/propuesta/guardar',
+				type: 'post',
+				dataType: 'json',
+				data:{
+					mes 				: $('#form-generar-propuesta input[name="mes"]').val(),
+					anio 				: $('#form-generar-propuesta input[name="anio"]').val(),
+					nombre 				: $('#form-validar-propuesta input[name="nombre"]').val(),
+					uf_valor 			: $('#form-validar-propuesta input[name="uf_valor"]').val(),
+					uf_modificada 		: $('#form-validar-propuesta input[name="uf_modificada"]').val(),
+					contratos 			: JSON.stringify(group_propuesta(rows)),
+					csrfmiddlewaretoken : getCookie('csrftoken'),
+				},
+				beforeSend: function(){
+					loading(true)
+				},
+				success: function(response){
+
+					loading(false)
+
+					if (response.status == true) {
+
+						swal({
+							title 	: 'Propuesta Creada',
+							type 	: 'success',
+							html 	: '<form action="/procesos/propuesta/pdf/" method="POST"><input type="hidden" value="'+response.data+'"name="facturas"><button type="submit">Descargar PDF</button></form>',
+							showCancelButton 	: true,
+							confirmButtonColor 	: '#FCC491',
+							confirmButtonText 	: '<a href="/propuesta/generar/list"><span style="color:#FFF">Nueva Propuesta<span>',
+							cancelButtonText 	: '<a href="/propuesta/procesar/list"><span style="color:#FFF">Procesar Propuesta</span></a>',
+							allowOutsideClick 	: false,
+							allowEscapeKey 		: false,
+						}).then(function() {
+
+						})
+
+					} else{
+
+						var configuracion = {
+							'toast_type'	: 'error',
+							'toast_text' 	: response.messages,
+							'toast_title' 	: 'Error',
+						}
+						notification_toast(configuracion)
+
+					};
+				},
+				error: function(){
+					loading(false)
+				}
+			});
+		},
+	})
+
+	// agregar validacion a los campos glosa
+	$("#form-validar-propuesta [name^=glosa]").each(function () {
+		$(this).rules("add", {
+			required: true,
+			messages: {
+				required: "campo requerido",
+			}
+		});
+	});
+
+	// agregar validacion a los campos total
+	$("#form-validar-propuesta [name^=total]").each(function () {
+		$(this).rules("add", {
+			required: true,
+			messages: {
+				required: "campo requerido",
+			}
+		});
+	});
+}
+
+
+
+
+
 // funciones 
 function seleccionar_uno(){
 
@@ -736,207 +933,39 @@ function seleccionar_todo(obj){
 	})
 }
 
-// sección generar propuesta
-function cargar_propuesta(contratos){
+function group_propuesta(data){
 
-	var nombre_propuesta 	= $('#m-generar-propuesta #form-generar-propuesta input[name="nombre"]').val()
-	var valor_uf 			= $('#m-generar-propuesta #form-generar-propuesta input[name="uf_valor"]').val()
+	var groups = {};
 
-	var buttons = '' 
-	buttons += '<button type="button" class="btn btn-outline btn-success" style="font-size:12px; margin-left:5px">'+nombre_propuesta+'</button>'
-	buttons += '<button type="button" class="btn btn-outline btn-success" style="font-size:12px; margin-left:5px">UF : <i class="fa fa-usd"></i> '+valor_uf+'</button>'
-	
-	$('#informacion-propuesta').html('')
-	$('#informacion-propuesta').append(buttons)
+	$.each(data, function(i, item) {
 
-	$('#validar-propuesta').removeClass('hide')
-	$('#container-propuesta').html('')
+		var level 	= item.id;
+		var codigo 	= item.codigo;
+		var key 	= level+'_'+codigo 
 
-	for (var i = 0; i < contratos.length; i++) {
-		$('#container-propuesta').append(template_propuesta(contratos[i]))
-	}
+		delete item.id;
+		delete item.codigo;
 
-	// Configuracion de Moneda Pesos
-	$('.format-number').autoNumeric("init",{
-		aSep: LEASE_CURRENCY_THOUSANDS,
-		aDec: LEASE_CURRENCY_DECIMALS,
-		mDec: LEASE_CURRENCY_FORMAT,
-	})
-	change_config_money()
-	validar_form_propuesta()
-}
-
-function template_propuesta(contrato){
-
-	var template = ''
-
-	template += '<div data-id="@contrato_id" class="ibox-content" style="display: block;">'
-
-	template += '<div class="contrato-informacion">'
-	template += '<p><span>Nº Contrato</span><span>@contrato_numero</span></p>'
-	template += '<p><span>Cliente</span><span>@cliente_nombre</span></p>'
-	template += '<p><span>RUT</span><span>@cliente_rut</span></p>'
-	template += '<p><span>Marca comercial</span><span>@contrato_nombre</span></p>'
-	template += '</div>'
-
-	template += '<div class="container-tabla">'
-	template += '<table id="tabla-conceptos-@contrato_id" class="table table-striped">'
-	template += '<thead>'
-	template += '<tr>'
-	template += '<th>concepto a facturar</th>'
-	template += '<th class="text-right">total ($)</th>'
-	template += '</tr>'
-	template += '</thead>'
-	template += '<tbody>'
-
-	for (var i = 0; i < contrato.conceptos.length; i++) {
-
-		template += '<tr>'
-		template += '<input type="hidden" class="id" value="@concepto_id">'
-		template += '<td class="container-input"><input type="text" class="nombre"  name="nombre-@contrato_id-@concepto_id" value="@concepto_nombre"><div class="container-error"></div></td>'
-		template += '<td class="container-input"><input type="text" class="total text-right format-number" data-es-moneda="true" data-moneda="" data-select="false" name="total-@contrato_id-@concepto_id"  value="@concepto_total"><div class="container-error"></div></td>'
-		template += '</tr>'
-
-		template = template.replace(/@concepto_id/g, 		contrato.conceptos[i].id);
-		template = template.replace(/@concepto_nombre/g, 	contrato.conceptos[i].nombre);
-		template = template.replace(/@concepto_total/g, 	contrato.conceptos[i].total);
-	};
-
-	template += '</tbody>'
-	template += '</table>'
-	template += '</div>'
-	template += '</div>'
-
-	template = template.replace(/@contrato_id/g, 		contrato.id);
-	template = template.replace(/@contrato_numero/g, 	contrato.numero);
-	template = template.replace(/@cliente_nombre/g, 	contrato.cliente.nombre);
-	template = template.replace(/@cliente_rut/g, 		contrato.cliente.rut);
-	template = template.replace(/@contrato_nombre/g, 	contrato.nombre);
-
-	return template
-}
-
-function validar_form_propuesta(){
-
-	$("#form-validar-propuesta").validate({
-		rules: {
-			numero: {
-				required: true,
-			}
-		},
-		messages: {
-			numero: {
-				required: "campo requerido",
-			}
-		},
-		errorPlacement: function(error, element) {
-			error.appendTo(element.closest('.container-input').find('.container-error'));
-		},
-		submitHandler: function(form) {
-			var data = []
-
-			// armar data
-			$("#container-propuesta .ibox-content").each(function (index){
-
-				var contrato 		= {}
-				contrato.id 		=  $(this).data("id")
-				contrato.conceptos 	=  []
-
-				$('#tabla-conceptos-'+contrato.id+' > tbody > tr').each(function(){
-
-					var concepto = {}
-
-					concepto.id 		= $(this).find('input.id').val()
-					concepto.nombre 	= $(this).find('input.nombre').val()
-					concepto.total 		= $(this).find('input.total').val()
-					concepto.modified 	= false
-
-					contrato.conceptos.push(concepto)
-
-				});
-
-				data.push(contrato)
-			})
-
-			// enviar data
-			$.ajax({
-				url: '/procesos/propuesta/guardar',
-				type: 'post',
-				dataType: 'json',
-				data:{
-					mes 				: $('#form-generar-propuesta input[name="mes"]').val(),
-					anio 				: $('#form-generar-propuesta input[name="anio"]').val(),
-					nombre 				: $('#form-validar-propuesta input[name="nombre"]').val(),
-					uf_valor 			: $('#form-validar-propuesta input[name="uf_valor"]').val(),
-					uf_modificada 		: $('#form-validar-propuesta input[name="uf_modificada"]').val(),
-					contratos 			: JSON.stringify(data),
-					csrfmiddlewaretoken : getCookie('csrftoken'),
-				},
-				beforeSend: function(){
-					loading(true)
-				},
-				success: function(data){
-					loading(false)
-
-					console.log(data)
-
-					if (data.estado == true) {
-						swal({
-							title 	: 'Propuesta Creada',
-							// text 	: '',
-							type 	: 'success',
-							html 	: '<form action="/procesos/propuesta/pdf/" method="POST"><input type="hidden" value="'+data.facturas+'"name="facturas"><button type="submit">Descargar PDF</button></form>',
-							// html 	: '<a href="/procesos/propuesta/pdf/"><span style="color:#575757">Descargar PDF<span>',
-							showCancelButton 	: true,
-							confirmButtonColor 	: '#FCC491',
-							confirmButtonText 	: '<a href="/propuesta/generar/list"><span style="color:#FFF">Nueva Propuesta<span>',
-							cancelButtonText 	: '<a href="/propuesta/procesar/list"><span style="color:#FFF">Procesar Propuesta</span></a>',
-							allowOutsideClick 	: false,
-							allowEscapeKey 		: false,
-						}).then(function() {
-							
-						})
-					}else{
-						var configuracion = {
-							'toast_type'	: 'error',
-							'toast_text' 	: data.mensaje,
-							'toast_title' 	: 'Error',
-						}
-						notification_toast(configuracion)
-					}
-				},
-				error: function(){
-					
-					loading(false)
-				}
-			})
+		if(groups[key]) {
+			groups[key].push(item);
+		} else {
+			groups[key] = [item];
 		}
-	})
-
-	// agregar validacion a los campos nombre
-	$("#form-validar-propuesta [name^=nombre]").each(function () {
-		$(this).rules("add", {
-			required: true,
-			messages: {
-				required: "campo requerido",
-			}
-		});
 	});
 
-	// agregar validacion a los campos nombre
-	$("#form-validar-propuesta [name^=total]").each(function () {
-		$(this).rules("add", {
-			required: true,
-			messages: {
-				required: "campo requerido",
-			}
-		});
+	var result = $.map(groups, function(group, key) {
+
+		var obj = {};
+		keys = key.split("_")
+		obj.contrato 	= parseInt(keys[0]);
+		obj.codigo 		= parseInt(keys[1]);
+		obj.conceptos 	= group
+
+		return obj;
 	});
 
+	return result;
 }
-
-
-
 
 </script>
 

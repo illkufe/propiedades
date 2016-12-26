@@ -302,7 +302,8 @@ form#form-conceptos-new .select2.select2-container.select2-container--default{
 }
 
 .btn-bitbucket{
-	padding: 3px 8px;
+	padding: 1px 6px;
+	margin-left: 2px;
 }
 
 .btn-default{

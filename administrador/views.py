@@ -4,8 +4,8 @@ from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 from django.core import serializers
-from conceptos.models import Concepto
-from procesos.models import Factura
+from conceptos.models import *
+from procesos.models import *
 
 from .models import *
 from .forms import *
@@ -174,15 +174,15 @@ class ClienteDelete(DeleteView):
 		return JsonResponse(payload, safe=False)
 
 
-# configuración conceptos
-class ConfiguracionConceptoList(ListView):
+# conexión conceptos
+class ConexionConceptoList(ListView):
 
 	model 			= Cliente
-	template_name 	= 'configuracion_concepto_list.html'
+	template_name 	= 'conexion_concepto_list.html'
 
 	def get_context_data(self, **kwargs):
 
-		context 			= super(ConfiguracionConceptoList, self).get_context_data(**kwargs)
+		context 			= super(ConexionConceptoList, self).get_context_data(**kwargs)
 		context['title'] 	= modulo
 		context['subtitle'] = 'clientes'
 		context['name'] 	= 'lista'
@@ -196,8 +196,8 @@ class ConfiguracionConceptoList(ListView):
 
 		return queryset
 
-
 def obtener_clasificacion(self, cliente_id):
+
 	cabeceras = self.request.user.userprofile.empresa.clasificacion_set.filter(visible=True, tipo_clasificacion=2)
 	cabecera = list()
 
@@ -405,74 +405,106 @@ class CONEXION_CONCEPTO(View):
 
 	http_method_names =  ['get', 'post']
 
-	def get(self, request, id=None):
+	def get(self, request, pk=None):
 
-		self.object_list = request.user.userprofile.empresa.concepto_set.all()
-
-		if request.is_ajax() or self.request.GET.get('format', None) == 'json':
-
-			return self.json_to_response()
-
+		if pk == None:
+			self.object_list = Cliente.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 		else:
+			self.object_list = Cliente.objects.filter(pk=pk)
 
-			return render(request, 'conexion_concepto_list.html', {
-				'title' 	: 'Conexión',
-				'href' 		: 'conexion-concepto',
-				'subtitle'	: 'Conceptos',
-				'name' 		: 'Configuración',
-				})
-	
-	def post(self, request):
-
-		try:
-			var_post 	= request.POST.copy()
-			conceptos 	= json.loads(var_post['conceptos'])
-			
-			for item in conceptos:
-
-				concepto = Concepto.objects.get(id=item['id'])
-
-				concepto.codigo_documento 	= item['codigo_documento']
-				concepto.codigo_producto 	= item['codigo_producto']
-				concepto.codigo_1 			= item['codigo_1']
-				concepto.codigo_2 			= item['codigo_2']
-				concepto.codigo_3 			= item['codigo_3']
-				concepto.save()
-
-				estado = True
-					
-		except Exception:
-
-			estado = False
-
-		return JsonResponse({'estado': estado}, safe=False)
+		return self.json_to_response()
 
 	def json_to_response(self):
 
 		data = list()
 
-		for item in self.object_list:
-				
-			tipo = {
-				'nombre': item.concepto_tipo.nombre,
-				'codigo': item.concepto_tipo.codigo,
-				}
+		for cliente in self.object_list:
+
+			estado 			= True
+			data_conceptos 	= list()
+			conceptos 		= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+
+			for concepto in conceptos:
+
+				configuracion = Configuracion_Concepto.objects.filter(cliente=cliente, concepto=concepto).exists()
+
+				if configuracion:
+
+					configuracion = Configuracion_Concepto.objects.get(cliente=cliente, concepto=concepto)
+
+				data_conceptos.append({
+					'id'				: concepto.id,
+					'nombre'			: concepto.nombre,
+					'codigo' 			: concepto.codigo,
+					'codigo_documento' 	: '' if configuracion is False else configuracion.codigo_documento,
+					'codigo_producto' 	: '' if configuracion is False else configuracion.codigo_producto,
+					'codigo_1' 			: '' if configuracion is False else configuracion.codigo_1,
+					'codigo_2' 			: '' if configuracion is False else configuracion.codigo_2,
+					'codigo_3' 			: '' if configuracion is False else configuracion.codigo_3,
+					'codigo_4' 			: '' if configuracion is False else configuracion.codigo_4,
+					'estado' 			: False if configuracion is False or configuracion.estado is False else configuracion.estado,
+					})
+
+				estado = False if configuracion is False else estado
 
 			data.append({
-				'id' 				: item.id,
-				'nombre' 			: item.nombre,
-				'codigo' 			: item.codigo,
-				'codigo_documento' 	: item.codigo_documento,
-				'codigo_producto' 	: item.codigo_producto,
-				'codigo_1' 			: item.codigo_1,
-				'codigo_2' 			: item.codigo_2,
-				'codigo_3' 			: item.codigo_3,
-				'codigo_4' 			: item.codigo_4,
-				'tipo' 				: tipo,
+				'id' 		: cliente.id,
+				'nombre' 	: cliente.nombre,
+				'rut' 		: cliente.rut,
+				'direccion' : cliente.direccion,
+				'telefono' 	: cliente.telefono,
+				'conceptos'	: data_conceptos,
+				'estado' 	: estado,
 				})
 
 		return JsonResponse(data, safe=False)
 
+	def post(self, request):
+
+		status 	= True
+		message = 'ok'
+
+		try:
+
+			var_post 	= request.POST.copy()
+			conceptos 	= json.loads(var_post['conceptos'])
+			clientes 	= json.loads(var_post['clientes'])
+
+			for cliente in clientes:
+
+				for concepto in conceptos:
+
+					if Configuracion_Concepto.objects.filter(cliente_id=cliente, concepto=concepto['id']).exists():
+						
+						configuracion = Configuracion_Concepto.objects.get(cliente_id=cliente, concepto=concepto['id'])
+					else:
+						configuracion = Configuracion_Concepto()
+
+						configuracion.cliente_id 	= int(cliente)
+						configuracion.concepto_id 	= int(concepto['id'])
+
+					configuracion.estado = True if concepto['codigo_documento'] is not '' and concepto['codigo_producto'] is not '' else False
+
+					configuracion.codigo_documento 	= concepto['codigo_documento']
+					configuracion.codigo_producto 	= concepto['codigo_producto']
+					configuracion.codigo_1 			= concepto['codigo_1']
+					configuracion.codigo_2 			= concepto['codigo_2']
+					configuracion.codigo_3 			= concepto['codigo_3']
+					configuracion.codigo_4 			= concepto['codigo_4']
+						
+					configuracion.save()
+			
+		except Exception as error:
+
+			status 	= False
+			message = error
+
+		response = {
+			'status'	:status,
+			'message'	:message,
+		}
+
+		return JsonResponse(response, safe=False)
 
 # clasificacion
 class ClasificacionList(ListView):
@@ -954,34 +986,27 @@ class CONFIGURACION_MONEDA(View):
 
 
 # def validar_workflow(request):
-#
 #     try:
 #         estado          = True
 #         error           = ''
 #         object_workflow = request.user.userprofile.empresa.workflow_set.all()
 #         object_list     = Proceso.objects.filter(workflow=object_workflow, visible=True).order_by('tipo_estado_id','id')
-#
 #         if not object_list.filter(tipo_estado_id=1).exists() or not object_list.filter(tipo_estado_id=3).exists():
 #             estado = False
 #             error  = "Error, debe contar con un proceso borrador y una aprobación."
 #         else:
 #             lista_antecesor = list()
-#
 #             ##Obtengo la lista de antecesores del workflow
 #             for a in object_list:
 #                 for j in a.antecesor.filter(visible=True).values_list('proceso__antecesor', flat=True).distinct():
-#
 #                     ## Validar que el proceso no puede ser antecesor de si mismo
 #                     if a.id == j:
 #                         estado  = False
 #                         error   = "El proceso " + str(a.nombre) + " no puede ser antecesor de sí mismo."
 #                         break
-#
 #                     if j not in lista_antecesor:
 #                         lista_antecesor.append(j)
-#
 #             if estado == True:
-#
 #                 ## Valido que los procesos esten de antecesores
 #                 for b in object_list:
 #                     ##Valido que el proceso tenga antecesor y que sea distinto de tipo borrador
@@ -1006,14 +1031,11 @@ class CONFIGURACION_MONEDA(View):
 #                     try:
 #                         antecesor   = c.antecesor.filter(visible=True)
 #                         sig_proceso = object_list[count]
-#
 #                         for a in antecesor:
-#
 #                             if c.tipo_estado_id == 2 and a.tipo_estado_id == 3:
 #                                 estado  = False
 #                                 error   = "El proceso " + str(c.nombre) + " no puede tener un antecesor de aprobación."
 #                                 break
-#
 #                             if a == sig_proceso:
 #                                 estado  = False
 #                                 error   = "Existe recursividad entre "+ str(c) + ' y ' + str(sig_proceso)
@@ -1021,22 +1043,17 @@ class CONFIGURACION_MONEDA(View):
 #                         count +=1
 #                     except Exception as a:
 #                         for a in antecesor:
-#
 #                             if c.tipo_estado_id == 3 and a.tipo_estado_id == 1 and Proceso.objects.filter(tipo_estado_id=2,
 #                                                                                                           visible=True).count():
 #                                 estado  = False
 #                                 error   = "El proceso " + str(c.nombre) + " no debe tener un antecesor tipo borrador."
 #                                 break
-#
 #                         break
-#
 #     except Exception as a:
 #         estado = False
 #         error  = "Error al validar Workflow."
-#
 #     if estado == True:
 #         workflow            = Workflow.objects.get(empresa=request.user.userprofile.empresa)
 #         workflow.validado   = True
 #         workflow.save()
-#
 #     return JsonResponse({'estado': estado, 'error': error}, safe=False)
