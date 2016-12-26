@@ -209,12 +209,32 @@
 									<div id="seccion-seleccionar-contratos" class="panel-body hide">
 
 										<div class="row">
-											<div class="col-xs-12">
-												<p class="m-t-md m-b-md">
-													<strong>Descripción :</strong> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+											<div class="col-sm-3">
+												<p>
+													<i class="fa fa-check-circle info-succes"></i>
+													<span> concepto facturado</span>
+												</p>
+											</div>
+											<div class="col-sm-3">
+												<p>
+													<i class="fa fa-times-circle info-error"></i>
+													<span> concepto no facturado</span>
+												</p>
+											</div>
+											<div class="col-sm-3">
+												<p>
+													<i class="fa fa-times-circle info-error-config"></i>
+													<span> concepto no configurado</span>
+												</p>
+											</div>
+											<div class="col-sm-3">
+												<p>
+													<i class="fa fa-minus-square info-none"></i>
+													<span> concepto no asociado al contrato</span>
 												</p>
 											</div>
 										</div>
+										<br>
 
 										<div class="row">
 											<div class="col-xs-12">
@@ -305,25 +325,7 @@
 	padding: 0 10px;
 }
 
-/*.generar-propuesta #form-validar-propuesta .container-tabla{
-	margin-top: 20px;
-}
 
-.generar-propuesta #form-validar-propuesta .container-tabla table tr td:first-child{
-	width: 75%;
-}
-
-.generar-propuesta #form-validar-propuesta .container-tabla table tr td:last-child{
-	width: 25%;
-}
-
-.generar-propuesta #form-validar-propuesta .container-tabla table tr td input{
-	width: 100%
-}
-
-.generar-propuesta #form-validar-propuesta #container-propuesta .ibox-content{
-	border: none;
-}*/
 </style>
 
 {% endblock section %}
@@ -525,34 +527,46 @@ function submit_generar_propuesta(){
 
 					loading(false)
 
-					$('#m-generar-propuesta').modal('hide')
-					$('#form-validar-propuesta input[name="mes"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="mes"]').val())
-					$('#form-validar-propuesta input[name="anio"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="anio"]').val())
-					$('#form-validar-propuesta input[name="nombre"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="nombre"]').val())
-					$('#form-validar-propuesta input[name="uf_valor"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_valor"]').val())
-					$('#form-validar-propuesta input[name="uf_modificada"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_modificada"]').prop('checked'))
+                    //agregar validacion de configuracion de conceptos
+                    if (data[0].estado == false){
+                    	var configuracion = {
+                    		'toast_type'	: 'warning',
+                    		'toast_text' 	: data[0].mensaje,
+                    		'toast_title' 	: 'Advertencia',
+                    	}
+                    	notification_toast(configuracion)
+                    }else{
 
-					// mostrar y cerrar secciones
-					$('#seccion-validar-propuesta').removeClass('hide')
-					$('#collapse-1').collapse('hide')
-					$('#collapse-2').collapse('hide')
-					$('#collapse-3').collapse('show')
-					$('[data-toggle="tooltip"]').tooltip()
+                    	$('#m-generar-propuesta').modal('hide')
+                    	$('#form-validar-propuesta input[name="mes"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="mes"]').val())
+                    	$('#form-validar-propuesta input[name="anio"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="anio"]').val())
+                    	$('#form-validar-propuesta input[name="nombre"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="nombre"]').val())
+                    	$('#form-validar-propuesta input[name="uf_valor"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_valor"]').val())
+                    	$('#form-validar-propuesta input[name="uf_modificada"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_modificada"]').prop('checked'))
 
-					var configuracion = {
-						'toast_type'	: 'success',
-						'toast_text' 	: 'propuesta generada',
-						'toast_title' 	: 'Correcto',
-					}
-					notification_toast(configuracion)
-					data_table_propuesta(data)
-				},
-				error: function(){
-					loading(false)
-				}
-			});
-}
-})
+                        // mostrar y cerrar secciones
+                        $('#seccion-validar-propuesta').removeClass('hide')
+                        $('#collapse-1').collapse('hide')
+                        $('#collapse-2').collapse('hide')
+                        $('#collapse-3').collapse('show')
+                        $('[data-toggle="tooltip"]').tooltip()
+
+                        var configuracion = {
+                        	'toast_type'	: 'success',
+                        	'toast_text' 	: 'propuesta generada',
+                        	'toast_title' 	: 'Correcto',
+                        }
+                        notification_toast(configuracion)
+                        data_table_propuesta(data)
+                    }
+
+                },
+                error: function(){
+                	loading(false)
+                }
+            });
+		}
+	})
 }
 
 function load_tabla_contratos(conceptos){
@@ -618,8 +632,8 @@ function data_tabla_contratos(data){
 	for (var i = 0; i < data.length; i++) {
 		
 		row = {}
+		var status = false
 
-		row['opciones'] = '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'" onchange="seleccionar_uno()"></div>'
 		row['numero']	= data[i].numero
 		row['nombre']	= data[i].nombre
 		row['cliente']	= data[i].cliente
@@ -632,15 +646,27 @@ function data_tabla_contratos(data){
 			if (data[i].conceptos[j].asociado == true) {
 				if (data[i].conceptos[j].valido.estado == true) {
 					template += '<i class="fa fa-check-circle info-succes"></i>'
+					status    = true
 				}else{
-					template += '<i class="fa fa-times-circle info-error" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
+
+					if (data[i].conceptos[j].valido.tipo == null) {
+						template += '<i class="fa fa-times-circle info-error" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
+					} else{
+						template += '<i class="fa fa-times-circle info-error-config" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
+					}
 				}
 			}else{
-				template += '<i class="fa fa-minus-square info-none"></i>'
+				template += '<i class="fa fa-minus-square info-none" data-toggle="tooltip" data-placement="top" title="" data-original-title="'+data[i].conceptos[j].valido.mensaje+'"></i>'
 			}
 
 			template += '</div>'
 			row[data[i].conceptos[j].id] = template
+
+			if(status == true){
+				row['opciones'] = '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'" onchange="seleccionar_uno()"></div>'
+			}else{
+				row['opciones'] = '<div class="text-center"><input type="checkbox" class="checkbox-contrato" value="'+data[i].id+'" onchange="seleccionar_uno()" disabled="disabled"></div>'
+			}
 
 		}
 		rows.push(row)
@@ -717,6 +743,7 @@ function modal_abrir_generar_propuesta(){
 
 
 
+
 // sección generar propuesta
 function load_table_propuesta(){
 
@@ -757,6 +784,10 @@ function load_table_propuesta(){
 		'visible'	: false,
 	},
 	{
+		'data'		: 'documento_id',
+		'visible'	: false,
+	},
+	{
 		'width'		: '15%',
 		'data'		: 'concepto_nombre',
 		'title'		: 'Concepto',
@@ -787,6 +818,8 @@ function data_table_propuesta(data){
 
 			row = {}
 
+			row.documento_id	= data[i].numero_documento
+			row.cliente_id		= data[i].cliente.id
 			row.cliente_id		= data[i].cliente.id
 			row.cliente_nombre	= data[i].cliente.nombre
 			row.contrato_id		= data[i].id
@@ -803,7 +836,6 @@ function data_table_propuesta(data){
 	};
 
 	table_propuesta.rows.add(rows).draw();
-
 	submit_validar_propuesta()
 }
 
@@ -820,11 +852,13 @@ function submit_validar_propuesta(){
 
 			table_propuesta.rows().every(function (rowIdx, tableLoop, rowLoop){
 
+
 				var data 	= this.data();
 				var row 	= {}
 
 				row.id 			= data.contrato_id
 				row.concepto 	= data.concepto_id
+				row.documento 	= data.documento_id
 				row.glosa		= $('input#glosa_'+data.contrato_id+'_'+data.concepto_id).val()
 				row.total 		= $('input#total_'+data.contrato_id+'_'+data.concepto_id).val()
 				row.codigo 		= data.concepto_id
@@ -832,7 +866,6 @@ function submit_validar_propuesta(){
 				rows.push(row)
 
 			});
-
 
 			$.ajax({
 				url: '/procesos/propuesta/guardar',
@@ -866,9 +899,7 @@ function submit_validar_propuesta(){
 							cancelButtonText 	: '<a href="/propuesta/procesar/list"><span style="color:#FFF">Procesar Propuesta</span></a>',
 							allowOutsideClick 	: false,
 							allowEscapeKey 		: false,
-						}).then(function() {
-
-						})
+						}).then(function() {})
 
 					} else{
 
@@ -884,6 +915,7 @@ function submit_validar_propuesta(){
 				error: function(){
 					loading(false)
 				}
+				
 			});
 		},
 	})
@@ -910,12 +942,8 @@ function submit_validar_propuesta(){
 }
 
 
-
-
-
 // funciones 
 function seleccionar_uno(){
-
 	$('.checkbox-all').prop('checked', false)
 }
 
@@ -929,7 +957,9 @@ function seleccionar_todo(obj){
 	}
 
 	$('.checkbox-contrato', tabla.fnGetNodes()).each(function(i){
-		$(this).prop('checked', all)
+		if(!$(this).is(':disabled')){
+			$(this).prop('checked', all)
+		}
 	})
 }
 
@@ -958,7 +988,7 @@ function group_propuesta(data){
 		var obj = {};
 		keys = key.split("_")
 		obj.contrato 	= parseInt(keys[0]);
-		obj.codigo 		= parseInt(keys[1]);
+		obj.documento	= parseInt(keys[1]);
 		obj.conceptos 	= group
 
 		return obj;

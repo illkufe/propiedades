@@ -4,10 +4,48 @@ from django.db import models
 from accounts.models import User
 
 # modelos
-class ParametrosFacturacion(models.Model):
+
+
+class Parametro_Factura_Estado(models.Model):
+	# atributos (generales)
+	nombre 		= models.CharField(max_length=250)
+	btn_nombre 	= models.CharField(max_length=250)
+	background 	= models.CharField(max_length=7)
+	color 		= models.CharField(max_length=7)
+	descripcion = models.TextField(blank=True)
+
+	# atributos (por defecto)
+	visible 		= models.BooleanField(default=True)
+	creado_en 		= models.DateTimeField(auto_now_add=True)
+	modificado_en 	= models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.nombre
+
+	class Meta:
+		verbose_name = 'Estado de Parametro de Factura'
+		verbose_name_plural = 'Estados de Parametros de Facturas'
+
+class Motor_Factura(models.Model):
+	nombre = models.CharField(max_length=250)
+	descripcion = models.CharField(max_length=250)
+	activo = models.BooleanField(default=False)
+
+	class Meta:
+		ordering = ['nombre']
+		verbose_name = 'Motor de Facturación'
+		verbose_name_plural = 'Motores de Facturación'
+
+	def __str__(self):
+		return self.nombre
+
+
+class Parametro_Factura(models.Model):
 
 	codigo_conexion     = models.CharField(max_length=100)
-	motor_emision       = models.ForeignKey('MotorFacturacion', on_delete=models.PROTECT)
+
+	estado 				= models.ForeignKey(Parametro_Factura_Estado, on_delete=models.PROTECT)
+	motor_emision       = models.ForeignKey(Motor_Factura, on_delete=models.PROTECT)
 
 	class Meta:
 		ordering            = ['codigo_conexion']
@@ -17,23 +55,24 @@ class ParametrosFacturacion(models.Model):
 	def __str__(self):
 		return self.codigo_conexion
 
-class ConexionFacturacion(models.Model):
+class Conexion_Factura(models.Model):
 
-	parametro_facturacion   = models.ForeignKey(ParametrosFacturacion, on_delete=models.PROTECT)
-	codigo_contexto         = models.CharField(max_length=100)
-	host                    = models.CharField(max_length=100)
-	url                     = models.CharField(max_length=100)
-	puerto                  = models.IntegerField(null=True, blank=True)
+	parametro_facturacion   = models.ForeignKey(Parametro_Factura, on_delete=models.PROTECT)
+	host                    = models.CharField(max_length=100, null=True, blank=True)
+	puerto 					= models.IntegerField(null=True, blank=True)
+	nombre_contexto         = models.CharField(max_length=100, null=True, blank=True)
+	nombre_web_service      = models.CharField(max_length=100, null=True, blank=True)
+
 
 	class Meta:
-		ordering            = ['codigo_contexto']
+		ordering            = ['nombre_web_service']
 		verbose_name        = 'Conexión de Facturación'
 		verbose_name_plural = 'Conexiones de Facturación'
 
 	def __str__(self):
-		return self.codigo_contexto
+		return self.nombre_contexto
 
-class FoliosDocumentosElectronicos(models.Model):
+class Folio_Documento_Electronico(models.Model):
 
 	tipo_dte           	= models.IntegerField()
 	secuencia_caf       = models.IntegerField()
@@ -53,21 +92,9 @@ class FoliosDocumentosElectronicos(models.Model):
 	def __str__(self):
 		return str(self.folio_actual)
 
-class MotorFacturacion(models.Model):
 
-	nombre      = models.CharField(max_length=250)
-	descripcion = models.CharField(max_length=250)
-	activo      = models.BooleanField(default=False)
 
-	class Meta:
-		ordering            = ['nombre']
-		verbose_name        = 'Motor de Facturación'
-		verbose_name_plural = 'Motores de Facturación'
-
-	def __str__(self):
-		return self.nombre
-
-class CodigoConcepto(models.Model):
+class Codigo_Concepto(models.Model):
 
 	codigo      = models.IntegerField()
 	nombre      = models.CharField(max_length=250)

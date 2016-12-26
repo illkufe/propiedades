@@ -160,62 +160,82 @@ class ClasificacionDetalleForm(forms.ModelForm):
 ClasificacionFormSet = inlineformset_factory(Clasificacion, Clasificacion_Detalle, form=ClasificacionDetalleForm, extra=1, can_delete=True)
 
 
-class ProcesosBorradorForm(forms.ModelForm):
+class ProcesosBorradorForm(forms.Form):
+
+	id 			= forms.IntegerField(required=False, widget=forms.HiddenInput())
+
+	tipo_estado	= forms.ModelChoiceField(
+											queryset		= Tipo_Estado_Proceso.objects.all(),
+											widget			= forms.Select(
+																		attrs={
+																				'class': 'form-control',
+																		}
+																	),
+											label			= 'Tipo de Estado',
+											help_text		= 'Tipo estado del proceso',
+											error_messages	= {
+																'required': 'campo requerido'
+											}
+	)
+
+	nombre		= forms.CharField(
+									max_length		= 100,
+									widget			= forms.TextInput(
+																	attrs={'class': 'form-control'}
+																),
+									label			= 'Nombre',
+									help_text		= 'Nombres de Proceso del WorkFlow',
+									error_messages	= {
+														'required'	: 'campo requerido',
+														'unique'	: 'Nombre de proceso, ya existe.'
+									}
+	)
+
+	responsable	= forms.ModelMultipleChoiceField(
+												queryset	= None,
+												widget		= forms.SelectMultiple(
+																					attrs={'class'		: 'select2 form-control',
+																						   'multiple'	: 'multiple'
+																						   }
+																				),
+												label		= 'Responsable',
+												help_text	= 'responsable')
+
+	antecesor	= forms.ModelMultipleChoiceField(
+												queryset   	 	= Proceso.objects.all(),
+												required		= False,
+												widget      	= forms.SelectMultiple(
+																						attrs={'class'      : 'select2 form-control',
+																							   'multiple'	: 'multiple'
+																							   }
+																					),
+												label       	= 'Antecesor',
+												help_text   	= 'Proceso que es necesario cumplir para realizar este proceso',
+												error_messages	= {
+																	'required': 'campo requerido'
+												}
+	)
 
 	def __init__(self, *args, **kwargs):
 
 		request 	= kwargs.pop('request', None)
 
 		super(ProcesosBorradorForm, self).__init__(*args, **kwargs)
-		self.fields['tipo_estado'].queryset 				= Tipo_Estado_Proceso.objects.all()
-		self.fields['responsable'].queryset					= UserProfile.objects.filter(empresa=request.user.userprofile.empresa).exclude(tipo_id=2)
-
+		self.fields['responsable'].queryset		= UserProfile.objects.filter(empresa=request.user.userprofile.empresa).exclude(tipo_id=2)
 
 	def clean_nombre(self):
 
 		nombre 		= self.cleaned_data['nombre']
-		is_insert 	= self.instance.id is None
+		is_insert 	= self.cleaned_data['id'] is None
 
 		if is_insert:
 			if Proceso.objects.filter(nombre=nombre, visible=True).exists():
 				raise forms.ValidationError('Ya existe un proceso con este nombre.')
 		else:
-			if nombre != Proceso.objects.get(id=self.instance.id).nombre and Proceso.objects.filter(nombre=nombre, visible=True).exists():
+			if nombre != Proceso.objects.get(id=self.cleaned_data['id']).nombre and Proceso.objects.filter(nombre=nombre, visible=True).exists():
 				raise forms.ValidationError('Ya existe un proceso con este nombre.')
 
 		return nombre
-
-	class Meta:
-		model = Proceso
-		fields = '__all__'
-		exclude = ['creado_en', 'visible', 'empresa', 'workflow', 'validado']
-
-		widgets = {
-			'id'				: forms.HiddenInput(attrs={'class': 'form-control'}),
-			'tipo_estado'		: forms.Select(attrs={'class': 'form-control'}),
-			'nombre'		    : forms.TextInput(attrs={'class': 'form-control select-antecesor'}),
-			'responsable'		: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple': 'multiple'}),
-			'antecesor'			: forms.SelectMultiple(attrs={'class': 'select2 form-control', 'multiple': 'multiple'}),
-			
-		}
-
-		error_messages = {
-			'tipo_estado' 	: {'required': 'campo requerido'},
-			'nombre' 		: {'required': 'campo requerido', 'unique': 'Nombre de proceso, ya existe.'},
-			'responsable' 	: {'required': 'campo requerido'},
-			'antecesor' 	: {'required': 'campo requerido'},
-		}
-
-		labels = {
-			'tipo_estado'	: 'Tipo de Estado',
-		}
-
-		help_texts = {
-			'tipo_estado'	: 'Tipo estado',
-			'nombre'		: 'nombre',
-			'responsable'	: 'responsable',
-			'antecesor'		: 'antecesor',
-		}
 
 class ProcesoCondicionForm(forms.ModelForm):
 

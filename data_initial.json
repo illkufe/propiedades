@@ -663,7 +663,7 @@
 	}
 },
 {
-	"model": "facturacion.motorfacturacion",
+	"model": "facturacion.motor_factura",
 	"pk": 1,
 	"fields": {
 		"nombre": "INET",
@@ -672,12 +672,38 @@
 	}
 },
 {
-	"model": "facturacion.motorfacturacion",
+	"model": "facturacion.motor_factura",
 	"pk": 2,
 	"fields": {
 		"nombre": "IDTE",
 		"descripcion": "Facturación IDTE",
 		"activo": true
+	}
+},
+{
+	"model": "facturacion.parametro_factura_estado",
+	"pk": 1,
+	"fields": {
+		"nombre": "Activo",
+		"btn_nombre": "Desactivar",
+		"color": "#FFFFFF",
+		"background": "#66BB6A",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00",
+		"modificado_en": "2016-01-01 00:00:00"
+	}
+},
+{
+	"model": "facturacion.parametro_factura_estado",
+	"pk": 2,
+	"fields": {
+		"nombre": "Inactivo",
+		"btn_nombre": "Activar",
+		"color": "#FFFFFF",
+		"background": "#00BCD4",
+		"descripcion": "",
+		"creado_en": "2016-01-01 00:00:00",
+		"modificado_en": "2016-01-01 00:00:00"
 	}
 },
 {

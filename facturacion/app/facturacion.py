@@ -4,7 +4,7 @@ from xml.etree.ElementTree import *
 
 from contrato.models import Contrato
 from facturacion.app.parametros_facturacion import calculo_iva_total_documento
-from facturacion.models import FoliosDocumentosElectronicos, ConexionFacturacion, CodigoConcepto
+from facturacion.models import *
 from datetime import datetime
 
 import xml.etree.ElementTree as etree
@@ -13,19 +13,20 @@ import os
 import suds
 import logging
 
-
+from locales.models import Local
 from procesos.models import Factura
 from utilidades.views import format_number
+from activos.models import Configuracion_Activo
 
 suds_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(suds_path)
 
 
-def obtener_datos_conexion(url):
+def obtener_datos_conexion(contexto):
     """
         función que permite realizar la obtención de los parametros de conexión para un web service
         determinado de IDTE
-    :param url: recibe la url
+    :param contexto: recibe el nombre del contexto
     :return: retorna un objeto con los datos de conexión
     """
 
@@ -33,10 +34,9 @@ def obtener_datos_conexion(url):
     conexion    = ''
 
     try:
-        conexion    = ConexionFacturacion.objects.get(url__iexact=url)
+        conexion    = Conexion_Factura.objects.get(nombre_contexto__iexact=contexto, parametro_facturacion__motor_emision_id=2, parametro_facturacion__estado_id=1)
     except Exception as e:
-        error       = "No existen datos de conexión "+str(url)+" del servidor de IDTE."
-
+        error       = "No existen datos de conexión o no estan activo los parametros del servidor de IDTE."
 
     return error, conexion
 
@@ -56,7 +56,7 @@ def call_service(url):
     logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
 
     try:
-        client = Client(url, timeout=5)
+        client = Client(url, timeout=30)
     except suds.WebFault as detail:
         error = str(detail.fault)
     except Exception as e:
@@ -237,12 +237,12 @@ def crear_xml_documento(**kwargs):
                     tipo_documento_liq      = SubElement(registro_detalle, 'TpoDocLiq').text        = d['tipo_documento_liq']
                     indicador_exencion      = SubElement(registro_detalle, 'IndExe').text           = d['ind_exencion']
                     nombre_item             = SubElement(registro_detalle, 'NmbItem').text          = d['nombre_item']
-                    descripcion_item        = SubElement(registro_detalle, 'DescItem').text          = d['descripcion_item']
+                    descripcion_item        = SubElement(registro_detalle, 'DescItem').text         = d['descripcion_item']
                     cantidad_referencia     = SubElement(registro_detalle, 'QtyRef').text           = d['cantidad_referencia']
                     unidad_referencia       = SubElement(registro_detalle, 'UnmdRef').text          = d['unidad_medida_ref']
                     precio_referencia       = SubElement(registro_detalle, 'PrcRef').text           = d['precio_referencia']
                     cantidad                = SubElement(registro_detalle, 'QtyItem').text          = d['cantidad_item']
-                    fecha_elaboracion       = SubElement(registro_detalle, 'FchaElabor').text        = d['fecha_elaboracion']
+                    fecha_elaboracion       = SubElement(registro_detalle, 'FchaElabor').text       = d['fecha_elaboracion']
                     fecha_vencimiento_prod  = SubElement(registro_detalle, 'FchVencim').text        = d['fecha_vencimiento_prod']
                     unidad_medida           = SubElement(registro_detalle, 'UnmdItem').text         = d['unidad_medida']
                     precio_unitario         = SubElement(registro_detalle, 'PrcItem').text          = d['precio_unitario']
@@ -971,21 +971,24 @@ def url_web_service(**kwargs):
     error           = ''
     url_conexion    = ''
     try:
-        codigo  = kwargs['codigo_contexto']
-        host    = kwargs['host']
-        url     = kwargs['url']
-        puerto  = kwargs['puerto']
 
-        contexto = codigo.split('_')
+        host                = kwargs['host']
+        puerto              = kwargs['puerto']
+        contexto            = kwargs['nombre_contexto']
+        nombre_webservice   = kwargs['nombre_webservice']
+
+
+        web_service = nombre_webservice.split('_')
 
         if puerto == None:
-            url_conexion = 'http://' + str(host).strip() +'/' + str(url).strip() + '/' + str(contexto[2]).strip() + '.svc?wsdl'
+            url_conexion = 'http://' + str(host).strip() +'/' + str(contexto).strip() + '/' + str(web_service[2]).strip() + '.svc?wsdl'
         else:
-            url_conexion = 'http://'+str(host).strip()+':'+str(puerto).strip()+'/'+ str(url).strip()+'/'+str(contexto[2]).strip()+'.svc?wsdl'
+            url_conexion = 'http://'+str(host).strip()+':'+str(puerto).strip()+'/'+ str(contexto).strip()+'/'+str(web_service[2]).strip()+'.svc?wsdl'
 
                         # inf-srv-des01.infodesarrollo.cl/wsDTE/servDTE.svc?wsdl'
     except Exception as e:
         error = "Error al realizar el armado de la URL de conexión del Web Services, por favor verifique los datos de conexión."
+
     return error, url_conexion
 
 def validar_folios_procesar(tipo_documento, folio_actual):
@@ -997,19 +1000,19 @@ def validar_folios_procesar(tipo_documento, folio_actual):
     """
     error   = ''
     try:
-        folio = FoliosDocumentosElectronicos.objects.filter(tipo_dte=tipo_documento, operativo=True).get()
+        folio = Folio_Documento_Electronico.objects.filter(tipo_dte=tipo_documento, operativo=True).get()
 
         if folio_actual > folio.rango_final or folio_actual == 0:
             error = "No hay folios disponible, revise o ingrese nuevo CAF"
 
             if folio_actual > folio.rango_final:
-                update_folio = FoliosDocumentosElectronicos.objects.get(tipo_dte=tipo_documento, operativo=True)
+                update_folio = Folio_Documento_Electronico.objects.get(tipo_dte=tipo_documento, operativo=True)
                 update_folio.operativo = False
                 update_folio.save()
         else:
             error = 'Aun existen folios disponibles en el rango operativo'
 
-    except FoliosDocumentosElectronicos.DoesNotExist:
+    except Folio_Documento_Electronico.DoesNotExist:
         error = "No Exiten folios operativos para el tipo de documento."
 
     return error
@@ -1025,8 +1028,8 @@ def validar_existencia_folio(tipo_documento):
     error = ''
 
     try:
-        folio = FoliosDocumentosElectronicos.objects.filter(tipo_dte=tipo_documento, operativo=True).get()
-    except FoliosDocumentosElectronicos.DoesNotExist:
+        folio = Folio_Documento_Electronico.objects.filter(tipo_dte=tipo_documento, operativo=True).get()
+    except Folio_Documento_Electronico.DoesNotExist:
         error = "No existen folios operativos para el tipo de documento"
     return error
 
@@ -1061,13 +1064,13 @@ def obtener_folio(tipo_documento):
 
         transaction.set_autocommit(False)
 
-        update = FoliosDocumentosElectronicos.objects.get(tipo_dte=tipo_documento, operativo=True)
+        update = Folio_Documento_Electronico.objects.get(tipo_dte=tipo_documento, operativo=True)
         update.folio_actual = update.folio_actual
         update.save()
 
-        folio_documento = FoliosDocumentosElectronicos.objects.get(tipo_dte=tipo_documento, operativo=True).folio_actual
+        folio_documento = Folio_Documento_Electronico.objects.get(tipo_dte=tipo_documento, operativo=True).folio_actual
 
-        update_2 = FoliosDocumentosElectronicos.objects.get(tipo_dte=tipo_documento, operativo=True)
+        update_2 = Folio_Documento_Electronico.objects.get(tipo_dte=tipo_documento, operativo=True)
         update_2.folio_actual = update.folio_actual + 1
         update_2.save()
     except Exception:
@@ -1990,7 +1993,8 @@ def get_log_errores_lcv(client, id_dte_empresa, id_hist_lcv, traza):
 
 ## --------- FUNCIONES DE INET
 
-def obtener_datos_conexion_ws_inet(url):
+
+def obtener_datos_conexion_ws_inet(request, url):
     """
         función que permite realizar la obtención de los parametros de conexión para un web service
         determinado de IDTE
@@ -2001,7 +2005,19 @@ def obtener_datos_conexion_ws_inet(url):
     conexion    = ''
 
     try:
-        conexion = ConexionFacturacion.objects.get(codigo_contexto__iexact=url, parametro_facturacion__motor_emision_id=1)
+
+        if Conexion_Factura.objects.filter(nombre_web_service__iexact=url,
+                                           parametro_facturacion__motor_emision_id=1).exists():
+
+            conexion = Conexion_Factura.objects.get(nombre_web_service__iexact=url, parametro_facturacion__motor_emision_id=1)
+        else:
+
+            var_post    = request.POST.copy()
+            factura     = Factura.objects.get(id=var_post['id'])
+
+            locales     = factura.contrato.locales.values_list('id', flat=True)
+            conexion    = Configuracion_Activo.objects.get(activo__in=Local.objects.filter(id__in=locales).values_list('activo_id', flat=True))
+
     except Exception as e:
         error = "No existen datos de conexión "+str(url)+" del servidor de INET."
 
@@ -2135,7 +2151,7 @@ def armar_xml_inet(request):
 
     # SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
 
-    conceptos   = CodigoConcepto.objects.all().order_by('id')
+    conceptos   = Codigo_Concepto.objects.all().order_by('id')
 
 
     # aux         = 0
@@ -2194,7 +2210,6 @@ def armar_xml_inet(request):
     ]
 
     return resultado
-
 
 def armar_xml_inet_docvta(request):
 
@@ -2315,15 +2330,17 @@ def armar_xml_inet_docvta(request):
 
             Producto = etree.SubElement(Item, 'Producto')
 
-            Producto_Vta        = etree.SubElement(Producto, 'Producto_Vta').text   = str(d.concepto.codigo_producto).strip()
+            configuracion       = d.concepto.configuracion_concepto_set.filter(cliente=factura.contrato.cliente).first()
+
+            Producto_Vta        = etree.SubElement(Producto, 'Producto_Vta').text   = '' if not configuracion else str(configuracion.codigo_producto).strip()
             Producto_Vta_Desc   = etree.SubElement(Producto, 'Descripcion').text    = str(d.concepto.nombre).upper()
             Unidad              = etree.SubElement(Producto, 'Unidad').text         = 'Unid'
             Unidad_Desc         = etree.SubElement(Producto, 'Unidad_Dsc')
-            Agrupacion          = etree.SubElement(Producto, 'Agrupacion').text     = str(d.concepto.codigo_producto).strip()
+            Agrupacion          = etree.SubElement(Producto, 'Agrupacion').text     = '' if not configuracion else str(configuracion.codigo_producto).strip()
 
 
             etree.SubElement(Item, 'FechaEntrega').text = '0'
-            etree.SubElement(Item, 'PrecioRef').text    = format_number(request, d.total, False)
+            etree.SubElement(Item, 'PrecioRef').text    = str(format_number(request, d.total, False))
             etree.SubElement(Item, 'Cantidad').text     = '1'
 
             Glosas  = etree.SubElement(Item, 'Glosas')
@@ -2334,14 +2351,14 @@ def armar_xml_inet_docvta(request):
 
             etree.SubElement(Item, 'DescUno_Cod').text  = '0'
             etree.SubElement(Item, 'PorcUno').text      = '0'
-            etree.SubElement(Item, 'MontoUno').text     = format_number(request, d.total, False)
+            etree.SubElement(Item, 'MontoUno').text     = str(format_number(request, d.total, False))
             etree.SubElement(Item, 'DescDos_Cod').text  = '0'
             etree.SubElement(Item, 'DescTre_Cod').text  = '0'
             etree.SubElement(Item, 'MontoImpUno').text  = '0'
             etree.SubElement(Item, 'PorcImpUno').text   = '0'
             etree.SubElement(Item, 'MontoImpDos').text  = '0'
             etree.SubElement(Item, 'PorcImpDos').text   = '0'
-            etree.SubElement(Item, 'TotalDocLin').text  = format_number(request, d.total, False)
+            etree.SubElement(Item, 'TotalDocLin').text  = str(format_number(request, d.total, False))
 
         except Exception as p:
             error       = "Error al crear detalle XML " + str(p)
@@ -2358,17 +2375,17 @@ def armar_xml_inet_docvta(request):
     valores = calculo_iva_total_documento(total_linea, 19)
 
     # SDT_DocVentaExtDetDoc/ResumenDoc
-    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = format_number(request, valores[0], False)
+    etree.SubElement(ResumenDoc, 'TotalNeto').text                  = str(format_number(request, valores[0], False))
     etree.SubElement(ResumenDoc, 'CodigoDescuento').text            = '0'
     etree.SubElement(ResumenDoc, 'TotalDescuento').text             = '0'
-    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = format_number(request, valores[1], False)
+    etree.SubElement(ResumenDoc, 'TotalIVA').text                   = str(format_number(request, valores[1], False))
     etree.SubElement(ResumenDoc, 'TotalOtrosImpuestos').text        = '0'
-    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = format_number(request, valores[2], False)
+    etree.SubElement(ResumenDoc, 'TotalDoc').text                   = str(format_number(request, valores[2], False))
     TotalConceptos = etree.SubElement(ResumenDoc, 'TotalConceptos')
 
     # SDT_DocVentaExtDetDoc/ResumenDoc/TotalConceptos
 
-    conceptos   = CodigoConcepto.objects.all().order_by('id')
+    conceptos   = Codigo_Concepto.objects.all().order_by('id')
 
 
     # aux         = 0
@@ -2438,15 +2455,17 @@ def url_web_service_inet(**kwargs):
     url_conexion    = ''
 
     try:
-        codigo      = kwargs['codigo_contexto']
+
         host        = kwargs['host']
-        url         = kwargs['url']
         puerto      = kwargs['puerto']
+        contexto    = kwargs['nombre_contexto']
+        web_service = kwargs['nombre_webservice']
+
 
         if puerto == None:
             error = 'Falta puerto de conexión en la configuración.'
         else:
-            url_conexion = 'http://' + str(host).strip() + ':' + str(puerto).strip() + '/' + str(url).strip() + '/servlet/' + str(codigo).strip() + '?wsdl'
+            url_conexion = 'http://' + str(host).strip() + ':' + str(puerto).strip() + '/' + str(contexto).strip() + '/servlet/' + str(web_service).strip() + '?wsdl'
     except Exception:
         error = "Error al realizar el armado de la URL de conexión Web Service INET"
 
@@ -2466,7 +2485,7 @@ def call_service_inet(url):
     client  = ''
 
     try:
-        client = Client(url, timeout=15)
+        client = Client(url, timeout=30)
     except suds.WebFault as detail:
         error = str(detail.fault)
     except Exception as e:

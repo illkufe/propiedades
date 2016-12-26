@@ -182,10 +182,15 @@ class ContratoMixin(object):
 		obj.empresa 	= self.request.user.userprofile.empresa
 
 		# comprobar si tiene estado
-		try:
+		if hasattr(obj, 'estado'):
 			obj.estado
-		except Exception:
+		else:
 			obj.estado = Contrato_Estado.objects.get(id=1)
+
+		# try:
+		# 	obj.estado
+		# except Exception:
+		# 	obj.estado = Contrato_Estado.objects.get(id=1)
 
 		obj.save()
 		form.save_m2m()

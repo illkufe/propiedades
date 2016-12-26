@@ -200,7 +200,7 @@ def profile(request):
 
 def update_profile(request):
 	
-	form    = UpdateUserProfileForm(request.POST, user=request.user)
+	form    = UserProfileForm(request.POST, user=request.user)
 	user    = User.objects.get(pk=request.user.pk)
 	profile = UserProfile.objects.get(user=user)
 

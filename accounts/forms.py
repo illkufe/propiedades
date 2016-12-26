@@ -52,7 +52,7 @@ class UserProfileForm(forms.ModelForm):
 
 		model 	= UserProfile
 		fields 	= '__all__'
-		exclude = ['creado_en', 'empresa', 'user', 'visible']
+		exclude = ['creado_en', 'empresa', 'user', 'visible', 'proceso']
 
 		widgets = {
 			'cargo'			: forms.TextInput(attrs={'class': 'form-control'}),

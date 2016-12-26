@@ -11,9 +11,9 @@
                 <div class="ibox-title">
                     <h5>Información General</h5>
                     <div class="ibox-tools">
-                        <button type="button" class="btn btn-primary btn-xs" onclick="agregar_proceso(1, true)" id="btn-borrador"><i class="fa fa-plus"></i> nuevo borrador</button>
-                        <button type="button" class="btn btn-primary btn-xs" onclick="agregar_proceso(2, false)" id="btn-revision"><i class="fa fa-plus"></i> nueva revisión</button>
-                        <button type="button" class="btn btn-primary btn-xs" onclick="agregar_proceso(3, false)" id="btn-aprobacion"><i class="fa fa-plus"></i> nueva aprobación</button>
+                        <button type="button" class="btn btn-primary btn-xs" onclick="agregar_new_proceso(1, true)" id="btn-borrador"><i class="fa fa-plus"></i> nuevo borrador</button>
+                        <button type="button" class="btn btn-primary btn-xs" onclick="agregar_new_proceso(2, false)" id="btn-revision"><i class="fa fa-plus"></i> nueva revisión</button>
+                        <button type="button" class="btn btn-primary btn-xs" onclick="agregar_new_proceso(3, false)" id="btn-aprobacion"><i class="fa fa-plus"></i> nueva aprobación</button>
                     </div>
                 </div>
 
@@ -83,49 +83,51 @@
             </div>
             <div class="modal-body" style="padding:15px 0px 0px 0px">
                 <div class="ibox-content">
-                    <form id="form-proceso-new" role="form" action="" method="post">
-                        {% csrf_token %}
-                        <div class="row">
-                            <input type="hidden" name="id" maxlength="250" id="id"  class="form-control">
-                            <div class="form-group col-sm-3">
-                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.tipo_estado.help_text }}" ></i>
-                                {{ procesos_form.tipo_estado.label_tag }}
-                                {{ procesos_form.tipo_estado }}
-                                <div class="container-error">
-                                    {{ procesos_form.tipo_estado.errors|striptags }}
+                    <div class="row">
+                        <form id="form-proceso-new" role="form" action="" method="post">
+                            {% csrf_token %}
+                            <div class="col-lg-12">
+                                <input type="hidden" name="id" maxlength="250" id="id"  class="form-control">
+                                <div class="form-group col-sm-3">
+                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.tipo_estado.help_text }}" ></i>
+                                    {{ procesos_form.tipo_estado.label_tag }}
+                                    {{ procesos_form.tipo_estado }}
+                                    <div class="container-error">
+                                        {{ procesos_form.tipo_estado.errors|striptags }}
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-3">
+                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.nombre.help_text }}" ></i>
+                                    {{ procesos_form.nombre.label_tag }}
+                                    {{ procesos_form.nombre }}
+                                    <div class="container-error">
+                                        {{ procesos_form.nombre.errors|striptags }}
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-3">
+                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.responsable.help_text }}" ></i>
+                                    {{ procesos_form.responsable.label_tag }}
+                                    {{ procesos_form.responsable }}
+                                    <div class="container-error">
+                                        {{ procesos_form.responsable.errors|striptags }}
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-3">
+                                    <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.antecesor.help_text }}" ></i>
+                                    {{ procesos_form.antecesor.label_tag }}
+                                    {{ procesos_form.antecesor }}
+                                    <div class="container-error">
+                                        {{ procesos_form.antecesor.errors|striptags }}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group col-sm-3">
-                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.nombre.help_text }}" ></i>
-                                {{ procesos_form.nombre.label_tag }}
-                                {{ procesos_form.nombre }}
-                                <div class="container-error">
-                                    {{ procesos_form.nombre.errors|striptags }}
-                                </div>
+                            <div class="ibox-content">
+                                <button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
+                                <button type="submit" id="btn-guardar-proceso" class="btn btn-w-m btn-sm btn-primary pull-right">Aceptar</button>
                             </div>
-                            <div class="form-group col-sm-3">
-                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.responsable.help_text }}" ></i>
-                                {{ procesos_form.responsable.label_tag }}
-                                {{ procesos_form.responsable }}
-                                <div class="container-error">
-                                    {{ procesos_form.responsable.errors|striptags }}
-                                </div>
-                            </div>
-                            <div class="form-group col-sm-3">
-                                <i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="{{ procesos_form.antecesor.help_text }}" ></i>
-                                {{ procesos_form.antecesor.label_tag }}
-                                {{ procesos_form.antecesor }}
-                                <div class="container-error">
-                                    {{ procesos_form.antecesor.errors|striptags }}
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-w-m btn-sm btn-default" data-dismiss="modal">CANCELAR</button>
-                <button type="button" id="btn-guardar-proceso" class="btn btn-w-m btn-sm btn-primary pull-right" onclick="guardar_proceso()">Aceptar</button>
             </div>
 		</div>
 	</div>
@@ -211,110 +213,23 @@ table#tabla-procesos tbody img{
 {% block scripts %}
 <script>
     var tabla_proceso;
-
+    var accion;
     $(document).ready(function(){
         load_data_procesos();
-        validate_btn_proceso();
-        validate_workflow();
+        validate_activate_btn_proceso();
+        validate_workflow_complete();
+        validate_proceso_workflow()
     });
 
-     function validate_btn_proceso() {
-        var count 	= $('.proceso-borrador').children().length;
-        if(count<=0){
-            $('#btn-aprobacion, #btn-revision').prop('disabled', true);
-        }else{
-            $('#btn-borrador').prop('disabled', true);
-            $('#btn-aprobacion, #btn-revision').prop('disabled', false);
-        }
-    }
 
-    function agregar_proceso(estado, activo_antecesor) {
-        clear_errors_form('#form-proceso-new');
-        clear_form('#form-proceso-new');
-        $('#m-proceso-new').modal('show');
-        $('#id_tipo_estado').val(parseInt(estado)).prop('disabled', true)
-        $('#id_antecesor').prop('disabled', activo_antecesor)
-        $("#btn-guardar-proceso").attr("onclick","guardar_proceso()");
-    }
-
-    function guardar_proceso() {
-        $('#id_tipo_estado').prop('disabled', false)
-        var data = $('#form-proceso-new').serializeArray();
-        data.push({name:'action', value: 'create'});
-        $.ajax({
-            url: '/workflow',
-            type: 'post',
-            data: data,
-            success: function(data){
-
-                if (data.estado == true ) {
-                    var configuracion = {
-                        'toast_type'	: 'success',
-                        'toast_text' 	: 'Guardado correctamente',
-                        'toast_title' 	: 'ÉXITO',
-                    }
-                    $('#m-proceso-new').modal('hide');
-                }else{
-                    var configuracion = {
-                        'toast_type'	: 'error',
-                        'toast_text' 	: 'No se pudo guardar',
-                        'toast_title' 	: 'Error',
-                    }
-                }
-                notification_toast(configuracion)
-            },
-            error: function(data, textStatus, jqXHR) {
-                clear_errors_form('#form-proceso-new');
-                var errors = $.parseJSON(data.responseText);
-                apply_errors_form(errors);
-            },
-            complete: function () {
-                load_data_procesos();
-            }
-        })
-    }
-
-    function update_proceso() {
-        $('#id_tipo_estado').prop('disabled', false)
-        var data = $('#form-proceso-new').serializeArray();
-        data.push({name:'action', value: 'update'});
-        $.ajax({
-            url: '/workflow',
-            type: 'post',
-            data: data,
-            success: function(data){
-
-                if (data.estado == true ) {
-                    var configuracion = {
-                        'toast_type'	: 'success',
-                        'toast_text' 	: 'Editado correctamente',
-                        'toast_title' 	: 'ÉXITO',
-                    }
-                    $('#m-proceso-new').modal('hide');
-                }else{
-                    var configuracion = {
-                        'toast_type'	: 'error',
-                        'toast_text' 	: 'No se pudo actualizar',
-                        'toast_title' 	: 'Error',
-                    }
-                }
-                notification_toast(configuracion)
-            },
-            error: function(data, textStatus, jqXHR) {
-                clear_errors_form('#form-proceso-new');
-                var errors = $.parseJSON(data.responseText);
-                apply_errors_form(errors);
-            },
-            complete: function () {
-                load_data_procesos();
-            }
-        })
-    }
+    /*FUNCIONES DE PROCESO*/
 
     function load_data_procesos() {
+
         $('.proceso-borrador').html('')
         $('.proceso-revision').html('')
         $('.proceso-aprobacion').html('')
+
         $.ajax({
             url: '/workflow',
             type: 'get',
@@ -338,7 +253,7 @@ table#tabla-procesos tbody img{
                     opciones += '<input class="parametro-id" type="hidden" value="@id">'
                     opciones += '</a>'
 
-                    opciones += '<a class="btn btn-default btn-bitbucket" onclick="edit_proceso(this)" data-toggle="tooltip" data-placement="top" title="Editar">'
+                    opciones += '<a class="btn btn-default btn-bitbucket" onclick="carga_data_edit_proceso(this)" data-toggle="tooltip" data-placement="top" title="Editar">'
                     opciones += '<i class="fa fa-edit"></i>'
                     opciones += '<input class="parametro-id" type="hidden" value="@id">'
                     opciones += '</a>'
@@ -426,15 +341,132 @@ table#tabla-procesos tbody img{
                 $('#id_antecesor').append(options_antecesor)
             },
             complete: function () {
-                validate_btn_proceso()
+                validate_activate_btn_proceso()
                 $('[data-toggle="tooltip"]').tooltip()
             }
         })
     }
 
-    function edit_proceso(obj) {
+    function validate_activate_btn_proceso() {
+
+        var count 	= $('.proceso-borrador').children().length;
+
+        if(count<=0){
+            $('#btn-aprobacion, #btn-revision').prop('disabled', true);
+        }else{
+            $('#btn-borrador').prop('disabled', true);
+            $('#btn-aprobacion, #btn-revision').prop('disabled', false);
+        }
+    }
+
+    function agregar_new_proceso(estado, activo_antecesor) {
+        clear_errors_form('#form-proceso-new');
+        clear_form('#form-proceso-new');
+
+        $('#m-proceso-new').modal('show');
+        $('#id_tipo_estado').val(parseInt(estado)).prop('disabled', true)
+        $('#id_antecesor').prop('disabled', activo_antecesor)
+        $('#id').val('')
+        accion = 'create'
+    }
+
+    function validate_proceso_workflow() {
+
+        $.validator.addMethod("valid_antecesor", function (value, element) {
+
+            tipo_estado  = parseInt($('#form-proceso-new select[name="tipo_estado"]').val());
+            antecesor    = $('#form-proceso-new select[name="antecesor"]').select2('val')
+
+            if ((tipo_estado == 2 || tipo_estado == 3 || tipo_estado == 4) && antecesor == ''){
+                return false;
+            }else if((tipo_estado == 2 || tipo_estado == 3 || tipo_estado == 4) && antecesor == null){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }, 'campo requerido');
+
+
+        $("#form-proceso-new").validate({
+            ignore: 'input[type=hidden]',
+            rules: {
+                tipo_estado: {
+                    required: true,
+                },
+                nombre: {
+                    required: true,
+                },
+                responsable: {
+                    required: true,
+                },
+                antecesor:{
+                    valid_antecesor:true,
+                }
+            },
+            messages: {
+                tipo_estado: {
+                    required: "campo requerido",
+                },
+                nombre: {
+                    required: "campo requerido",
+                },
+                responsable: {
+                    required: "campo requerido",
+                }
+            },
+            errorPlacement: function(error, element) {
+                error.appendTo(element.closest(".form-group").find('.container-error'));
+            },
+            submitHandler: function(form) {
+                $('#id_tipo_estado').prop('disabled', false)
+                var data = $('#form-proceso-new').serializeArray();
+                console.log(accion)
+                if (accion == 'create'){
+                    data.push({name:'action', value: 'create'});
+                }else{
+                    data.push({name:'action', value: 'update'});
+                }
+
+                $.ajax({
+                    url: '/workflow',
+                    type: 'post',
+                    data: data,
+                    success: function(data){
+
+                        if (data.estado == true ) {
+                            var configuracion = {
+                                'toast_type'	: 'success',
+                                'toast_text' 	: 'Guardado correctamente',
+                                'toast_title' 	: 'ÉXITO',
+                            }
+                            $('#m-proceso-new').modal('hide');
+                        }else{
+                            var configuracion = {
+                                'toast_type'	: 'error',
+                                'toast_text' 	: 'No se pudo guardar',
+                                'toast_title' 	: 'Error',
+                            }
+                        }
+                        notification_toast(configuracion)
+                    },
+                    error: function(data, textStatus, jqXHR) {
+                        clear_errors_form('#form-proceso-new');
+                        var errors = $.parseJSON(data.responseText);
+                        apply_errors_form(errors);
+                    },
+                    complete: function () {
+                        load_data_procesos();
+                    }
+                })
+            }
+        });
+    }
+
+    function carga_data_edit_proceso(obj) {
 
         clear_errors_form('#form-proceso-new');
+        accion = 'update'
 
         var proceso_edit        = ''
         var array_resp          = []
@@ -444,6 +476,7 @@ table#tabla-procesos tbody img{
         $(obj).closest('tr').find('.id_proceso').each(function () {
             proceso_edit = parseInt($(this).val())
         })
+
         $(obj).closest('tr').find('.tipo_estado').each(function () {
             tipo_estado_edit = parseInt($(this).val())
         })
@@ -471,9 +504,6 @@ table#tabla-procesos tbody img{
         }else{
            $('#form-proceso-new').find('#id_antecesor').attr('disabled', false).select2('val', array_antec)
         }
-
-
-        $("#btn-guardar-proceso").attr("onclick", "update_proceso()");
     }
 
     function eliminar_proceso(obj) {
@@ -523,6 +553,9 @@ table#tabla-procesos tbody img{
 
 
     }
+
+
+    /*FUNCIONES DE CONDICIONES*/
 
     function agregar_condicion(obj) {
 
@@ -699,7 +732,33 @@ table#tabla-procesos tbody img{
         clear_errors_form('#form-condicion-new');
     }
 
-    function validate_workflow() {
+    function open_modal_delete_condicion(obj, text, tipo){
+        $('#m-condicion-new').modal('hide')
+        swal({
+            title: '¿ Eliminar '+text+' ?',
+            text: '',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#F8BB86',
+            cancelButtonColor: '#D0D0D0',
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'Cancelar',
+            closeOnConfirm: true,
+        }).then(function() {
+            if(tipo == 'new'){
+                $(obj).closest('tr').remove()
+                $('#m-condicion-new').modal('show')
+            }else{
+                $(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
+                $(obj).closest('tr').addClass('hide')
+            }
+            $('#m-condicion-new').modal('show')
+        });
+    }
+
+    /*OTRAS*/
+
+    function validate_workflow_complete() {
         $('.validar_workflow').on('click', function ( event) {
             $.ajax({
                 url: '{% url 'validar_workflow' %}',
@@ -708,7 +767,6 @@ table#tabla-procesos tbody img{
 			        csrfmiddlewaretoken : getCookie('csrftoken'),
                 },
                 beforeSend: function () {
-                    // cargar loading
 					loading(true)
                 },
                 success: function(data){
@@ -738,30 +796,6 @@ table#tabla-procesos tbody img{
                 }
             })
         })
-    }
-
-    function open_modal_delete_condicion(obj, text, tipo){
-        $('#m-condicion-new').modal('hide')
-        swal({
-            title: '¿ Eliminar '+text+' ?',
-            text: '',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#F8BB86',
-            cancelButtonColor: '#D0D0D0',
-            confirmButtonText: 'Si, eliminar',
-            cancelButtonText: 'Cancelar',
-            closeOnConfirm: true,
-        }).then(function() {
-            if(tipo == 'new'){
-                $(obj).closest('tr').remove()
-                $('#m-condicion-new').modal('show')
-            }else{
-                $(obj).closest('tr').find('input:checkbox:last').prop('checked', true)
-                $(obj).closest('tr').addClass('hide')
-            }
-            $('#m-condicion-new').modal('show')
-        });
     }
 </script>
 {% endblock scripts %}

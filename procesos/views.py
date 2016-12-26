@@ -47,6 +47,7 @@ class PropuestaGenerarList(ListView):
 
 		context['conceptos'] 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True).exclude(concepto_tipo_id=10)
 		context['activos'] 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
+		context['configuracion']	= Configuracion_Concepto.objects.filter(cliente__in=self.request.user.userprofile.empresa.cliente_set.all())
 		
 		return context
 
@@ -216,39 +217,63 @@ def propuesta_generar(request):
 		'uf' : Decimal(var_post.get('uf_valor').replace(".", "").replace(",", "."))
 	}
 
+	data_error = list()
+	
+	contratos = Contrato.objects.filter(id__in=contratos_id)
+	for contrato in contratos:
+	
+		conceptos = contrato.conceptos.filter(id__in=conceptos_id)
+
+		for concepto in conceptos:
+
+			if not Configuracion_Concepto.objects.filter(concepto=concepto, cliente=contrato.cliente).exists():
+
+				data_error.append({
+					'estado' 	: False,
+					'mensaje' 	: ' Se debe configurar el concepto ' + str(concepto.nombre) +' para el cliente ' + str(contrato.cliente.nombre)
+				})
+	
+				return JsonResponse(data_error, safe=False)
+
 	for contrato_id in contratos_id:
 
-		contrato 	= Contrato.objects.get(id=contrato_id)
-		conceptos 	= list()
+		contrato 		= Contrato.objects.get(id=contrato_id)
+		data_conceptos 	= list()
 
-		for concepto_id in conceptos_id:
+		documentos  = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__codigo_documento__isnull= False, visible=True).values_list('configuracion_concepto__codigo_documento', flat=True).distinct()
 
-			concepto = Concepto.objects.get(id=concepto_id)
+		for documento in documentos:
 
-			if validar_concepto(contrato, concepto, fecha)['estado'] == True:
+			conceptos   = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__codigo_documento=documento, visible=True, configuracion_concepto__cliente=contrato.cliente)
 
-				total = calcular_concepto(contrato, concepto, fecha, configuracion)
+			for concepto in conceptos:
 
-				# if total is not 0:
-				conceptos.append({
-					'id'		: concepto.id,
-					'nombre'	: concepto.nombre,
-					'total'		: total,
-					})
+				if validar_concepto(contrato, concepto, fecha)['estado'] == True:
 
-		cliente = {
-			'id' 		: contrato.cliente.id,
-			'nombre' 	: contrato.cliente.nombre,
-			'rut' 		: contrato.cliente.rut,
-		}
+					total = calcular_concepto(contrato, concepto, fecha, configuracion)
 
-		response.append({
-			'id'		: contrato.id,
-			'numero'	: contrato.numero,
-			'nombre'	: contrato.nombre_local,
-			'cliente'	: cliente,
-			'conceptos' : conceptos,
-			})
+					# if total is not 0:
+					data_conceptos.append({
+						'id'		: concepto.id,
+						'nombre'	: concepto.nombre,
+						'total'		: total,
+						})
+
+			cliente = {
+				'id' 		: contrato.cliente.id,
+				'nombre' 	: contrato.cliente.nombre,
+				'rut' 		: contrato.cliente.rut,
+			}
+
+			response.append({
+				'id'				: contrato.id,
+				'numero'			: contrato.numero,
+				'nombre'			: contrato.nombre_local,
+				'cliente'			: cliente,
+				'conceptos' 		: data_conceptos,
+				'numero_documento'	: documento,
+				'estado'            : True,
+				})
 
 	return JsonResponse(response, safe=False)
 
@@ -286,7 +311,7 @@ def propuesta_guardar(request):
 					total 				= total,
 					user 				= request.user,
 					motor_emision 		= request.user.userprofile.empresa.configuracion.motor_factura,
-					numero_documento 	= 220,
+					numero_documento 	= int(item['documento']),
 				)
 				factura.save()
 				
@@ -520,9 +545,9 @@ def factura_pdf(request, pk=None):
 
 	data = list()
 	total = 0
-	propuesta = Propuesta.objects.get(id=pk)
+	propuesta = Factura.objects.get(id=pk)
 
-	for factura in propuesta.factura_set.all():
+	for factura in propuesta.factura_detalle_set.all():
 
 		conceptos = list()
 		subtotal = 0
@@ -574,35 +599,63 @@ def factura_pdf(request, pk=None):
 
 def validar_concepto(contrato, concepto, fecha):
 
-	if concepto.concepto_tipo.id == 1:
-		return validar_arriendo_minimo(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 2:
-		return validar_arriendo_variable(contrato, concepto, fecha)
+	configuracion = validar_concepto_configuracion(contrato, concepto)
 
-	elif concepto.concepto_tipo.id == 3:
-		return validar_gasto_comun(contrato, concepto, fecha)
+	if configuracion['estado'] is True:
 
-	elif concepto.concepto_tipo.id == 4:
-		return validar_servicios_basicos(contrato, concepto, fecha)
+		if concepto.concepto_tipo.id == 1:
+			return validar_arriendo_minimo(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 5:
-		return validar_cuota_de_incorporacion(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 2:
+			return validar_arriendo_variable(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 6:
-		return validar_gasto_asociado(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 3:
+			return validar_gasto_comun(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 7:
-		return validar_arriendo_bodega(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 4:
+			return validar_servicios_basicos(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 8:
-		return validar_servicios_varios(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 5:
+			return validar_cuota_de_incorporacion(contrato, concepto, fecha)
 
-	elif concepto.concepto_tipo.id == 9:
-		return validar_multas(contrato, concepto, fecha)
+		elif concepto.concepto_tipo.id == 6:
+			return validar_gasto_asociado(contrato, concepto, fecha)
+
+		elif concepto.concepto_tipo.id == 7:
+			return validar_arriendo_bodega(contrato, concepto, fecha)
+
+		elif concepto.concepto_tipo.id == 8:
+			return validar_servicios_varios(contrato, concepto, fecha)
+
+		elif concepto.concepto_tipo.id == 9:
+			return validar_multas(contrato, concepto, fecha)
 
 	else:
-		return True
+
+		return configuracion
+
+
+def validar_concepto_configuracion(contrato, concepto):
+
+	mensajes = [
+		'configuración concepto: correcto',
+		'configuración concepto: no está configurado',
+	]
+
+	estado  = True
+	mensaje = 0
+
+	if not Configuracion_Concepto.objects.filter(concepto=concepto, cliente=contrato.cliente).exclude(codigo_documento__exact='').exists():
+	
+		estado  = False
+		mensaje = 1
+
+	return {
+		'estado'	: estado,
+		'tipo'		: 1,
+		'mensaje'	: mensajes[mensaje],
+	}
 
 def validar_arriendo_minimo(contrato, concepto, periodo):
 
