@@ -613,10 +613,23 @@ class WORKFLOW(View):
 				form_proceso = ProcesosBorradorForm(self.request.POST, request=self.request)
 
 				if form_proceso.is_valid():
-					self.obj_proceso            = form_proceso.save(commit=False)
-					self.obj_proceso.workflow   = Workflow.objects.filter(empresa=self.request.user.userprofile.empresa).first()
-					self.obj_proceso.save()
-					form_proceso.save_m2m()
+					data_proceso 	= form_proceso.cleaned_data
+					workflow        = Workflow.objects.filter(empresa=self.request.user.userprofile.empresa).first()
+
+
+					nuevo_proceso  				= Proceso()
+					nuevo_proceso.nombre 		= data_proceso.get('nombre')
+					nuevo_proceso.workflow		= workflow
+					nuevo_proceso.tipo_estado	= data_proceso.get('tipo_estado')
+					nuevo_proceso.save()
+
+					if data_proceso.get('antecesor') != None:
+						for obj in data_proceso.get('antecesor'):
+							nuevo_proceso.antecesor.add(obj.id)
+
+
+					nuevo_proceso.userprofile_set.set(self.request.POST.getlist('responsable'))
+
 
 					workflow            = Workflow.objects.get(empresa=self.request.user.userprofile.empresa)
 					workflow.validado   = False
@@ -635,14 +648,34 @@ class WORKFLOW(View):
 
 			try:
 
-				proceso         = get_object_or_404(Proceso, pk=self.request.POST.get('id'))
-				form_proceso    = ProcesosBorradorForm(self.request.POST, instance=proceso, request=self.request)
+				proceso_update  = get_object_or_404(Proceso, pk=self.request.POST.get('id'))
+				form_proceso    = ProcesosBorradorForm(self.request.POST, request=self.request)
 
 				if form_proceso.is_valid():
-					self.obj_proceso            = form_proceso.save(commit=False)
-					self.obj_proceso.workflow   = Workflow.objects.filter(empresa=self.request.user.userprofile.empresa).first()
-					self.obj_proceso.save()
-					form_proceso.save_m2m()
+
+					data_proceso 	= form_proceso.cleaned_data
+					workflow 		= Workflow.objects.filter(empresa=self.request.user.userprofile.empresa).first()
+
+					proceso_update.nombre 		= data_proceso.get('nombre')
+					proceso_update.workflow 	= workflow
+					proceso_update.tipo_estado 	= data_proceso.get('tipo_estado')
+					proceso_update.save()
+
+					#Delete responsables
+
+					for user in proceso_update.userprofile_set.all():
+						proceso_update.userprofile_set.remove(user)
+
+					proceso_update.userprofile_set.set(self.request.POST.getlist('responsable'))
+
+
+
+					proceso_update.antecesor.clear()
+
+					#Insert antecesor
+					if data_proceso.get('antecesor') != None:
+						for obj in data_proceso.get('antecesor'):
+							proceso_update.antecesor.add(obj.id)
 
 					workflow            = Workflow.objects.get(empresa=self.request.user.userprofile.empresa)
 					workflow.validado   = False
@@ -689,7 +722,7 @@ class WORKFLOW(View):
 			data_responsable    = list()
 			data_antecesor      = list()
 
-			for responsable in item.responsable.filter(visible=True):
+			for responsable in UserProfile.objects.filter(proceso=item, visible=True):
 
 				# obtener avatar
 				primary_avatar = responsable.user.avatar_set.all().order_by('-primary')[:1]

@@ -293,7 +293,7 @@ class Workflow(models.Model):
 
 	class Meta:
 		verbose_name 		= 'Workflow'
-		verbose_name_plural = 'Workflow\'s'
+		verbose_name_plural = 'Workflows'
 
 class Proceso(models.Model):
 
@@ -306,7 +306,6 @@ class Proceso(models.Model):
 	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	workflow		= models.ForeignKey(Workflow, null=True, blank=True)
-	responsable 	= models.ManyToManyField('accounts.UserProfile')
 	tipo_estado 	= models.ForeignKey(Tipo_Estado_Proceso)
 	antecesor  		= models.ManyToManyField('self', symmetrical=False, blank=True)
 

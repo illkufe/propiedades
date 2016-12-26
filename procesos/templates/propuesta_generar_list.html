@@ -880,7 +880,7 @@ function validar_form_propuesta(){
 
 				var contrato 		        = {}
 				contrato.id 		        =  $(this).data("id")
-                contrato.numero_documento   =  $(this).data("data-numero-doc")
+                contrato.numero_documento   =  $(this).data("numero-doc")
 				contrato.conceptos 	        =  []
 
 
@@ -899,7 +899,7 @@ function validar_form_propuesta(){
 
 				data.push(contrato)
 			})
-
+            console.log(data)
 			// enviar data
 			$.ajax({
 				url: '/procesos/propuesta/guardar',

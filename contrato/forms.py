@@ -366,7 +366,7 @@ class ArriendoVariableForm(forms.ModelForm):
 
 		super(ArriendoVariableForm, self).__init__(*args, **kwargs)
 
-		self.fields['vinculo'].queryset = Concepto.objects.filter(concepto_tipo_id=1, empresa=contrato.empresa)
+		self.fields['vinculo'].queryset = Concepto.objects.filter(concepto_tipo_id=1, empresa=contrato.empresa, visible=True)
 	
 	class Meta:
 		model 	= Arriendo_Variable
@@ -584,7 +584,7 @@ class GastoAsociadoForm(forms.ModelForm):
 
 		super(GastoAsociadoForm, self).__init__(*args, **kwargs)
 
-		self.fields['vinculo'].queryset = Concepto.objects.filter(empresa=contrato.empresa).exclude(concepto_tipo_id__in=[6,10])
+		self.fields['vinculo'].queryset = Concepto.objects.filter(empresa=contrato.empresa, visible=True).exclude(concepto_tipo_id__in=[6,10])
 
 	class Meta:
 		model 	= Gasto_Asociado
@@ -660,7 +660,7 @@ class ReajusteForm(forms.ModelForm):
 
 		super(ReajusteForm, self).__init__(*args, **kwargs)
 
-		self.fields['vinculo'].queryset = Concepto.objects.filter(empresa=contrato.empresa).exclude(concepto_tipo_id=6)
+		self.fields['vinculo'].queryset = Concepto.objects.filter(empresa=contrato.empresa, visible=True).exclude(concepto_tipo_id=6)
 	
 	class Meta:
 		model 	= Reajuste

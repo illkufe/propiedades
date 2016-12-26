@@ -7,7 +7,7 @@
                 <div class="ibox float-e-margins">
                     <div class="ibox-content">
                         <div class="ibox-tools">
-                            <a href="{% url 'configuracion_facturacion_new' %}" class="btn btn-primary btn-xs "><i class="fa fa-plus"></i> Nueva Configuración Facturación</a>
+                            <a href="{% url 'configuracion_facturacion_new' %}" class="btn btn-primary btn-xs "><i class="fa fa-plus"></i> nueva configuración</a>
                         </div>
                         <br>
                         <div class="table-responsive">
@@ -18,9 +18,12 @@
                                         <tr>
                                             <td>{{ item.id }}</td>
                                             <td>{{ item.codigo_conexion}}</td>
+                                            <td class="text-center">{{ item.motor_emision.descripcion}}</td>
+                                            <td class="text-center estado"><span class="label" style="color:{{item.estado.color}};background:{{item.estado.background}};">{{ item.estado }}</span></td>
                                             <td class="text-center">
                                                 <a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar configuración" href="{% url 'configuracion_facturacion_update' pk=item.id %}"><i class="fa fa-edit"></i></a>
                                                 <a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar configuración" onclick="open_modal_delete(this, {{item.id}},'configuracion-facturacion', 'tabla-Parametros-Facturacion', 'Configuración Facturación')"><i class="fa fa-trash"></i></a>
+                                                <a class="btn btn-default btn-bitbucket btn-status" data-toggle="tooltip" data-placement="top" data-original-title="Activar configuración" data-tipo="{{ item.motor_emision.id }}" data-estado="{{ item.estado_id }}" onclick="activar_configuracion(this, {{ item.id }})">{{ item.estado.btn_nombre }}</a>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -32,6 +35,12 @@
             </div>
         </div>
     </div>
+
+    <style>
+        .btn-status{
+            width: 85px !important;
+        }
+    </style>
 {% endblock section %}
 
 {% block scripts %}
@@ -61,13 +70,88 @@
                     'title': 'Código Conexión'
                 },
                 {
+                    'width': '20%',
+                    'data': 'motor',
+                    'title': 'Motor Facturación'
+                },
+                {
+                    'width': '20%',
+                    'data': 'estado',
+                    'title': 'Estado'
+                },
+                {
                     'width': '19%',
                     'data': 'options',
                     'orderable': false,
                     'title': 'Opciones'
                 }];
 
-            tabla_parametros = load_table('#tabla-Parametros-Facturacion', columns, {});
+            tabla_parametros = load_table('#tabla-Parametros-Facturacion', columns, '');
+        }
+
+        function activar_configuracion(obj, parametro) {
+
+            var estado  = parseInt($(obj).attr('data-estado'))
+            var tipo    = parseInt($(obj).attr('data-tipo'))
+            var title   = ''
+            var status  = null
+            console.log(estado)
+
+            if(estado == 2){
+                title   = 'Activar'
+                status  = 1
+
+            }
+            else{
+                title   = 'Desactivar'
+                status  = 2
+            }
+
+            swal({
+                title: '¿ '+title+' Configuración ?',
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#F8BB86',
+                cancelButtonColor: '#D0D0D0',
+                confirmButtonText: 'Si, '+ title,
+                cancelButtonText: 'Cancelar',
+                closeOnConfirm: false
+            }).then(function() {
+
+                $.ajax({
+                    url :'/configuracion-facturacion/change_status',
+                    type: 'post',
+                    dataType: 'json',
+                    data:{
+                        id      : parametro,
+                        estado  : status,
+                        csrfmiddlewaretoken : getCookie('csrftoken'),
+                    },
+                    success:function (response) {
+
+                        if (response[0].estado){
+
+                            var configuracion = {
+                                'toast_type'	: 'success',
+                                'toast_text' 	: response[0].mensaje,
+                                'toast_title' 	: 'Éxito',
+					        }
+					        notification_toast(configuracion)
+
+					        setTimeout(function(){location.reload()}, 1500);
+
+                        }else{
+                            var configuracion = {
+                                'toast_type'	: 'error',
+                                'toast_text' 	: response[0].mensaje,
+                                'toast_title' 	: 'Error',
+                            }
+                            notification_toast(configuracion)
+                        }
+                    }
+                })
+            })
         }
     </script>
 {% endblock %}

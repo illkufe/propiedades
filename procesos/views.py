@@ -218,33 +218,33 @@ def propuesta_generar(request):
 		'uf' : Decimal(var_post.get('uf_valor').replace(".", "").replace(",", "."))
 	}
 
-	data_error = list()
-
-	contratos = Contrato.objects.filter(id__in=contratos_id)
-	for contrato in contratos:
-
-		conceptos = contrato.conceptos.all()
-		for concepto in conceptos:
-			configuracion = Configuracion_Concepto.objects.filter(concepto=concepto, cliente=contrato.cliente).exists()
-
-			if not configuracion:
-				data_error.append({
-					'estado' 	: False,
-					'mensaje' 	: ' Se debe configurar el concepto ' + str(concepto.nombre) +' para el cliente ' + str(contrato.cliente.nombre)
-				})
-
-				return JsonResponse(data_error, safe=False)
+	# data_error = list()
+    #
+	# contratos = Contrato.objects.filter(id__in=contratos_id)
+	# for contrato in contratos:
+    #
+	# 	conceptos = contrato.conceptos.all()
+	# 	for concepto in conceptos:
+	# 		configuracion = Configuracion_Concepto.objects.filter(concepto=concepto, cliente=contrato.cliente).exists()
+    #
+	# 		if not configuracion:
+	# 			data_error.append({
+	# 				'estado' 	: False,
+	# 				'mensaje' 	: ' Se debe configurar el concepto ' + str(concepto.nombre) +' para el cliente ' + str(contrato.cliente.nombre)
+	# 			})
+    #
+	# 			return JsonResponse(data_error, safe=False)
 
 	for contrato_id in contratos_id:
 
 		contrato 		= Contrato.objects.get(id=contrato_id)
 		data_conceptos 	= list()
 
-		documentos  = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__codigo_documento__isnull= False).values_list('configuracion_concepto__codigo_documento', flat=True)
+		documentos  = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__codigo_documento__isnull= False, visible=True).values_list('configuracion_concepto__codigo_documento', flat=True).distinct('configuracion_concepto__codigo_documento')
 
 		for documento in documentos:
 
-			conceptos   = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__codigo_documento=documento)
+			conceptos   = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__codigo_documento=documento, visible=True, configuracion_concepto__cliente=contrato.cliente)
 
 			for concepto in conceptos:
 

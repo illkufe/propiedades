@@ -2,7 +2,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User, Group
-from administrador.models import Empresa, Cliente
+from administrador.models import Empresa, Cliente, Proceso
+
 
 # modelos
 class UserType(models.Model):
@@ -36,6 +37,7 @@ class UserProfile(models.Model):
 	user 			= models.OneToOneField(User)
 	empresa 		= models.ForeignKey(Empresa)
 	tipo 			= models.ForeignKey(UserType)
+	proceso 		= models.ManyToManyField(Proceso)
 	cliente 		= models.ForeignKey(Cliente, blank=True, null=True)
 
 	def __str__(self):

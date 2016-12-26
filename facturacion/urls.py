@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^configuracion-facturacion/new$', ConfiguracionFacturacionNew.as_view(), name='configuracion_facturacion_new'),
     url(r'^configuracion-facturacion/update/(?P<pk>\d+)$', ConfiguracionFacturacionUpdate.as_view(), name='configuracion_facturacion_update'),
     url(r'^configuracion-facturacion/delete/(?P<pk>\d+)$', ConfiguracionFacturacionDelete.as_view(), name='configuracion_facturacion_delete'),
+    url(r'^configuracion-facturacion/change_status$', ConfiguracionFacturacionChange.as_view(), name='configuracion_facturacion_change_status'),
 
 
     url(r'^folios-electronicos/list$', FoliosElectronicosList.as_view(), name='folios_electronicos_list'),

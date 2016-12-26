@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import *
 from django.http import *
-from django.views.generic import ListView, FormView, DeleteView, UpdateView
+from django.views.generic import ListView, FormView, DeleteView, UpdateView, View
 
 from accounts.models import UserProfile
 from facturacion.forms.forms_parametros import *
@@ -19,6 +19,7 @@ from datetime import timedelta
 
 import datetime
 import xml.etree.ElementTree as etree
+import json
 
 modulo = 'Facturación'
 
@@ -61,7 +62,15 @@ class ConfiguracionFacturacionMixin(object):
         form_conexion   = context['form_conexion']
 
         if form_conexion.is_valid():
-            self.object = form.save()
+            self.object             = form.save(commit=False)
+
+            if not  hasattr(self.object, 'estado'):
+                self.object.estado_id = 2
+            else:
+                self.object.estado
+
+            self.object.save()
+
             form_conexion.instance = self.object
             form_conexion.save()
 
@@ -135,6 +144,80 @@ class ConfiguracionFacturacionDelete(DeleteView):
 
         except Exception:
             data = {'delete': False}
+
+        return JsonResponse(data, safe=False)
+
+class ConfiguracionFacturacionChange(View):
+    http_method_names = ['get', 'post']
+
+    def get(self, request):
+        pass
+
+    def post(self, request):
+
+        data 		    = list()
+        var_post        = request.POST.copy()
+        config_id       = int(var_post['id'])
+        estado_config   = int(var_post['estado'])
+        status          = None
+        mensaje         = None
+
+        mensajes = [
+            'configuración: activada correstamente',
+            'configuración: desactivada correstamente',
+            'configuración: sólo puede estar activa una configuración por motor de facturación',
+        ]
+
+        parametro   = Parametro_Factura.objects.get(id=config_id)
+
+
+        #Motor INET
+        if parametro.motor_emision_id == 1:
+
+            #Activar Confiración INET
+            if estado_config == 1:
+
+                if Parametro_Factura.objects.filter(estado_id=1, motor_emision_id=1).count():
+                    status  = False
+                    mensaje = 2
+                else:
+                    parametro.estado_id = estado_config
+                    parametro.save()
+
+                    status  = True
+                    mensaje = 0
+            else:
+                parametro.estado_id = estado_config
+                parametro.save()
+
+                status  = True
+                mensaje = 1
+        else:
+            # Activar Confiración IDTE
+            if estado_config == 1:
+
+                if Parametro_Factura.objects.filter(estado_id=1, motor_emision_id=2).count():
+                    status  = False
+                    mensaje = 2
+                else:
+                    parametro.estado_id = estado_config
+                    parametro.save()
+
+                    status  = True
+                    mensaje = 0
+            else:
+                parametro.estado_id = estado_config
+                parametro.save()
+
+                status  = True
+                mensaje = 1
+
+
+        data.append({
+            'estado'    : status,
+            'mensaje'   : mensajes[mensaje],
+        })
+
 
         return JsonResponse(data, safe=False)
 

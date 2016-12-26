@@ -34,10 +34,9 @@ def obtener_datos_conexion(contexto):
     conexion    = ''
 
     try:
-        conexion    = Conexion_Factura.objects.get(nombre_contexto__iexact=contexto, parametro_facturacion__motor_emision_id=2)
+        conexion    = Conexion_Factura.objects.get(nombre_contexto__iexact=contexto, parametro_facturacion__motor_emision_id=2, parametro_facturacion__estado_id=1)
     except Exception as e:
-        error       = "No existen datos de conexión "+str(contexto)+" del servidor de IDTE."
-
+        error       = "No existen datos de conexión o no estan activo los parametros del servidor de IDTE."
 
     return error, conexion
 
@@ -2460,7 +2459,7 @@ def url_web_service_inet(**kwargs):
         host        = kwargs['host']
         puerto      = kwargs['puerto']
         contexto    = kwargs['nombre_contexto']
-        web_service = kwargs['nombre_web_service']
+        web_service = kwargs['nombre_webservice']
 
 
         if puerto == None:
