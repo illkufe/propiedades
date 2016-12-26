@@ -240,7 +240,9 @@ def propuesta_generar(request):
 		contrato 		= Contrato.objects.get(id=contrato_id)
 		data_conceptos 	= list()
 
-		documentos  = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__codigo_documento__isnull= False, visible=True).values_list('configuracion_concepto__codigo_documento', flat=True).distinct()
+		documentos  = Concepto.objects.filter(id__in=conceptos_id, configuracion_concepto__cliente=contrato.cliente, visible=True).values_list('configuracion_concepto__codigo_documento', flat=True).distinct()
+
+		print (documentos)
 
 		for documento in documentos:
 
