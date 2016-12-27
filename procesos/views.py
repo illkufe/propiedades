@@ -31,7 +31,6 @@ import os
 import json
 import pdfkit
 
-
 class PropuestaGenerarList(ListView):
 
 	model 			= Factura
@@ -592,8 +591,6 @@ def factura_pdf(request, pk=None):
 	return response
 
 
-
-
 # validar conceptos - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 def validar_concepto(contrato, concepto, fecha):
@@ -633,7 +630,6 @@ def validar_concepto(contrato, concepto, fecha):
 	else:
 
 		return configuracion
-
 
 def validar_concepto_configuracion(contrato, concepto):
 
@@ -1521,190 +1517,7 @@ def calcular_servicios_basicos(contrato, concepto, periodo, configuracion):
 		else:
 			pass
 
-
-	# if Gasto_Servicio_Basico.objects.filter(activo=activo, tipo=servicio.tipo_servicio, mes=periodo.month, anio=periodo.year, visible=True).exists():
-
-	# 	gasto = Gasto_Servicio_Basico.objects.get(activo=activo, tipo=servicio.tipo_servicio, mes=periodo.month, anio=periodo.year, visible=True)
-
-	# 	locales 	= activo.local_set.all()
-	# 	medidores 	= list()
-
-	# 	total_lecturas = 0
-	# 	total_lectura 	= 0
-
-	# 	for local in locales:
-
-
-	# 		if servicio.tipo_servicio == 1:
-
-	# 			for medidor in local.medidor_electricidad_set.all():
-
-	# 				if Lectura_Electricidad.objects.filter(medidor_electricidad=medidor, mes=(periodo.month-1), anio=periodo.year).exists():
-
-	# 					if Lectura_Electricidad.objects.filter(medidor_electricidad=medidor, mes=(periodo.month), anio=periodo.year).exists():
-						
-	# 						lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=(periodo.month-1), anio=periodo.year).valor
-	# 						lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor, mes=(periodo.month), anio=periodo.year).valor
-
-	# 						total_lecturas += (lectura_actual - lectura_anterior)
-							
-	# 						for x in contrato.locales.all().values_list('id', flat=True):
-	# 							if x == medidor.local_id:
-	# 								total_lectura += (lectura_actual - lectura_anterior)
-
-	# 		elif servicio.tipo_servicio == 2:
-
-	# 			for medidor in local.medidor_agua_set.all():
-
-	# 				if Lectura_Agua.objects.filter(medidor_agua=medidor, mes=(periodo.month-1), anio=periodo.year).exists():
-
-	# 					if Lectura_Agua.objects.filter(medidor_agua=medidor, mes=(periodo.month), anio=periodo.year).exists():
-						
-	# 						lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor, mes=(periodo.month-1), anio=periodo.year).valor
-	# 						lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor, mes=(periodo.month), anio=periodo.year).valor
-
-	# 						total_lecturas += (lectura_actual - lectura_anterior)
-							
-	# 						for x in contrato.locales.all().values_list('id', flat=True):
-	# 							if x == medidor.local_id:
-	# 								total_lectura += (lectura_actual - lectura_anterior)
-
-	# 		elif servicio.tipo_servicio == 3:
-
-	# 			for medidor in local.medidor_gas_set.all():
-
-	# 				if Lectura_Gas.objects.filter(medidor_gas=medidor, mes=(periodo.month-1), anio=periodo.year).exists():
-
-	# 					if Lectura_Gas.objects.filter(medidor_gas=medidor, mes=(periodo.month), anio=periodo.year).exists():
-						
-	# 						lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor, mes=(periodo.month-1), anio=periodo.year).valor
-	# 						lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor, mes=(periodo.month), anio=periodo.year).valor
-
-	# 						total_lecturas += (lectura_actual - lectura_anterior)
-							
-	# 						for x in contrato.locales.all().values_list('id', flat=True):
-	# 							if x == medidor.local_id:
-	# 								total_lectura += (lectura_actual - lectura_anterior)
-
-	# 		else:
-	# 			pass
-
-
-	# total = (total_lectura * gasto.valor) / total_lecturas
-
 	return total
-
-
-	# total = 0
-
-	# total_total_luz 	= 0
-	# total_total_agua 	= 0
-	# total_total_gas 	= 0
-
-	# for local in Local.objects.filter(activo__empresa=contrato.empresa):
-
-	# 	medidores_luz  	= Medidor_Electricidad.objects.filter(local=local)
-	# 	medidores_agua  = Medidor_Agua.objects.filter(local=local)
-	# 	medidores_gas  	= Medidor_Gas.objects.filter(local=local)
-
-	# 	for medidor_luz in medidores_luz:
-	# 		try:
-	# 			lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month-1), anio=periodo.year).valor
-	# 			lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month), anio=periodo.year).valor
-	# 		except Exception:
-	# 			lectura_anterior 	= 0
-	# 			lectura_actual 		= 0
-
-	# 		total_total_luz += (lectura_actual - lectura_anterior)
-
-	# 	for medidor_agua in medidores_agua:
-
-	# 		try:
-	# 			lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month-1), anio=periodo.year).valor
-	# 			lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month), anio=periodo.year).valor
-	# 		except Exception:
-	# 			lectura_anterior 	= 0
-	# 			lectura_actual 		= 0
-
-	# 		total_total_agua += (lectura_actual - lectura_anterior)
-
-	# 	for medidor_gas in medidores_gas:
-
-	# 		try:
-	# 			lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month-1), anio=periodo.year).valor
-	# 			lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month), anio=periodo.year).valor
-	# 		except Exception:
-	# 			lectura_anterior 	= 0
-	# 			lectura_actual 		= 0
-
-	# 		total_total_gas += (lectura_actual - lectura_anterior)
-
-
-	# total_luz 	= 0
-	# total_agua 	= 0
-	# total_gas 	= 0
-
-	# servicios_basicos = Servicio_Basico.objects.filter(contrato=contrato, concepto=concepto)
-
-	# for servicio_basico in servicios_basicos:
-
-	# 	for local in servicio_basico.locales.all():
-
-	# 		medidores_luz  	= Medidor_Electricidad.objects.filter(local=local)
-	# 		medidores_agua  = Medidor_Agua.objects.filter(local=local)
-	# 		medidores_gas  	= Medidor_Gas.objects.filter(local=local)
-
-	# 		for medidor_luz in medidores_luz:
-
-	# 			lectura_anterior 	= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month-1), anio=periodo.year).valor
-	# 			lectura_actual 		= Lectura_Electricidad.objects.get(medidor_electricidad=medidor_luz, mes=(periodo.month), anio=periodo.year).valor
-
-	# 			total_luz += (lectura_actual - lectura_anterior)
-
-	# 		for medidor_agua in medidores_agua:
-
-	# 			lectura_anterior 	= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month-1), anio=periodo.year).valor
-	# 			lectura_actual 		= Lectura_Agua.objects.get(medidor_agua=medidor_agua, mes=(periodo.month), anio=periodo.year).valor
-
-	# 			total_agua += (lectura_actual - lectura_anterior)
-
-	# 		for medidor_gas in medidores_gas:
-
-	# 			lectura_anterior 	= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month-1), anio=periodo.year).valor
-	# 			lectura_actual 		= Lectura_Gas.objects.get(medidor_gas=medidor_gas, mes=(periodo.month), anio=periodo.year).valor
-
-	# 			total_gas += (lectura_actual - lectura_anterior)
-
-	# try:
-	# 	gasto_luz = Gasto_Servicio_Basico.objects.get(mes=periodo.month, anio=periodo.year, visible=True, tipo=1)
-	# 	total_luz = (total_luz * gasto_luz.valor) / total_total_luz
-	# except Exception as asd:
-	# 	# print (asd)
-	# 	total_luz = 0
-
-	# print(total_luz)
-	
-	# try:
-	# 	gasto_agua = Gasto_Servicio_Basico.objects.get(mes=periodo.month, anio=periodo.year, visible=True, tipo=2)
-	# 	total_agua = (total_agua * gasto_agua.valor) / total_total_agua
-	# except Exception as asd:
-	# 	# print (asd)
-	# 	total_agua = 0
-
-	# print(total_agua)
-
-	# try:
-	# 	gasto_gas = Gasto_Servicio_Basico.objects.get(mes=periodo.month, anio=periodo.year, visible=True, tipo=3)
-	# 	total_gas = (total_gas * gasto_gas.valor) / total_total_gas
-	# except Exception as asd:
-	# 	# print (asd)
-	# 	total_gas = 0
-
-	# # print(total_gas)
-
-	# total = total_luz + total_agua + total_gas
-
-	# return total
 
 def calcular_cuota_de_incorporacion(contrato, concepto, periodo, configuracion):
 
