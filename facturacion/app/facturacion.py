@@ -1,17 +1,21 @@
 from django.db import transaction
 from suds.client import Client
+from suds.plugin import MessagePlugin
 from xml.etree.ElementTree import *
-
+from urllib.request import urlopen
 from contrato.models import Contrato
 from facturacion.app.parametros_facturacion import calculo_iva_total_documento
 from facturacion.models import *
 from datetime import datetime
+
 
 import xml.etree.ElementTree as etree
 import sys
 import os
 import suds
 import logging
+import pathlib
+
 
 from locales.models import Local
 from procesos.models import Factura
@@ -40,6 +44,13 @@ def obtener_datos_conexion(contexto):
 
     return error, conexion
 
+
+class UnicodeFilter(MessagePlugin):
+    def received(self, context):
+        decoded = context.reply.decode('utf-8', errors='ignore')
+        reencoded = decoded.encode('utf-8')
+        context.reply = reencoded
+
 def call_service(url):
     """
         esta funcion realiza la conexión con el servidor que contiene los Web Services de IDTE.
@@ -49,6 +60,8 @@ def call_service(url):
     error   = ''
     client  = ''
 
+    url='http://www.ifacture.cl/wsMIXTO/servMixto.svc?wsdl'
+
     logging.basicConfig(level=logging.INFO)
     logging.getLogger('suds.client').setLevel(logging.DEBUG)
     logging.getLogger('suds.transport').setLevel(logging.DEBUG)
@@ -56,12 +69,26 @@ def call_service(url):
     logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
 
     try:
-        client = Client(url, timeout=30)
-    except suds.WebFault as detail:
-        error = str(detail.fault)
-    except Exception as e:
+        #ruta_wsdl = '/home/cmunoz/PycharmProjects/lease/public/media/wsdl/wsdl.xml'
+        ruta_wsdl = os.path.abspath('public/media/wsdl/wsdl.xml')
 
-        error = "No se pudo realizar la conexion con el servidor de IDTE, por favor verifique los datos." + str(e)
+        ws = urlopen(url)
+        ws = (((str(ws.read().decode('utf-8')).replace("infoiis05.informatasp.cl","www.ifacture.cl")).replace("infoiis04.informatasp.cl","www.ifacture.cl")).replace("infoiis03.informatasp.cl","www.ifacture.cl")).replace('tns:','')
+
+        etree.ElementTree(etree.fromstring(ws)).write(ruta_wsdl, encoding="UTF-8", xml_declaration=True)
+
+        client = Client(pathlib.Path(ruta_wsdl).as_uri(), timeout=30)
+        print(client)
+
+    except suds.WebFault as detail:
+        print('error-1')
+        error = str(detail.fault)
+        print(error)
+    except Exception as e:
+        print('error-2')
+        error = str(e)
+        print(error)
+
 
     return error, client
 
@@ -956,7 +983,6 @@ def crear_xml_documento(**kwargs):
                     return error, xml
 
                 count_extras += 1
-
 
     xml = etree.tostring(idte, short_empty_elements=False,  method='xml')
 
