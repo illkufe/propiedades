@@ -267,7 +267,7 @@
 							<div class="col-sm-12">
 								<a href="/clientes/list"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-cliente-new')">GUARDAR Y SEGUIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right not_accion" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-cliente-new')">GUARDAR Y SEGUIR</button>
 							</div>
 						</div>
 					</div>
@@ -289,6 +289,11 @@ $(document).ready(function(){
 });
 
 function initialize(){
+
+
+    if('{{ accion }}' == 'update'){
+        $('.not_accion').remove()
+    }
 
 	// verificar al editar un cliente si es persona juridica o persona natural
 	if ($('#id_tipo').val() == '2') {

@@ -426,7 +426,7 @@
 							<div class="col-sm-12">
 								<a href="/contrato/list"><button class="btn btn-w-m btn-sm btn-default" type="button" style="margin-right: 15px;">CANCELAR</button></a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-contrato-new')">GUARDAR Y SEGUIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right not_accion" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-contrato-new')">GUARDAR Y SEGUIR</button>
 							</div>
 						</div>
 					</div>
@@ -1480,6 +1480,10 @@ function initialize(){
 
 	var fecha   = new Date();
 	var accion  = '{{ accion }}';
+
+    if(accion == 'update'){
+        $('.not_accion').remove()
+    }
 
 	$('#form-lectura-medidor select[name="mes"]').val(fecha.getMonth() + 1)
 	$('#form-lectura-medidor input[name="anio"]').val(fecha.getFullYear())
