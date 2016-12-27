@@ -58,14 +58,18 @@ class ContratoForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 
 		self.request 	= kwargs.pop('request')
-		activos 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
+		activos 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
 
 		super(ContratoForm, self).__init__(*args, **kwargs)
 
 		if self.instance.pk is not None:
-			locales_id = Contrato.objects.values_list('locales', flat=True).filter(visible=True).exclude(id=self.instance.pk)
+
+			locales_id = self.instance.locales.all().values_list('id', flat=True)
+			locales_id = Local.objects.filter(activo__empresa=self.request.user.userprofile.empresa).values_list('id', flat=True).exclude(id=locales_id)
+
 		else:
-			locales_id = Contrato.objects.values_list('locales', flat=True).filter(visible=True)
+			
+			locales_id = Local.objects.filter(activo__empresa=self.request.user.userprofile.empresa).values_list('id', flat=True)
 
 		self.fields['locales'].queryset 	= Local.objects.filter(activo__in=activos, visible=True).exclude(id__in=locales_id)
 		self.fields['conceptos'].queryset 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
@@ -162,11 +166,11 @@ class GarantiaForm(forms.ModelForm):
 
 		super(GarantiaForm, self).__init__(*args, **kwargs)	
 
-		if self.instance.pk is not None:
-			print ('1')
+		# if self.instance.pk is not None:
+			# print ('1')
 			# locales_id = Contrato.objects.values_list('locales', flat=True).filter(visible=True).exclude(id=self.instance.pk)
-		else:
-			print ('2')
+		# else:
+			# print ('2')
 			# locales_id = Contrato.objects.values_list('locales', flat=True).filter(visible=True)
 
 	class Meta:
