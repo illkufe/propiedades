@@ -76,7 +76,7 @@
 									<button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button>
 								</a>
 								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-								<button class="btn btn-w-m btn-sm btn-primary pull-right" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-concepto-new')">GUARDAR Y SEGUIR</button>
+								<button class="btn btn-w-m btn-sm btn-primary pull-right not_accion" type="button" style="margin-right: 15px;" onclick="guardar_formulario('{{accion}}', 'form-concepto-new')">GUARDAR Y SEGUIR</button>
 							</form>
 						</div>
 					</div>
@@ -92,6 +92,10 @@
 <script>
 
 $(document).ready(function(){
+
+    if('{{ accion }}' == 'update'){
+        $('.not_accion').remove()
+    }
 });
 
 </script>

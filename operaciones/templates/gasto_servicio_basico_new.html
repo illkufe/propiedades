@@ -88,7 +88,7 @@
 									<div class="col-xs-12">
 										<a href='{% url "operaciones:gasto_servicio_basico_list" %}'><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 										<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-										<button class="btn btn-w-m btn-sm btn-primary pull-right margin" type="button" onclick="guardar_formulario_file('{{accion}}', 'form-gasto')">GUARDAR Y SEGUIR</button>
+										<button class="btn btn-w-m btn-sm btn-primary pull-right margin not_accion" type="button" onclick="guardar_formulario_file('{{accion}}', 'form-gasto')">GUARDAR Y SEGUIR</button>
 									</div>
 								</div>
 							</form>
@@ -122,6 +122,9 @@ function intialize(){
 		$('#form-gasto input[name="anio"]').val(fecha.getFullYear())	
 	};
 
+    if(accion == 'update'){
+        $('.not_accion').remove()
+    }
 }
 
 </script>

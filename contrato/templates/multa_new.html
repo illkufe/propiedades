@@ -87,7 +87,7 @@
 									<div class="col-xs-12">
 										<a href="{% url 'contrato:multa_list' %}"><button class="btn btn-w-m btn-sm btn-default" type="button">CANCELAR</button></a>
 										<button class="btn btn-w-m btn-sm btn-primary pull-right" type="submit">GUARDAR Y SALIR</button>
-										<button class="btn btn-w-m btn-sm btn-primary pull-right margin" type="button" onclick="guardar_formulario_file('{{accion}}', 'form-contrato-multa')">GUARDAR Y SEGUIR</button>
+										<button class="btn btn-w-m btn-sm btn-primary pull-right margin not_accion" type="button" onclick="guardar_formulario_file('{{accion}}', 'form-contrato-multa')">GUARDAR Y SEGUIR</button>
 									</div>
 								</div>
 							</form>
@@ -126,6 +126,8 @@ $(document).ready(function(){
             $("[class*=moneda]").each(function () {
                 $(this).trigger('change')
             })
+
+            $('.not_accion').remove()
         }
     }
 
