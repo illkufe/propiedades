@@ -187,11 +187,6 @@ class ContratoMixin(object):
 		else:
 			obj.estado = Contrato_Estado.objects.get(id=1)
 
-		# try:
-		# 	obj.estado
-		# except Exception:
-		# 	obj.estado = Contrato_Estado.objects.get(id=1)
-
 		obj.save()
 		form.save_m2m()
 

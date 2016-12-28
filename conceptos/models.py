@@ -19,7 +19,7 @@ class Concepto_Tipo(models.Model):
 	modificado_en 	= models.DateTimeField(auto_now=True)
 
 	# relaciones
-	empresas = models.ManyToManyField(Empresa, blank=True)
+	empresas 		= models.ManyToManyField(Empresa, blank=True)
 
 	def __str__(self):
 		return self.nombre

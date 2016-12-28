@@ -147,6 +147,7 @@ class UsuarioDelete(DeleteView):
 
 
 
+
 def user_login(request):
 
 	if request.method == 'POST':
@@ -223,6 +224,7 @@ def update_profile(request):
 		return JsonResponse(form.errors, status=400)
 
 def update_password(request, pk=None):
+
 	if pk is None:
 
 		form  = UpdatePasswordForm(request.POST, user=request.user)

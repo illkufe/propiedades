@@ -60,25 +60,6 @@ class Configuracion_Monedas(models.Model):
 		verbose_name 		= 'Configuración de Moneda'
 		verbose_name_plural = 'Configuraciones de Monedas'
 
-class Configuracion_Owncloud(models.Model):
-
-	# atributos (generales)
-	url		= models.TextField(blank=True)
-	estado	= models.BooleanField(default=False)
-
-	# atributos (por defecto)
-	creado_en 		= models.DateTimeField(auto_now_add=True)
-	modificado_en 	= models.DateTimeField(auto_now=True)
-
-	# relaciones
-	empresa = models.OneToOneField(Empresa)
-
-	def __str__(self):
-		return  self.empresa.nombre
-
-	class Meta:
-		verbose_name = 'Configuración de OwnCloud'
-
 class Cliente(models.Model):
 
 	TIPO = (
