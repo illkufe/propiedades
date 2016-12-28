@@ -26,7 +26,7 @@
                             <br>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <a href="{% url 'visualizar_folios_electronicos' %}" class="btn btn-w-m btn-sm btn-default" role="button">
+                                    <a href="{% url 'folios_electronicos_list' %}" class="btn btn-w-m btn-sm btn-default" role="button">
                                         Cancelar
                                     </a>
                                 </div>
@@ -94,7 +94,7 @@
                                     type: "success",
                                     html: true
                                 });
-                                window.location.href='{% url 'visualizar_folios_electronicos' %}'
+                                window.location.href='{% url 'folios_electronicos_list' %}'
                             }
                         },
                         error: function (x,y,z) {

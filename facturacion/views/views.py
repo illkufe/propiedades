@@ -1064,10 +1064,10 @@ def carga_folios_electronicos(request):
 
     if request.method == 'POST':
             try:
-                rut_empresa = Empresa.objects.get(id=request.user.pk).empresa.rut
+                rut_empresa = request.user.userprofile.empresa.rut
                 #rut_empresa = '76244316-3'
 
-                tempfile    = request.FILES.get('file')
+                tempfile    = request.FILES.get('file_caf')
 
                 archivo     = etree.fromstring(tempfile.read())
                 xml         = etree.tostring(archivo, method='xml', encoding='UTF-8', )
@@ -1379,142 +1379,204 @@ def envio_documento_tributario_electronico(**kwargs):
     datos_conexion      = {}
 
 
-    # error_exi_folio = validar_existencia_folio(tipo_documento)
-    #
-    # if not error_exi_folio:
-    #
-    #     ##Obtengo el folio disponible
-    #     error_folio, folio_documento = obtener_folio(tipo_documento)
-    #
-    #     if not error_folio:
-    #
-    #         ##Validar el folio a procesar ----------------------------------------------------------------------------------
-    #         error_folio = validar_folios_procesar(tipo_documento, folio_documento)
-    #
-    #         if not error_folio:
-    #
-    #             kwargs['folio'] = str(folio_documento)
+    error_exi_folio = validar_existencia_folio(tipo_documento)
+
+    if not error_exi_folio:
+
+        ##Obtengo el folio disponible
+        error_folio, folio_documento = obtener_folio(tipo_documento)
+
+        if not error_folio:
+
+            ##Validar el folio a procesar ----------------------------------------------------------------------------------
+            error_folio = validar_folios_procesar(tipo_documento, folio_documento)
+
+            if not error_folio:
+
+                kwargs['folio'] = str(folio_documento)
 
                 ##Creacion de xml-------------------------------------------------------------------------------------------
+                error_creacion, xml = crear_xml_documento(**kwargs)
 
-    # error_creacion, xml = crear_xml_documento(**kwargs)
-    #
-    # if not error_creacion:
-        ##Obtener datos de conexion IDTE -----------------------------------------------------------------------
-    error, conexion = obtener_datos_conexion('wsDTE')
+                if not error_creacion:
+                    ##Obtener datos de conexion IDTE -----------------------------------------------------------------------
+                    error, conexion = obtener_datos_conexion('wsDTE')
 
-    if not error:
+                    if not error:
 
-        datos_conexion['host']              = conexion.host
-        datos_conexion['puerto']            = conexion.puerto
-        datos_conexion['nombre_contexto']   = conexion.nombre_contexto
-        datos_conexion['nombre_webservice'] = conexion.nombre_web_service
+                        datos_conexion['host']              = conexion.host
+                        datos_conexion['puerto']            = conexion.puerto
+                        datos_conexion['nombre_contexto']   = conexion.nombre_contexto
+                        datos_conexion['nombre_webservice'] = conexion.nombre_web_service
 
 
-        id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
+                        id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
 
-        #Armar URL de conexion del Web Services ------------------------------------------------------------
-        error_url, url_conexion = url_web_service(**datos_conexion)
+                        #Armar URL de conexion del Web Services ------------------------------------------------------------
+                        error_url, url_conexion = url_web_service(**datos_conexion)
 
-        if not error_url:
+                        if not error_url:
 
-            ## Conectarse a Web Service de IDTE-------------------------------------------------------------
+                            ## Conectarse a Web Service de IDTE-------------------------------------------------------------
 
-            error, client = call_service(url_conexion)
+                            error, client = call_service(url_conexion)
 
-            if not error:
+                            if not error:
 
-                ##Consultar estado documento ---------------------------------------------------------------
-                try:
-                    estado = get_estado_documento(client, id_dte_empresa, tipo_documento, folio_documento,
-                                                  nievel_traza)
-
-                    if estado.valor == "ERROR":
-
-                        try:
-                            ##Borrar documento de la cola de DTE--------------------------------------------
-                            borrar_documento = borrar_cola(client, id_dte_empresa,tipo_documento, folio_documento,
-                                                           nievel_traza)
-
-                            if borrar_documento.dio_error == False:
-
+                                ##Consultar estado documento ---------------------------------------------------------------
                                 try:
-                                    ##Envio de documento a procesar a IDTE----------------------------------
-                                    procesar = get_procesar_dte_xml(client, id_dte_empresa, tipo_documento,
-                                                                    folio_documento, accion, nievel_traza, xml)
+                                    estado = get_estado_documento(client, id_dte_empresa, tipo_documento, folio_documento,
+                                                                  nievel_traza)
 
-                                    if procesar.dio_error == False:
+                                    if estado.valor == "ERROR":
 
                                         try:
-                                            ##Consultar estado Documento -------------------------------
+                                            ##Borrar documento de la cola de DTE--------------------------------------------
+                                            borrar_documento = borrar_cola(client, id_dte_empresa,tipo_documento, folio_documento,
+                                                                           nievel_traza)
 
-                                            estado = get_estado_documento(client, id_dte_empresa,
-                                                                          tipo_documento, folio_documento,
-                                                                          nievel_traza)
+                                            if borrar_documento.dio_error == False:
 
-                                            if estado.valor != "Error":
+                                                try:
+                                                    ##Envio de documento a procesar a IDTE----------------------------------
+                                                    procesar = get_procesar_dte_xml(client, id_dte_empresa, tipo_documento,
+                                                                                    folio_documento, accion, nievel_traza, xml)
 
-                                                ##Actualizacion del folio en la base de datos ----------
-                                                transaction.commit()
-                                                transaction.connections.close_all()
-                                                #-------------------------------------------------------
+                                                    if procesar.dio_error == False:
 
-                                                datos_estado = estado.valor.split('|')
-                                                estado_sii = datos_estado[15]
-                                                msg_sii = datos_estado[16]
+                                                        try:
+                                                            ##Consultar estado Documento -------------------------------
 
-                                                if int(estado_sii) == 1:
-                                                    ##Obtener archivo PDF de la factura---------------------
-                                                    archivo = get_archivo_documento(client, id_dte_empresa,
-                                                                                    tipo_documento,folio_documento,
-                                                                                    formato_documento, nievel_traza)
+                                                            estado = get_estado_documento(client, id_dte_empresa,
+                                                                                          tipo_documento, folio_documento,
+                                                                                          nievel_traza)
 
-                                                    if archivo.dio_error == False:
-                                                        data = {
-                                                            'success': True,
-                                                            'folio' : folio_documento,
-                                                            'error': '',
-                                                            'estado_sii': '',
-                                                            'msg_sii': '',
-                                                            'tipo_error': '',
-                                                            'funcion_error': '',
-                                                            'ruta_archivo': archivo.valor,
-                                                        }
-                                                        return data
+                                                            if estado.valor != "Error":
+
+                                                                ##Actualizacion del folio en la base de datos ----------
+                                                                transaction.commit()
+                                                                transaction.connections.close_all()
+                                                                #-------------------------------------------------------
+
+                                                                datos_estado = estado.valor.split('|')
+                                                                estado_sii = datos_estado[15]
+                                                                msg_sii = datos_estado[16]
+
+                                                                if int(estado_sii) == 1:
+                                                                    ##Obtener archivo PDF de la factura---------------------
+                                                                    archivo = get_archivo_documento(client, id_dte_empresa,
+                                                                                                    tipo_documento,folio_documento,
+                                                                                                    formato_documento, nievel_traza)
+
+                                                                    if archivo.dio_error == False:
+                                                                        data = {
+                                                                            'success': True,
+                                                                            'folio' : folio_documento,
+                                                                            'error': '',
+                                                                            'estado_sii': '',
+                                                                            'msg_sii': '',
+                                                                            'tipo_error': '',
+                                                                            'funcion_error': '',
+                                                                            'ruta_archivo': archivo.valor,
+                                                                        }
+                                                                        return data
+                                                                    else:
+                                                                        data = {
+                                                                            'success': False,
+                                                                            'error': archivo.msg,
+                                                                            'estado_sii': estado_sii,
+                                                                            'msg_sii': msg_sii,
+                                                                            'tipo_error': archivo.tipo_error,
+                                                                            'funcion_error': 'get_archivo_documento',
+                                                                            'ruta_archivo': '',
+                                                                        }
+                                                                        return data
+                                                                else:
+                                                                    data = {
+                                                                        'success': False,
+                                                                        'error': estado.msg,
+                                                                        'estado_sii': '',
+                                                                        'msg_sii': '',
+                                                                        'tipo_error': '',
+                                                                        'funcion_error': 'get_estado_documento',
+                                                                        'ruta_archivo': '',
+                                                                    }
+                                                                    return data
+                                                            else:
+                                                                data = {
+                                                                    'success': False,
+                                                                    'error': estado.msg,
+                                                                    'estado_sii': '',
+                                                                    'msg_sii': '',
+                                                                    'tipo_error': '',
+                                                                    'funcion_error': 'get_estado_documento',
+                                                                    'ruta_archivo': '',
+                                                                }
+                                                                return data
+                                                        except suds.WebFault as w:
+                                                            error = w.args[0].decode("utf-8")
+                                                            data = {
+                                                                'success': False,
+                                                                'error': error,
+                                                                'estado_sii': '',
+                                                                'msg_sii': '',
+                                                                'tipo_error': 'Excepción de Try Except',
+                                                                'funcion_error': 'get_estado_documento',
+                                                                'ruta_archivo': '',
+                                                            }
+                                                            return data
                                                     else:
+                                                        ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
+                                                        # connection.rollback()
+                                                        transaction.rollback()
+                                                        transaction.connections.close_all()
+                                                        ##------------------------------------------------------------------
                                                         data = {
                                                             'success': False,
-                                                            'error': archivo.msg,
-                                                            'estado_sii': estado_sii,
-                                                            'msg_sii': msg_sii,
-                                                            'tipo_error': archivo.tipo_error,
-                                                            'funcion_error': 'get_archivo_documento',
+                                                            'error': procesar.msg,
+                                                            'estado_sii': '',
+                                                            'msg_sii': '',
+                                                            'tipo_error': procesar.tipo_error,
+                                                            'funcion_error': 'get_procesar_dte_xml',
                                                             'ruta_archivo': '',
                                                         }
                                                         return data
-                                                else:
+                                                except suds.WebFault as w:
+                                                    ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla----
+                                                    transaction.rollback()
+                                                    transaction.connections.close_all()
+                                                    ##----------------------------------------------------------------------
+                                                    error = w.args[0].decode("utf-8")
                                                     data = {
                                                         'success': False,
-                                                        'error': estado.msg,
+                                                        'error': error,
                                                         'estado_sii': '',
                                                         'msg_sii': '',
-                                                        'tipo_error': '',
-                                                        'funcion_error': 'get_estado_documento',
+                                                        'tipo_error': 'Excepción de Try Except',
+                                                        'funcion_error': 'get_procesar_dte_xml',
                                                         'ruta_archivo': '',
                                                     }
                                                     return data
                                             else:
+                                                ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
+                                                transaction.rollback()
+                                                transaction.connections.close_all()
+                                                ##------------------------------------------------------------------
                                                 data = {
                                                     'success': False,
-                                                    'error': estado.msg,
+                                                    'error': borrar_documento.msg,
                                                     'estado_sii': '',
                                                     'msg_sii': '',
-                                                    'tipo_error': '',
-                                                    'funcion_error': 'get_estado_documento',
+                                                    'tipo_error': borrar_documento.tipo_error,
+                                                    'funcion_error': 'borrar_cola',
                                                     'ruta_archivo': '',
                                                 }
                                                 return data
                                         except suds.WebFault as w:
+                                            ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
+                                            transaction.rollback()
+                                            transaction.connections.close_all()
+                                            ##------------------------------------------------------------------
                                             error = w.args[0].decode("utf-8")
                                             data = {
                                                 'success': False,
@@ -1522,41 +1584,63 @@ def envio_documento_tributario_electronico(**kwargs):
                                                 'estado_sii': '',
                                                 'msg_sii': '',
                                                 'tipo_error': 'Excepción de Try Except',
-                                                'funcion_error': 'get_estado_documento',
+                                                'funcion_error': 'borrar_cola',
                                                 'ruta_archivo': '',
                                             }
+
                                             return data
                                     else:
-                                        ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
-                                        # connection.rollback()
-                                        transaction.rollback()
+
+                                        ##Actualizacion del folio en la base de datos --------------------------------------
+                                        transaction.commit()
                                         transaction.connections.close_all()
-                                        ##------------------------------------------------------------------
+                                        # ----------------------------------------------------------------------------------
+
+                                        datos_estado = estado.valor.split('|')
+                                        estado_sii   = datos_estado[15]
+                                        msg_sii      = datos_estado[16]
+
+                                        if int(estado_sii) == 1:
+                                            error = "Documento pendiente de envío"
+                                        elif int(estado_sii) == 2:
+                                            error = "Boleta registrada"
+                                        elif int(estado_sii) == 3:
+                                            error = "Documento enviado al S.I.I. sin estado"
+                                        elif int(estado_sii) == 4:
+                                            error = "Documento anulado"
+                                        elif int(estado_sii) == 5:
+                                            error = "Documento aceptado"
+                                        elif int(estado_sii) == 6:
+                                            error = "Documento Rechazado"
+                                        else:
+                                            error = "Estado desconocido"
+
                                         data = {
                                             'success': False,
-                                            'error': procesar.msg,
-                                            'estado_sii': '',
-                                            'msg_sii': '',
-                                            'tipo_error': procesar.tipo_error,
-                                            'funcion_error': 'get_procesar_dte_xml',
+                                            'error': error,
+                                            'estado_sii': estado_sii,
+                                            'msg_sii':msg_sii,
+                                            'tipo_error': '',
+                                            'funcion_error': 'get_estado_documento',
                                             'ruta_archivo': '',
                                         }
                                         return data
                                 except suds.WebFault as w:
-                                    ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla----
+                                    ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                                     transaction.rollback()
                                     transaction.connections.close_all()
-                                    ##----------------------------------------------------------------------
+                                    ##------------------------------------------------------------------
                                     error = w.args[0].decode("utf-8")
                                     data = {
                                         'success': False,
                                         'error': error,
-                                        'estado_sii': '',
+                                        'estado_sii':'',
                                         'msg_sii': '',
                                         'tipo_error': 'Excepción de Try Except',
-                                        'funcion_error': 'get_procesar_dte_xml',
+                                        'funcion_error': 'get_estado_documento',
                                         'ruta_archivo': '',
                                     }
+
                                     return data
                             else:
                                 ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
@@ -1565,83 +1649,61 @@ def envio_documento_tributario_electronico(**kwargs):
                                 ##------------------------------------------------------------------
                                 data = {
                                     'success': False,
-                                    'error': borrar_documento.msg,
-                                    'estado_sii': '',
+                                    'error': error,
+                                    'estado_sii':'',
                                     'msg_sii': '',
-                                    'tipo_error': borrar_documento.tipo_error,
-                                    'funcion_error': 'borrar_cola',
+                                    'tipo_error': 'Conexión Servidor',
+                                    'funcion_error': 'call_service',
                                     'ruta_archivo': '',
                                 }
+
                                 return data
-                        except suds.WebFault as w:
+                        else:
                             ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                             transaction.rollback()
                             transaction.connections.close_all()
                             ##------------------------------------------------------------------
-                            error = w.args[0].decode("utf-8")
                             data = {
                                 'success': False,
-                                'error': error,
+                                'error': error_url,
                                 'estado_sii': '',
                                 'msg_sii': '',
-                                'tipo_error': 'Excepción de Try Except',
-                                'funcion_error': 'borrar_cola',
+                                'tipo_error': 'Armado URL',
+                                'funcion_error': 'url_web_service',
                                 'ruta_archivo': '',
                             }
 
                             return data
                     else:
-
-                        ##Actualizacion del folio en la base de datos --------------------------------------
-                        transaction.commit()
+                        ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
+                        transaction.rollback()
                         transaction.connections.close_all()
-                        # ----------------------------------------------------------------------------------
-
-                        datos_estado = estado.valor.split('|')
-                        estado_sii   = datos_estado[15]
-                        msg_sii      = datos_estado[16]
-
-                        if int(estado_sii) == 1:
-                            error = "Documento pendiente de envío"
-                        elif int(estado_sii) == 2:
-                            error = "Boleta registrada"
-                        elif int(estado_sii) == 3:
-                            error = "Documento enviado al S.I.I. sin estado"
-                        elif int(estado_sii) == 4:
-                            error = "Documento anulado"
-                        elif int(estado_sii) == 5:
-                            error = "Documento aceptado"
-                        elif int(estado_sii) == 6:
-                            error = "Documento Rechazado"
-                        else:
-                            error = "Estado desconocido"
-
+                        ##------------------------------------------------------------------
                         data = {
                             'success': False,
                             'error': error,
-                            'estado_sii': estado_sii,
-                            'msg_sii':msg_sii,
-                            'tipo_error': '',
-                            'funcion_error': 'get_estado_documento',
+                            'estado_sii': '',
+                            'msg_sii': '',
+                            'tipo_error': 'Obtención Datos',
+                            'funcion_error': 'obtener_datos_conexion',
                             'ruta_archivo': '',
                         }
+
                         return data
-                except suds.WebFault as w:
+                else:
                     ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                     transaction.rollback()
                     transaction.connections.close_all()
                     ##------------------------------------------------------------------
-                    error = w.args[0].decode("utf-8")
                     data = {
                         'success': False,
-                        'error': error,
-                        'estado_sii':'',
+                        'error': error_creacion,
+                        'estado_sii': '',
                         'msg_sii': '',
-                        'tipo_error': 'Excepción de Try Except',
-                        'funcion_error': 'get_estado_documento',
+                        'tipo_error': 'Lectura Diccionario',
+                        'funcion_error': 'crear_xml_documento',
                         'ruta_archivo': '',
                     }
-
                     return data
             else:
                 ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
@@ -1650,99 +1712,36 @@ def envio_documento_tributario_electronico(**kwargs):
                 ##------------------------------------------------------------------
                 data = {
                     'success': False,
-                    'error': error,
-                    'estado_sii':'',
+                    'error': error_folio,
+                    'estado_sii': '',
                     'msg_sii': '',
-                    'tipo_error': 'Conexión Servidor',
-                    'funcion_error': 'call_service',
+                    'tipo_error': 'Validar folio',
+                    'funcion_error': 'validar_folios_procesar',
                     'ruta_archivo': '',
                 }
-
                 return data
         else:
-            ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
-            transaction.rollback()
-            transaction.connections.close_all()
-            ##------------------------------------------------------------------
             data = {
                 'success': False,
-                'error': error_url,
+                'error': error_folio,
                 'estado_sii': '',
                 'msg_sii': '',
-                'tipo_error': 'Armado URL',
-                'funcion_error': 'url_web_service',
+                'tipo_error': 'Obtención de folio',
+                'funcion_error': 'obtener_folio',
                 'ruta_archivo': '',
             }
-
             return data
     else:
-        ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
-        transaction.rollback()
-        transaction.connections.close_all()
-        ##------------------------------------------------------------------
         data = {
             'success': False,
-            'error': error,
+            'error': error_exi_folio,
             'estado_sii': '',
             'msg_sii': '',
-            'tipo_error': 'Obtención Datos',
-            'funcion_error': 'obtener_datos_conexion',
+            'tipo_error': 'Existencia Folios Operativos',
+            'funcion_error': 'validar_existencia_folio',
             'ruta_archivo': '',
         }
-
         return data
-    # else:
-    #     ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
-    #     transaction.rollback()
-    #     transaction.connections.close_all()
-    #     ##------------------------------------------------------------------
-    #     data = {
-    #         'success': False,
-    #         'error': error_creacion,
-    #         'estado_sii': '',
-    #         'msg_sii': '',
-    #         'tipo_error': 'Lectura Diccionario',
-    #         'funcion_error': 'crear_xml_documento',
-    #         'ruta_archivo': '',
-    #     }
-    #     return data
-    #         else:
-    #             ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
-    #             transaction.rollback()
-    #             transaction.connections.close_all()
-    #             ##------------------------------------------------------------------
-    #             data = {
-    #                 'success': False,
-    #                 'error': error_folio,
-    #                 'estado_sii': '',
-    #                 'msg_sii': '',
-    #                 'tipo_error': 'Validar folio',
-    #                 'funcion_error': 'validar_folios_procesar',
-    #                 'ruta_archivo': '',
-    #             }
-    #             return data
-    #     else:
-    #         data = {
-    #             'success': False,
-    #             'error': error_folio,
-    #             'estado_sii': '',
-    #             'msg_sii': '',
-    #             'tipo_error': 'Obtención de folio',
-    #             'funcion_error': 'obtener_folio',
-    #             'ruta_archivo': '',
-    #         }
-    #         return data
-    # else:
-    #     data = {
-    #         'success': False,
-    #         'error': error_exi_folio,
-    #         'estado_sii': '',
-    #         'msg_sii': '',
-    #         'tipo_error': 'Existencia Folios Operativos',
-    #         'funcion_error': 'validar_existencia_folio',
-    #         'ruta_archivo': '',
-    #     }
-    #     return data
 
 def actualizar_estados_documentos_sii_lease():
 
@@ -3692,7 +3691,7 @@ def armar_dict_documento(request):
         for d in detalle:
 
             lista_codigos_items = list()
-            configuracion       = d.concepto.configuracion_concepto_set.filter(cliente=factura_xml.contrato.cliente)
+            configuracion       = d.concepto.configuracion_concepto_set.get(cliente=factura_xml.contrato.cliente)
 
             lista_codigos_items.append({
                 'valor_codigo_item' : '' if not configuracion else configuracion.codigo_producto,
@@ -3708,19 +3707,19 @@ def armar_dict_documento(request):
                 'descripcion_item'          : str(d.concepto.descripcion).upper(),
                 'cantidad_referencia'       : '1',
                 'unidad_medida_ref'         : '',#str(d.concepto)
-                'precio_referencia'         : format_number(request, d.total, False),
+                'precio_referencia'         : str(format_number(request, d.total, False)),
                 'cantidad_item'             : '1',
                 'fecha_elaboracion'         : '',
                 'fecha_vencimiento_prod'    : '',
                 'unidad_medida'             : 'UNI',
-                'precio_unitario'           : format_number(request, d.total, False),
+                'precio_unitario'           : str(format_number(request, d.total, False)),
                 'descuento_porcentaje'      : '0',
                 'descuento_monto'           : '0',
                 'recargo_porcentaje'        : '0',
                 'recargo_monto'             : '0',
                 'cod_imp_adic_1'            : '0',
                 'cod_imp_adic_2'            : '0',
-                'monto_item'                : format_number(request, d.total, False),
+                'monto_item'                : str(format_number(request, d.total, False)),
                 'item_espectaculo'          : '',
                 'rut_mandante_b'            : '',
                 'codigos_items'             : lista_codigos_items,  # lista_codigos_items,
@@ -3739,12 +3738,12 @@ def armar_dict_documento(request):
 
         lista_total.append({
             'tipo_moneda'           : '',           ##Tipo de moneda de los montos
-            'monto_neto'            : valores[0],   ## Monto neto
+            'monto_neto'            : str(valores[0]),   ## Monto neto
             'monto_exento'          : '0',          ## Monto exento
             'monto_base'            : '0',          ## Monto Informado >0
             'monto_margen_comerc'   : '0',          ## Monto informado
             'tasa_iva'              : '19',         ## Tasa iva
-            'iva'                   : valores[1],   ## Monto neto * tasa IVA
+            'iva'                   : str(valores[1]),   ## Monto neto * tasa IVA
             'iva_propio'            : '0',          ## < que IVA
             'iva_terceros'          : '0',          ## < que IVA
             'iva_no_retenido'       : '0',          ## IVA - IVA retenido
@@ -3753,7 +3752,7 @@ def armar_dict_documento(request):
             'valor_comision_neto'   : '0',          ## Suma detalles valores comision
             'valor_comision_exento' : '0',          ## Suma detalles valores comisiones y otros cargos no afectos o exentos
             'valor_comision_iva'    : '0',          ## Suma detalle iva valor comision y otros cargos
-            'monto_total'           : valores[2],   ## Monto total documento
+            'monto_total'           : str(valores[2]),   ## Monto total documento
             'monto_no_facturable'   : '0',          ## Suma monto bienes o servicios con indicador facturacion
             'monto_periodo'         : '0',          ## Monto total + monto no facturable
             'saldo_anterior'        : '0',          ## Saldo anterior. * Solo con fines de ilustrar claridad de cobros
