@@ -82,6 +82,7 @@ class PropuestaProcesarList(ListView):
 				'id'			: item.id,
 				'numero_pedido'	: item.numero_pedido,
 				'nombre'		: item.nombre,
+				'motor_emision'	: item.motor_emision.nombre,
 				'fecha_inicio'	: item.fecha_inicio,
 				'fecha_termino'	: item.fecha_termino,
 				'contrato'		: item.contrato,

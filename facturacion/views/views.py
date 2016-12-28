@@ -3194,7 +3194,6 @@ def envio_control_folios(**kwargs):
                     ##Consultar estado control de folios ---------------------------------------------------------------
                     try:
                         estado_control_folio = get_estado_cf(client, id_dte_empresa, fecha_emision, secuencia, nievel_traza)
-                        print(estado_control_folio)
 
                         if estado_control_folio.valor == "ERROR":
 
@@ -3204,16 +3203,12 @@ def envio_control_folios(**kwargs):
                                 procesar_control_folio = procesar_cf_xml(client, id_dte_empresa, fecha_emision, secuencia,
                                                                          accion, nievel_traza, xml_control_folios)
 
-                                print(procesar_control_folio)
-
                                 if procesar_control_folio.dio_error == False:
 
                                     ##Consultar estado control de folios ---------------------------------------------------
                                     try:
                                         estado_control_folio_enviado = get_estado_cf(client, id_dte_empresa, fecha_emision,
                                                                                      secuencia, nievel_traza)
-
-                                        print(estado_control_folio_enviado)
 
                                         if estado_control_folio_enviado.valor != "Error":
                                             datos_estado    = estado_control_folio_enviado.valor.split('|')
@@ -3671,7 +3666,7 @@ def armar_dict_documento(request):
             'num_ident_extranjero'      : '',
             'nacionalidad'              : '',
             'ident_adicional_receptor'  : '',
-            'giro_receptor'             : str(factura_xml.contrato.cliente.giro).upper(),
+            'giro_receptor'             : str(factura_xml.contrato.cliente.giro.descripcion).upper(),
             'contacto_receptor'         : '',
             'correo_receptor'           : str(factura_xml.contrato.cliente.email),
             'direccion_receptor'        : str(factura_xml.contrato.cliente.direccion).upper(),
@@ -3704,7 +3699,7 @@ def armar_dict_documento(request):
                 'tipo_documento_liq'        : '',
                 'ind_exencion'              : '0',
                 'nombre_item'               : str(d.concepto.nombre).upper(),
-                'descripcion_item'          : str(d.concepto.descripcion).upper(),
+                'descripcion_item'          : str(factura_xml.nombre)+''+str(d.concepto.descripcion).upper(),
                 'cantidad_referencia'       : '1',
                 'unidad_medida_ref'         : '',#str(d.concepto)
                 'precio_referencia'         : str(format_number(request, d.total, False)),
