@@ -1,3 +1,5 @@
+from pydoc import locate
+
 from django.db import transaction
 from suds.client import Client
 from suds.plugin import MessagePlugin
@@ -44,13 +46,6 @@ def obtener_datos_conexion(contexto):
 
     return error, conexion
 
-
-class UnicodeFilter(MessagePlugin):
-    def received(self, context):
-        decoded = context.reply.decode('utf-8', errors='ignore')
-        reencoded = decoded.encode('utf-8')
-        context.reply = reencoded
-
 def call_service(url):
     """
         esta funcion realiza la conexión con el servidor que contiene los Web Services de IDTE.
@@ -60,7 +55,6 @@ def call_service(url):
     error   = ''
     client  = ''
 
-    url='http://www.ifacture.cl/wsMIXTO/servMixto.svc?wsdl'
 
     logging.basicConfig(level=logging.INFO)
     logging.getLogger('suds.client').setLevel(logging.DEBUG)
@@ -68,17 +62,13 @@ def call_service(url):
     logging.getLogger('suds.xsd.schema').setLevel(logging.DEBUG)
     logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
 
+
     try:
-        #ruta_wsdl = '/home/cmunoz/PycharmProjects/lease/public/media/wsdl/wsdl.xml'
-        ruta_wsdl = os.path.abspath('public/media/wsdl/wsdl.xml')
+        url_server              = str(url).replace('idte.informatasp.cl','www.ifacture.cl')
 
-        ws = urlopen(url)
-        ws = (((str(ws.read().decode('utf-8')).replace("infoiis05.informatasp.cl","www.ifacture.cl")).replace("infoiis04.informatasp.cl","www.ifacture.cl")).replace("infoiis03.informatasp.cl","www.ifacture.cl")).replace('tns:','')
-
-        etree.ElementTree(etree.fromstring(ws)).write(ruta_wsdl, encoding="UTF-8", xml_declaration=True)
-
-        client = Client(pathlib.Path(ruta_wsdl).as_uri(), timeout=30)
-        print(client)
+        client                  = Client(url, timeout = 30)
+        client.wsdl.url         = url_server
+        client.options.location = url_server
 
     except suds.WebFault as detail:
         print('error-1')
@@ -110,7 +100,7 @@ def crear_xml_documento(**kwargs):
 
     # Add hijos general
     try:
-        tipo_dte    = SubElement(general, 'tipo_dte').text   = kwargs['tipo_documento']
+        tipo_dte    = SubElement(general, 'tipo_dte').text   = str(kwargs['tipo_documento'])
         folio       = SubElement(general, 'folio_dte').text  = kwargs['folio']
         id1_erp     = SubElement(general, 'ID1_ERP').text    = kwargs['ID1_ERP']
         id2_erp     = SubElement(general, 'ID2_ERP').text    = kwargs['ID2_ERP']
@@ -1028,15 +1018,15 @@ def validar_folios_procesar(tipo_documento, folio_actual):
     try:
         folio = Folio_Documento_Electronico.objects.filter(tipo_dte=tipo_documento, operativo=True).get()
 
-        if folio_actual > folio.rango_final or folio_actual == 0:
+        if folio_actual > folio.rango_final or folio_actual == 0: #sacar not
             error = "No hay folios disponible, revise o ingrese nuevo CAF"
 
             if folio_actual > folio.rango_final:
                 update_folio = Folio_Documento_Electronico.objects.get(tipo_dte=tipo_documento, operativo=True)
                 update_folio.operativo = False
                 update_folio.save()
-        else:
-            error = 'Aun existen folios disponibles en el rango operativo'
+        # else:
+        #     error = 'Aun existen folios disponibles en el rango operativo'
 
     except Folio_Documento_Electronico.DoesNotExist:
         error = "No Exiten folios operativos para el tipo de documento."
