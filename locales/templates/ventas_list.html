@@ -348,7 +348,7 @@ function guardar_carga_masiva() {
 			$('#form-carga-new').ajaxSubmit({
 				dataType: 'json',
 				beforeSubmit: function(){
-					console.log('enviando')
+					
 					$('#m-venta-masiva').modal('hide');
 				},
 				success: function(data){

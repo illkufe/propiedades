@@ -83,11 +83,11 @@ function change_config_money() {
 
 function cambio_format_moneda(obj) {
 
-    var moneda = parseInt($(obj).val())
+	var moneda = parseInt($(obj).val())
 
-    if(! isNaN(moneda)){
-       change_config_money_selected(moneda, obj)
-    }
+	if(! isNaN(moneda)){
+		change_config_money_selected(moneda, obj)
+	}
 }
 
 function change_config_money_selected(moneda, obj) {
@@ -200,11 +200,11 @@ $(".select2").select2();
 
 
 $('.format-ip').mask('0ZZ.0ZZ.0ZZ.0ZZ', {
-    translation: {
-      'Z': {
-        pattern: /[0-9]/, optional: true
-      }
-    }
+	translation: {
+		'Z': {
+			pattern: /[0-9]/, optional: true
+		}
+	}
 });
 
 
@@ -285,7 +285,7 @@ function load_table(tabla_id, columnas, configuracion){
 		'fixedColumns':configuracion.fixedColumns == null ? false : configuracion.fixedColumns,
 	});
 
-	return tabla;
+return tabla;
 }
 
 function open_modal_delete(obj, id, model, tabla, text){
@@ -629,4 +629,48 @@ function form_put_errors(errors){
 		$("#id_" + index).closest('.form-group').find('.container-error').append(value[0])
 		
 	});
+}
+
+function delete_object_table(obj, model, id, tabla, text){
+
+	var col = $(obj).closest('tr')
+
+	swal({
+		title: '¿ Eliminar '+text+' ?',
+		text: '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#F8BB86',
+		cancelButtonColor: '#D0D0D0',
+		confirmButtonText: 'Si, eliminar',
+		cancelButtonText: 'Cancelar',
+		closeOnConfirm: true,
+	}).then(function() {
+		$.ajax({
+			url: '/'+model+'/delete/'+id,
+			type: 'POST',
+			data: {csrfmiddlewaretoken: getCookie('csrftoken')},
+			success: function(response){
+
+				var table = $('#'+tabla).DataTable();
+				table.row($(col)).remove().draw();
+
+				var notification = {
+					'toast_type'	: response.status == true ? 'success' : 'error',
+					'toast_title' 	: response.status == true ? 'Éxito' : 'Error',
+					'toast_text' 	: response.message,
+				}
+
+				notification_toast(notification)
+			},
+			error:function(data){
+				var configuracion = {
+					'toast_type'	: 'error',
+					'toast_text' 	: 'no se puedo eliminar',
+					'toast_title' 	: 'Error',
+				}
+				notification_toast(configuracion)
+			}
+		})
+	})
 }

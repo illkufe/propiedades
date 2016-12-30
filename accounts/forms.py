@@ -122,9 +122,9 @@ class UserProfileForm(forms.ModelForm):
 
 class UpdatePasswordForm(forms.Form):
 
-	password_actual = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Contraseña Actual', help_text='Contraseña Actual del Usuario')
-	password_nueva 	= forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Contraseña Nueva', help_text='Nueva Contraseña del Usuario')
-	password_copia 	= forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Repetir Contraseña', help_text='Repetición de Contraseña Nueva del Usuario')
+	password_actual = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Contraseña Actual (*)', help_text='Contraseña Actual del Usuario')
+	password_nueva 	= forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Contraseña Nueva (*)', help_text='Nueva Contraseña del Usuario')
+	password_copia 	= forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Repetir Contraseña (*)', help_text='Repetición de Contraseña Nueva del Usuario')
 
 	def __init__(self, *args, **kwargs):
 		self.user = kwargs.pop('user', None)
@@ -134,43 +134,54 @@ class UpdatePasswordForm(forms.Form):
 
 		cleaned_data 	= super(UpdatePasswordForm, self).clean()
 		password_actual = cleaned_data.get("password_actual")
-		authentication  = authenticate(username=self.user.email, password=password_actual)
+		authentication  = authenticate(username=self.user.username, password=password_actual)
 
 		if authentication is None:
 			msg = "Tu contraseña es incorrecta"
 			self.add_error('password_actual', msg)
-
-
-
 
 class UpdatePasswordAdminForm(forms.Form):
 
 	password_nueva = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Contraseña Nueva')
 	password_copia = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Repetir Contraseña')
 
-class ConfigOwnCloudForm(forms.ModelForm):
+class ConfiguracionOwnCloudForm(forms.ModelForm):
+
+	def __init__(self, *args, **kwargs):
+
+		super(ConfiguracionOwnCloudForm, self).__init__(*args, **kwargs)
+
+		if self.instance.pk is not None:
+
+			self.fields['url'].initial 		= self.instance.url
+			self.fields['usuario'].initial 	= self.instance.usuario
+			self.fields['password'].initial = self.instance.password
+		else:
+			self.fields['url'].initial 		= ''
+			self.fields['usuario'].initial 	= ''
+			self.fields['password'].initial = ''
 
 	class Meta:
-		model 	= ConfigOwnCloud
+		model 	= ConfiguracionOwnCloud
 		fields 	= '__all__'
 		exclude = ['user', 'creado_en']
 
 		widgets = {
 			'usuario'	: forms.TextInput(attrs={'class': 'form-control'}),
-			'password' 	: forms.PasswordInput(attrs={'class': 'form-control'}),
-			'url'		: forms.Textarea(attrs={'class': 'form-control', 'rows':'2'}),
+			'password' 	: forms.PasswordInput(attrs={'class': 'form-control', 'autocomplete':'new-password'}),
+			'url'		: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
 		}
 
 		labels = {
-			'usuario' 	: 'Nombre de Usuario',
-			'password' 	: 'Contraseña',
-			'url' 		: 'Dirección OwnCloud',
+			'usuario' 	: 'Nombre de Usuario (*)',
+			'password' 	: 'Contraseña (*)',
+			'url' 		: 'Dirección OwnCloud (*)',
 		}
 
 		help_texts = {
-			'usuario'		: 'Nombre de Usuario',
+			'usuario'	: 'Nombre de Usuario',
 			'password'	: 'Contraseña',
-			'url' 			: 'Dirección OwnCloud',
+			'url' 		: 'Dirección OwnCloud',
 		}
 
 		error_messages = {

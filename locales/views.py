@@ -611,14 +611,13 @@ class VentaDiaria(View):
 
 	def get(self, request, id=None):
 
+		print ('aca 3')
+
 		var_post 	= request.GET.copy()
 		local 		= json.loads(var_post['venta'])
 		local_id 	= local['local']
 		mes 		= local['mes']
 		ano 		= local['ano']
-
-		# activos = Activo.objects.filter(empresa_id=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
-		# locales = Local.objects.filter(activo_id__in=activos, visible=True)
 
 		if id == None:
 			self.object_list = Venta.objects.filter(local_id__in=local_id, fecha_inicio__year=ano, fecha_termino__year=ano,
@@ -661,7 +660,6 @@ class VentaDiaria(View):
 						update_venta.valor 			= valor
 						update_venta.save()
 
-
 					else:
 						new_venta 				= Venta()
 						new_venta.local 		= local
@@ -681,6 +679,7 @@ class VentaDiaria(View):
 
 
 	def json_to_response(self):
+
 		data = list()
 
 		PERIODICIDAD = (
@@ -695,6 +694,9 @@ class VentaDiaria(View):
 				'fecha_termino' : ventas.fecha_termino.strftime('%d-%m-%Y'),
 				'tipo_venta'    : PERIODICIDAD[ventas.periodicidad -1][1],
 				'valor' 	    : formato_moneda_local(self.request, ventas.valor, None),
+				'opciones'		: {
+					'delete': True,
+				}
 			})
 
 		return JsonResponse(data, safe=False)

@@ -805,6 +805,7 @@ class GastoServicioBasicoUpdate(GastoServicioBasicoMixin, UpdateView):
 		context['accion'] 	= 'update'
 		return context
 
+
 # gasto servicios basicos
 class TarifaServicioBasicoList(ListView):
 

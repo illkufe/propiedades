@@ -47,7 +47,7 @@ class UserProfile(models.Model):
 		verbose_name 		= 'Perfil'
 		verbose_name_plural = 'Perfil'
 
-class ConfigOwnCloud(models.Model):
+class ConfiguracionOwnCloud(models.Model):
 
 	# atributos (generales)
 	usuario		= models.CharField(max_length=250)

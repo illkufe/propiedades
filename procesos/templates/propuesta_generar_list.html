@@ -819,6 +819,8 @@ function data_table_propuesta(data){
 
 		for (var j = 0; j < data[i].conceptos.length; j++) {
 
+			console.log(data[i].conceptos[j].total)
+
 			row = {}
 
 			row.documento_id	= data[i].numero_documento
@@ -831,7 +833,7 @@ function data_table_propuesta(data){
 			row.concepto_id		= data[i].conceptos[j].id
 			row.concepto_nombre	= data[i].conceptos[j].nombre
 			row.glosa			= '<input type="text" name="glosa" id="glosa_'+data[i].id+'_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].nombre+'">'
-			row.total			= '<input type="text" name="total" id="total_'+data[i].id+'_'+data[i].conceptos[j].id+'" value="'+d3.format(",.")(data[i].conceptos[j].total)+'" class="text-right format-number" data-es-moneda="true" data-moneda="" data-select="false">'
+			row.total			= '<input type="text" name="total" id="total_'+data[i].id+'_'+data[i].conceptos[j].id+'" value="'+data[i].conceptos[j].total+'" class="text-right format-number" data-es-moneda="true" data-moneda="" data-select="false">'
 
 			rows.push(row)
 

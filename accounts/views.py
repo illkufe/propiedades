@@ -27,16 +27,16 @@ class UsuarioList(ListView):
 		context['title'] 			= modulo
 		context['subtitle'] 		= 'usuarios'
 		context['name'] 			= 'lista'
-		context['href'] 			= '/usuarios/list'
+		context['href'] 			= '/usuarios/list/'
 		context['form_password'] 	= UpdatePasswordAdminForm()
 
 		return context
 
 	def get_queryset(self):
 
-		# {falta: mejorar estas querys}
-		profiles = UserProfile.objects.values_list('user_id', flat=True).filter(empresa=self.request.user.userprofile.empresa).exclude(id=self.request.user.userprofile.id)
-		queryset = User.objects.filter(id__in=profiles, is_active=True)
+		user 		= self.request.user
+		profiles 	= UserProfile.objects.values_list('user_id', flat=True).filter(empresa=user.userprofile.empresa).exclude(id=user.userprofile.id)
+		queryset 	= User.objects.filter(id__in=profiles, is_active=True)
 
 		return queryset
 
@@ -44,7 +44,7 @@ class UsuarioMixin(object):
 
 	template_name 	= 'usuario_new.html'
 	form_class 		= UserProfileForm
-	success_url 	= '/usuarios/list'
+	success_url 	= '/usuarios/list/'
 
 	def form_invalid(self, form):
 
@@ -86,16 +86,22 @@ class UsuarioMixin(object):
 			user.save()
 			obj.save()
 
-		response 	= super(UsuarioMixin, self).form_valid(form)
-		data 		= {
-			'tipo'		: context['accion'],
-			'nombre'	: user.first_name,
-			'apellido'	: user.last_name,
-			'email'		: user.email,
-		}
-
+		response = super(UsuarioMixin, self).form_valid(form)
+		
 		if self.request.is_ajax():
-			return JsonResponse(data)
+
+			response = {
+				'status'	: True,
+				'message'	: 'creada o actualizada correctamente',
+				'data'		: {
+					'tipo'		: context['accion'],
+					'nombre'	: user.first_name,
+					'apellido'	: user.last_name,
+					'email'		: user.email,
+				}
+			}
+
+			return JsonResponse(response)
 		else:
 			return response
 
@@ -107,7 +113,7 @@ class UsuarioNew(UsuarioMixin, FormView):
 		context['title'] 	= modulo
 		context['subtitle'] = 'usuario'
 		context['name'] 	= 'nuevo'
-		context['href'] 	= '/usuarios/list'
+		context['href'] 	= '/usuarios/list/'
 		context['accion']	= 'create'
 
 		return context
@@ -125,7 +131,7 @@ class UsuarioUpdate(UsuarioMixin, UpdateView):
 		context['title'] 	= modulo
 		context['subtitle'] = 'usuario'
 		context['name'] 	= 'editar'
-		context['href'] 	= '/usuarios/list'
+		context['href'] 	= '/usuarios/list/'
 		context['accion']	= 'update'
 
 		return context
@@ -143,10 +149,29 @@ class UsuarioDelete(DeleteView):
 		payload = {'delete': 'ok'}
 		return JsonResponse(payload, safe=False)
 
+# perfil
+class PerfilList(ListView):
 
+	model 			= User
+	template_name 	= 'perfil.html'
 
+	def get_context_data(self, **kwargs):
 
+		context 					= super(PerfilList, self).get_context_data(**kwargs)
+		context['title'] 			= modulo
+		context['subtitle'] 		= 'perfil'
+		context['name'] 			= 'editar'
+		context['href'] 			= '/perfil/'
 
+		user  		= self.request.user
+		owncloud 	= user.configuracionowncloud if hasattr(user, 'configuracionowncloud') else None
+
+		context['user'] 			= user
+		context['form_profile'] 	= UserProfileForm(instance=user.userprofile)
+		context['form_owncloud']	= ConfiguracionOwnCloudForm(instance=owncloud)
+		context['form_password']	= UpdatePasswordForm(user=user)
+
+		return context
 
 def user_login(request):
 
@@ -161,10 +186,10 @@ def user_login(request):
 
 			login(request, user)
 
-			if ConfigOwnCloud.objects.filter(user=user).exists():
-				request.session['oc_url'] 		= user.configowncloud.url
-				request.session['oc_username'] 	= user.configowncloud.usuario
-				request.session['oc_password'] 	= user.configowncloud.password
+			if ConfiguracionOwnCloud.objects.filter(user=user).exists():
+				request.session['oc_url'] 		= user.configuracionowncloud.url
+				request.session['oc_username'] 	= user.configuracionowncloud.usuario
+				request.session['oc_password'] 	= user.configuracionowncloud.password
 			else:
 				request.session['oc_url'] 		= ''
 				request.session['oc_username'] 	= ''
@@ -181,48 +206,7 @@ def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/')
 
-def profile(request):
-	
-	form_owncloud    = ConfigOwnCloudForm()
-
-	form 			= UserProfileForm(instance=request.user.userprofile)
-	form_password   = UpdatePasswordForm(user=request.user)
-
-	return render(request, 'perfil.html', {
-		'user'			: request.user,
-		'form'			: form,
-		'form_owncloud'	: form_owncloud,
-		'form_password'	: form_password,
-		'title' 		: 'Perfil',
-		'subtitle' 		: 'perfil',
-		'name' 			: 'editar',
-		'href' 			: '/perfil',
-		})
-
-def update_profile(request):
-	
-	form    = UserProfileForm(request.POST, user=request.user)
-	user    = User.objects.get(pk=request.user.pk)
-	profile = UserProfile.objects.get(user=user)
-
-	if form.is_valid():
-
-		user.first_name 	= form.cleaned_data['first_name']
-		user.last_name 		= form.cleaned_data['last_name']
-		profile.rut 		= form.cleaned_data['rut']
-		profile.cargo 		= form.cleaned_data['cargo']
-		profile.ciudad 		= form.cleaned_data['ciudad']
-		profile.comuna 		= form.cleaned_data['comuna']
-		profile.direccion 	= form.cleaned_data['direccion']
-		profile.descripcion = form.cleaned_data['descripcion']
-
-		user.save()
-		profile.save()
-
-		return JsonResponse({'estado':'ok'})
-	else:
-		return JsonResponse(form.errors, status=400)
-
+@login_required
 def update_password(request, pk=None):
 
 	if pk is None:
@@ -232,13 +216,12 @@ def update_password(request, pk=None):
 
 		if form.is_valid():
 
-			password = form.cleaned_data['password_nueva']
+			password 	= form.cleaned_data['password_nueva']
 			user.set_password(password)
 			user.save()
-			user = authenticate(username=request.user.email, password=password)
+			user 		= authenticate(username=request.user.username, password=password)
 			login(request, user)
 
-			return JsonResponse({'estado':'ok'})
 		else:
 			return JsonResponse(form.errors, status=400)
 
@@ -251,11 +234,65 @@ def update_password(request, pk=None):
 			password = form.cleaned_data['password_nueva']
 			user.set_password(password)
 			user.save()
-			return JsonResponse({'estado':'ok'})
+			
 		else:
 			return JsonResponse(form.errors, status=400)
 
+	response = {
+		'status'	: True,
+		'message'	: 'actualizada correctamente',
+		}
 
+	return JsonResponse(response)
+
+@login_required
+def update_owncloud(request, pk=None):
+
+	try:
+
+		user = request.user
+		post = request.POST.copy()
+		form = ConfiguracionOwnCloudForm(request.POST)
+
+		if form.is_valid():
+
+			if hasattr(user, 'configuracionowncloud'):
+
+				user.configuracionowncloud.url 		= post['url']
+				user.configuracionowncloud.usuario 	= post['usuario']
+				user.configuracionowncloud.password = post['password']
+				user.configuracionowncloud.save()
+
+			else:
+
+				owncloud = ConfiguracionOwnCloud(
+					url 		= post['url'],
+					usuario 	= post['usuario'],
+					password 	= post['password'],
+					user 		= user,
+					)
+				owncloud.save()
+
+			response = {
+				'status'	: True,
+				'message'	: 'actualizado correctamente',
+			}
+
+			request.session['oc_url'] 		= user.configuracionowncloud.url
+			request.session['oc_username'] 	= user.configuracionowncloud.usuario
+			request.session['oc_password'] 	= user.configuracionowncloud.password
+
+		else:
+			return JsonResponse(form.errors, status=400)
+
+	except Exception as error:
+
+		response = {
+			'status'	: False,
+			'message'	: error,
+		}
+
+	return JsonResponse(response)
 
 
 # def custom_404(request):

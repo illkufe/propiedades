@@ -31,7 +31,7 @@
 									<td>{{ item.descripcion }}</td>
 									<td class="text-center">
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar concepto" href='{% url "concepto_update" item.id %}'><i class="fa fa-edit"></i></a>
-										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar concepto" onclick="open_modal_delete(this, {{item.id}}, 'conceptos', 'tabla-conceptos', 'Concepto')"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar concepto" onclick="delete_object_table(this, 'conceptos', {{item.id}}, 'tabla-conceptos', 'Concepto')"><i class="fa fa-trash"></i></a>
 									</td>
 								</tr>
 								{% endfor %}

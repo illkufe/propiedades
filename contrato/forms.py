@@ -138,10 +138,10 @@ class ContratoForm(forms.ModelForm):
 		is_insert 	= self.instance.id is None
 
 		if is_insert:
-			if Contrato.objects.filter(numero=numero, visible=True).exists():
+			if Contrato.objects.filter(numero=numero, empresa=self.request.user.userprofile.empresa, visible=True).exists():
 				raise forms.ValidationError('Ya existe un contrato con este número.')
 		else:
-			if numero != Contrato.objects.get(id=self.instance.id).numero and Contrato.objects.filter(numero=numero, visible=True).exists():
+			if numero != Contrato.objects.get(id=self.instance.id).numero and Contrato.objects.filter(numero=numero, empresa=self.request.user.userprofile.empresa, visible=True).exists():
 				raise forms.ValidationError('Ya existe un contrato con este número.')
 
 		return numero

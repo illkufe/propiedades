@@ -213,7 +213,6 @@ function update_password(){
 					notification_toast(configuracion)
 				},
 				error: function(data, textStatus, jqXHR) {
-					console.log(data.responseText)
 					clear_errors_form('#form-update-profile')
 					var errors = $.parseJSON(data.responseText)
 					apply_errors_form(errors)

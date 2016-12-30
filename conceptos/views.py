@@ -81,12 +81,23 @@ class ConceptoDelete(DeleteView):
 
 	def delete(self, request, *args, **kwargs):
 
-		self.object 		= self.get_object()
-		self.object.visible = False
-		self.object.save()
-		payload = {'delete': 'ok'}
+		concepto = self.get_object()
 
-		return JsonResponse(payload, safe=False)
+		if concepto.contrato_set.filter(visible=True).exists():
+			status 	= False
+			message = 'contratos con este concepto'
+		else:
+			status 	= True
+			message = 'concepto eliminado correctamente'
+			concepto.visible = False
+			concepto.save()
+
+		response = {
+			'status'	: status,
+			'message'	: message,
+		}
+
+		return JsonResponse(response, safe=False)
 
 class ConceptoUpdate(ConceptoMixin, UpdateView):
 

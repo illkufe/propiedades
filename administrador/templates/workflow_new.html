@@ -421,7 +421,7 @@ table#tabla-procesos tbody img{
             submitHandler: function(form) {
                 $('#id_tipo_estado').prop('disabled', false)
                 var data = $('#form-proceso-new').serializeArray();
-                console.log(accion)
+
                 if (accion == 'create'){
                     data.push({name:'action', value: 'create'});
                 }else{
