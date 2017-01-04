@@ -24,10 +24,13 @@
 								{% for item in object_list %}
 								<tr>
 									<td>{{ item.id }}</td>
-									<td>{{ item.codigo }}</td>
+									<td class="text-center">
+										<span class="badge">{{ item.codigo }}</span>
+									</td>
 									<td>{{ item.nombre }}</td>
 									<td>{{ item.concepto_tipo }}</td>
 									<td>{{ item.iva|formato_boolean }}</td>
+									<td>{{ item.proporcional|formato_boolean }}</td>
 									<td>{{ item.descripcion }}</td>
 									<td class="text-center">
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="editar concepto" href='{% url "concepto_update" item.id %}'><i class="fa fa-edit"></i></a>
@@ -92,6 +95,11 @@ function load_tabla_contratos(){
 		'width': '10%',
 		'data': 'iva',
 		'title': 'Con iva',
+	},
+	{
+		'width': '10%',
+		'data': 'proporcional',
+		'title': 'proporcional',
 	},
 	{
 		'data': 'descripcion',

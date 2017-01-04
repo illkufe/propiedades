@@ -68,8 +68,8 @@ class ContratoForm(forms.ModelForm):
 			locales_id = Local.objects.filter(activo__empresa=self.request.user.userprofile.empresa).values_list('id', flat=True).exclude(id=locales_id)
 
 		else:
-			
-			locales_id = Local.objects.filter(activo__empresa=self.request.user.userprofile.empresa).values_list('id', flat=True)
+
+			locales_id = Local.objects.filter(contrato__empresa=self.request.user.userprofile.empresa, visible=True).values_list('id', flat=True)
 
 		self.fields['locales'].queryset 	= Local.objects.filter(activo__in=activos, visible=True).exclude(id__in=locales_id)
 		self.fields['conceptos'].queryset 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)

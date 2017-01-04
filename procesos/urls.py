@@ -7,8 +7,8 @@ from . import views
 
 urlpatterns = [
 
-	url(r'^propuesta/generar/list$', views.PropuestaGenerarList.as_view(), name='propuesta_generar_list'),
-	url(r'^propuesta/procesar/list$', views.PropuestaProcesarList.as_view(), name='propuesta_procesar_list'),
+	url(r'^propuesta/generar/list/$', views.PropuestaGenerarList.as_view(), name='propuesta_generar_list'),
+	url(r'^propuesta/procesar/list/$', views.PropuestaProcesarList.as_view(), name='propuesta_procesar_list'),
 
 	url(r'^procesos/propuesta/filtar$', views.propuesta_filtrar, name='propuesta_filtrar'),
 	url(r'^procesos/propuesta/generar$', views.propuesta_generar ,name='propuesta_generar'),

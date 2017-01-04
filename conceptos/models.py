@@ -34,6 +34,7 @@ class Concepto(models.Model):
 	nombre 				= models.CharField(max_length=250)
 	codigo 				= models.CharField(max_length=10)
 	iva 				= models.BooleanField(default=False)
+	proporcional		= models.BooleanField(default=False)
 	descripcion 		= models.TextField(blank=True)
 
 	# atributos (por defecto)

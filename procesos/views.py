@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-import urllib
-
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-
+from django.http import HttpResponse, JsonResponse
 from django.db import transaction
+from django.db.models import Sum, Q
 from django.shortcuts import render
-from django.views.generic import View
 from django.template import Context, loader
 from django.template.loader import get_template 
 from django.contrib.auth.models import User
@@ -13,7 +9,6 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
 
 from administrador.models import Configuracion
-from facturacion.views.views import *
 from locales.models import *
 from activos.models import *
 from conceptos.models import *
@@ -22,14 +17,16 @@ from procesos.models import *
 from operaciones.models import *
 from utilidades.models import *
 
+from facturacion.views.views import *
 from utilidades.views import *
-from django.db.models import Sum, Q
+
 from datetime import datetime, timedelta
 from decimal import Decimal
 
 import os
 import json
 import pdfkit
+import urllib
 
 class PropuestaGenerarList(ListView):
 
@@ -42,7 +39,7 @@ class PropuestaGenerarList(ListView):
 		context['title'] 	= 'Generar Propuestas'
 		context['subtitle'] = 'propuestas de facturación'
 		context['name'] 	= 'generar'
-		context['href'] 	= 'propuesta/generar'
+		context['href'] 	= '/propuesta/generar/list/'
 
 		context['conceptos'] 	= Concepto.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True).exclude(concepto_tipo_id=10)
 		context['activos'] 		= Activo.objects.filter(empresa=self.request.user.userprofile.empresa, visible=True)
@@ -61,7 +58,7 @@ class PropuestaProcesarList(ListView):
 		context['title'] 	= 'Procesar Propuesta'
 		context['subtitle'] = 'propuestas de facturación'
 		context['name'] 	= 'enviar'
-		context['href'] 	= 'propuesta/procesar'
+		context['href'] 	= '/propuesta/procesar/list/'
 
 		data_propuestas = list()
 		data_procesadas = list()
@@ -597,7 +594,7 @@ def factura_pdf(request, pk=None):
 def validar_concepto(contrato, concepto, fecha):
 
 
-	configuracion = validar_concepto_configuracion(contrato, concepto)
+	configuracion = validar_configuracion(contrato, concepto)
 
 	if configuracion['estado'] is True:
 
@@ -632,7 +629,7 @@ def validar_concepto(contrato, concepto, fecha):
 
 		return configuracion
 
-def validar_concepto_configuracion(contrato, concepto):
+def validar_configuracion(contrato, concepto):
 
 	mensajes = [
 		'configuración concepto: correcto',
@@ -1715,6 +1712,9 @@ def calcular_reajuste(contrato, concepto, periodo, total):
 
 	return total
 
+# def calcular_proporcional(contrato):
+	
+
 # API - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 class FACTURA(View):
@@ -1753,6 +1753,11 @@ class FACTURA(View):
 		data = list()
 
 		for factura in self.object_list:
+
+			motor_emision = {
+				'id'		: factura.motor_emision.id,
+				'nombre' 	: factura.motor_emision.nombre,
+			}
 
 			estado = {
 				'id' 			: factura.estado.id,
@@ -1798,6 +1803,7 @@ class FACTURA(View):
 				'total'			: formato_moneda_local(self.request, valores[2], None),
 				'estado' 		: estado,
 				'url_documento' : factura.url_documento,
+				'motor_emision'	: motor_emision,
 				'contrato' 		: contrato,
 				'detalles' 		: detalles,
 				})

@@ -3795,3 +3795,32 @@ function template_propuesta(contrato){
 	# total = total_luz + total_agua + total_gas
 
 	# return total
+
+
+
+
+
+
+
+<style>
+.generar-propuesta #form-validar-propuesta .contrato-informacion{
+	margin-top: 10px;
+}
+
+.generar-propuesta #form-validar-propuesta .contrato-informacion p{
+	margin: 0 0 1px;
+	font-weight: 300;
+}
+
+.generar-propuesta #form-validar-propuesta .contrato-informacion p span:first-child{
+	font-weight: normal;
+	display: inline-block;
+	min-width: 110px;
+}
+
+.generar-propuesta #form-validar-propuesta .contrato-informacion p span:last-child::before{
+	content: ':';
+	padding: 0 10px;
+}
+
+</style>

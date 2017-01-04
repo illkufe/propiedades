@@ -3,88 +3,13 @@
 
 {% include 'partials/breadcrumbs-bar.html' %}
 
-<!-- modal: formulario generar propuesta -->
-<div id="m-generar-propuesta" class="modal fade" tabindex="-1" role="dialog">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">Generar Propuesta de Facturación</h4>
-			</div>
-
-			<form id="form-generar-propuesta" role="form" action='{% url "propuesta_generar" %}' method="POST">
-
-				{% csrf_token %}
-
-				<input type="hidden" name="mes">
-				<input type="hidden" name="anio">
-				<input type="hidden" name="conceptos">
-				<input type="hidden" name="contratos">
-
-				<div class="modal-body">
-					<div class="row">
-						<div class="form-group col-xs-12">
-							<span>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="..."></i>
-								<label>Nombre Propuesta</label>
-							</span>
-							<input type="text" class="form-control" name="nombre" placeholder="ingresar el nombre de la propuesta">
-							<div class="container-error"></div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-sm-6">
-							<small>Conceptos a Facturar</small>
-							<table id="tabla-conceptos"class="table small m-b-xs">
-								<tbody></tbody>
-							</table>
-						</div>
-
-						<div class="form-group col-xs-3">
-							<span>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="..."></i>
-								<label>Modificar UF</label>
-							</span>
-							<div class="checkbox checkbox-primary">
-								<input class="form-control" name="uf_modificada" value="ok" type="checkbox">
-								<label for="checkbox2"></label>
-							</div>
-						</div>
-
-						<div class="form-group col-xs-3">
-							<span>
-								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" data-original-title="..."></i>
-								<label>Valor UF (*)</label>
-							</span>
-							<input type="text" class="form-control format-number" data-es-moneda="true" data-moneda="3" data-select="false" name="uf_valor" readonly>
-							<div class="container-error"></div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-sm-12 m-t">
-							<small>(*) valor de la UF actualizada el <span class="uf-fecha"></span></small>
-						</div>
-					</div>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default btn-w-m" data-dismiss="modal">Cerrar</button>
-					<button type="submit" class="btn btn-primary btn-w-m">Aceptar</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
 <div class="wrapper wrapper-content generar-propuesta animated fadeInUp">
 
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-title">
-					<h5>Proceso para generar propuesta de facturación</h5>
+					<h5>Generar propuesta de facturación</h5>
 					<div class="ibox-tools">
 						<a class="collapse-link">
 							<i class="fa fa-chevron-up"></i>
@@ -102,7 +27,7 @@
 								<!-- titulo -->
 								<div class="panel-heading">
 									<h5 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-1" class="collapsed" aria-expanded="true">Filtrar Contratos</a>
+										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-1" class="collapsed" aria-expanded="true">Paso 1 : Filtrar Contratos</a>
 									</h5>
 								</div>
 
@@ -113,7 +38,7 @@
 										<div class="row">
 											<div class="col-xs-12">
 												<p class="m-t-md m-b-md">
-													<strong>Descripción :</strong> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+													<strong>Descripción :</strong> A continuación debe seleccionar el periodo, activo y los conceptos que desee facturar.
 												</p>
 											</div>
 										</div>
@@ -200,7 +125,7 @@
 								<!-- titulo -->
 								<div class="panel-heading">
 									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-2" class="collapsed" aria-expanded="false">Seleccionar Contratos</a>
+										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-2" class="collapsed" aria-expanded="false">Paso 2 : Seleccionar Contratos</a>
 									</h4>
 								</div>
 
@@ -208,38 +133,45 @@
 								<div id="collapse-2" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
 									<div id="seccion-seleccionar-contratos" class="panel-body hide">
 
+										<h2><small>Simbología Conceptos</small></h2>
+
 										<div class="row">
-											<div class="col-sm-3">
-												<p>
-													<i class="fa fa-check-circle info-succes"></i>
-													<span> concepto facturado</span>
+
+											<div>
+												<p class="col-sm-2"><i class="fa fa-check-circle info-succes"></i><strong> facturable</strong></p>
+												<p class="col-sm-10">
+													: los conceptos con este simbolo serán facturados.
 												</p>
 											</div>
-											<div class="col-sm-3">
-												<p>
-													<i class="fa fa-times-circle info-error"></i>
-													<span> concepto no facturado</span>
+											
+											<div>
+												<p class="col-sm-2"><i class="fa fa-times-circle info-error"></i><strong> no facturable</strong></p>
+												<p class="col-sm-9">
+													: los conceptos con este simbolo no serán facturados.
 												</p>
 											</div>
-											<div class="col-sm-3">
-												<p>
-													<i class="fa fa-times-circle info-error-config"></i>
-													<span> concepto no configurado</span>
+
+											<div>
+												<p class="col-sm-2"><i class="fa fa-times-circle info-error-config"></i><strong> no configurado</strong></p>
+												<p class="col-sm-10">
+													: los conceptos con este simbolo no serán facturados, porque falta configurar sus parametros de conexión.
 												</p>
 											</div>
-											<div class="col-sm-3">
-												<p>
-													<i class="fa fa-minus-square info-none"></i>
-													<span> concepto no asociado al contrato</span>
+
+											<div>
+												<p class="col-sm-2"><i class="fa fa-minus-square info-none"></i><strong> no asociado</strong></p>
+												<p class="col-sm-10">
+													: los conceptos con este simbolo no seran facurados, porque el contrato no tiene asociado este concepto.
 												</p>
 											</div>
+
 										</div>
 										<br>
 
 										<div class="row">
 											<div class="col-xs-12">
 												<div class="table-responsive">
-													<table id="tabla-contratos" class="table table-striped table-hover" style="width:100%"></table>
+													<table id="tabla-contratos" class="table table-bordered" style="width:100%"></table>
 												</div>
 											</div>
 										</div>
@@ -259,7 +191,7 @@
 								<!-- titulo -->
 								<div class="panel-heading" style="min-height: 39px;" data-toggle="collapse" data-parent="#accordion" href="#collapse-3" class="collapsed" aria-expanded="false">
 									<h4 class="panel-title" style="float:left">
-										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-3" class="collapsed" aria-expanded="false">Validar Propuesta</a>
+										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-3" class="collapsed" aria-expanded="false">Paso 3 : Validar Propuesta</a>
 									</h4>
 
 									<div id="informacion-propuesta" class="ibox-tools"></div>
@@ -281,7 +213,7 @@
 											<div class="row">
 												<div class="col-xs-12">
 													<div class="container-table">
-														<table id="t-propuesta" class="table table-striped table-bordered table-hover" width="100%"></table>
+														<table id="t-propuesta" class="table table-bordered" width="100%"></table>
 													</div>
 												</div>
 											</div>
@@ -304,29 +236,80 @@
 	</div>
 </div>
 
-<style>
-.generar-propuesta #form-validar-propuesta .contrato-informacion{
-	margin-top: 10px;
-}
+<!-- modal: formulario generar propuesta -->
+<div id="m-generar-propuesta" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Generar Propuesta de Facturación</h4>
+			</div>
 
-.generar-propuesta #form-validar-propuesta .contrato-informacion p{
-	margin: 0 0 1px;
-	font-weight: 300;
-}
+			<form id="form-generar-propuesta" role="form" action='{% url "propuesta_generar" %}' method="POST">
 
-.generar-propuesta #form-validar-propuesta .contrato-informacion p span:first-child{
-	font-weight: normal;
-	display: inline-block;
-	min-width: 110px;
-}
+				{% csrf_token %}
 
-.generar-propuesta #form-validar-propuesta .contrato-informacion p span:last-child::before{
-	content: ':';
-	padding: 0 10px;
-}
+				<input type="hidden" name="mes">
+				<input type="hidden" name="anio">
+				<input type="hidden" name="conceptos">
+				<input type="hidden" name="contratos">
 
+				<div class="modal-body">
+					<div class="row">
+						<div class="form-group col-xs-12">
+							<span>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="..."></i>
+								<label>Nombre Propuesta</label>
+							</span>
+							<input type="text" class="form-control" name="nombre" placeholder="ingresar el nombre de la propuesta">
+							<div class="container-error"></div>
+						</div>
+					</div>
 
-</style>
+					<div class="row">
+						<div class="col-sm-6">
+							<small>Conceptos a Facturar</small>
+							<table id="tabla-conceptos" class="table table-bordered small m-b-xs">
+								<tbody></tbody>
+							</table>
+						</div>
+
+						<div class="form-group col-xs-3">
+							<span>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" title="" data-original-title="..."></i>
+								<label>Modificar UF</label>
+							</span>
+							<div class="checkbox checkbox-primary">
+								<input class="form-control" name="uf_modificada" value="ok" type="checkbox">
+								<label for="checkbox2"></label>
+							</div>
+						</div>
+
+						<div class="form-group col-xs-3">
+							<span>
+								<i class="fa fa-question-circle info-label" data-toggle="tooltip" data-placement="top" data-original-title="..."></i>
+								<label>Valor UF (*)</label>
+							</span>
+							<input type="text" class="form-control format-number" data-es-moneda="true" data-moneda="3" data-select="false" name="uf_valor" readonly>
+							<div class="container-error"></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12 m-t">
+							<small>(*) valor de la UF actualizada el <span class="uf-fecha"></span></small>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default btn-w-m" data-dismiss="modal">Cerrar</button>
+					<button type="submit" class="btn btn-primary btn-w-m">Aceptar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 
 {% endblock section %}
 
@@ -527,46 +510,46 @@ function submit_generar_propuesta(){
 
 					loading(false)
 
-                    //agregar validacion de configuracion de conceptos
-                    if (data[0].estado == false){
-                    	var configuracion = {
-                    		'toast_type'	: 'warning',
-                    		'toast_text' 	: data[0].mensaje,
-                    		'toast_title' 	: 'Advertencia',
-                    	}
-                    	notification_toast(configuracion)
-                    }else{
+					//agregar validacion de configuracion de conceptos
+					if (data[0].estado == false){
+						var configuracion = {
+							'toast_type'	: 'warning',
+							'toast_text' 	: data[0].mensaje,
+							'toast_title' 	: 'Advertencia',
+						}
+						notification_toast(configuracion)
+					}else{
 
-                    	$('#m-generar-propuesta').modal('hide')
-                    	$('#form-validar-propuesta input[name="mes"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="mes"]').val())
-                    	$('#form-validar-propuesta input[name="anio"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="anio"]').val())
-                    	$('#form-validar-propuesta input[name="nombre"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="nombre"]').val())
-                    	$('#form-validar-propuesta input[name="uf_valor"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_valor"]').val())
-                    	$('#form-validar-propuesta input[name="uf_modificada"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_modificada"]').prop('checked'))
+						$('#m-generar-propuesta').modal('hide')
+						$('#form-validar-propuesta input[name="mes"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="mes"]').val())
+						$('#form-validar-propuesta input[name="anio"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="anio"]').val())
+						$('#form-validar-propuesta input[name="nombre"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="nombre"]').val())
+						$('#form-validar-propuesta input[name="uf_valor"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_valor"]').val())
+						$('#form-validar-propuesta input[name="uf_modificada"]').val($('#m-generar-propuesta #form-generar-propuesta input[name="uf_modificada"]').prop('checked'))
 
-                        // mostrar y cerrar secciones
-                        $('#seccion-validar-propuesta').removeClass('hide')
-                        $('#collapse-1').collapse('hide')
-                        $('#collapse-2').collapse('hide')
-                        $('#collapse-3').collapse('show')
-                        $('[data-toggle="tooltip"]').tooltip()
+						// mostrar y cerrar secciones
+						$('#seccion-validar-propuesta').removeClass('hide')
+						$('#collapse-1').collapse('hide')
+						$('#collapse-2').collapse('hide')
+						$('#collapse-3').collapse('show')
+						$('[data-toggle="tooltip"]').tooltip()
 
-                        var configuracion = {
-                        	'toast_type'	: 'success',
-                        	'toast_text' 	: 'propuesta generada',
-                        	'toast_title' 	: 'Correcto',
-                        }
-                        notification_toast(configuracion)
-                        data_table_propuesta(data)
-                    }
+						var configuracion = {
+							'toast_type'	: 'success',
+							'toast_text' 	: 'propuesta generada',
+							'toast_title' 	: 'Correcto',
+						}
+						notification_toast(configuracion)
+						data_table_propuesta(data)
+					}
 
-                },
-                error: function(){
-                	loading(false)
-                }
-            });
-		}
-	})
+				},
+				error: function(){
+					loading(false)
+				}
+			});
+}
+})
 }
 
 function load_tabla_contratos(conceptos){
@@ -613,7 +596,7 @@ function load_tabla_contratos(conceptos){
 		columna = {}
 
 		columna.data 		= conceptos[i].id
-		columna.title 		= '<div class="text-center">'+conceptos[i].codigo.toLowerCase()+'</div>'
+		columna.title 		= '<div class="text-center"><span class="badge">'+conceptos[i].codigo.toLowerCase()+'</span></div>'
 		columna.orderable 	= false
 		columna.width 		= '7%',
 
@@ -802,7 +785,7 @@ function load_table_propuesta(){
 	{
 		'width'		: '15%',
 		'data'		: 'total',
-		'title'		: 'Total',
+		'title'		: 'Total ($)',
 	}
 	];
 
@@ -818,8 +801,6 @@ function data_table_propuesta(data){
 	for (var i = 0; i < data.length; i++) {
 
 		for (var j = 0; j < data[i].conceptos.length; j++) {
-
-			console.log(data[i].conceptos[j].total)
 
 			row = {}
 
@@ -930,8 +911,8 @@ function submit_validar_propuesta(){
 				}
 				
 			});
-		},
-	})
+},
+})
 
 	// agregar validacion a los campos glosa
 	$("#form-validar-propuesta [name^=glosa]").each(function () {

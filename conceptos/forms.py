@@ -19,32 +19,34 @@ class ConceptoForm(forms.ModelForm):
 		exclude = ['empresa', 'creado_en', 'visible', 'configuracion']
 
 		widgets = {
-			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'codigo'		: forms.TextInput(attrs={'class': 'form-control'}),
 			'concepto_tipo' : forms.Select(attrs={'class': 'form-control'}),
-			'iva'			: forms.CheckboxInput(attrs={'class': 'form-control'}),
 			'descripcion'	: forms.Textarea(attrs={'class': 'form-control', 'rows':'1'}),
-		}
-
-		error_messages = {
-			'nombre' 		: {'required': 'campo requerido'},
-			'codigo' 		: {'required': 'campo requerido'},
-			'concepto_tipo' : {'required': 'campo requerido'},
-			'iva' 			: {'required': 'campo requerido'},
-			'descripcion' 	: {'required': 'campo requerido'},
+			'iva'			: forms.CheckboxInput(attrs={'class': 'form-control'}),
+			'nombre'		: forms.TextInput(attrs={'class': 'form-control'}),
+			'proporcional'	: forms.CheckboxInput(attrs={'class': 'form-control'}),
 		}
 
 		labels = {
-			'codigo' 		: 'Código',
-			'concepto_tipo' : 'Tipo de Concepto',
-			'iva' 			: 'Con IVA',
+			'codigo' 		: 'Código (*)',
+			'concepto_tipo' : 'Tipo de Concepto (*)',
 			'descripcion' 	: 'Descripción',
+			'iva' 			: 'Con iva',
+			'nombre' 		: 'Nombre (*)',
+			'proporcional' 	: 'Proporcional',
 		}
 
 		help_texts = {
-			'nombre'		: 'Nombre de Concepto',
-			'codigo'		: 'Código de Concepto',
-			'concepto_tipo' : 'Tipo de Concepto',
-			'iva'			: 'Concepto tiene Asociado I.V.A.',
-			'descripcion'	: 'Descripción de Concepto',
+			'codigo' 		: 'código del concepto, este código o abreviación será mostrado en algunas tablas para reducir el espacio',
+			'concepto_tipo' : 'tipo de concepto',
+			'descripcion' 	: 'descripción de concepto',
+			'iva' 			: 'esta opción definie si el concepto tiene asociado i.v.a.',
+			'nombre' 		: 'nombre de nombre',
+			'proporcional' 	: 'esta opción define si el cálculo del concepto debe ser proporcional a los dias en caso de que sea necesario',
+		}
+
+		error_messages = {
+			'codigo' 		: {'required': 'campo requerido'},
+			'concepto_tipo' : {'required': 'campo requerido'},
+			'nombre' 		: {'required': 'campo requerido'},
 		}

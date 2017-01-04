@@ -105,7 +105,7 @@
 									<td class="text-center">
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="eliminar propuesta" onclick="eliminar_propuesta(this, {{item.id}}, 'tabla-facturas-propuestas')"><i class="fa fa-trash"></i></a>
 										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="visualizar propuesta" onclick="visualizar_propuesta({{item.id}})"><i class="fa fa-eye"></i></a>
-										<a class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="enviar a facturar propuesta" onclick="enviar_propuesta({{item.id}})"><i class="fa fa-paper-plane"></i></a>
+										<a id="btn-enviar-poroer" class="btn btn-default btn-bitbucket" data-toggle="tooltip" data-placement="top" data-original-title="enviar a facturar propuesta" onclick="enviar_propuesta({{item.id}})"><i class="fa fa-paper-plane"></i></a>
 									</td>
 								</tr>
 								{% endfor %}
@@ -385,7 +385,10 @@ function template_modal_info_factura(factura){
 	template += '<small>Total</small>'
 	template += '<h2 class="no-margins">@total</h2>'
 	template += '<ul class="list-unstyled project-files">'
-	template += '<li><a href=""><i class="fa fa-file"></i> Factura Propuesta.pdf</a></li>'
+	template += '<li><form action="/procesos/propuesta/pdf/" method="POST"><input type="hidden" value="'+factura.id+'"name="facturas"><i class="fa fa-file"></i><button type="submit">Descargar PDF</button></form></li>'
+	if (factura.estado.id == 2 && factura.motor_emision.id == 2) {
+		template += '<li><a href="'+factura.url_documento+'"><i class="fa fa-file"></i>Factura.pdf</a></li>'
+	}	
 	template += '</ul>'
 	template += '</div>'
 	template += '</div>'
