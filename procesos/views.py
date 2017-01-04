@@ -440,28 +440,38 @@ def propuesta_enviar(request):
 						factura.motor_emision_id	= 1
 						factura.numero_pedido		= int(root.find('{http://www.informat.cl/ws}ATENUMREA').text)
 					else:
-						estado = False
+						estado 	= False
+						lis 	= []
+						errores = str(error.NUMERROR) + ': ' + error.DESCERROR
+
+						lis.append(errores)
 						response.append({
-							'descripcion' 	: str(error.NUMERROR) + ': '+ error.DESCERROR,
+							'descripcion'	: lis,
 						})
 						factura.estado_id = 3
 			else:
-				estado = False
-				factura.estado_id = 3
+				estado 				= False
+				factura.estado_id 	= 3
+
 				for error in respuesta.SDT_ERRORES_ERROR:
+
+					lis 	=	[]
+					errores = str(error.NUMERROR) + ': '+ error.DESCERROR
+					lis.append(errores)
 					response.append({
-						'descripcion'  : str(error.NUMERROR) + ': '+ error.DESCERROR,
+						'descripcion'  : lis,
 					})
 
 			factura.save()
 			data.append({'estado'	: estado,
-						 'response' :response,
+						 'response' : response,
 						 })
 			return JsonResponse(data, safe=False)
 
 		else:
-			estado = False
-			factura.estado_id = 3
+
+			estado 				= False
+			factura.estado_id 	= 3
 
 			response.append({
 				'numero' 		: 9,
@@ -469,8 +479,7 @@ def propuesta_enviar(request):
 			})
 
 			factura.save()
-			data.append({'estado'	: estado,'response' : response,
-					 })
+			data.append({'estado'	: estado,'response' : response, 'tipo'  :'INET'})
 			return JsonResponse(data, safe=False)
 
 	# Facturación IDTE
@@ -495,30 +504,37 @@ def propuesta_enviar(request):
 				factura.motor_emision_id	= 2
 
 			else:
-				estado = False
-				factura.estado_id = 3
+				estado 				= False
+				factura.estado_id 	= 3
+
+				lis = []
+				lis.append(response_ws['error'])
 
 				response.append({
-					'descripcion' 	: response_ws['error'],
+					'descripcion' 	: lis,
 				})
 
 			factura.save()
 			data.append({'estado'	: estado,
-						 'response' :response,
+						 'response' : response,
+						 'tipo'     : 'IDTE'
 						 })
 
 			return JsonResponse(data, safe=False)
 		else:
-			estado = False
-			factura.estado_id = 3
+			estado 				= False
+			factura.estado_id 	= 3
+
+			lis 				= []
+			lis.append(resultado['error'])
 
 			response.append({
-				'descripcion' : resultado['error'],
+				'descripcion' : lis,
 			})
 
 			factura.save()
 			data.append({'estado'	: estado,
-						 'response' :response,
+						 'response' : response,
 						 })
 
 			return JsonResponse(data, safe=False)
@@ -526,8 +542,12 @@ def propuesta_enviar(request):
 	else:
 		estado 	= False
 		error 	= "No se ha configurado proveedor de facturación."
+		lis 	= []
+
+		lis.append(error)
+
 		response.append({
-			'descripcion': error,
+			'descripcion': lis,
 		})
 
 		factura.save()

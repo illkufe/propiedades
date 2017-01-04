@@ -130,7 +130,7 @@ class ConfiguracionFacturacionUpdate(ConfiguracionFacturacionMixin, UpdateView):
 
 class ConfiguracionFacturacionDelete(DeleteView):
     model       = Parametro_Factura
-    success_url = reverse_lazy('/configuracion-facturacion/listt')
+    success_url = reverse_lazy('/configuracion-facturacion/list')
 
     def delete(self, request, *args, **kwargs):
 
@@ -1199,80 +1199,73 @@ def cargar_folios_idte(contenido_caf):
     nievel_traza    = 2  # Nivel completo de traza
     id_dte_empresa  = ''
 
+    status          = True
+    name_function   = None
+    message_error   = None
+
     datos_conexion  = {}
-    error, conexion = obtener_datos_conexion('wsMIXTO')
+    data_conexion   = obtener_datos_conexion('wsMIXTO')
 
-    if not error:
-
-
-        datos_conexion['host']              = conexion.host
-        datos_conexion['puerto']            = conexion.puerto
-        datos_conexion['nombre_contexto']   = conexion.nombre_contexto
-        datos_conexion['nombre_webservice'] = conexion.nombre_web_service
+    if not data_conexion['error']:
 
 
-        id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
+        datos_conexion['host']              = data_conexion['conexion'].host
+        datos_conexion['puerto']            = data_conexion['conexion'].puerto
+        datos_conexion['nombre_contexto']   = data_conexion['conexion'].nombre_contexto
+        datos_conexion['nombre_webservice'] = data_conexion['conexion'].nombre_web_service
+
+
+        id_dte_empresa = data_conexion['conexion'].parametro_facturacion.codigo_conexion
 
         ## Armar URL de conexión a Web Service--------------------------------------------------------------------------
 
-        error_url , url_conexion = url_web_service(**datos_conexion)
+        response_url = url_web_service(**datos_conexion)
 
-        if not error_url:
+        if not response_url['error']:
 
             ## Conectarse a Web Service de IDTE-------------------------------------------------------------------------
-            error, client = call_service(url_conexion)
+            response_client = call_service(response_url['url_conexion'])
 
-            if not error:
+            if not response_client['error']:
                 try:
 
                     ##Consultar estado Documento -----------------------------------------------------------------------
-                    carga_caf = importar_caf(client, id_dte_empresa, contenido_caf, nievel_traza)
+                    carga_caf = importar_caf(response_client['client'], id_dte_empresa, contenido_caf, nievel_traza)
 
                     if carga_caf.valor == "ERROR":
-                        data = {
-                            'success': False,
-                            'funcion': 'importar_caf',
-                            'error'  : carga_caf.msg,
-                        }
-                        return data
-                    else:
-                        data = {
-                            'success': True,
-                            'funcion': 'importar_caf',
-                            'error'  : '',
-                        }
-                        return data
+
+                        status          = False
+                        name_function   = 'importar_caf'
+                        message_error   = carga_caf.msg
+
                 except suds.WebFault as e:
-                    error = e.args[0].decode("utf-8")
-                    data = {
-                        'success': False,
-                        'funcion': 'importar_caf',
-                        'error': error,
-                    }
-                    return data
+
+                    status          = False
+                    name_function   = 'importar_caf'
+                    message_error   = e.args[0].decode("utf-8")
+
             else:
-                data = {
-                    'success': False,
-                    'error': error,
-                    'funcion': 'call_service',
 
-                }
-                return data
+                status          = False
+                name_function   = 'call_service'
+                message_error   = response_client['error']
+
         else:
-            data = {
-                'success': False,
-                'error': error_url,
-                'funcion': 'url_web_service',
 
-            }
-            return data
+            status          = False
+            name_function   = 'url_web_service'
+            message_error   = response_url['error']
+
     else:
-        data = {
-            'success': False,
-            'error': error,
-            'funcion': 'obtener_datos_conexion',
-        }
-        return data
+        status          = False
+        name_function   = 'obtener_datos_conexion'
+        message_error   = data_conexion['error']
+
+    return {
+        'success'   : status,
+        'error'     : message_error,
+        'funcion'   : name_function,
+    }
 
 @login_required
 def autorizar_folios_electronicos(request):
@@ -1280,13 +1273,13 @@ def autorizar_folios_electronicos(request):
     autorizar_folios    = request.POST.get('folio_seleccionado')
     respuesta           = {}
     error               = ''
+    status              = True
 
     if int(autorizar_folios) == 0:
-        data ={
-            'success': False,
-            'error': "Debe seleccionar uno."
-        }
-        return  JsonResponse(data)
+
+        status  = False
+        error   = "Debe seleccionar uno."
+
     else:
         try:
 
@@ -1318,28 +1311,31 @@ def autorizar_folios_electronicos(request):
 
                         return JsonResponse(respuesta)
                 else:
-                    data = {
-                        'success'   : False,
-                        'error'     : "Aún queda folios operativos en el rango anterior."
-                    }
-                    return JsonResponse(data)
+
+                    status  = False
+                    error   = "Aún queda folios operativos en el rango anterior."
+
             else:
                 if folio.operativo == True:
-                    data = {
-                        'success': False,
-                        'error': "Este Folio ya esta Operativo."
-                    }
-                    return JsonResponse(data)
+
+                    status  = False
+                    error   = "Este Folio ya esta Operativo."
 
         except Folio_Documento_Electronico.DoesNotExist:
-            error = "No se encuentra en la base de datos el CAF a autorizar."
+
+            status  = False
+            error   = "No se encuentra en la base de datos el CAF a autorizar."
         except Exception as e:
-            error = str(e)
-        data = {
-            'success': False,
-            'error': error
-        }
-        return  JsonResponse(data)
+            status  = False
+            error   = str(e)
+
+
+    data = {
+        'success'   : status,
+        'error'     : error
+    }
+
+    return  JsonResponse(data)
 
 
 
@@ -1378,77 +1374,87 @@ def envio_documento_tributario_electronico(**kwargs):
     accion              = 1  # Procesar y enviar
     datos_conexion      = {}
 
+    status          = True
+    errores         = None
+    status_sii      = None
+    message_sii     = None
+    tipo_error      = None
+    name_function   = None
+    ruta_archivo    = None
+    folio_utilizado = None
 
-    error_exi_folio = validar_existencia_folio(tipo_documento)
 
-    if not error_exi_folio:
+
+    response_valida_folio = validar_existencia_folio(tipo_documento)
+
+    if not response_valida_folio['error']:
 
         ##Obtengo el folio disponible
-        error_folio, folio_documento = obtener_folio(tipo_documento)
+        response_folio = obtener_folio(tipo_documento)
 
-        if not error_folio:
+        if not response_folio['error']:
 
             ##Validar el folio a procesar ----------------------------------------------------------------------------------
-            error_folio = validar_folios_procesar(tipo_documento, folio_documento)
+            response_folio_procesado = validar_folios_procesar(tipo_documento, response_folio['folio_operativo'])
 
-            if not error_folio:
+            if not response_folio_procesado['error']:
 
-                kwargs['folio'] = str(folio_documento)
+                kwargs['folio'] = str(response_folio['folio_operativo'])
 
                 ##Creacion de xml-------------------------------------------------------------------------------------------
                 error_creacion, xml = crear_xml_documento(**kwargs)
 
                 if not error_creacion:
                     ##Obtener datos de conexion IDTE -----------------------------------------------------------------------
-                    error, conexion = obtener_datos_conexion('wsDTE')
+                    response_conexion = obtener_datos_conexion('wsDTE')
 
-                    if not error:
+                    if not response_conexion['error']:
 
-                        datos_conexion['host']              = conexion.host
-                        datos_conexion['puerto']            = conexion.puerto
-                        datos_conexion['nombre_contexto']   = conexion.nombre_contexto
-                        datos_conexion['nombre_webservice'] = conexion.nombre_web_service
+                        datos_conexion['host']              = response_conexion['conexion'].host
+                        datos_conexion['puerto']            = response_conexion['conexion'].puerto
+                        datos_conexion['nombre_contexto']   = response_conexion['conexion'].nombre_contexto
+                        datos_conexion['nombre_webservice'] = response_conexion['conexion'].nombre_web_service
 
 
-                        id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
+                        id_dte_empresa = response_conexion['conexion'].parametro_facturacion.codigo_conexion
 
                         #Armar URL de conexion del Web Services ------------------------------------------------------------
-                        error_url, url_conexion = url_web_service(**datos_conexion)
+                        response_url_conexion = url_web_service(**datos_conexion)
 
-                        if not error_url:
+                        if not response_url_conexion['error']:
 
                             ## Conectarse a Web Service de IDTE-------------------------------------------------------------
 
-                            error, client = call_service(url_conexion)
+                            response_client = call_service(response_url_conexion['url_conexion'])
 
-                            if not error:
+                            if not response_client['error']:
 
                                 ##Consultar estado documento ---------------------------------------------------------------
                                 try:
-                                    estado = get_estado_documento(client, id_dte_empresa, tipo_documento, folio_documento,
+                                    estado = get_estado_documento(response_client['client'], id_dte_empresa, tipo_documento, response_folio['folio_operativo'],
                                                                   nievel_traza)
 
                                     if estado.valor == "ERROR":
 
                                         try:
                                             ##Borrar documento de la cola de DTE--------------------------------------------
-                                            borrar_documento = borrar_cola(client, id_dte_empresa,tipo_documento, folio_documento,
+                                            borrar_documento = borrar_cola(response_client['client'], id_dte_empresa,tipo_documento, response_folio['folio_operativo'],
                                                                            nievel_traza)
 
                                             if borrar_documento.dio_error == False:
 
                                                 try:
                                                     ##Envio de documento a procesar a IDTE----------------------------------
-                                                    procesar = get_procesar_dte_xml(client, id_dte_empresa, tipo_documento,
-                                                                                    folio_documento, accion, nievel_traza, xml)
+                                                    procesar = get_procesar_dte_xml(response_client['client'], id_dte_empresa, tipo_documento,
+                                                                                    response_folio['folio_operativo'], accion, nievel_traza, xml)
 
                                                     if procesar.dio_error == False:
 
                                                         try:
                                                             ##Consultar estado Documento -------------------------------
 
-                                                            estado = get_estado_documento(client, id_dte_empresa,
-                                                                                          tipo_documento, folio_documento,
+                                                            estado = get_estado_documento(response_client['client'], id_dte_empresa,
+                                                                                          tipo_documento, response_folio['folio_operativo'],
                                                                                           nievel_traza)
 
                                                             if estado.valor != "Error":
@@ -1458,137 +1464,96 @@ def envio_documento_tributario_electronico(**kwargs):
                                                                 transaction.connections.close_all()
                                                                 #-------------------------------------------------------
 
-                                                                datos_estado = estado.valor.split('|')
-                                                                estado_sii = datos_estado[15]
-                                                                msg_sii = datos_estado[16]
+                                                                datos_estado    = estado.valor.split('|')
+                                                                estado_sii      = datos_estado[15]
+                                                                msg_sii         = datos_estado[16]
 
                                                                 if int(estado_sii) == 1:
                                                                     ##Obtener archivo PDF de la factura---------------------
-                                                                    archivo = get_archivo_documento(client, id_dte_empresa,
-                                                                                                    tipo_documento,folio_documento,
+                                                                    archivo = get_archivo_documento(response_client['client'], id_dte_empresa,
+                                                                                                    tipo_documento,response_folio['folio_operativo'],
                                                                                                     formato_documento, nievel_traza)
 
                                                                     if archivo.dio_error == False:
-                                                                        data = {
-                                                                            'success': True,
-                                                                            'folio' : folio_documento,
-                                                                            'error': '',
-                                                                            'estado_sii': '',
-                                                                            'msg_sii': '',
-                                                                            'tipo_error': '',
-                                                                            'funcion_error': '',
-                                                                            'ruta_archivo': archivo.valor,
-                                                                        }
-                                                                        return data
+
+                                                                        status          = True
+                                                                        folio_utilizado = response_folio['folio_operativo']
+                                                                        ruta_archivo    = archivo.valor
+
                                                                     else:
-                                                                        data = {
-                                                                            'success': False,
-                                                                            'error': archivo.msg,
-                                                                            'estado_sii': estado_sii,
-                                                                            'msg_sii': msg_sii,
-                                                                            'tipo_error': archivo.tipo_error,
-                                                                            'funcion_error': 'get_archivo_documento',
-                                                                            'ruta_archivo': '',
-                                                                        }
-                                                                        return data
+
+                                                                        status          = False
+                                                                        errores         = archivo.msg
+                                                                        status_sii      = estado_sii
+                                                                        message_sii     = msg_sii
+                                                                        tipo_error      = archivo.tipo_error
+                                                                        name_function   = 'get_archivo_documento'
+
                                                                 else:
-                                                                    data = {
-                                                                        'success': False,
-                                                                        'error': estado.msg,
-                                                                        'estado_sii': '',
-                                                                        'msg_sii': '',
-                                                                        'tipo_error': '',
-                                                                        'funcion_error': 'get_estado_documento',
-                                                                        'ruta_archivo': '',
-                                                                    }
-                                                                    return data
+
+                                                                    status          = False
+                                                                    errores         = estado.msg
+                                                                    tipo_error      = 'Excepción de Try Except'
+                                                                    name_function   = 'get_estado_documento'
+
                                                             else:
-                                                                data = {
-                                                                    'success': False,
-                                                                    'error': estado.msg,
-                                                                    'estado_sii': '',
-                                                                    'msg_sii': '',
-                                                                    'tipo_error': '',
-                                                                    'funcion_error': 'get_estado_documento',
-                                                                    'ruta_archivo': '',
-                                                                }
-                                                                return data
+
+                                                                status          = False
+                                                                errores         = estado.msg
+                                                                name_function   = 'get_estado_documento'
+
                                                         except suds.WebFault as w:
-                                                            error = w.args[0].decode("utf-8")
-                                                            data = {
-                                                                'success': False,
-                                                                'error': error,
-                                                                'estado_sii': '',
-                                                                'msg_sii': '',
-                                                                'tipo_error': 'Excepción de Try Except',
-                                                                'funcion_error': 'get_estado_documento',
-                                                                'ruta_archivo': '',
-                                                            }
-                                                            return data
+
+                                                            status          = False
+                                                            errores         = w.args[0].decode("utf-8")
+                                                            tipo_error      = 'Excepción de Try Except'
+                                                            name_function   = 'get_estado_documento'
+
                                                     else:
                                                         ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                                                         # connection.rollback()
                                                         transaction.rollback()
                                                         transaction.connections.close_all()
                                                         ##------------------------------------------------------------------
-                                                        data = {
-                                                            'success': False,
-                                                            'error': procesar.msg,
-                                                            'estado_sii': '',
-                                                            'msg_sii': '',
-                                                            'tipo_error': procesar.tipo_error,
-                                                            'funcion_error': 'get_procesar_dte_xml',
-                                                            'ruta_archivo': '',
-                                                        }
-                                                        return data
+
+                                                        status          = False
+                                                        errores         = procesar.msg
+                                                        tipo_error      = procesar.tipo_error
+                                                        name_function   = 'get_procesar_dte_xml'
+
                                                 except suds.WebFault as w:
                                                     ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla----
                                                     transaction.rollback()
                                                     transaction.connections.close_all()
                                                     ##----------------------------------------------------------------------
-                                                    error = w.args[0].decode("utf-8")
-                                                    data = {
-                                                        'success': False,
-                                                        'error': error,
-                                                        'estado_sii': '',
-                                                        'msg_sii': '',
-                                                        'tipo_error': 'Excepción de Try Except',
-                                                        'funcion_error': 'get_procesar_dte_xml',
-                                                        'ruta_archivo': '',
-                                                    }
-                                                    return data
+
+                                                    status          = False
+                                                    errores         = w.args[0].decode("utf-8")
+                                                    tipo_error      = 'Excepción de Try Except'
+                                                    name_function   = 'get_procesar_dte_xml'
+
                                             else:
                                                 ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                                                 transaction.rollback()
                                                 transaction.connections.close_all()
                                                 ##------------------------------------------------------------------
-                                                data = {
-                                                    'success': False,
-                                                    'error': borrar_documento.msg,
-                                                    'estado_sii': '',
-                                                    'msg_sii': '',
-                                                    'tipo_error': borrar_documento.tipo_error,
-                                                    'funcion_error': 'borrar_cola',
-                                                    'ruta_archivo': '',
-                                                }
-                                                return data
+
+                                                status          = False
+                                                errores         = borrar_documento.msg
+                                                tipo_error      = borrar_documento.tipo_error
+                                                name_function   = 'borrar_cola'
+
                                         except suds.WebFault as w:
                                             ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                                             transaction.rollback()
                                             transaction.connections.close_all()
                                             ##------------------------------------------------------------------
-                                            error = w.args[0].decode("utf-8")
-                                            data = {
-                                                'success': False,
-                                                'error': error,
-                                                'estado_sii': '',
-                                                'msg_sii': '',
-                                                'tipo_error': 'Excepción de Try Except',
-                                                'funcion_error': 'borrar_cola',
-                                                'ruta_archivo': '',
-                                            }
 
-                                            return data
+                                            status          = False
+                                            errores         = w.args[0].decode("utf-8")
+                                            tipo_error      = 'Excepción de Try Except'
+                                            name_function   = 'borrar_cola'
+
                                     else:
 
                                         ##Actualizacion del folio en la base de datos --------------------------------------
@@ -1615,133 +1580,96 @@ def envio_documento_tributario_electronico(**kwargs):
                                         else:
                                             error = "Estado desconocido"
 
-                                        data = {
-                                            'success': False,
-                                            'error': error,
-                                            'estado_sii': estado_sii,
-                                            'msg_sii':msg_sii,
-                                            'tipo_error': '',
-                                            'funcion_error': 'get_estado_documento',
-                                            'ruta_archivo': '',
-                                        }
-                                        return data
+
+                                        status          = False
+                                        errores         = error
+                                        status_sii      = estado_sii
+                                        message_sii     = msg_sii
+                                        name_function   = 'get_estado_documento'
+
                                 except suds.WebFault as w:
                                     ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                                     transaction.rollback()
                                     transaction.connections.close_all()
                                     ##------------------------------------------------------------------
-                                    error = w.args[0].decode("utf-8")
-                                    data = {
-                                        'success': False,
-                                        'error': error,
-                                        'estado_sii':'',
-                                        'msg_sii': '',
-                                        'tipo_error': 'Excepción de Try Except',
-                                        'funcion_error': 'get_estado_documento',
-                                        'ruta_archivo': '',
-                                    }
 
-                                    return data
+                                    status          = False
+                                    errores         = w.args[0].decode("utf-8")
+                                    tipo_error      = 'Excepción de Try Except'
+                                    name_function   = 'get_estado_documento'
                             else:
                                 ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                                 transaction.rollback()
                                 transaction.connections.close_all()
                                 ##------------------------------------------------------------------
-                                data = {
-                                    'success': False,
-                                    'error': error,
-                                    'estado_sii':'',
-                                    'msg_sii': '',
-                                    'tipo_error': 'Conexión Servidor',
-                                    'funcion_error': 'call_service',
-                                    'ruta_archivo': '',
-                                }
 
-                                return data
+                                status          = False
+                                errores         = response_client['error']
+                                tipo_error      = 'Conexión Servidor'
+                                name_function   = 'call_service'
                         else:
                             ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                             transaction.rollback()
                             transaction.connections.close_all()
                             ##------------------------------------------------------------------
-                            data = {
-                                'success': False,
-                                'error': error_url,
-                                'estado_sii': '',
-                                'msg_sii': '',
-                                'tipo_error': 'Armado URL',
-                                'funcion_error': 'url_web_service',
-                                'ruta_archivo': '',
-                            }
 
-                            return data
+                            status          = False
+                            errores         = response_url_conexion['error']
+                            tipo_error      = 'Armado URL'
+                            name_function   = 'url_web_service'
+
                     else:
                         ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                         transaction.rollback()
                         transaction.connections.close_all()
                         ##------------------------------------------------------------------
-                        data = {
-                            'success': False,
-                            'error': error,
-                            'estado_sii': '',
-                            'msg_sii': '',
-                            'tipo_error': 'Obtención Datos',
-                            'funcion_error': 'obtener_datos_conexion',
-                            'ruta_archivo': '',
-                        }
 
-                        return data
+                        status          = False
+                        errores         = response_conexion['error']
+                        tipo_error      = 'Obtención Datos'
+                        name_function   = 'obtener_datos_conexion'
                 else:
                     ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                     transaction.rollback()
                     transaction.connections.close_all()
                     ##------------------------------------------------------------------
-                    data = {
-                        'success': False,
-                        'error': error_creacion,
-                        'estado_sii': '',
-                        'msg_sii': '',
-                        'tipo_error': 'Lectura Diccionario',
-                        'funcion_error': 'crear_xml_documento',
-                        'ruta_archivo': '',
-                    }
-                    return data
+
+                    status          = False
+                    errores         = error_creacion
+                    tipo_error      = 'Lectura Diccionario'
+                    name_function   = 'crear_xml_documento'
             else:
                 ##ROLLBACK a la tabla de folios para no realizar cambios en la tabla
                 transaction.rollback()
                 transaction.connections.close_all()
                 ##------------------------------------------------------------------
-                data = {
-                    'success': False,
-                    'error': error_folio,
-                    'estado_sii': '',
-                    'msg_sii': '',
-                    'tipo_error': 'Validar folio',
-                    'funcion_error': 'validar_folios_procesar',
-                    'ruta_archivo': '',
-                }
-                return data
+
+                status          = False
+                errores         = response_folio_procesado['error']
+                tipo_error      = 'Validar folio'
+                name_function   = 'validar_folios_procesar'
         else:
-            data = {
-                'success': False,
-                'error': error_folio,
-                'estado_sii': '',
-                'msg_sii': '',
-                'tipo_error': 'Obtención de folio',
-                'funcion_error': 'obtener_folio',
-                'ruta_archivo': '',
-            }
-            return data
+
+            status          = False
+            errores         = response_folio['error']
+            tipo_error      = 'Obtención de folio'
+            name_function   = 'obtener_folio'
     else:
-        data = {
-            'success': False,
-            'error': error_exi_folio,
-            'estado_sii': '',
-            'msg_sii': '',
-            'tipo_error': 'Existencia Folios Operativos',
-            'funcion_error': 'validar_existencia_folio',
-            'ruta_archivo': '',
+        status          = False
+        errores         = response_valida_folio['error']
+        tipo_error      = 'Existencia Folios Operativos'
+        name_function   = 'validar_existencia_folio'
+
+    return {
+            'success'       : status,
+            'folio'         : folio_utilizado,
+            'error'         : errores,
+            'estado_sii'    : status_sii,
+            'msg_sii'       : message_sii,
+            'tipo_error'    : tipo_error,
+            'funcion_error' : name_function,
+            'ruta_archivo'  : ruta_archivo,
         }
-        return data
 
 def actualizar_estados_documentos_sii_lease():
 
@@ -1910,94 +1838,84 @@ def consulta_estado_documento_sii(tipo_documento, folio_documento):
     nievel_traza    = 2  # Nivel completo de traza
     id_dte_empresa  = ''
     datos_conexion  = {}
-    error, conexion = obtener_datos_conexion('wsDTE')
 
-    if not error:
+    status          = True
+    errores         = None
+    name_function   = None
+    status_sii      = None
+    message_sii     = None
 
-        datos_conexion['host']                  = conexion.host
-        datos_conexion['puerto']                = conexion.puerto
-        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
-        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
+    response_conexion = obtener_datos_conexion('wsDTE')
 
-        id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
+    if not response_conexion['error']:
+
+        datos_conexion['host']                  = response_conexion['conexion'].host
+        datos_conexion['puerto']                = response_conexion['conexion'].puerto
+        datos_conexion['nombre_contexto']       = response_conexion['conexion'].nombre_contexto
+        datos_conexion['nombre_webservice']     = response_conexion['conexion'].nombre_web_service
+
+        id_dte_empresa = response_conexion['error'].parametro_facturacion.codigo_conexion
 
         ## Armar URL de conexión a Web Service--------------------------------------------------------------------------
 
-        error_url, url_conexion = url_web_service(**datos_conexion)
+        response_url_conexion = url_web_service(**datos_conexion)
 
-        if not error_url:
+        if not response_url_conexion['error']:
             ## Conectarse a Web Service de IDTE-------------------------------------------------------------------------
 
-            error, client = call_service(url_conexion)
+            response_client = call_service(response_url_conexion['url_conexion'])
 
-            if not error:
+            if not response_client['error']:
 
                 try:
                     ##Consultar estado Documento -----------------------------------------------------------------------
-                    estado_documento = get_estado_documento(client, id_dte_empresa, tipo_documento, folio_documento,
+                    estado_documento = get_estado_documento(response_client['client'], id_dte_empresa, tipo_documento, folio_documento,
                                                             nievel_traza)
 
                     if estado_documento.valor != "ERROR":
                         datos_estado    = estado_documento.valor.split('|')
-                        estado_sii      = datos_estado[15]
-                        msg_sii         = datos_estado[16]
 
-                        data = {
-                            'success'   : True,
-                            'error'     : '',
-                            'funcion'   : '',
-                            'estado_sii': estado_sii,
-                            'msg_sii'   : msg_sii,
-                        }
+                        status_sii      = datos_estado[15]
+                        message_sii     = datos_estado[16]
 
-                        return data
+
+
                     else:
-                        data = {
-                            'success'   : False,
-                            'error'     : estado_documento.msg,
-                            'funcion'   : 'get_estado_documento',
-                            'estado_sii': '',
-                            'msg_sii'   : '',
-                        }
-                        return data
+
+                        status          = False
+                        errores         = estado_documento.msg
+                        name_function   = 'get_estado_documento'
+
                 except suds.WebFault as e:
 
-                    error = e.args[0].decode("utf-8")
-                    data = {
-                        'success'   : False,
-                        'error'     : error,
-                        'funcion'   :'Excepción función get_estado_documento',
-                        'estado_sii': '',
-                        'msg_sii'   : '',
-                    }
-                    return data
+                    status          = False
+                    errores         = e.args[0].decode("utf-8")
+                    name_function   = 'Excepción función get_estado_documento'
+
             else:
-                data = {
-                    'success'   : False,
-                    'error'     : error,
-                    'funcion'   : 'call_service',
-                    'estado_sii': '',
-                    'msg_sii'   : '',
-                }
-                return data
+
+                status          = False
+                errores         = response_client['error']
+                name_function   = 'call_service'
         else:
-            data = {
-                'success'   : False,
-                'error'     : error_url,
-                'funcion'   : 'url_web_service',
-                'estado_sii': '',
-                'msg_sii'   : '',
-            }
-            return data
+
+            status          = False
+            errores         = response_url_conexion['error']
+            name_function   = 'url_web_service'
+
     else:
-        data = {
-            'success'   : False,
-            'error'     : error,
-            'funcion'   : 'obtener_datos_conexion',
-            'estado_sii': '',
-            'msg_sii'   : '',
+
+        status          = False
+        errores         = response_conexion['error']
+        name_function   = 'obtener_datos_conexion'
+
+    return  {
+            'success'   : status,
+            'error'     : errores,
+            'funcion'   : name_function,
+            'estado_sii': status_sii,
+            'msg_sii'   : message_sii,
         }
-        return data
 
 def obtener_documento_xml_pdf(tipo_documento, folio_documento, formato_documento):
 
@@ -2018,99 +1936,95 @@ def obtener_documento_xml_pdf(tipo_documento, folio_documento, formato_documento
     """
     nievel_traza    = 2  # Nivel completo de traza
     id_dte_empresa  = ''
+
+    status          = True
+    errores         = None
+    name_function   = None
+    ruta_file       = None
+
     datos_conexion  = {}
-    error, conexion = obtener_datos_conexion('wsDTE')
 
-    if not error:
+    response_conexion = obtener_datos_conexion('wsDTE')
+    if not response_conexion['error']:
 
-        datos_conexion['host']                  = conexion.host
-        datos_conexion['puerto']                = conexion.puerto
-        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
-        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
+        datos_conexion['host']                  = response_conexion['conexion'].host
+        datos_conexion['puerto']                = response_conexion['conexion'].puerto
+        datos_conexion['nombre_contexto']       = response_conexion['conexion'].nombre_contexto
+        datos_conexion['nombre_webservice']     = response_conexion['conexion'].nombre_web_service
 
-        id_dte_empresa = conexion.parametro_facturacion.codigo_conexion
+        id_dte_empresa = response_conexion['conexion'].parametro_facturacion.codigo_conexion
 
         ## Armar URL de conexión a Web Service--------------------------------------------------------------------------
 
-        error_url, url_conexion = url_web_service(**datos_conexion)
+        response_url_conexion = url_web_service(**datos_conexion)
 
-        if not error_url:
+        if not response_url_conexion['error']:
             ## Conectarse a Web Service de IDTE-------------------------------------------------------------------------
 
-            error, client = call_service(url_conexion)
+            response_client = call_service(response_url_conexion['url_conexion'])
 
-            if not error:
+            if not response_client['error']:
                 ##Obtención de XML o PDF cedible del documento ---------------------------------------------------------
+
+                formato = 0
                 if str(formato_documento).lower() == 'pdf' or str(formato_documento).upper() == 'PDF':
                     formato = 2
                 elif str(formato_documento).lower() == 'xml' or str(formato_documento).upper() == 'XML':
                     formato = 4
+
+                if formato != 0:
+
+                    try:
+                        ##Obtener archivo PDF o XML de la factura-----------------------------------------------------------
+                        archivo = get_archivo_documento(response_client['client'], id_dte_empresa,tipo_documento, folio_documento, formato,
+                                                        nievel_traza)
+
+                        if archivo.dio_error == False:
+
+                            name_function   = 'get_archivo_documento'
+                            ruta_file       = archivo.valor
+
+                        else:
+
+                            status          = False
+                            errores         = archivo.msg
+                            name_function   = 'get_archivo_documento'
+
+                    except suds.WebFault as e:
+
+                        status          = False
+                        errores         = e.args[0].decode("utf-8")
+                        name_function   = 'Excepción función get_estado_documento'
+
                 else:
-                    data = {
-                        'success': False,
-                        'error': 'Formato enviado, desconocido.',
-                        'funcion': '',
-                        'ruta_archivo': ''
 
-                    }
-                    return data
+                    status          = False
+                    errores         = 'Formato enviado, desconocido.'
 
-                try:
-                    ##Obtener archivo PDF o XML de la factura-----------------------------------------------------------
-                    archivo = get_archivo_documento(client, id_dte_empresa,tipo_documento, folio_documento, formato,
-                                                    nievel_traza)
-
-                    if archivo.dio_error == False:
-                        data = {
-                            'success': False,
-                            'error': error,
-                            'funcion': 'call_service',
-                            'ruta_archivo':archivo.valor
-
-                        }
-                        return data
-                    else:
-                        data = {
-                            'success': False,
-                            'error': archivo.msg,
-                            'funcion': 'get_archivo_documento',
-                            'ruta_archivo': ''
-                        }
-                        return data
-                except suds.WebFault as e:
-
-                    error = e.args[0].decode("utf-8")
-                    data = {
-                        'success': False,
-                        'error': error,
-                        'funcion': 'Excepción función get_estado_documento',
-                        'ruta_archivo': ''
-                    }
-                    return data
             else:
-                data = {
-                    'success': False,
-                    'error': error,
-                    'funcion': 'call_service',
-                    'ruta_archivo': ''
-                }
-                return data
+
+                status          = False
+                errores         = response_client['client']
+                name_function   = 'call_service'
+
         else:
-            data = {
-                'success': False,
-                'error': error_url,
-                'funcion': 'url_web_service',
-                'ruta_archivo': ''
-            }
-            return data
+
+            status          = False
+            errores         = response_url_conexion['error']
+            name_function   = 'url_web_service'
+
     else:
-        data = {
-            'success': False,
-            'error': error,
-            'funcion': 'obtener_datos_conexion',
-            'ruta_archivo': ''
+
+        status          = False
+        errores         = response_conexion['error']
+        name_function   = 'obtener_datos_conexion'
+
+    return {
+            'success'       : status,
+            'error'         : errores,
+            'funcion'       : name_function,
+            'ruta_archivo'  : ruta_file
         }
-        return data
 
 
 ## ---------------------------- MANEJO DE LIBROS ELECTRONICOS COMPRAS/VENTAS -------------------------------------------
@@ -2437,65 +2351,62 @@ def envio_libro_compras_ventas_electronico(**kwargs):
     datos_conexion  = {}
     tipo_libro      = str(kwargs['tipo_libro']) #Tipo de libro compras o ventas
 
+    status              = True
+    errores             = None
+    status_sii          = None
+    descripcion_estado  = None
+    message_sii         = None
+    tipo_error          = None
+    name_function       = None
+
     ##Creacion de xml---------------------------------------------------------------------------------------------------
     if tipo_libro.upper() == 'C':
         error_creacion, xml_libro = crear_xml_libro_compra(**kwargs)
     elif tipo_libro.upper() == 'V':
         error_creacion, xml_libro = crear_xml_libro_venta(**kwargs)
     else:
-        error = "El tipo de libro enviado es erroneo."
-        data = {
-            'success'           : False,
-            'error'             : error,
-            'estado_sii'        : '',
-            'descripcion_estado': '',
-            'msg_sii'           : '',
-            'tipo_error'        : '',
-            'funcion_error'     : '',
-        }
-        return data
-
+        error_creacion = "El tipo de libro enviado es erroneo."
 
     if not error_creacion:
         ##Obtener datos de conexion IDTE -------------------------------------------------------------------------------
-        error, conexion = obtener_datos_conexion('wsLCV')
+        response_conexion = obtener_datos_conexion('wsLCV')
 
-        if not error:
-            datos_conexion['host']              = conexion.host
-            datos_conexion['puerto']            = conexion.puerto
-            datos_conexion['nombre_contexto']   = conexion.nombre_contexto
-            datos_conexion['nombre_webservice'] = conexion.nombre_web_service
+        if not response_conexion['error']:
+            datos_conexion['host']              = response_conexion['conexion'].host
+            datos_conexion['puerto']            = response_conexion['conexion'].puerto
+            datos_conexion['nombre_contexto']   = response_conexion['conexion'].nombre_contexto
+            datos_conexion['nombre_webservice'] = response_conexion['conexion'].nombre_web_service
 
-            id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
-            error_url, url_conexion = url_web_service(**datos_conexion)
+            id_dte_empresa          = response_conexion['conexion'].parametro_facturacion.codigo_conexion
+            response_url_conexion = url_web_service(**datos_conexion)
 
-            if not error_url:
+            if not response_url_conexion['error']:
 
                 ## Conectarse a Web Service de IDTE---------------------------------------------------------------------
 
-                error, client = call_service(url_conexion)
+                response_client = call_service(response_url_conexion['url_conexion'])
 
-                if not error:
+                if not response_client['error']:
 
                     ##Consultar estado libro compra --------------------------------------------------------------------
 
                     try:
 
-                        estado_libro = get_estado_lcv(client, id_dte_empresa, id_hist_lcv, nievel_traza)
+                        estado_libro = get_estado_lcv(response_client['client'], id_dte_empresa, id_hist_lcv, nievel_traza)
 
                         if estado_libro.valor == "ERROR":
 
                             ##Envio de libro de compras a procesar a IDTE---------------------------------------------------
 
                             try:
-                                procesar_libro_compra = procesar_lcv_xml(client, id_dte_empresa, tipo_libro, id_hist_lcv,
+                                procesar_libro_compra = procesar_lcv_xml(response_client['client'], id_dte_empresa, tipo_libro, id_hist_lcv,
                                                                          accion, nievel_traza, xml_libro)
 
                                 if procesar_libro_compra.dio_error == False:
 
                                     ##Consultar estado Libro ---------------------------------------------------------------
                                     try:
-                                        estado_libro_enviado = get_estado_lcv(client, id_dte_empresa, id_hist_lcv,
+                                        estado_libro_enviado = get_estado_lcv(response_client['client'], id_dte_empresa, id_hist_lcv,
                                                                               nievel_traza)
 
                                         if estado_libro_enviado.valor != "Error":
@@ -2514,62 +2425,37 @@ def envio_libro_compras_ventas_electronico(**kwargs):
                                             else:
                                                 error = "Estado desconocido"
 
-                                            data = {
-                                                'success'           : True,
-                                                'error'             : '',
-                                                'estado_sii'        : estado_sii,
-                                                'descripcion_estado': error,
-                                                'msg_sii'           : msg_sii,
-                                                'tipo_error'        : '',
-                                                'funcion_error'     : 'get_estado_lcv',
-                                            }
-                                            return data
+                                            status_sii          = estado_sii
+                                            descripcion_estado  = error
+                                            message_sii         = msg_sii
+                                            name_function       ='get_estado_lcv'
+
                                         else:
-                                            data = {
-                                                'success'           : False,
-                                                'error'             : estado_libro_enviado.msg,
-                                                'estado_sii'        : '',
-                                                'descripcion_estado': '',
-                                                'msg_sii'           : '',
-                                                'tipo_error'        : '',
-                                                'funcion_error'     : 'get_estado_lcv',
-                                            }
-                                            return data
+
+                                            status          = False
+                                            errores         = estado_libro_enviado.msg
+                                            name_function   = 'get_estado_lcv'
+
                                     except suds.WebFault as b:
-                                        error = b.args[0].decode("utf-8")
-                                        data = {
-                                            'success'           : False,
-                                            'error'             : error,
-                                            'estado_sii'        : '',
-                                            'descripcion_estado': '',
-                                            'msg_sii'           : '',
-                                            'tipo_error'        : 'Error de Excepción Try Except',
-                                            'funcion_error'     : 'get_estado_lcv',
-                                        }
-                                        return data
+
+                                        status          = False
+                                        errores         = b.args[0].decode("utf-8")
+                                        tipo_error      = 'Error de Excepción Try Except'
+                                        name_function   = 'get_estado_lcv'
+
                                 else:
-                                    data = {
-                                        'success'           : False,
-                                        'error'             : procesar_libro_compra.msg,
-                                        'estado_sii'        : '',
-                                        'descripcion_estado': '',
-                                        'msg_sii'           : '',
-                                        'tipo_error'        : procesar_libro_compra.tipo_error,
-                                        'funcion_error'     : 'procesar_lcv_xml',
-                                    }
-                                    return data
+                                    status          = False
+                                    errores         = procesar_libro_compra.msg
+                                    tipo_error      = procesar_libro_compra.tipo_error
+                                    name_function   = 'procesar_lcv_xml'
+
                             except suds.WebFault as e:
-                                error = e.args[0].decode("utf-8")
-                                data = {
-                                    'success'           : False,
-                                    'error'             : error,
-                                    'estado_sii'        : '',
-                                    'descripcion_estado': '',
-                                    'msg_sii'           : '',
-                                    'tipo_error'        : 'Error de Excepción Try Except',
-                                    'funcion_error'     : 'procesar_lcv_xml',
-                                }
-                            return data
+
+                                status          = False
+                                errores         = e.args[0].decode("utf-8")
+                                tipo_error      = 'Error de Excepción Try Except'
+                                name_function   = 'procesar_lcv_xml'
+
                         else:
                             datos_estado = estado_libro.valor.split('|')
                             estado_sii   = datos_estado[6]
@@ -2586,75 +2472,57 @@ def envio_libro_compras_ventas_electronico(**kwargs):
                             else:
                                 error = "Estado desconocido"
 
-                            data = {
-                                'success'           : False,
-                                'error'             : error,
-                                'estado_sii'        : estado_sii,
-                                'descripcion_estado': '',
-                                'msg_sii'           :msg_sii,
-                                'tipo_error'        : '',
-                                'funcion_error'     : 'get_estado_lcv',
-                            }
-                            return data
+                            status          = False
+                            errores         = error
+                            status_sii      = estado_sii
+                            message_sii     = msg_sii
+                            name_function   = 'get_estado_lcv'
+
                     except suds.WebFault as a:
-                        error = a.args[0].decode("utf-8")
-                        data = {
-                            'success'           : False,
-                            'error'             : error,
-                            'estado_sii'        : '',
-                            'descripcion_estado': '',
-                            'msg_sii'           : '',
-                            'tipo_error'        : 'Error de Excepción Try Except',
-                            'funcion_error'     : 'get_estado_lcv',
-                        }
-                        return data
+
+                        status          = False
+                        errores         = a.args[0].decode("utf-8")
+                        tipo_error      = 'Error de Excepción Try Except'
+                        name_function   = 'get_estado_lcv'
+
                 else:
-                    data = {
-                        'success'           : False,
-                        'error'             : error,
-                        'estado_sii'        :'',
-                        'descripcion_estado': '',
-                        'msg_sii'           : '',
-                        'tipo_error'        : 'Conexión Servidor',
-                        'funcion_error'     : 'call_service',
-                    }
 
-                    return data
+                    status          = False
+                    errores         = error_creacion
+                    tipo_error      = 'Conexión Servidor'
+                    name_function   = 'call_service'
+
             else:
-                data = {
-                    'success'           : False,
-                    'error'             : error_url,
-                    'estado_sii'        : '',
-                    'descripcion_estado': '',
-                    'msg_sii'           : '',
-                    'tipo_error'        : 'Armado URL',
-                    'funcion_error'     : 'url_web_service',
-                }
 
-                return data
+                status          = False
+                errores         = error_creacion
+                tipo_error      = 'Armado URL'
+                name_function   = 'url_web_service'
+
         else:
-            data = {
-                'success'           : False,
-                'error'             : error,
-                'estado_sii'        : '',
-                'descripcion_estado': '',
-                'msg_sii'           : '',
-                'tipo_error'        : 'Obtención Datos',
-                'funcion_error'     : 'obtener_datos_conexion',
-            }
 
-            return data
+            status          = False
+            errores         = error_creacion
+            tipo_error      = 'Obtención Datos'
+            name_function   = 'obtener_datos_conexion'
+
     else:
-        data = {
-            'success'           : False,
-            'error'             : error_creacion,
-            'estado_sii'        : '',
-            'descripcion_estado': '',
-            'msg_sii'           : '',
-            'tipo_error'        : 'Error Lectura',
-            'funcion_error'     : 'crear_xml_libro_compra',
-        }
-        return data
+
+        status          = False
+        errores         = error_creacion
+        tipo_error      = 'Error Lectura'
+        name_function   = 'crear_xml_libro_compra'
+
+
+    return {
+            'success'           : status,
+            'error'             : errores,
+            'estado_sii'        : status_sii,
+            'descripcion_estado': descripcion_estado,
+            'msg_sii'           : message_sii,
+            'tipo_error'        : tipo_error,
+            'funcion_error'     : name_function,
+    }
 
 def consulta_estado_libro_compras_ventas_sii(id_hist_lcv):
 
@@ -2681,43 +2549,46 @@ def consulta_estado_libro_compras_ventas_sii(id_hist_lcv):
     id_dte_empresa  = ''
     datos_conexion  = {}
 
+    status              = True
+    errores             = None
+    status_sii          = None
+    descripcion_estado  = None
+    message_sii         = None
+    tipo_error          = None
+    name_function       = None
+
+
     ##Obtener datos de conexion IDTE -------------------------------------------------------------------------------
-    error, conexion = obtener_datos_conexion('wsLCV')
+    response_conexion = obtener_datos_conexion('wsLCV')
 
-    if not error:
+    if not response_conexion['error']:
 
-        datos_conexion['host']                  = conexion.host
-        datos_conexion['puerto']                = conexion.puerto
-        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
-        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
+        datos_conexion['host']                  = response_conexion['conexion'].host
+        datos_conexion['puerto']                = response_conexion['conexion'].puerto
+        datos_conexion['nombre_contexto']       = response_conexion['conexion'].nombre_contexto
+        datos_conexion['nombre_webservice']     = response_conexion['conexion'].nombre_web_service
 
-        id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
-        error_url, url_conexion = url_web_service(**datos_conexion)
+        id_dte_empresa          = response_conexion['conexion'].parametro_facturacion.codigo_conexion
+        response_url_conexion = url_web_service(**datos_conexion)
 
-        if not error_url:
+        if not response_url_conexion['error']:
 
             ## Conectarse a Web Service de IDTE---------------------------------------------------------------------
 
-            error, client = call_service(url_conexion)
+            response_client = call_service(response_url_conexion['url_conexion'])
 
-            if not error:
+            if not response_client['error']:
 
                 ##Consultar estado libro compra --------------------------------------------------------------------
                 try:
-                    estado_libro = get_estado_lcv(client, id_dte_empresa, id_hist_lcv, nievel_traza)
+                    estado_libro = get_estado_lcv(response_client['client'], id_dte_empresa, id_hist_lcv, nievel_traza)
 
                     if estado_libro.valor == "ERROR":
 
-                        data = {
-                            'success'       : False,
-                            'error'         : estado_libro.msg,
-                            'funcion'       : 'get_estado_lcv',
-                            'estado_sii'    : '',
-                            'msg_sii'       : '',
-                            'tipo_error'    : '',
-                            'funcion_error' : 'get_estado_lcv',
-                        }
-                        return data
+                        status              = False
+                        errores             = estado_libro.msg
+                        name_function       = 'get_estado_lcv'
+
                     else:
                         datos_estado = estado_libro.valor.split('|')
                         estado_sii   = datos_estado[6]
@@ -2734,65 +2605,48 @@ def consulta_estado_libro_compras_ventas_sii(id_hist_lcv):
                         else:
                             error = "Estado desconocido"
 
-                        data = {
-                            'success'           : True,
-                            'error'             : '',
-                            'estado_sii'        : estado_sii,
-                            'descripcion_estado': error,
-                            'msg_sii'           : msg_sii,
-                            'tipo_error'        : '',
-                            'funcion_error'     : 'get_estado_lcv',
-                        }
-                        return data
+                        status_sii          = estado_sii
+                        descripcion_estado  = error
+                        message_sii         = msg_sii
+                        name_function       = 'get_estado_lcv'
+
                 except suds.WebFault as e:
-                    error = e.args[0].decode("utf-8")
-                    data = {
-                        'success'           : False,
-                        'error'             : error,
-                        'estado_sii'        : '',
-                        'descripcion_estado': '',
-                        'msg_sii'           : '',
-                        'tipo_error'        : 'Error de Excepción Try Except',
-                        'funcion_error'     : 'get_estado_lcv',
-                    }
-                    return data
+
+                    status          = False
+                    errores         = e.args[0].decode("utf-8")
+                    tipo_error      = 'Error de Excepción Try Except'
+                    name_function   = 'get_estado_lcv'
+
             else:
-                data = {
-                    'success'           : False,
-                    'error'             : error,
-                    'estado_sii'        :'',
-                    'descripcion_estado': '',
-                    'msg_sii'           : '',
-                    'tipo_error'        : 'Conexión Servidor',
-                    'funcion_error'     : 'call_service',
-                }
 
-                return data
+                status          = False
+                errores         = response_client['error']
+                tipo_error      = 'Error de Excepción Try Except'
+                name_function   = 'get_estado_lcv'
+
         else:
-            data = {
-                'success'           : False,
-                'error'             : error_url,
-                'estado_sii'        : '',
-                'descripcion_estado': '',
-                'msg_sii'           : '',
-                'tipo_error'        : 'Armado URL',
-                'funcion_error'     : 'url_web_service',
-                'ruta_archivo'      : '',
-            }
 
-            return data
+            status          = False
+            errores         = response_url_conexion['error']
+            tipo_error      = 'Armado URL'
+            name_function   = 'url_web_service'
+
     else:
-        data = {
-            'success'           : False,
-            'error'             : error,
-            'estado_sii'        : '',
-            'descripcion_estado': '',
-            'msg_sii'           : '',
-            'tipo_error'        : 'Obtención Datos',
-            'funcion_error'     : 'obtener_datos_conexion',
-        }
 
-        return data
+        status          = False
+        errores         = response_conexion['error']
+        tipo_error      = 'Obtención Datos'
+        name_function   = 'obtener_datos_conexion'
+
+        return {
+            'success'           : status,
+            'error'             : errores,
+            'estado_sii'        : status_sii,
+            'descripcion_estado': descripcion_estado,
+            'msg_sii'           : message_sii,
+            'tipo_error'        : tipo_error,
+            'funcion_error'     : name_function,
+        }
 
 def consulta_mensaje_rechazo_libro_compras_ventas_sii(id_hist_lcv):
     """
@@ -2813,80 +2667,77 @@ def consulta_mensaje_rechazo_libro_compras_ventas_sii(id_hist_lcv):
 
     ##Variables --------------------------------------------------------------------------------------------------------
 
-    nievel_traza = 2  # Nivel completo de traza de Error
+    nievel_traza   = 2  # Nivel completo de traza de Error
     id_dte_empresa = ''
     datos_conexion = {}
 
+    status         = True
+    errores        = None
+    message_sii    = None
+    name_function  = None
+
     ##Obtener datos de conexion IDTE -----------------------------------------------------------------------------------
-    error, conexion = obtener_datos_conexion('wsLCV')
+    response_conexion = obtener_datos_conexion('wsLCV')
 
-    if not error:
+    if not response_conexion['error']:
 
-        datos_conexion['host']                  = conexion.host
-        datos_conexion['puerto']                = conexion.puerto
-        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
-        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
+        datos_conexion['host']                  = response_conexion['conexion'].host
+        datos_conexion['puerto']                = response_conexion['conexion'].puerto
+        datos_conexion['nombre_contexto']       = response_conexion['conexion'].nombre_contexto
+        datos_conexion['nombre_webservice']     = response_conexion['conexion'].nombre_web_service
 
-        id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
-        error_url, url_conexion = url_web_service(**datos_conexion)
+        id_dte_empresa          = response_conexion['conexion'].parametro_facturacion.codigo_conexion
+        response_url_conexion = url_web_service(**datos_conexion)
 
-        if not error_url:
+        if not response_url_conexion['error']:
 
             ## Conectarse a Web Service de IDTE-------------------------------------------------------------------------
 
-            error, client = call_service(url_conexion)
+            response_client = call_service(response_url_conexion['url_conexion'])
 
-            if not error:
+            if not response_client['error']:
 
                 ##Consultar mensaje rechazo libro SII-------------------------------------------------------------------
 
-                mensaje_rechazo = get_msg_rechazo_sii_lcv(client, id_dte_empresa, id_hist_lcv, nievel_traza)
+                mensaje_rechazo = get_msg_rechazo_sii_lcv(response_client['client'], id_dte_empresa, id_hist_lcv, nievel_traza)
 
                 if mensaje_rechazo.dio_error == False:
 
-                    data = {
-                        'success'       : True,
-                        'error'         : mensaje_rechazo.valor,
-                        'funcion'       : 'get_msg_rechazo_sii_lcv',
-                        'msg_sii'       : mensaje_rechazo.msg,
-                        'funcion_error' : 'get_msg_rechazo_sii_lcv',
-                    }
-                    return data
+                    errores         = mensaje_rechazo.valor
+                    message_sii     = mensaje_rechazo.msg
+                    name_function   = 'get_msg_rechazo_sii_lcv'
+
                 else:
-                    data = {
-                        'success'       : False,
-                        'error'         : mensaje_rechazo.msg,
-                        'msg_sii'       : mensaje_rechazo.valor,
-                        'funcion_error' : 'get_msg_rechazo_sii_lcv',
-                    }
-                    return data
+
+                    status          = False
+                    errores         = mensaje_rechazo.msg
+                    message_sii     = mensaje_rechazo.valor
+                    name_function   = 'get_msg_rechazo_sii_lcv'
+
             else:
-                data = {
-                    'success'       : False,
-                    'error'         : error,
-                    'msg_sii'       : '',
-                    'funcion_error' : 'call_service',
-                }
 
-                return data
+                status          = False
+                errores         = response_client['error']
+                name_function   = 'call_service'
+
         else:
-            data = {
-                'success'       : False,
-                'error'         : error_url,
-                'msg_sii'       : '',
-                'funcion_error' : 'url_web_service',
-            }
 
-            return data
+            status          = False
+            errores         = response_url_conexion['error']
+            name_function   = 'url_web_service'
+
     else:
-        data = {
-            'success'       : False,
-            'error'         : error,
-            'msg_sii'       : '',
-            'funcion_error' : 'obtener_datos_conexion',
-        }
 
-        return data
+        status          = False
+        errores         = response_conexion['error']
+        name_function   = 'obtener_datos_conexion'
+
+    return {
+            'success'       : status,
+            'error'         : errores,
+            'msg_sii'       : message_sii,
+            'funcion_error' : name_function,
+    }
 
 def envio_libro_ventas_electronico(**kwargs):
     """
@@ -2904,34 +2755,42 @@ def envio_libro_ventas_electronico(**kwargs):
     datos_conexion  = {}
     tipo_libro      = 'V'  # libro de compra
 
+    status              = True
+    errores             = None
+    status_sii          = None
+    descripcion_estado  = None
+    message_sii         = None
+    tipo_error          = None
+    name_function       = None
+
     ##Creacion de xml---------------------------------------------------------------------------------------------------
     error_creacion, xml_libro = crear_xml_libro_venta(**kwargs)
 
     if not error_creacion:
         ##Obtener datos de conexion IDTE -------------------------------------------------------------------------------
-        error, conexion = obtener_datos_conexion('wsLCV')
+        response_conexion = obtener_datos_conexion('wsLCV')
 
-        if not error:
+        if not response_conexion['error']:
 
-            datos_conexion['host']              = conexion.host
-            datos_conexion['puerto']            = conexion.puerto
-            datos_conexion['nombre_contexto']   = conexion.nombre_contexto
-            datos_conexion['nombre_webservice'] = conexion.nombre_web_service
+            datos_conexion['host']              = response_conexion['conexion'].host
+            datos_conexion['puerto']            = response_conexion['conexion'].puerto
+            datos_conexion['nombre_contexto']   = response_conexion['conexion'].nombre_contexto
+            datos_conexion['nombre_webservice'] = response_conexion['conexion'].nombre_web_service
 
-            id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
-            error_url, url_conexion = url_web_service(**datos_conexion)
+            id_dte_empresa          = response_conexion['conexion'].parametro_facturacion.codigo_conexion
+            response_url_conexion = url_web_service(**datos_conexion)
 
-            if not error_url:
+            if not response_url_conexion['error']:
 
                 ## Conectarse a Web Service de IDTE---------------------------------------------------------------------
 
-                error, client = call_service(url_conexion)
+                response_client = call_service(response_url_conexion['url_conexion'])
 
-                if not error:
+                if not response_client['error']:
 
                     ##Consultar estado libro ventas --------------------------------------------------------------------
 
-                    estado_libro = get_estado_lcv(client, id_dte_empresa, id_hist_lcv, nievel_traza)
+                    estado_libro = get_estado_lcv(response_client['client'], id_dte_empresa, id_hist_lcv, nievel_traza)
 
                     if estado_libro.valor == "ERROR":
 
@@ -2939,7 +2798,7 @@ def envio_libro_ventas_electronico(**kwargs):
                         ##Envio de libro de compras a procesar a IDTE---------------------------------------------------
 
                         try:
-                            procesar_libro_ventas = procesar_lcv_xml(client, id_dte_empresa, tipo_libro,
+                            procesar_libro_ventas = procesar_lcv_xml(response_client['client'], id_dte_empresa, tipo_libro,
                                                                      id_hist_lcv,
                                                                      accion, nievel_traza, xml_libro.decode())
 
@@ -2947,7 +2806,7 @@ def envio_libro_ventas_electronico(**kwargs):
 
                                 ##Consultar estado Libro ventas---------------------------------------------------------
 
-                                estado_libro_enviado = get_estado_lcv(client, id_dte_empresa, id_hist_lcv,
+                                estado_libro_enviado = get_estado_lcv(response_client['client'], id_dte_empresa, id_hist_lcv,
                                                                       nievel_traza)
 
                                 if estado_libro_enviado.valor != "Error":
@@ -2964,49 +2823,32 @@ def envio_libro_ventas_electronico(**kwargs):
                                     elif int(estado_sii) == 6:
                                         error = "Libro Rechazado"
 
-                                    data = {
-                                        'success'           : True,
-                                        'error'             : '',
-                                        'estado_sii'        : estado_sii,
-                                        'descripcion_estado': error,
-                                        'msg_sii'           : msg_sii,
-                                        'tipo_error'        : '',
-                                        'funcion_error'     : 'get_estado_lcv',
-                                    }
-                                    return data
+
+                                    status_sii          = estado_sii
+                                    descripcion_estado  = error
+                                    message_sii         = msg_sii
+                                    name_function       = 'get_estado_lcv'
+
                                 else:
-                                    data = {
-                                        'success'           : False,
-                                        'error'             : estado_libro_enviado.msg,
-                                        'estado_sii'        : '',
-                                        'descripcion_estado': '',
-                                        'msg_sii'           : '',
-                                        'tipo_error'        : '',
-                                        'funcion_error'     : 'get_estado_lcv',
-                                    }
-                                    return data
+
+                                    status              = False
+                                    errores             = estado_libro_enviado.msg
+                                    name_function       = 'get_estado_lcv'
+
                             else:
-                                data = {
-                                    'success'           : False,
-                                    'error'             : procesar_libro_ventas.msg,
-                                    'estado_sii'        : '',
-                                    'descripcion_estado': '',
-                                    'msg_sii'           : '',
-                                    'tipo_error'        : procesar_libro_ventas.tipo_error,
-                                    'funcion_error'     : 'procesar_lcv_xml',
-                                }
-                                return data
+
+                                status              = False
+                                errores             = procesar_libro_ventas.msg
+                                tipo_error          = procesar_libro_ventas.tipo_error
+                                name_function       = 'procesar_lcv_xml'
+
                         except suds.WebFault as e:
-                            data = {
-                                'success'           : False,
-                                'error'             : str(e),
-                                'estado_sii'        : '',
-                                'descripcion_estado': '',
-                                'msg_sii'           : '',
-                                'tipo_error'        : 'Error de Excepción Try Except',
-                                'funcion_error'     : 'procesar_lcv_xml',
-                            }
-                        return data
+
+                            status          = False
+                            errores         = e.args[0].decode("utf-8")
+                            tipo_error      = 'Error de Excepción Try Except'
+                            name_function   = 'procesar_lcv_xml'
+
                     else:
                         datos_estado    = estado_libro.valor.split('|')
                         estado_sii      = datos_estado[6]
@@ -3021,64 +2863,48 @@ def envio_libro_ventas_electronico(**kwargs):
                         elif int(estado_sii) == 6:
                             error = "Libro Rechazado"
 
-                        data = {
-                            'success'           : False,
-                            'error'             : error,
-                            'estado_sii'        : estado_sii,
-                            'descripcion_estado': '',
-                            'msg_sii'           : msg_sii,
-                            'tipo_error'        : '',
-                            'funcion_error'     : 'get_estado_lcv',
-                        }
-                        return data
+                        status              = False
+                        errores             = error
+                        status_sii          = estado_sii
+                        message_sii         = msg_sii
+                        name_function       = 'get_estado_lcv'
                 else:
-                    data = {
-                        'success'           : False,
-                        'error'             : error,
-                        'estado_sii'        : '',
-                        'descripcion_estado': '',
-                        'msg_sii'           : '',
-                        'tipo_error'        : 'Conexión Servidor',
-                        'funcion_error'     : 'call_service',
-                    }
 
-                    return data
+                    status              = False
+                    errores             = response_client['error']
+                    tipo_error          = 'Conexión Servidor'
+                    name_function       = 'call_service'
+
             else:
-                data = {
-                    'success'           : False,
-                    'error'             : error_url,
-                    'estado_sii'        : '',
-                    'descripcion_estado': '',
-                    'msg_sii'           : '',
-                    'tipo_error'        : 'Armado URL',
-                    'funcion_error'     : 'url_web_service',
-                    'ruta_archivo'      : '',
-                }
 
-                return data
+                status          = False
+                errores         = response_url_conexion['error']
+                tipo_error      = 'Armado URL'
+                name_function   = 'url_web_service'
+
         else:
-            data = {
-                'success'           : False,
-                'error'             : error,
-                'estado_sii'        : '',
-                'descripcion_estado': '',
-                'msg_sii'           : '',
-                'tipo_error'        : 'Obtención Datos',
-                'funcion_error'     : 'obtener_datos_conexion',
-            }
 
-            return data
+            status          = False
+            errores         = response_conexion['error']
+            tipo_error      = 'Obtención Datos'
+            name_function   = 'obtener_datos_conexion'
+
     else:
-        data = {
-            'success'           : False,
-            'error'             : error_creacion,
-            'estado_sii'        : '',
-            'descripcion_estado': '',
-            'msg_sii'           : '',
-            'tipo_error'        : 'Error Lectura',
-            'funcion_error'     : 'crear_xml_libro_compra',
-        }
-        return data
+
+        status              = False
+        errores             = error_creacion
+        tipo_error          = 'Error Lectura'
+        name_function       = 'crear_xml_libro_compra'
+
+    return {
+        'success'           : status,
+        'error'             : errores,
+        'estado_sii'        : status_sii,
+        'descripcion_estado': descripcion_estado,
+        'msg_sii'           : message_sii,
+        'tipo_error'        : tipo_error,
+        'funcion_error'     : name_function,
+    }
 
 
 ## --------------------------- MANEJO DE CONTROL DE FOLIOS -------------------------------------------------------------
@@ -3166,48 +2992,57 @@ def envio_control_folios(**kwargs):
     fecha_emision   = kwargs['fecha_emision'] #fecha emision control de folios
     secuencia       = kwargs['secuencia'] # secuencia de control de folios
 
+
+    status              = True
+    errores             = None
+    status_sii          = None
+    descripcion_estado  = None
+    message             = None
+    tipo_error          = None
+    name_funcion        = None
+
     ##Creacion de xml---------------------------------------------------------------------------------------------------
     error_creacion, xml_control_folios = crear_xml_control_folios(**kwargs)
 
     if not error_creacion:
         ##Obtener datos de conexion IDTE -------------------------------------------------------------------------------
-        error, conexion = obtener_datos_conexion('wsMIXTO')
+        response_conexion = obtener_datos_conexion('wsMIXTO')
 
-        if not error:
+        if not response_conexion['error']:
 
-            datos_conexion['host']              = conexion.host
-            datos_conexion['puerto']            = conexion.puerto
-            datos_conexion['nombre_contexto']   = conexion.nombre_contexto
-            datos_conexion['nombre_webservice'] = conexion.nombre_web_service
+            datos_conexion['host']              = response_conexion['conexion'].host
+            datos_conexion['puerto']            = response_conexion['conexion'].puerto
+            datos_conexion['nombre_contexto']   = response_conexion['conexion'].nombre_contexto
+            datos_conexion['nombre_webservice'] = response_conexion['conexion'].nombre_web_service
 
-            id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
-            error_url, url_conexion = url_web_service(**datos_conexion)
+            id_dte_empresa          = response_conexion['conexion'].parametro_facturacion.codigo_conexion
+            response_url_conexion = url_web_service(**datos_conexion)
 
-            if not error_url:
+            if not response_url_conexion['error']:
 
                 ## Conectarse a Web Service de IDTE---------------------------------------------------------------------
 
-                error, client = call_service(url_conexion)
+                response_client = call_service(response_url_conexion['url_conexion'])
 
-                if not error:
+                if not response_client['error']:
 
                     ##Consultar estado control de folios ---------------------------------------------------------------
                     try:
-                        estado_control_folio = get_estado_cf(client, id_dte_empresa, fecha_emision, secuencia, nievel_traza)
+                        estado_control_folio = get_estado_cf(response_client['client'], id_dte_empresa, fecha_emision, secuencia, nievel_traza)
 
                         if estado_control_folio.valor == "ERROR":
 
                             ##Envio de control de folios a IDTE-------------------------------------------------------------
 
                             try:
-                                procesar_control_folio = procesar_cf_xml(client, id_dte_empresa, fecha_emision, secuencia,
+                                procesar_control_folio = procesar_cf_xml(response_client['client'], id_dte_empresa, fecha_emision, secuencia,
                                                                          accion, nievel_traza, xml_control_folios)
 
                                 if procesar_control_folio.dio_error == False:
 
                                     ##Consultar estado control de folios ---------------------------------------------------
                                     try:
-                                        estado_control_folio_enviado = get_estado_cf(client, id_dte_empresa, fecha_emision,
+                                        estado_control_folio_enviado = get_estado_cf(response_client['client'], id_dte_empresa, fecha_emision,
                                                                                      secuencia, nievel_traza)
 
                                         if estado_control_folio_enviado.valor != "Error":
@@ -3226,62 +3061,38 @@ def envio_control_folios(**kwargs):
                                             else:
                                                 error = "Estado desconocido"
 
-                                            data = {
-                                                'success'           : True,
-                                                'error'             : '',
-                                                'estado_sii'        : estado_sii,
-                                                'descripcion_estado': error,
-                                                'msg_sii'           : msg_sii,
-                                                'tipo_error'        : '',
-                                                'funcion_error'     : 'get_estado_cf',
-                                            }
-                                            return data
+                                            status_sii          = estado_sii
+                                            descripcion_estado  = error
+                                            message             = msg_sii
+                                            name_funcion        = 'get_estado_cf'
+
                                         else:
-                                            data = {
-                                                'success'           : False,
-                                                'error'             : estado_control_folio_enviado.msg,
-                                                'estado_sii'        : '',
-                                                'descripcion_estado': '',
-                                                'msg_sii'           : '',
-                                                'tipo_error'        : '',
-                                                'funcion_error'     : 'get_estado_cf',
-                                            }
-                                            return data
+
+                                            status              = False
+                                            errores             = estado_control_folio_enviado.msg
+                                            name_funcion        = 'get_estado_cf'
+
                                     except suds.WebFault as a:
-                                        error = a.args[0].decode("utf-8")
-                                        data = {
-                                            'success'           : False,
-                                            'error'             : error,
-                                            'estado_sii'        : '',
-                                            'descripcion_estado': '',
-                                            'msg_sii'           : '',
-                                            'tipo_error'        : 'Error de Excepción Try Except',
-                                            'funcion_error'     : 'get_estado_cf',
-                                        }
-                                        return data
+
+                                        status              = False
+                                        errores             = a.args[0].decode("utf-8")
+                                        tipo_error          = 'Error de Excepción Try Except'
+                                        name_funcion        = 'get_estado_cf'
+
                                 else:
-                                    data = {
-                                        'success'           : False,
-                                        'error'             : procesar_control_folio.msg,
-                                        'estado_sii'        : '',
-                                        'descripcion_estado': '',
-                                        'msg_sii'           : '',
-                                        'tipo_error'        : procesar_control_folio.tipo_error,
-                                        'funcion_error'     : 'procesar_cf_xml',
-                                    }
-                                    return data
+
+                                    status          = False
+                                    errores         = procesar_control_folio.msg
+                                    tipo_error      = procesar_control_folio.tipo_error
+                                    name_funcion    = 'procesar_cf_xml'
+
                             except suds.WebFault as e:
-                                error = e.args[0].decode("utf-8")
-                                data = {
-                                    'success'           : False,
-                                    'error'             : error,
-                                    'estado_sii'        : '',
-                                    'descripcion_estado': '',
-                                    'msg_sii'           : '',
-                                    'tipo_error'        : 'Error de Excepción Try Except',
-                                    'funcion_error'     : 'procesar_cf_xml',
-                                }
-                            return data
+
+                                status          = False
+                                errores         = e.args[0].decode("utf-8")
+                                tipo_error      = 'Error de Excepción Try Except'
+                                name_funcion    = 'procesar_cf_xml'
+
                         else:
                             datos_estado    = estado_control_folio.valor.split('|')
                             estado_sii      = datos_estado[1]
@@ -3298,76 +3109,55 @@ def envio_control_folios(**kwargs):
                             else:
                                 error = "Estado desconocido"
 
-                            data = {
-                                'success'           : False,
-                                'error'             : error,
-                                'estado_sii'        : estado_sii,
-                                'descripcion_estado': '',
-                                'msg_sii'           : msg_sii,
-                                'tipo_error'        : '',
-                                'funcion_error'     : 'get_estado_cf',
-                            }
-                            return data
+                            status              = False
+                            errores             = error
+                            status_sii          = estado_sii
+                            message             = msg_sii
+                            name_funcion        = 'get_estado_cf'
+
                     except suds.WebFault as e:
-                        error = e.args[0].decode("utf-8")
-                        data = {
-                            'success'           : False,
-                            'error'             : error,
-                            'estado_sii'        : '',
-                            'descripcion_estado': '',
-                            'msg_sii'           : '',
-                            'tipo_error'        : 'Error de Excepción Try Except',
-                            'funcion_error'     : 'get_estado_cf',
-                        }
-                        return data
+
+                        status          = False
+                        errores         = e.args[0].decode("utf-8")
+                        tipo_error      = 'Error de Excepción Try Except'
+                        name_funcion    = 'get_estado_cf'
+
                 else:
-                    data = {
-                        'success'           : False,
-                        'error'             : error,
-                        'estado_sii'        : '',
-                        'descripcion_estado': '',
-                        'msg_sii'           : '',
-                        'tipo_error'        : 'Conexión Servidor',
-                        'funcion_error'     : 'call_service',
-                    }
 
-                    return data
+                    status          = False
+                    errores         = response_client['error']
+                    tipo_error      = 'Conexión Servidor'
+                    name_funcion    = 'call_service'
+
             else:
-                data = {
-                    'success'           : False,
-                    'error'             : error_url,
-                    'estado_sii'        : '',
-                    'descripcion_estado': '',
-                    'msg_sii'           : '',
-                    'tipo_error'        : 'Armado URL',
-                    'funcion_error'     : 'url_web_service',
-                    'ruta_archivo'      : '',
-                }
 
-                return data
+                status          = False
+                errores         = response_url_conexion['error']
+                tipo_error      = 'Armado URL'
+                name_funcion    = 'url_web_service'
         else:
-            data = {
-                'success'           : False,
-                'error'             : error,
-                'estado_sii'        : '',
-                'descripcion_estado': '',
-                'msg_sii'           : '',
-                'tipo_error'        : 'Obtención Datos',
-                'funcion_error'     : 'obtener_datos_conexion',
-            }
 
-            return data
+            status          = False
+            errores         = response_conexion['error']
+            tipo_error      = 'Obtención Datos'
+            name_funcion    = 'obtener_datos_conexion'
+
     else:
-        data = {
-            'success'           : False,
-            'error'             : error_creacion,
-            'estado_sii'        : '',
-            'descripcion_estado': '',
-            'msg_sii'           : '',
-            'tipo_error'        : 'Error Lectura',
-            'funcion_error'     : 'crear_xml_control_folios',
+
+        status              = False
+        errores             = error_creacion
+        tipo_error          = 'Error Lectura'
+        name_funcion        = 'crear_xml_control_folios'
+
+    return {
+            'success'           : status,
+            'error'             : errores,
+            'estado_sii'        : status_sii,
+            'descripcion_estado': descripcion_estado,
+            'msg_sii'           : message,
+            'tipo_error'        : tipo_error,
+            'funcion_error'     : name_funcion,
         }
-        return data
 
 def consulta_estado_control_folios(fecha_emision, secuencia):
     """
@@ -3392,40 +3182,47 @@ def consulta_estado_control_folios(fecha_emision, secuencia):
     id_dte_empresa  = ''
     datos_conexion  = {}
 
+
+    status              = True
+    errores             = None
+    status_sii          = None
+    descripcion_estado  = None
+    message_sii         = None
+    tipo_error          = None
+    name_function       = None
+
+
     ##Obtener datos de conexion IDTE -----------------------------------------------------------------------------------
-    error, conexion = obtener_datos_conexion('wsMIXTO')
+    response_conexion = obtener_datos_conexion('wsMIXTO')
 
-    if not error:
+    if not response_conexion['error']:
 
-        datos_conexion['host']                  = conexion.host
-        datos_conexion['puerto']                = conexion.puerto
-        datos_conexion['nombre_contexto']       = conexion.nombre_contexto
-        datos_conexion['nombre_webservice']     = conexion.nombre_web_service
+        datos_conexion['host']                  = response_conexion['conexion'].host
+        datos_conexion['puerto']                = response_conexion['conexion'].puerto
+        datos_conexion['nombre_contexto']       = response_conexion['conexion'].nombre_contexto
+        datos_conexion['nombre_webservice']     = response_conexion['conexion'].nombre_web_service
 
-        id_dte_empresa          = conexion.parametro_facturacion.codigo_conexion
-        error_url, url_conexion = url_web_service(**datos_conexion)
+        id_dte_empresa          = response_conexion['conexion'].parametro_facturacion.codigo_conexion
+        response_url_conexion = url_web_service(**datos_conexion)
 
-        if not error_url:
+        if not response_url_conexion['error']:
 
             ## Conectarse a Web Service de IDTE-------------------------------------------------------------------------
 
-            error, client = call_service(url_conexion)
+            reponse_client = call_service(response_url_conexion['url_conexion'])
 
-            if not error:
+            if not reponse_client['error']:
 
                 ##Consultar estado Control de folios -------------------------------------------------------------------
                 try:
-                    estado_control_folios = get_estado_cf(client, id_dte_empresa, fecha_emision, secuencia, nievel_traza)
+                    estado_control_folios = get_estado_cf(reponse_client['client'], id_dte_empresa, fecha_emision, secuencia, nievel_traza)
 
                     if estado_control_folios.valor == "ERROR":
-                        data = {
-                            'success'   : False,
-                            'error'     : estado_control_folios.msg,
-                            'funcion'   : 'get_estado_cf',
-                            'estado_sii': '',
-                            'msg_sii'   : '',
-                        }
-                        return data
+
+                        status              = False
+                        errores             = estado_control_folios.msg
+                        name_function       = 'get_estado_cf'
+
                     else:
                         datos_estado    = estado_control_folios.valor.split('|')
                         estado_sii      = datos_estado[1]
@@ -3442,85 +3239,73 @@ def consulta_estado_control_folios(fecha_emision, secuencia):
                         else:
                             error = "Estado desconocido"
 
-                        data = {
-                            'success'               : True,
-                            'error'                 : '',
-                            'estado_sii'            : estado_sii,
-                            'descripcion_estado'    : error,
-                            'msg_sii'               : msg_sii,
-                            'tipo_error'            : '',
-                            'funcion_error'         : 'get_estado_cf',
-                        }
-                        return data
+                        status              = True
+                        status_sii          = estado_sii
+                        descripcion_estado  = error
+                        message_sii         = msg_sii
+                        name_function       = 'get_estado_cf'
+
                 except suds.WebFault as e:
-                    error = e.args[0].decode("utf-8")
-                    data = {
-                        'success'               : False,
-                        'error'                 : error,
-                        'estado_sii'            : '',
-                        'descripcion_estado'    : '',
-                        'msg_sii'               : '',
-                        'tipo_error'            : 'Error de Excepción Try Except',
-                        'funcion_error'         : 'get_estado_cf',
-                    }
-                    return data
+
+                    status          = False
+                    errores         = e.args[0].decode("utf-8")
+                    tipo_error      = 'Error de Excepción Try Except'
+                    name_function   = 'get_estado_cf'
+
             else:
-                data = {
-                    'success'           : False,
-                    'error'             : error,
-                    'estado_sii'        : '',
-                    'descripcion_estado': '',
-                    'msg_sii'           : '',
-                    'tipo_error'        : 'Conexión Servidor',
-                    'funcion_error'     : 'call_service',
-                }
 
-                return data
+                status              = False
+                errores             = reponse_client['error']
+                tipo_error          = 'Conexión Servidor'
+                name_function       = 'call_service'
         else:
-            data = {
-                'success'           : False,
-                'error'             : error_url,
-                'estado_sii'        : '',
-                'descripcion_estado': '',
-                'msg_sii'           : '',
-                'tipo_error'        : 'Armado URL',
-                'funcion_error'     : 'url_web_service',
-                'ruta_archivo'      : '',
-            }
 
-            return data
+            status          = False
+            errores         = response_url_conexion['error']
+            tipo_error      = 'Armado URL'
+            name_function   = 'url_web_service'
+
     else:
-        data = {
-            'success'               : False,
-            'error'                 : error,
-            'estado_sii'            : '',
-            'descripcion_estado'    : '',
-            'msg_sii'               : '',
-            'tipo_error'            : 'Obtención Datos',
-            'funcion_error'         : 'obtener_datos_conexion',
-        }
 
-        return data
+        status          = False
+        errores         = response_conexion['error']
+        tipo_error      = 'Obtención Datos'
+        name_function   = 'obtener_datos_conexion'
+
+    return {
+        'success'               : status,
+        'error'                 : errores,
+        'estado_sii'            : status_sii,
+        'descripcion_estado'    : descripcion_estado,
+        'msg_sii'               : message_sii,
+        'tipo_error'            : tipo_error,
+        'funcion_error'         : name_function,
+    }
 
 
 
 ##---------------------------- MANEJO DE FACTURACION LEASE -------------------------------------------------------------
 def envio_factura_inet(request):
 
+
+    status          = True
+    errores         = None
+    message         = None
     datos_conexion  = {}
+
     resultado_xml   = armar_xml_inet_docvta(request)
 
     if not resultado_xml[0]:
 
         ##Obtener datos de conexion IDTE -------------------------------------------------------------------------------
-        error, conexion = obtener_datos_conexion_ws_inet(request, 'axmldocvta')
+        response_conexion = obtener_datos_conexion_ws_inet(request, 'axmldocvta')
 
-        if not error:
+        if not response_conexion['error']:
 
-            datos_conexion['host']              = conexion.host
-            datos_conexion['puerto']            = conexion.puerto
-            datos_conexion['nombre_contexto']   = conexion.nombre_contexto
-            datos_conexion['nombre_webservice'] = conexion.nombre_web_service
+            datos_conexion['host']              = response_conexion['conexion'].host
+            datos_conexion['puerto']            = response_conexion['conexion'].puerto
+            datos_conexion['nombre_contexto']   = response_conexion['conexion'].nombre_contexto
+            datos_conexion['nombre_webservice'] = response_conexion['conexion'].nombre_web_service
 
             # Armar URL de conexion del Web Services -------------------------------------------------------------------
             resultado_url = url_web_service_inet(**datos_conexion)
@@ -3534,254 +3319,538 @@ def envio_factura_inet(request):
                 if not resultado_call[0]:
 
                     try:
-                        response_ws = envio_documento_inet(resultado_call[1], resultado_xml[1])
-                        data = {
-                            'success'   : True,
-                            'error'     : '',
-                            'respuesta' : response_ws
-                        }
-                        return data
-
+                        message = envio_documento_inet(resultado_call[1], resultado_xml[1])
 
                     except suds.WebFault as w:
                         ##----------------------------------------------------------------------------------------------
-                        error   = w.args[0].decode("utf-8")
-                        data    = {
-                            'success'   : False,
-                            'error'     : error,
-                        }
 
-                        return data
+                        status  = False
+                        errores = w.args[0].decode("utf-8")
+
                 else:
 
                     ##--------------------------------------------------------------------------------------------------
-                    data = {
-                        'success'   : False,
-                        'error'     : resultado_call[0],
-                    }
 
-                    return data
+                    status  = False
+                    errores = resultado_call[0]
             else:
 
                 ##------------------------------------------------------------------------------------------------------
-                data = {
-                    'success'   : False,
-                    'error'     : resultado_url[0],
-                }
 
-                return data
+                status  = False
+                errores = resultado_url[0]
         else:
 
             ##----------------------------------------------------------------------------------------------------------
-            data = {
-                'success'   : False,
-                'error'     : error,
-            }
 
-            return data
+            status  = False
+            errores = response_conexion['error']
     else:
         ##--------------------------------------------------------------------------------------------------------------
-        data = {
-            'success'   : False,
-            'error'     : resultado_xml[0],
-        }
-        return data
+
+        status  = False
+        errores = resultado_xml[0]
+
+    return {
+            'success'   : status,
+            'error'     : errores,
+            'respuesta' : message
+    }
+
+def valida_data_documento(request):
+    try:
+
+        var_post            = request.POST.copy()
+        factura             = Factura.objects.get(id=var_post['id'])
+        factura_detalle     = factura.factura_detalle_set.all()
+        empresa             = request.user.userprofile.empresa
+
+        estado          = True
+        error           = None
+        lista_errores   = list()
+
+        ## Validar datos cabecera factura ------------------------------------------------------------------------------
+
+        if factura.fecha_inicio is None or factura.fecha_inicio is '':
+            estado = False
+            error  = 'Documento no presenta fecha de emisión (fecha inicio)'
+            lista_errores.append(error)
+
+        if factura.fecha_termino is None or factura.fecha_termino is '':
+            estado = False
+            error  = 'Documento no presenta fecha de vencimiento'
+            lista_errores.append(error)
+
+        ## Validar datos de la empresa (EMISOR)----
+
+        if empresa.rut is None or empresa.rut is '':
+            estado = False
+            error  = 'Empresa no presenta un r.u.t. asociado'
+            lista_errores.append(error)
+
+        if empresa.nombre is None or empresa.nombre is '':
+            estado = False
+            error  = 'Empresa no tiene un nombre asociado'
+            lista_errores.append(error)
+
+        if  empresa.giro is None:
+            estado = False
+            error  = 'Empresa no tiene asociado un giro'
+            lista_errores.append(error)
+
+        if empresa.telefono is None or empresa.telefono is '':
+            estado = False
+            error  = 'Empresa no tiene asociado un nro. de teléfono'
+            lista_errores.append(error)
+
+        if empresa.email is None or empresa.email is '':
+            estado = False
+            error  = 'Empresa no tiene asociado un correo electrónico'
+            lista_errores.append(error)
+
+        if empresa.direccion is None or empresa.direccion is '':
+            estado = False
+            error  = 'Empresa no tiene asociada una dirección'
+            lista_errores.append(error)
+
+        if empresa.ciudad is None or empresa.ciudad is '':
+            estado = False
+            error  = 'Empresa no tiene asociada una ciudad'
+            lista_errores.append(error)
+
+        if empresa.comuna is None or empresa.comuna is '':
+            estado = False
+            error = 'Empresa no tiene asociada una comuna'
+            lista_errores.append(error)
+
+
+        ## Validar datos del receptor ----------------------------------------------------------------------------------
+
+        if factura.contrato.cliente.rut is None or factura.contrato.cliente.rut is '':
+            estado = False
+            error = 'Receptor no presenta r.u.t. asociado'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.razon_social is None or factura.contrato.cliente.razon_social is '':
+            estado = False
+            error = 'Receptor no tiene un nombre asociado'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.direccion is None or factura.contrato.cliente.direccion is '':
+            estado = False
+            error = 'Receptor no tiene asociado una dirección'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.telefono is None or factura.contrato.cliente.telefono is '':
+            estado = False
+            error = 'Receptor no tiene asociado un nro. telefonico'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.comuna is None or factura.contrato.cliente.comuna is '':
+            estado = False
+            error = 'Receptor no tiene asociada una comuna'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.ciudad is None or factura.contrato.cliente.ciudad is '':
+            estado = False
+            error = 'Receptor no tiene asociada una ciudad'
+            lista_errores.append(error)
+
+
+        nro_linea   = 1
+        total_linea = 0
+        for items in factura_detalle:
+
+            if items.concepto.configuracion_concepto_set.filter(cliente=factura.contrato.cliente).exists() is False:
+                estado = False
+                error = 'linea ' + str(nro_linea) +' del detalle de documento no presenta configurado los parametros de conexión del concepto'
+                lista_errores.append(error)
+
+            if items.concepto.nombre is None or items.concepto.nombre is '':
+                estado = False
+                error = 'linea ' + str(nro_linea) +' del detalle de documento no presenta descripción de producto'
+                lista_errores.append(error)
+
+            if items.total is None or items.total is '':
+
+                estado = False
+                error = 'linea ' + str(nro_linea) +' del detalle de documento no presenta total del producto'
+                lista_errores.append(error)
+
+            nro_linea   += 1
+            total_linea += items.total
+
+        valores = calculo_iva_total_documento(total_linea, 19)
+
+
+        if valores[0] is None or valores[0] is '':
+
+            estado = False
+            error = 'Totales de documento no presenta Sub-total'
+            lista_errores.append(error)
+
+        if valores[1] is None or valores[1] is '':
+
+            estado = False
+            error = 'Totales de documento no presenta total iva'
+            lista_errores.append(error)
+
+        if valores[2] is None or valores[2] is '':
+
+            estado = False
+            error = 'Totales de documento no presenta monto total'
+            lista_errores.append(error)
+
+    except Exception as e:
+        estado  = False
+        error   = str(e)
+        lista_errores.append(error)
+
+    return {
+        'estado' : estado,
+        'errores': lista_errores
+    }
+
+def valida_data_documento_inet(request):
+    try:
+
+        var_post            = request.POST.copy()
+        factura             = Factura.objects.get(id=var_post['id'])
+        factura_detalle     = factura.factura_detalle_set.all()
+        empresa             = request.user.userprofile.empresa
+
+        estado          = True
+        error           = None
+        lista_errores   = list()
+
+        ## Validar datos cabecera factura ------------------------------------------------------------------------------
+
+        if factura.numero_documento is None or factura.numero_documento is '':
+            estado = False
+            error  = 'Documento no presenta nro. de documento a generar'
+            lista_errores.append(error)
+
+        if factura.nombre is None or factura.nombre is '':
+            estado = False
+            error  = 'Documento no presenta nombre o glosa de propuesta'
+            lista_errores.append(error)
+
+        if factura.contrato.empresa.conexion.cod_condicion_venta is None or factura.contrato.empresa.conexion.cod_condicion_venta is '':
+            estado = False
+            error  = 'Documento no presenta configurado la codición de venta'
+            lista_errores.append(error)
+
+        if factura.contrato.empresa.conexion.cod_bodega_salida is None or factura.contrato.empresa.conexion.cod_bodega_salida is '':
+            estado = False
+            error  = 'Documento no presenta configurada la bodega de salida'
+            lista_errores.append(error)
+
+        if factura.contrato.empresa.conexion.cod_vendedor is None or factura.contrato.empresa.conexion.cod_vendedor is '':
+            estado = False
+            error  = 'Documento no presenta configurado el código del vendedor'
+            lista_errores.append(error)
+
+        if factura.contrato.empresa.conexion.cod_sucursal is None or factura.contrato.empresa.conexion.cod_sucursal is '':
+            estado = False
+            error  = 'Documento no presenta configurado el código de sucursal'
+            lista_errores.append(error)
+
+        if factura.contrato.empresa.conexion.cod_lista_precio is None or factura.contrato.empresa.conexion.cod_lista_precio is '':
+            estado = False
+            error  = 'Documento no presenta configurado una lista de precios'
+            lista_errores.append(error)
+
+
+
+        ## Validar datos del receptor ----------------------------------------------------------------------------------
+
+        if factura.contrato.cliente.rut is None or factura.contrato.cliente.rut is '':
+            estado = False
+            error = 'Receptor no presenta r.u.t. asociado'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.nombre is None or factura.contrato.cliente.nombre is '':
+            estado = False
+            error = 'Receptor no tiene un nombre asociado'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.direccion is None or factura.contrato.cliente.direccion is '':
+            estado = False
+            error = 'Receptor no tiene asociado una dirección'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.telefono is None or factura.contrato.cliente.telefono is '':
+            estado = False
+            error = 'Receptor no tiene asociado un nro. telefonico'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.comuna is None or factura.contrato.cliente.comuna is '':
+            estado = False
+            error = 'Receptor no tiene asociada una comuna'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.ciudad is None or factura.contrato.cliente.ciudad is '':
+            estado = False
+            error = 'Receptor no tiene asociada una ciudad'
+            lista_errores.append(error)
+
+        if factura.contrato.cliente.email is None or factura.contrato.cliente.email is '':
+            estado = False
+            error = 'Receptor no tiene asociado un correo electrónico'
+            lista_errores.append(error)
+
+
+        nro_linea   = 1
+        total_linea = 0
+        for items in factura_detalle:
+
+            if items.concepto.configuracion_concepto_set.filter(cliente=factura.contrato.cliente).exists() is False:
+                estado = False
+                error = 'linea ' + str(nro_linea) +' del detalle de documento no presenta configurado los parametros de conexión del concepto'
+                lista_errores.append(error)
+
+            if items.concepto.nombre is None or items.concepto.nombre is '':
+                estado = False
+                error = 'linea ' + str(nro_linea) +' del detalle de documento no presenta descripción de producto'
+                lista_errores.append(error)
+
+            if items.total is None or items.total is '':
+
+                estado = False
+                error = 'linea ' + str(nro_linea) +' del detalle de documento no presenta total del producto'
+                lista_errores.append(error)
+
+            nro_linea   += 1
+            total_linea += items.total
+
+        valores = calculo_iva_total_documento(total_linea, 19)
+
+
+        if valores[0] is None or valores[0] is '':
+
+            estado = False
+            error = 'Totales de documento no presenta Sub-total'
+            lista_errores.append(error)
+
+        if valores[1] is None or valores[1] is '':
+
+            estado = False
+            error = 'Totales de documento no presenta total iva'
+            lista_errores.append(error)
+
+        if valores[2] is None or valores[2] is '':
+
+            estado = False
+            error = 'Totales de documento no presenta monto total'
+            lista_errores.append(error)
+
+    except Exception as e:
+        estado  = False
+        error   = str(e)
+        lista_errores.append(error)
+
+    return {
+        'estado' : estado,
+        'errores': lista_errores
+    }
 
 def armar_dict_documento(request):
     #TODO cambiar giro de empresa
 
     try:
+        kwargs = {}
+        status = valida_data_documento(request)
 
-        ## Declaracion de variables Iniciales
-        lista_cabecera      = list()
-        lista_emisor        = list()
-        lista_receptor      = list()
-        lista_detalle       = list()
-        lista_total         = list()
-        lista_referencias   = list()
-        error               = ''
+        if status['estado']:
+            ## Declaracion de variables Iniciales
+            lista_cabecera      = list()
+            lista_emisor        = list()
+            lista_receptor      = list()
+            lista_detalle       = list()
+            lista_total         = list()
+            lista_referencias   = list()
+            error               = ''
 
-        kwargs              = {}
+            var_post    = request.POST.copy()
+            factura_xml = Factura.objects.get(id=var_post['id'])
 
-        var_post    = request.POST.copy()
-        factura_xml = Factura.objects.get(id=var_post['id'])
-
-        profile = UserProfile.objects.get(user=request.user)
-        empresa = Empresa.objects.get(id=profile.empresa_id)
-
-
-        lista_cabecera.append({
-            'fecha_emision'             : factura_xml.fecha_inicio.strftime('%Y-%m-%d'), ## fecha emision contable
-            'ind_no_rebaja'             : str(0), ## Solo nota de credito
-            'tipo_despacho'             : str(0), ## Acompaña despacho de productos por vendedor
-            'indicador_traslado'        : str(0), ## Solo para guias de despacho
-            'tipo_impresion'            : str(0), ## Modalidad de impresion N (Normal) o T (Ticket) Guia
-            'indicador_servicio'        : str(0), ## Corresponde a prestación servicio
-            'monto_bruto'               : str(0), ## Monto detalle son brutos (1 Si)  (0 No)
-            'forma_pago'                : str(1), ## 1-Contado 2- Credito 3- Sin costo
-            'forma_pago_exportacion'    : str(0), ## Solo factura exportacion
-            'fecha_cancel'              : '',     ## Solo si la factura ha sido cancelada antes de la emisión
-            'monto_cancel'              : str(0), ## Solo si la factura ha sido cancelada antes de la emisión
-            'saldo_insoluto'            : str(0), ## Solo si la factura ha sido cancelada antes de la emisión
-            'periodo_desde'             : '',     ## Fecha facturación servicios periodicos(fecha inicial del servicio)
-            'periodo_hasta'             : '',     ## Fecha facturación servicios periodicos (fecha hasta del servicio)
-            'medio_pago'                : 'EF',   ## Modalidad de pago CH- cheque CF: cheque fecha LT- letra EF- efectivo PE- pago Cta CTe TC- tarj cred OT- otro
-            'tipo_cta_pago'             : '',     ## cuenta CT: cta cte TC: tarj. cred. OT: otra
-            'numero_cta_pago'           : '',     ## numero cuenta cte
-            'banco_pago'                : '',     ## Banco pago
-            'termino_pago_codigo'       : '',     ## codigo acordado empresas, ind terminos de referencia fecha recep factura o fecha entrega mercaderia
-            'termino_pago_glosa'        : '',     ## GLosa describe las condiciones de pago
-            'termino_pago_dias'         : '',     ## Cant. dias termino pago
-            'fecha_vecimiento'          : factura_xml.fecha_termino.strftime('%Y-%m-%d'), ##fecha vencimiento
-            'rut_mandante'              : '',
-            'rut_solicitante'           : '',
-            'indicador_monto_neto'      : '0',
-        })
+            profile = UserProfile.objects.get(user=request.user)
+            empresa = Empresa.objects.get(id=profile.empresa_id)
 
 
-        lista_emisor.append({
-            'rut_emisor'                : str(empresa.rut).replace('.', '').upper(),
-            'razon_social_emisor'       : str(empresa.nombre).upper(),
-            'giro_emisor'               : str(empresa.giro.descripcion), #'ARRIENDO DE INMUEBLES AMOBLADOS O CON EQUIPOS Y MAQUINARIAS',
-            'telefono_emisor'           : str(empresa.telefono),
-            'correo_emisor'             : str(empresa.email),
-            'acteco'                    : str(empresa.giro.codigo),  #'701001'
-            'codigo_traslado'           : '0',
-            'folio_autorizado'          : '0',
-            'fecha_autorizacion'        : '0',
-            'sucursal'                  : '',
-            'codigo_sii_sucursal'       : '0',
-            'codigo_adicional_suc'      : '',
-            'direccion_emisor'          : str(empresa.direccion),
-            'comuna_origen'             : str(empresa.comuna),
-            'ciudad_origen'             : str(empresa.ciudad),
-            'codigo_vendedor'           : '',
-            'ident_adicional_emisor'    : '',
-        })
-
-        lista_receptor.append({
-            'rut_receptor'              : str(factura_xml.contrato.cliente.rut).replace('.', '').upper(),
-            'codigo_interno_receptor'   : str(factura_xml.contrato.cliente.rut).replace('.', '').upper(),
-            'razon_receptor'            : str(factura_xml.contrato.cliente.razon_social).upper(),
-            'num_ident_extranjero'      : '',
-            'nacionalidad'              : '',
-            'ident_adicional_receptor'  : '',
-            'giro_receptor'             : str(factura_xml.contrato.cliente.giro.descripcion).upper(),
-            'contacto_receptor'         : '',
-            'correo_receptor'           : str(factura_xml.contrato.cliente.email),
-            'direccion_receptor'        : str(factura_xml.contrato.cliente.direccion).upper(),
-            'comuna_receptor'           : str(factura_xml.contrato.cliente.comuna).upper(),
-            'cuidad_receptor'           : str(factura_xml.contrato.cliente.ciudad).upper(),
-            'direccion_postal'          : '',
-            'comuna_postal'             : '',
-            'cuidad_postal'             : '',
-        })
-
-
-        detalle = factura_xml.factura_detalle_set.all()
-
-        linea       = 1
-        total_linea = 0
-
-        for d in detalle:
-
-            lista_codigos_items = list()
-            configuracion       = d.concepto.configuracion_concepto_set.get(cliente=factura_xml.contrato.cliente)
-
-            lista_codigos_items.append({
-                'valor_codigo_item' : '' if not configuracion else configuracion.codigo_producto,
-                'tipo_codigo_item'  : 'INT'
+            lista_cabecera.append({
+                'fecha_emision'             : factura_xml.fecha_inicio.strftime('%Y-%m-%d'), ## fecha emision contable
+                'ind_no_rebaja'             : str(0), ## Solo nota de credito
+                'tipo_despacho'             : str(0), ## Acompaña despacho de productos por vendedor
+                'indicador_traslado'        : str(0), ## Solo para guias de despacho
+                'tipo_impresion'            : str(0), ## Modalidad de impresion N (Normal) o T (Ticket) Guia
+                'indicador_servicio'        : str(0), ## Corresponde a prestación servicio
+                'monto_bruto'               : str(0), ## Monto detalle son brutos (1 Si)  (0 No)
+                'forma_pago'                : str(1), ## 1-Contado 2- Credito 3- Sin costo
+                'forma_pago_exportacion'    : str(0), ## Solo factura exportacion
+                'fecha_cancel'              : '',     ## Solo si la factura ha sido cancelada antes de la emisión
+                'monto_cancel'              : str(0), ## Solo si la factura ha sido cancelada antes de la emisión
+                'saldo_insoluto'            : str(0), ## Solo si la factura ha sido cancelada antes de la emisión
+                'periodo_desde'             : '',     ## Fecha facturación servicios periodicos(fecha inicial del servicio)
+                'periodo_hasta'             : '',     ## Fecha facturación servicios periodicos (fecha hasta del servicio)
+                'medio_pago'                : 'EF',   ## Modalidad de pago CH- cheque CF: cheque fecha LT- letra EF- efectivo PE- pago Cta CTe TC- tarj cred OT- otro
+                'tipo_cta_pago'             : '',     ## cuenta CT: cta cte TC: tarj. cred. OT: otra
+                'numero_cta_pago'           : '',     ## numero cuenta cte
+                'banco_pago'                : '',     ## Banco pago
+                'termino_pago_codigo'       : '',     ## codigo acordado empresas, ind terminos de referencia fecha recep factura o fecha entrega mercaderia
+                'termino_pago_glosa'        : '',     ## GLosa describe las condiciones de pago
+                'termino_pago_dias'         : '',     ## Cant. dias termino pago
+                'fecha_vecimiento'          : factura_xml.fecha_termino.strftime('%Y-%m-%d'), ##fecha vencimiento
+                'rut_mandante'              : '',
+                'rut_solicitante'           : '',
+                'indicador_monto_neto'      : '0',
             })
 
 
-            lista_detalle.append({
-                'nro_linea'                 : str(linea),
-                'tipo_documento_liq'        : '',
-                'ind_exencion'              : '0',
-                'nombre_item'               : str(d.concepto.nombre).upper(),
-                'descripcion_item'          : str(factura_xml.nombre)+''+str(d.concepto.descripcion).upper(),
-                'cantidad_referencia'       : '1',
-                'unidad_medida_ref'         : '',#str(d.concepto)
-                'precio_referencia'         : str(format_number(request, d.total, False)),
-                'cantidad_item'             : '1',
-                'fecha_elaboracion'         : '',
-                'fecha_vencimiento_prod'    : '',
-                'unidad_medida'             : 'UNI',
-                'precio_unitario'           : str(format_number(request, d.total, False)),
-                'descuento_porcentaje'      : '0',
-                'descuento_monto'           : '0',
-                'recargo_porcentaje'        : '0',
-                'recargo_monto'             : '0',
-                'cod_imp_adic_1'            : '0',
-                'cod_imp_adic_2'            : '0',
-                'monto_item'                : str(format_number(request, d.total, False)),
-                'item_espectaculo'          : '',
-                'rut_mandante_b'            : '',
-                'codigos_items'             : lista_codigos_items,  # lista_codigos_items,
-                'info_ticket'               : '',  # lista_infoticket
-                'otras_monedas_detalle'     : '',  # lista_otra_moneda_detalle
-                'retenedor_detalle'         : '',  # lista_retenedor_detalle
-                'subdescuentos_detalle'     : '',  # lista_subdescuento,
-                'subcantidad_detalle'       : '',  # lista_subcantidad
-                'subrecargo_detalle'        : '',  # lista_subrecargo,
+            lista_emisor.append({
+                'rut_emisor'                : str(empresa.rut).replace('.', '').upper(),
+                'razon_social_emisor'       : str(empresa.nombre).upper(),
+                'giro_emisor'               : str(empresa.giro.descripcion), #'ARRIENDO DE INMUEBLES AMOBLADOS O CON EQUIPOS Y MAQUINARIAS',
+                'telefono_emisor'           : str(empresa.telefono),
+                'correo_emisor'             : str(empresa.email),
+                'acteco'                    : str(empresa.giro.codigo),  #'701001'
+                'codigo_traslado'           : '0',
+                'folio_autorizado'          : '0',
+                'fecha_autorizacion'        : '0',
+                'sucursal'                  : '',
+                'codigo_sii_sucursal'       : '0',
+                'codigo_adicional_suc'      : '',
+                'direccion_emisor'          : str(empresa.direccion),
+                'comuna_origen'             : str(empresa.comuna),
+                'ciudad_origen'             : str(empresa.ciudad),
+                'codigo_vendedor'           : '',
+                'ident_adicional_emisor'    : '',
             })
 
-            total_linea += d.total
-            linea       += 1
-
-        valores = calculo_iva_total_documento(total_linea, 19)
-
-        lista_total.append({
-            'tipo_moneda'           : '',           ##Tipo de moneda de los montos
-            'monto_neto'            : str(valores[0]),   ## Monto neto
-            'monto_exento'          : '0',          ## Monto exento
-            'monto_base'            : '0',          ## Monto Informado >0
-            'monto_margen_comerc'   : '0',          ## Monto informado
-            'tasa_iva'              : '19',         ## Tasa iva
-            'iva'                   : str(valores[1]),   ## Monto neto * tasa IVA
-            'iva_propio'            : '0',          ## < que IVA
-            'iva_terceros'          : '0',          ## < que IVA
-            'iva_no_retenido'       : '0',          ## IVA - IVA retenido
-            'cred_espec_constr'     : '0',          ## IVA * 0,65
-            'garan_deposi_env_embal': '0',          ## Solo empresas usan emvases
-            'valor_comision_neto'   : '0',          ## Suma detalles valores comision
-            'valor_comision_exento' : '0',          ## Suma detalles valores comisiones y otros cargos no afectos o exentos
-            'valor_comision_iva'    : '0',          ## Suma detalle iva valor comision y otros cargos
-            'monto_total'           : str(valores[2]),   ## Monto total documento
-            'monto_no_facturable'   : '0',          ## Suma monto bienes o servicios con indicador facturacion
-            'monto_periodo'         : '0',          ## Monto total + monto no facturable
-            'saldo_anterior'        : '0',          ## Saldo anterior. * Solo con fines de ilustrar claridad de cobros
-            'valor_pagar'           : '0',          ## Valor cobrado
-            'impuesto_retenido'     : '',           ## lista_impuesto_retenidos,
-        })
+            lista_receptor.append({
+                'rut_receptor'              : str(factura_xml.contrato.cliente.rut).replace('.', '').upper(),
+                'codigo_interno_receptor'   : str(factura_xml.contrato.cliente.rut).replace('.', '').upper(),
+                'razon_receptor'            : str(factura_xml.contrato.cliente.razon_social).upper(),
+                'num_ident_extranjero'      : '',
+                'nacionalidad'              : '',
+                'ident_adicional_receptor'  : '',
+                'giro_receptor'             : str(factura_xml.contrato.cliente.giro.descripcion).upper(),
+                'contacto_receptor'         : '' if not factura_xml.contrato.cliente.telefono else str(factura_xml.contrato.cliente.telefono),
+                'correo_receptor'           : str(factura_xml.contrato.cliente.email),
+                'direccion_receptor'        : str(factura_xml.contrato.cliente.direccion).upper(),
+                'comuna_receptor'           : str(factura_xml.contrato.cliente.comuna).upper(),
+                'cuidad_receptor'           : str(factura_xml.contrato.cliente.ciudad).upper(),
+                'direccion_postal'          : '',
+                'comuna_postal'             : '',
+                'cuidad_postal'             : '',
+            })
 
 
+            detalle = factura_xml.factura_detalle_set.all()
 
-        kwargs['tipo_documento']            = factura_xml.numero_documento
-        kwargs['aplicacion']                = 'lease'
-        kwargs['ID1_ERP']                   = ''
-        kwargs['ID2_ERP']                   = ''
-        kwargs['ID3_ERP']                   = ''
-        kwargs['ID4_ERP']                   = ''
-        kwargs['emails_PDF']                = factura_xml.contrato.cliente.email
-        kwargs['emails_XML']                = factura_xml.contrato.cliente.email
+            linea       = 1
+            total_linea = 0
 
-        kwargs['encabezado']                = lista_cabecera
-        kwargs['emisor']                    = lista_emisor
-        kwargs['receptor']                  = lista_receptor
-        kwargs['detalle']                   = lista_detalle
-        kwargs['totales']                   = lista_total
-        kwargs['recargos_globales']         = ''  # lista_recargos
-        kwargs['referencias_documentos']    = ''  # lista_referencias
-        kwargs['referencias_boletas']       = ''  # lista_referencias_boletas
-        kwargs['comisiones']                = ''  # lista_comisiones
-        kwargs['monto_pagos']               = ''  # lista_monto_pagos
-        kwargs['otra_moneda']               = ''  # lista_otra_moneda
-        kwargs['subtotales']                = ''  # lista_subtotales
-        kwargs['transporte']                = ''  # lista_transporte
-        kwargs['extra_documento']           = ''  # lista_extra_documento
-        kwargs['error']                     = error
+            for d in detalle:
 
+                lista_codigos_items = list()
+                configuracion       = d.concepto.configuracion_concepto_set.get(cliente=factura_xml.contrato.cliente)
+
+                lista_codigos_items.append({
+                    'valor_codigo_item' : '' if not configuracion else configuracion.codigo_producto,
+                    'tipo_codigo_item'  : 'INT'
+                })
+
+
+                lista_detalle.append({
+                    'nro_linea'                 : str(linea),
+                    'tipo_documento_liq'        : '',
+                    'ind_exencion'              : '0',
+                    'nombre_item'               : str(d.concepto.nombre).upper(),
+                    'descripcion_item'          : str(factura_xml.nombre)+' '+str(d.nombre).upper(),
+                    'cantidad_referencia'       : '1',
+                    'unidad_medida_ref'         : '',#str(d.concepto)
+                    'precio_referencia'         : str(format_number(request, d.total, False)),
+                    'cantidad_item'             : '1',
+                    'fecha_elaboracion'         : '',
+                    'fecha_vencimiento_prod'    : '',
+                    'unidad_medida'             : 'UNI',
+                    'precio_unitario'           : str(format_number(request, d.total, False)),
+                    'descuento_porcentaje'      : '0',
+                    'descuento_monto'           : '0',
+                    'recargo_porcentaje'        : '0',
+                    'recargo_monto'             : '0',
+                    'cod_imp_adic_1'            : '0',
+                    'cod_imp_adic_2'            : '0',
+                    'monto_item'                : str(format_number(request, d.total, False)),
+                    'item_espectaculo'          : '',
+                    'rut_mandante_b'            : '',
+                    'codigos_items'             : lista_codigos_items,  # lista_codigos_items,
+                    'info_ticket'               : '',  # lista_infoticket
+                    'otras_monedas_detalle'     : '',  # lista_otra_moneda_detalle
+                    'retenedor_detalle'         : '',  # lista_retenedor_detalle
+                    'subdescuentos_detalle'     : '',  # lista_subdescuento,
+                    'subcantidad_detalle'       : '',  # lista_subcantidad
+                    'subrecargo_detalle'        : '',  # lista_subrecargo,
+                })
+
+                total_linea += d.total
+                linea       += 1
+
+            valores = calculo_iva_total_documento(total_linea, 19)
+
+            lista_total.append({
+                'tipo_moneda'           : '',           ##Tipo de moneda de los montos
+                'monto_neto'            : str(valores[0]),   ## Monto neto
+                'monto_exento'          : '0',          ## Monto exento
+                'monto_base'            : '0',          ## Monto Informado >0
+                'monto_margen_comerc'   : '0',          ## Monto informado
+                'tasa_iva'              : '19',         ## Tasa iva
+                'iva'                   : str(valores[1]),   ## Monto neto * tasa IVA
+                'iva_propio'            : '0',          ## < que IVA
+                'iva_terceros'          : '0',          ## < que IVA
+                'iva_no_retenido'       : '0',          ## IVA - IVA retenido
+                'cred_espec_constr'     : '0',          ## IVA * 0,65
+                'garan_deposi_env_embal': '0',          ## Solo empresas usan emvases
+                'valor_comision_neto'   : '0',          ## Suma detalles valores comision
+                'valor_comision_exento' : '0',          ## Suma detalles valores comisiones y otros cargos no afectos o exentos
+                'valor_comision_iva'    : '0',          ## Suma detalle iva valor comision y otros cargos
+                'monto_total'           : str(valores[2]),   ## Monto total documento
+                'monto_no_facturable'   : '0',          ## Suma monto bienes o servicios con indicador facturacion
+                'monto_periodo'         : '0',          ## Monto total + monto no facturable
+                'saldo_anterior'        : '0',          ## Saldo anterior. * Solo con fines de ilustrar claridad de cobros
+                'valor_pagar'           : '0',          ## Valor cobrado
+                'impuesto_retenido'     : '',           ## lista_impuesto_retenidos,
+            })
+
+
+
+            kwargs['tipo_documento']            = factura_xml.numero_documento
+            kwargs['aplicacion']                = 'lease'
+            kwargs['ID1_ERP']                   = ''
+            kwargs['ID2_ERP']                   = ''
+            kwargs['ID3_ERP']                   = ''
+            kwargs['ID4_ERP']                   = ''
+            kwargs['emails_PDF']                = factura_xml.contrato.cliente.email
+            kwargs['emails_XML']                = factura_xml.contrato.cliente.email
+
+            kwargs['encabezado']                = lista_cabecera
+            kwargs['emisor']                    = lista_emisor
+            kwargs['receptor']                  = lista_receptor
+            kwargs['detalle']                   = lista_detalle
+            kwargs['totales']                   = lista_total
+            kwargs['recargos_globales']         = ''  # lista_recargos
+            kwargs['referencias_documentos']    = ''  # lista_referencias
+            kwargs['referencias_boletas']       = ''  # lista_referencias_boletas
+            kwargs['comisiones']                = ''  # lista_comisiones
+            kwargs['monto_pagos']               = ''  # lista_monto_pagos
+            kwargs['otra_moneda']               = ''  # lista_otra_moneda
+            kwargs['subtotales']                = ''  # lista_subtotales
+            kwargs['transporte']                = ''  # lista_transporte
+            kwargs['extra_documento']           = ''  # lista_extra_documento
+            kwargs['error']                     = error
+        else:
+            kwargs['error'] = status['errores']
 
     except Exception as e:
         kwargs['error'] = str(e)

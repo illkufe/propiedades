@@ -405,6 +405,7 @@ function template_modal_info_factura(factura){
 }
 
 function enviar_propuesta(id){
+
 	$.ajax({
 		url: '/procesos/propuesta/enviar',
 		type: 'post',
@@ -419,33 +420,73 @@ function enviar_propuesta(id){
 		success: function(data){
 			loading(false);
 			if (data[0].estado == true) {
+
+                var html = ''
+                if (data[0].tipo == 'INET'){
+                    html += '<div class="row m-b-lg m-t-lg">'
+                    html += '<div class="col-md-12">'
+                    html += '<small class="text-center">Factura de Pedido Generada</small>'
+                    html += '<table class="table small m-b-xs">'
+                    html += '<tbody>'
+                    html += '<tr>'
+                    html += '<td class="text-left">Nº de Pedido</td>'
+                    html += '<td class="text-right"><strong>@codigo_documento</strong></td>'
+                    html += '</tr>'
+                    html += '<tr>'
+                    html += '<td class="text-left">Estado</td>'
+                    html += '<td class="text-right"><strong><span class="label" style="color:#FFFFFF; background:#2196F3">@estado</span></strong></td>'
+                    html += '</tr>'
+                    html = html.replace(/@codigo_documento/g, 	data[0].response[0].codigo);
+                    html = html.replace(/@estado/g, 	data[0].response[0].estado);
+
+                    html += '</tbody>'
+                    html += '</table>'
+                    html += '</div>'
+                    html += '</div>'
+                }else{
+                    html = '<a href="'+data[0].response[0].archivo_pdf+'" target="_blank"><span style="color:#575757">Descargar PDF<span>'
+                }
+
 				swal({
 					title 	: 'Documento Enviado',
-                    // text 	: '',
                     type 	: 'success',
-                    html 	: '<a href="'+data[0].response[0].archivo_pdf+'" target="_blank"><span style="color:#575757">Descargar PDF<span>',
+                    html 	: html,
                     showCancelButton 	: false,
                     confirmButtonColor 	: '#FCC491',
                     confirmButtonText 	: 'Cancelar',
                     allowOutsideClick 	: false,
                     allowEscapeKey 		: false
                 }).then(function() {
-                	console.log('enviar')
                     location.reload()
                 });
-                {#                location.reload();#}
+
             }else{
 
-            	var error = '<div class="text-left" style="font-size:12px">';
-            	for ( var a in data[0].response){
-            		error +='<p style="margin-bottom: 5px">'+ data[0].response[a].descripcion+ '</p>'
-            	}
-            	error += '</div>';
+			    var html = ''
+
+                html += '<div class="row m-b-lg m-t-lg">'
+                html += '<div class="col-md-12">'
+                html += '<small class="text-center"><strong>Lista de Errores</strong></small>'
+                html += '<table class="table small m-b-xs">'
+                html += '<tbody>'
+
+                for ( var a = 0; a < data[0].response[0].descripcion.length; a++) {
+
+                    html += '<tr>'
+                    html += '<td class="text-left" style="font-size:11px;"><li>@error</li></td>'
+                    html += '</tr>'
+                    html = html.replace(/@error/g, data[0].response[0].descripcion[a]);
+                }
+
+                html += '</tbody>'
+                html += '</table>'
+                html += '</div>'
+                html += '</div>'
 
             	swal({
             		title 	: 'Error Envio',
             		type 	: 'error',
-            		html 	: error,
+            		html 	: html,
             		showCancelButton 	: true,
             		confirmButtonColor 	: '#FCC491',
             		confirmButtonText 	: 'Cancelar',

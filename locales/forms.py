@@ -62,6 +62,14 @@ class VentasForm(forms.ModelForm):
 
 		self.fields['local'].queryset = locales
 
+	def clean(self):
+
+		fecha_inicio 	= self.cleaned_data.get('fecha_inicio')
+		fecha_hoy 		= datetime.now().date()
+
+		if fecha_inicio > fecha_hoy:
+			self.add_error('fecha_inicio', 'Fecha no puede ser mayor a la fecha actual')
+
 	class Meta:
 		model 	= Venta
 		fields 	= '__all__'

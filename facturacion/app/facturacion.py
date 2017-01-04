@@ -1,22 +1,15 @@
-from pydoc import locate
-
 from django.db import transaction
 from suds.client import Client
-from suds.plugin import MessagePlugin
 from xml.etree.ElementTree import *
-from urllib.request import urlopen
-from contrato.models import Contrato
 from facturacion.app.parametros_facturacion import calculo_iva_total_documento
 from facturacion.models import *
 from datetime import datetime
-
 
 import xml.etree.ElementTree as etree
 import sys
 import os
 import suds
 import logging
-import pathlib
 
 
 from locales.models import Local
@@ -37,14 +30,17 @@ def obtener_datos_conexion(contexto):
     """
 
     error       = ''
-    conexion    = ''
+    conexion    = None
 
     try:
         conexion    = Conexion_Factura.objects.get(nombre_contexto__iexact=contexto, parametro_facturacion__motor_emision_id=2, parametro_facturacion__estado_id=1)
     except Exception as e:
         error       = "No existen datos de conexión o no estan activo los parametros del servidor de IDTE."
 
-    return error, conexion
+    return {
+        'error'     : error,
+        'conexion'  : conexion
+    }
 
 def call_service(url):
     """
@@ -52,8 +48,8 @@ def call_service(url):
     :param url: url de conexión del WSDL
     :return: retorna el client con la conexion y una variable de error.
     """
-    error   = ''
-    client  = ''
+    error   = None
+    client  = None
 
 
     logging.basicConfig(level=logging.INFO)
@@ -71,16 +67,14 @@ def call_service(url):
         client.options.location = url_server
 
     except suds.WebFault as detail:
-        print('error-1')
         error = str(detail.fault)
-        print(error)
     except Exception as e:
-        print('error-2')
         error = str(e)
-        print(error)
 
-
-    return error, client
+    return {
+        'error'     : error,
+        'client'    : client
+    }
 
 def crear_xml_documento(**kwargs):
 
@@ -984,8 +978,8 @@ def url_web_service(**kwargs):
     :param kwargs: datos de conexión del web service
     :return: url de conexión
     """
-    error           = ''
-    url_conexion    = ''
+    error           = None
+    url_conexion    = None
     try:
 
         host                = kwargs['host']
@@ -1005,7 +999,10 @@ def url_web_service(**kwargs):
     except Exception as e:
         error = "Error al realizar el armado de la URL de conexión del Web Services, por favor verifique los datos de conexión."
 
-    return error, url_conexion
+    return {
+        'error'         : error,
+        'url_conexion'  : url_conexion
+    }
 
 def validar_folios_procesar(tipo_documento, folio_actual):
     """
@@ -1014,7 +1011,7 @@ def validar_folios_procesar(tipo_documento, folio_actual):
     :param folio_actual: folio o caf a utilizar
     :return: retorna una valiable con el error si es que se encuentra uno determinado en la validaciones.
     """
-    error   = ''
+    error   = None
     try:
         folio = Folio_Documento_Electronico.objects.filter(tipo_dte=tipo_documento, operativo=True).get()
 
@@ -1031,7 +1028,9 @@ def validar_folios_procesar(tipo_documento, folio_actual):
     except Folio_Documento_Electronico.DoesNotExist:
         error = "No Exiten folios operativos para el tipo de documento."
 
-    return error
+    return {
+        'error' : error
+    }
 
 def validar_existencia_folio(tipo_documento):
 
@@ -1041,13 +1040,18 @@ def validar_existencia_folio(tipo_documento):
     :param tipo_documento: tipo de documento electronico
     :return: retorna una variable la cual contiene o no un mensaje de error.
     """
-    error = ''
+    error = None
+    folio = None
 
     try:
         folio = Folio_Documento_Electronico.objects.filter(tipo_dte=tipo_documento, operativo=True).get()
     except Folio_Documento_Electronico.DoesNotExist:
         error = "No existen folios operativos para el tipo de documento"
-    return error
+
+    return {
+        'error'     : error,
+        'folios'    : folio
+    }
 
 def obtener_folio(tipo_documento):
 
@@ -1075,7 +1079,7 @@ def obtener_folio(tipo_documento):
     # conn.execute(sql, (tipo_documento,))
 
     folio_documento = 0
-    error           = ''
+    error           = None
     try:
 
         transaction.set_autocommit(False)
@@ -1089,11 +1093,15 @@ def obtener_folio(tipo_documento):
         update_2 = Folio_Documento_Electronico.objects.get(tipo_dte=tipo_documento, operativo=True)
         update_2.folio_actual = update.folio_actual + 1
         update_2.save()
+
     except Exception:
         error = "Error en la obtención del folio."
 
 
-    return error, folio_documento
+    return {
+        'error'             : error,
+        'folio_operativo'   : folio_documento
+    }
 
 ## ---SERVDTE-----------------------------------------------------------------------------------------------------------
 
@@ -2362,8 +2370,8 @@ def armar_xml_inet_docvta(request):
             Glosas  = etree.SubElement(Item, 'Glosas')
 
             glosa_1 = etree.SubElement(Glosas, 'Glosa1').text   = string_locales[:-3]
-            glosa_2 = etree.SubElement(Glosas, 'Glosa2').text   = str(factura.nombre)+''+str(request.user.userprofile.empresa).upper()
-            glosa_3 = etree.SubElement(Glosas, 'Glosa3').text   = str(d.concepto.descripcion).upper()
+            glosa_2 = etree.SubElement(Glosas, 'Glosa2').text   = str(factura.nombre)+''+str(request.user.userprofile.empresa.nombre).upper()
+            glosa_3 = etree.SubElement(Glosas, 'Glosa3').text   = str(d.concepto.nombre).upper()
 
             etree.SubElement(Item, 'DescUno_Cod').text  = '0'
             etree.SubElement(Item, 'PorcUno').text      = '0'

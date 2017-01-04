@@ -1,5 +1,5 @@
 from django import forms
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from contrato.models import Contrato
 from locales.models import Venta, Local
@@ -28,6 +28,19 @@ class VentasForm(forms.ModelForm):
 
 
 		self.fields['local'].queryset = locales
+	def clean(self):
+
+		fecha_inicio = self.cleaned_data.get('fecha_inicio')
+
+		fecha_hoy = datetime.now().date()
+
+		fecha_hasta = datetime.now().date() - timedelta(days=5)
+
+		if fecha_inicio > fecha_hoy:
+			self.add_error('fecha_inicio', 'Fecha no puede ser mayor a la fecha actual')
+
+		if  fecha_inicio < fecha_hasta  or fecha_inicio > fecha_hoy:
+			self.add_error('fecha_inicio', 'Fecha no puede ser menor a 5 días desde fecha actual')
 
 	class Meta:
 		model 	= Venta
