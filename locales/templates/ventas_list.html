@@ -278,7 +278,9 @@ function guardar_ventas(){
 					'toast_text' 	: 'Guardado correctamente',
 					'toast_title' 	: 'ÉXITO',
 				}
+
 				$('#m-venta-diaria').modal('hide');
+
 			}else{
 				var configuracion = {
 					'toast_type'	: 'error',
@@ -378,12 +380,12 @@ function guardar_carga_masiva() {
 							template += '<table class="table table-striped table-bordered table-hover table-responsive">'
 							template += '<thead>'
 							template += '<tr>'
-							template += '<th>fila</th>'
+							template += '<th>Fila</th>'
 							template += '<th>Local</th>'
-							template += '<th>fecha inicio</th>'
-							template += '<th>fecha termino</th>'
-							template += '<th>valor</th>'
-							template += '<th>error</th>'
+							template += '<th>Fecha inicio</th>'
+							template += '<th>Fecha termino</th>'
+							template += '<th>Valor</th>'
+							template += '<th>Error</th>'
 							template += '</tr>'
 							template += '</thead>'
 							template += '<tbody>'
@@ -440,9 +442,9 @@ function open_modal_ventas_diarias(obj) {
 	var ano     = $(obj).attr('data-ano')
 
 	var data = {
-		'local': local,
-		'mes': mes,
-		'ano': ano,
+		'local' : local,
+		'mes'   : mes,
+		'ano'   : ano,
 	}
 
 	$.ajax({
@@ -497,7 +499,7 @@ function open_modal_delete_ventas_diarias(obj) {
             url: '{% url 'venta_diaria' %}',
             type: 'post',
             data: {
-                method             : 'delete',
+                method              : 'delete',
                 venta               : venta_id,
                 csrfmiddlewaretoken : getCookie('csrftoken'),
             },
@@ -580,7 +582,6 @@ function open_modal_delete_ventas(obj) {
 			}
 		})
 	})
-
 }
 </script>
 {% endblock scripts %}

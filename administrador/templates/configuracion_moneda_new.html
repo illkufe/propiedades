@@ -106,6 +106,7 @@ function enviar_form() {
         rules: {},
         messages: {},
         errorPlacement: function (error, element) {
+            clear_errors_form('#form-configuracion-new');
             error.appendTo(element.closest(".form-group").find('.container-error'));
         },
         submitHandler: function (form) {
@@ -127,7 +128,7 @@ function enviar_form() {
                             'toast_title' 	: 'ÉXITO',
                         }
 
-                        setTimeout(function(){window.location.href = '{% url 'configuracion_moneda_update' %}'}, 1500);
+                        /*setTimeout(function(){window.location.href = '{% url 'configuracion_moneda_update' %}'}, 1500);*/
 
                     }else{
                         var configuracion = {
@@ -140,8 +141,13 @@ function enviar_form() {
                 },
                 error: function (data, textStatus, jqXHR) {
                     clear_errors_form('#form-configuracion-new');
-                    var errors = $.parseJSON(data.responseText);
-                    apply_errors_form(errors);
+                    var errors = $.parseJSON(data.responseText)
+
+                    $.each(errors, function(index, value) {
+                        $.each(value, function(k, v) {
+                            $('#form-configuracion-new #id_form-'+index+'-'+k).closest('.form-group').find('.container-error').append(v)
+                        })
+                    });
                 }
             });
         }

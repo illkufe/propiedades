@@ -1003,7 +1003,7 @@ class CONFIGURACION_MONEDA(View):
 			if form_moneda.is_valid():
 				form_moneda.save()
 			else:
-				return JsonResponse(form_moneda.errors, status=400)
+				return JsonResponse(form_moneda.errors, status=400, safe=False)
 
 			estado = True
 

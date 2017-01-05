@@ -178,7 +178,7 @@ def propuesta_filtrar(request):
 
 			if contrato.conceptos.filter(id=concepto_id).exists():
 				asociado 	= True
-				valido 		= validar_concepto(contrato, concepto, fecha)
+				valido 		= validar_concepto(contrato, concepto, fecha, conceptos_id)
 			else:
 				asociado 	= False 
 				valido 		= {'estado': False, 'mensaje': 'no tiene este concepto asociado'}
@@ -246,9 +246,9 @@ def propuesta_generar(request):
 
 			for concepto in conceptos:
 
-				if validar_concepto(contrato, concepto, fecha)['estado'] == True:
+				if validar_concepto(contrato, concepto, fecha, conceptos_id)['estado'] == True:
 
-					total = calcular_concepto(contrato, concepto, fecha, configuracion)
+					total = calcular_concepto(contrato, concepto, fecha, configuracion, conceptos_id)
 
 					# if total is not 0:
 					data_conceptos.append({
@@ -611,7 +611,7 @@ def factura_pdf(request, pk=None):
 
 # validar conceptos - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-def validar_concepto(contrato, concepto, fecha):
+def validar_concepto(contrato, concepto, fecha, conceptos):
 
 
 	configuracion = validar_configuracion(contrato, concepto)
@@ -634,7 +634,7 @@ def validar_concepto(contrato, concepto, fecha):
 			return validar_cuota_de_incorporacion(contrato, concepto, fecha)
 
 		elif concepto.concepto_tipo.id == 6:
-			return validar_gasto_asociado(contrato, concepto, fecha)
+			return validar_gasto_asociado(contrato, concepto, fecha, conceptos)
 
 		elif concepto.concepto_tipo.id == 7:
 			return validar_arriendo_bodega(contrato, concepto, fecha)
@@ -1095,14 +1095,15 @@ def validar_cuota_de_incorporacion(contrato, concepto, periodo):
 		'mensaje'	: mensajes[mensaje],
 	}
 
-def validar_gasto_asociado(contrato, concepto, periodo):
+def validar_gasto_asociado(contrato, concepto, periodo, conceptos):
 
 	mensajes = [
 		'gasto asociado : correcto',
 		'gasto asociado : incorrecto',
 		'gasto asociado : no existe',
 		'gasto asociado : no existe para este período',
-		'gasto asociado : el concepto asociado no fue facturado',
+		'gasto asociado : el concepto asociado no fue facturado y no fue seleccionado',
+		'gasto asociado : el concepto asociado no es valido',
 	]
 
 	estado 	= False
@@ -1159,14 +1160,23 @@ def validar_gasto_asociado(contrato, concepto, periodo):
 
 			# validar vinculo del concepto
 			if estado is True and gasto_asociado.valor_fijo is False:
-
-				if Factura_Detalle.objects.filter(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year, factura__visible=True).exists():
-					estado 	= True
-					mensaje = 0
+				if str(gasto_asociado.vinculo_id) in conceptos:
+					if validar_concepto(contrato, gasto_asociado.vinculo, periodo, conceptos)['estado'] == False:
+						estado 	= False
+						mensaje = 5
 				else:
-					estado 	= False
-					mensaje = 4
 
+					if Factura_Detalle.objects.filter(concepto=gasto_asociado.vinculo, factura__contrato=contrato,
+													  factura__fecha_inicio__month=periodo.month,
+													  factura__fecha_inicio__year=periodo.year,
+													  factura__fecha_termino__month=periodo.month,
+													  factura__fecha_termino__year=periodo.year,
+													  factura__visible=True).exists():
+						estado 	= True
+						mensaje = 0
+					else:
+						estado 	= False
+						mensaje = 4
 
 	return {
 		'estado'	: estado,
@@ -1330,7 +1340,7 @@ def validar_reajuste(contrato, concepto, periodo):
 
 # calcular conceptos - - - - - - - - - - - - - - - - - - - - - - - - -
 
-def calcular_concepto(contrato, concepto, periodo, configuracion):
+def calcular_concepto(contrato, concepto, periodo, configuracion, conceptos):
 
 	if concepto.concepto_tipo.id == 1:
 		return calcular_arriendo_minimo(contrato, concepto, periodo, configuracion)
@@ -1348,7 +1358,7 @@ def calcular_concepto(contrato, concepto, periodo, configuracion):
 		return calcular_cuota_de_incorporacion(contrato, concepto, periodo, configuracion)
 
 	elif concepto.concepto_tipo.id == 6:
-		return calcular_gasto_asociado(contrato, concepto, periodo, configuracion)
+		return calcular_gasto_asociado(contrato, concepto, periodo, configuracion, conceptos)
 
 	elif concepto.concepto_tipo.id == 7:
 		return calcular_arriendo_bodega(contrato, concepto, periodo, configuracion)
@@ -1560,7 +1570,7 @@ def calcular_cuota_de_incorporacion(contrato, concepto, periodo, configuracion):
 	
 	return total
 
-def calcular_gasto_asociado(contrato, concepto, periodo, configuracion):
+def calcular_gasto_asociado(contrato, concepto, periodo, configuracion, conceptos):
 
 	total = 0
 
@@ -1614,9 +1624,17 @@ def calcular_gasto_asociado(contrato, concepto, periodo, configuracion):
 				if  gasto_asociado.valor_fijo is True:
 					total += factor
 				else:
-					if Factura_Detalle.objects.filter(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year).exists():
-						concepto_facturado = Factura_Detalle.objects.get(concepto=gasto_asociado.vinculo, factura__contrato=contrato, factura__fecha_inicio__month=periodo.month, factura__fecha_inicio__year=periodo.year, factura__fecha_termino__month=periodo.month, factura__fecha_termino__year=periodo.year)
-						total += concepto_facturado.total * (factor/100)
+					if str(gasto_asociado.vinculo_id) in conceptos:
+						resultado 	 = calcular_concepto(contrato, gasto_asociado.vinculo, periodo, configuracion, conceptos)
+						total 		+= resultado * (factor / 100)
+					else:
+						concepto_facturado = Factura_Detalle.objects.get(concepto=gasto_asociado.vinculo,
+																		 factura__contrato=contrato,
+																		 factura__fecha_inicio__month=periodo.month,
+																		 factura__fecha_inicio__year=periodo.year,
+																		 factura__fecha_termino__month=periodo.month,
+																		 factura__fecha_termino__year=periodo.year)
+						total += concepto_facturado.total * (factor / 100)
 
 	return total
 

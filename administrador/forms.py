@@ -282,6 +282,15 @@ class ConfiguracionMonedaForm(forms.ModelForm):
 
 		super(ConfiguracionMonedaForm, self).__init__(*args, **kwargs)
 
+	def clean(self):
+
+		cantidad_decimales 	= self.cleaned_data.get('cantidad_decimales')
+
+		if cantidad_decimales <0:
+			self.add_error('cantidad_decimales', 'Cantidad de decimales no puede ser negativo')
+
+		if cantidad_decimales > 4:
+			self.add_error('cantidad_decimales', 'Cantidad de decimales no puede ser mayor a 4')
 
 	class Meta:
 		model 	= Configuracion_Monedas
@@ -290,7 +299,7 @@ class ConfiguracionMonedaForm(forms.ModelForm):
 
 		widgets = {
 			'moneda'				: forms.Select(attrs={'class': 'form-control inactiva validate'}),
-			'cantidad_decimales'	: forms.NumberInput(attrs={'class': 'form-control validate'}),
+			'cantidad_decimales'	: forms.NumberInput(attrs={'class': 'form-control validate numeric'}),
 
 
 		}
@@ -308,5 +317,7 @@ class ConfiguracionMonedaForm(forms.ModelForm):
 			'moneda'				: 'Moneda',
 			'cantidad_decimales'	: 'Cantidad Decimales para la Moneda',
 		}
+
+
 
 ConfiguracionMonedaFormSet = modelformset_factory(Configuracion_Monedas, form=ConfiguracionMonedaForm, extra=0, min_num=1, can_delete=False)

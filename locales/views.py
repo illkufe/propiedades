@@ -534,15 +534,14 @@ class VENTAS(View):
 			fecha_inicio_mes 	= primer_dia(fecha_inicial)
 			fecha_termino_mes 	= ultimo_dia(fecha_inicial)
 
-			if fecha_inicial.date() == fecha_terminal.date():
-				pass
-			else:
-				if fecha_inicio_mes == fecha_inicial.date() and fecha_termino_mes == fecha_terminal.date():
-					pass
-				else:
+			if fecha_inicial.date() != fecha_terminal.date():
+				if fecha_inicio_mes != fecha_inicial.date() and fecha_termino_mes != fecha_terminal.date():
 					error = "Rango de fechas no corresponde a mensual o diaria"
 					list_error.append(error)
 
+			if fecha_terminal.date() > datetime.now().date():
+				error = "Fecha de termino no puede ser mayor a la fecha actual"
+				list_error.append(error)
 
 		return list_error
 
